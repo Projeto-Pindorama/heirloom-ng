@@ -1,3 +1,7 @@
+Release ...
+* w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
+  avoid a harmless error message (bug reported by Pierre Gentile).
+
 Release 070715
 * cpio: A "-P" option has been introduced that allows to specify attributes
   like the file owner when creating an archive. With it, unprivileged users

@@ -34,7 +34,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)whodo.sl	1.42 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)whodo.sl	1.43 (gritter) 10/1/07";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -1014,6 +1014,9 @@ getproc(char *pname)
 	wchar_t	wc;
 	int	n;
 	
+	strtol(pname, &ep, 10);
+	if (*ep != '\0')
+		return NULL;
 	strcpy(fn, "/proc/");
 	strcat(fn, pname);
 	if (lstat(fn, &st) < 0) {
@@ -1021,9 +1024,6 @@ getproc(char *pname)
 		return NULL;
 	}
 	if (!S_ISDIR(st.st_mode))
-		return NULL;
-	strtol(pname, &ep, 10);
-	if (*ep != '\0')
 		return NULL;
 	if ((p = readproc(fn)) != NULL) {
 		ep = p->p_cmdline;
