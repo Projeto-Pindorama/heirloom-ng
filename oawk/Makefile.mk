@@ -37,25 +37,25 @@ awk.g.o: awk.g.c
 awk.lx.o: awk.lx.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c awk.lx.c
 
-b.o: b.c
+b.o: b.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c b.c
 
-lib.o: lib.c
+lib.o: lib.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c lib.c
 
-main.o: main.c
+main.o: main.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c main.c
 
-parse.o: parse.c
+parse.o: parse.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c parse.c
 
 proctab.o: proctab.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c proctab.c
 
-run.o: run.c
+run.o: run.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c run.c
 
-tran.o: tran.c
+tran.o: tran.c awk.h
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(XO5FL) $(LARGEF) $(IUXRE) $(ICOMMON) $(IWCHAR) -c tran.c
 
 token.o: token.c

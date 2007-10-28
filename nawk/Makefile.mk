@@ -17,6 +17,10 @@ awk.g.c: awk.g.y
 	(echo '1i'; echo '#include <inttypes.h>'; echo '.'; echo 'w';) | \
 		ed -s y.tab.h
 
+y.tab.h: awk.g.c
+
+.NO_PARALLEL: awk.g.c awk.g.2001.c
+
 awk.g.2001.c: awk.g.2001.y awk.g.c
 	$(YACC) awk.g.2001.y
 	mv -f y.tab.c awk.g.2001.c
