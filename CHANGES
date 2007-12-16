@@ -1,5 +1,7 @@
 Release ...
-* mknod, pgrep, ps: Mac OS X Leopard compilation fix.
+* Made the getopt() substitute work with the getopt$UNIX2003() function
+  redirection mechanism on Mac OS X Leopard.
+* mknod, pgrep, ps: Mac OS X Leopard compilation fixes.
 * w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
   avoid a harmless error message (bug reported by Pierre Gentile).
 
