@@ -19,13 +19,15 @@
  *
  * 3. This notice may not be removed or altered from any source distribution.
  */
-/*	Sccsid @(#)utmpx.c	1.12 (gritter) 1/22/06	*/
+/*	Sccsid @(#)utmpx.c	1.13 (gritter) 12/16/07	*/
 
 #include <stdio.h>
 
 #if defined (__FreeBSD__) || defined (__dietlibc__) || defined (__NetBSD__) || \
 	defined (__UCLIBC__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+	defined (__DragonFly__) || \
+	defined (__APPLE__) && \
+		(__MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_OS_X_VERSION_10_5)
 #include <sys/types.h>
 #include <sys/time.h>
 #include <utmp.h>
