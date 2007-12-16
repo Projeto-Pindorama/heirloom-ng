@@ -33,16 +33,16 @@
 #define	USED
 #endif
 #if defined (S42)
-static const char sccsid[] USED = "@(#)ps_s42.sl	2.114 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)ps_s42.sl	2.115 (gritter) 12/16/07";
 #elif defined (SUS)
-static const char sccsid[] USED = "@(#)ps_sus.sl	2.114 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)ps_sus.sl	2.115 (gritter) 12/16/07";
 #elif defined (UCB)
-static const char sccsid[] USED = "@(#)/usr/ucb/ps.sl	2.114 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)/usr/ucb/ps.sl	2.115 (gritter) 12/16/07";
 #else
-static const char sccsid[] USED = "@(#)ps.sl	2.114 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)ps.sl	2.115 (gritter) 12/16/07";
 #endif
 
-static const char cacheid[] = "@(#)/tmp/ps_cache	2.114 (gritter) 1/12/07";
+static const char cacheid[] = "@(#)/tmp/ps_cache	2.115 (gritter) 12/16/07";
 
 #if !defined (__linux__) && !defined (__sun) && !defined (__FreeBSD__) \
 	&& !defined (__DragonFly__)
@@ -130,6 +130,7 @@ static const char cacheid[] = "@(#)/tmp/ps_cache	2.114 (gritter) 1/12/07";
 #define	SCHED_OTHER	1
 #endif
 #elif defined (__APPLE__)
+#include	<sys/time.h>
 #include	<sys/proc.h>
 #include        <sys/sysctl.h>
 #include        <sys/mount.h>
