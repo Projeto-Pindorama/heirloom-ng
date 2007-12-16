@@ -19,7 +19,7 @@
  *
  * 3. This notice may not be removed or altered from any source distribution.
  */
-/*	Sccsid @(#)CHECK.c	1.7 (gritter) 1/22/06	*/
+/*	Sccsid @(#)CHECK.c	1.8 (gritter) 12/16/07	*/
 
 #include <stdlib.h>
 
@@ -30,7 +30,10 @@
 #endif
 
 #ifdef	__APPLE__
+#include <available.h>
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_OS_X_VERSION_10_5
 #define	NEED_ALLOCA_H	1
+#endif
 #define	NEED_MALLOC_H	1
 #define	NEED_UTMPX_H	1
 #endif
