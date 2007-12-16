@@ -1,5 +1,5 @@
 Release ...
-* mknod: Mac OS X Leopard compilation fix.
+* mknod, pgrep: Mac OS X Leopard compilation fix.
 * w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
   avoid a harmless error message (bug reported by Pierre Gentile).
 
