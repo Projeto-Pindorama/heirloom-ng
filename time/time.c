@@ -33,9 +33,9 @@
 #define	USED
 #endif
 #ifdef	PTIME
-static const char sccsid[] USED = "@(#)ptime.sl	1.29 (gritter) 12/19/08";
+static const char sccsid[] USED = "@(#)ptime.sl	1.30 (gritter) 12/19/08";
 #else
-static const char sccsid[] USED = "@(#)time.sl	1.29 (gritter) 12/19/08";
+static const char sccsid[] USED = "@(#)time.sl	1.30 (gritter) 12/19/08";
 #endif
 
 #include	<sys/types.h>
@@ -364,12 +364,14 @@ timecmd(char **av)
 		sigrelse(SIGCHLD);
 		pause();
 	}
-	write(0, 0, 0);
+	t2 = times(&tp);
 	if (ptimes(&tp, fp, stfn) < 0)
 		return 1;
 #endif
 	while (waitpid(pid, &status, 0) != pid);
+#ifndef PTIME
 	t2 = times(&tp);
+#endif
 	sigset(SIGINT, oldint);
 	sigset(SIGQUIT, oldquit);
 	if (WIFSIGNALED(status))
