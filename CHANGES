@@ -1,4 +1,7 @@
 Release ...
+* cpio: Skip over zip extra headers with fewer than four bytes (the minimum
+  length for them to contain any information) instead of reporting a bad
+  header and terminating.
 * Made the getopt() substitute work with the getopt$UNIX2003() function
   redirection mechanism on Mac OS X Leopard.
 * mknod, pgrep, ps: Mac OS X Leopard compilation fixes.

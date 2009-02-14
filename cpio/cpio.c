@@ -26,7 +26,7 @@
  */
 
 /*
- * Sccsid @(#)cpio.c	1.303 (gritter) 4/14/07
+ * Sccsid @(#)cpio.c	1.304 (gritter) 2/14/09
  */
 
 #include <sys/types.h>
@@ -5717,6 +5717,8 @@ ziprxtra(struct file *f, struct zip_header *z)
 		x = smalloc(len);
 		if (bread((char *)x, len) != len)
 			return -1;
+		if (len < 4)
+			return len;
 		xp = x;
 		while (len > 0) {
 			if (len < 4)
