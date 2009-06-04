@@ -30,11 +30,11 @@
 #define	USED
 #endif
 #if defined (SU3)
-static const char sccsid[] USED = "@(#)pg_su3.sl	2.66 (gritter) 8/14/05";
+static const char sccsid[] USED = "@(#)pg_su3.sl	2.67 (gritter) 6/5/09";
 #elif defined (SUS)
-static const char sccsid[] USED = "@(#)pg_sus.sl	2.66 (gritter) 8/14/05";
+static const char sccsid[] USED = "@(#)pg_sus.sl	2.67 (gritter) 6/5/09";
 #else
-static const char sccsid[] USED = "@(#)pg.sl	2.66 (gritter) 8/14/05";
+static const char sccsid[] USED = "@(#)pg.sl	2.67 (gritter) 6/5/09";
 #endif
 
 #ifndef	USE_TERMCAP
@@ -227,6 +227,7 @@ static void	(*oldterm)(int);	/* old SIGTERM handler */
 static char	*tty;			/* result of ttyname(1) */
 static char	*progname;		/* program name */
 static unsigned	ontty;			/* whether running on tty device */
+static int	ttyfd;			/* file descriptor of tty device */
 static unsigned	exitstatus;		/* exit status */
 static int	pagelen = 23;		/* lines on a single screen page */
 static int	ttycols = 79;		/* screen columns (starting at 0) */
@@ -364,7 +365,7 @@ static int
 outcap(int i)
 {
 	char c = i;
-	return write(1, &c, 1);
+	return write(ttyfd, &c, 1);
 }
 
 /*
@@ -376,12 +377,12 @@ mesg(const char *message)
 	if (ontty == 0)
 		return;
 	if (must_sgr0) {
-		write(1, sgr0, strlen(sgr0));
+		write(ttyfd, sgr0, strlen(sgr0));
 		must_sgr0 = 0;
 	}
 	if (*message != '\n' && sflag)
 		vidputs(A_STANDOUT, outcap);
-	write(1, message, strlen(message));
+	write(ttyfd, message, strlen(message));
 	if (*message != '\n' && sflag)
 		vidputs(A_NORMAL, outcap);
 }
@@ -418,7 +419,7 @@ getwinsize(void)
 		initialized = 1;
 	}
 #ifdef	TIOCGWINSZ
-	badioctl = ioctl(1, TIOCGWINSZ, &winsz);
+	badioctl = ioctl(ttyfd, TIOCGWINSZ, &winsz);
 #endif
 	if (envcols)
 		ttycols = envcols - 1;
@@ -599,7 +600,7 @@ sighandler(int signum)
 		if (genjump)
 			longjmp(genenv, signum);
 	}
-	tcsetattr(1, TCSADRAIN, &otio);
+	tcsetattr(ttyfd, TCSADRAIN, &otio);
 	quit(exitstatus);
 }
 
@@ -720,7 +721,7 @@ cline(void)
 	memset(buf, ' ', ttycols + 2);
 	buf[0] = '\r';
 	buf[ttycols + 1] = '\r';
-	write(1, buf, ttycols + 2);
+	write(ttyfd, buf, ttycols + 2);
 }
 
 /*
@@ -842,18 +843,22 @@ prompt(long long pageno)
 		printprompt(pageno);
 	cmd.key = cmd.addon = cmd.cmdline[0] = '\0';
 	cmd.cmdlen = 0;
-	tcgetattr(1, &tio);
+	tcgetattr(ttyfd, &tio);
 	tio.c_lflag &= ~(tcflag_t)(ICANON | ECHO);
 	tio.c_iflag |= ICRNL;
 	tio.c_cc[VMIN] = 1;
 	tio.c_cc[VTIME] = 0;
-	tcsetattr(1, TCSADRAIN, &tio);
-	tcflush(1, TCIFLUSH);
+	tcsetattr(ttyfd, TCSADRAIN, &tio);
+	tcflush(ttyfd, TCIFLUSH);
 	for (;;) {
-		switch (read(1, &key, 1)) {
-		case 0: quit(0);
-			/*NOTREACHED*/
-		case -1: quit(020);
+		if ((n = read(ttyfd, &key, 1)) != 1) {
+			tcsetattr(ttyfd, TCSADRAIN, &otio);
+			cline();
+			switch (n) {
+			case 0: quit(0);
+				/*NOTREACHED*/
+			case -1: quit(020);
+			}
 		}
 		if (key == tio.c_cc[VERASE]) {
 			if (cmd.cmdlen) {
@@ -864,7 +869,7 @@ prompt(long long pageno)
 				if ((n = width(wc)) < 0)
 					n = 1;
 				while (n--)
-					write(1, "\b \b", 3);
+					write(ttyfd, "\b \b", 3);
 				if (!escape && cmd.cmdlen &&
 				    *(p = previous(&cmd.cmdline[cmd.cmdlen],
 						  cmd.cmdline, &wc)) == '\\') {
@@ -911,7 +916,7 @@ prompt(long long pageno)
 				key == '\n' || key == '\r')
 			break;
 		else if (escape)
-			write(1, "\b", 1);
+			write(ttyfd, "\b", 1);
 		if (cmd.cmdlen >= sizeof cmd.cmdline - 1) {
 			ring();
 			continue;
@@ -973,7 +978,7 @@ prompt(long long pageno)
 				cmd.key = key;
 			}
 		}
-		write(1, &key, 1);
+		write(ttyfd, &key, 1);
 		cmd.cmdline[cmd.cmdlen++] = key;
 		cmd.cmdline[cmd.cmdlen] = '\0';
 		if (nflag && state == CMD_FIN)
@@ -981,7 +986,7 @@ prompt(long long pageno)
 		escape = (escape ? 0 : key == '\\');
 	}
 endprompt:
-	tcsetattr(1, TCSADRAIN, &otio);
+	tcsetattr(ttyfd, TCSADRAIN, &otio);
 	cline();
 	cmd.count = getcount(cmd.cmdline);
 }
@@ -1047,7 +1052,7 @@ print1(const char *s, const char *end)
 				for (i = 0; i < m; i++) {
 					*bp++ = s[i];
 					if (bp-buf >= sizeof buf - mb_cur_max) {
-						write(1, buf, bp - buf);
+						write(ttyfd, buf, bp - buf);
 						bp = buf;
 					}
 				}
@@ -1077,12 +1082,12 @@ print1(const char *s, const char *end)
 		}
 		s += n;
 		if (bp - buf >= sizeof buf - mb_cur_max) {
-			write(1, buf, bp - buf);
+			write(ttyfd, buf, bp - buf);
 			bp = buf;
 		}
 	}
 	if (bp > buf)
-		write(1, buf, bp - buf);
+		write(ttyfd, buf, bp - buf);
 }
 
 /*
@@ -1734,7 +1739,7 @@ printline(void)
 		 */
 		if (b[sz-1] != '\n' && (sz == llen ||
 					b[sz-1] == '\t' || b[sz] == '\t'))
-			write(1, "\n", 1);
+			write(ttyfd, "\n", 1);
 		specjump = 0;
 	}
 }
@@ -1957,8 +1962,8 @@ shell(FILE *f)
 				": !command not allowed in rflag mode.\n"));
 		return;
 	}
-	write(1, cmd.cmdline, strlen(cmd.cmdline));
-	write(1, "\n", 1);
+	write(ttyfd, cmd.cmdline, strlen(cmd.cmdline));
+	write(ttyfd, "\n", 1);
 	sigset(SIGINT, SIG_IGN);
 	sigset(SIGQUIT, SIG_IGN);
 	switch (cpid = fork()) {
@@ -2000,7 +2005,7 @@ shell(FILE *f)
 static void
 help(void)
 {
-	write(1, helpscreen, strlen(helpscreen));
+	write(ttyfd, helpscreen, strlen(helpscreen));
 }
 
 /*
@@ -2244,6 +2249,18 @@ run(char **av, int ac)
 	}
 }
 
+static int
+trytty(int fd)
+{
+	int	i;
+	char	c;
+
+	if (tcgetattr(fd, &otio) == 0 && (i = fcntl(fd, F_GETFL)) >= 0 &&
+			(i & O_ACCMODE) == O_RDWR && read(fd, &c, 0) == 0)
+		return fd;
+	return -1;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -2261,7 +2278,13 @@ main(int argc, char **argv)
 	progname = basename(argv[0]);
 	/*setlocale(LC_MESSAGES, "");*/
 	catd = catopen(CATNAME, NL_CAT_LOCALE);
-	if (tcgetattr(1, &otio) == 0) {
+	if ((ttyfd = trytty(1)) < 0 && (ttyfd = trytty(2)) < 0) {
+		if ((i = open("/dev/tty", O_RDWR)) >= 0) {
+			if ((ttyfd = trytty(i)) < 0)
+				close(i);
+		}
+	}
+	if (ttyfd >= 0) {
 		ontty = 1;
 		if ((oldint = sigset(SIGINT, SIG_IGN)) != SIG_IGN)
 			sigset(SIGINT, sighandler);
@@ -2271,9 +2294,9 @@ main(int argc, char **argv)
 			sigset(SIGTERM, sighandler);
 		setlocale(LC_COLLATE, "");
 		setlocale(LC_CTYPE, "");
-		tty = ttyname(1);
+		tty = ttyname(ttyfd);
 #ifndef	USE_TERMCAP
-		setupterm(NULL, 1, &tinfostat);
+		setupterm(NULL, ttyfd, &tinfostat);
 #else	/* USE_TERMCAP */
 		if ((cp = getenv("TERM")) != NULL) {
 			char	buf[2048];
