@@ -30,11 +30,11 @@
 #define	USED
 #endif
 #if defined (SU3)
-static const char sccsid[] USED = "@(#)pg_su3.sl	2.67 (gritter) 6/5/09";
+static const char sccsid[] USED = "@(#)pg_su3.sl	2.68 (gritter) 6/5/09";
 #elif defined (SUS)
-static const char sccsid[] USED = "@(#)pg_sus.sl	2.67 (gritter) 6/5/09";
+static const char sccsid[] USED = "@(#)pg_sus.sl	2.68 (gritter) 6/5/09";
 #else
-static const char sccsid[] USED = "@(#)pg.sl	2.67 (gritter) 6/5/09";
+static const char sccsid[] USED = "@(#)pg.sl	2.68 (gritter) 6/5/09";
 #endif
 
 #ifndef	USE_TERMCAP
@@ -227,7 +227,7 @@ static void	(*oldterm)(int);	/* old SIGTERM handler */
 static char	*tty;			/* result of ttyname(1) */
 static char	*progname;		/* program name */
 static unsigned	ontty;			/* whether running on tty device */
-static int	ttyfd;			/* file descriptor of tty device */
+static int	ttyfd = 1;		/* file descriptor of tty device */
 static unsigned	exitstatus;		/* exit status */
 static int	pagelen = 23;		/* lines on a single screen page */
 static int	ttycols = 79;		/* screen columns (starting at 0) */
@@ -2249,23 +2249,11 @@ run(char **av, int ac)
 	}
 }
 
-static int
-trytty(int fd)
-{
-	int	i;
-	char	c;
-
-	if (tcgetattr(fd, &otio) == 0 && (i = fcntl(fd, F_GETFL)) >= 0 &&
-			(i & O_ACCMODE) == O_RDWR && read(fd, &c, 0) == 0)
-		return fd;
-	return -1;
-}
-
 int
 main(int argc, char **argv)
 {
 	int arg, i;
-	char *cp;
+	char c, *cp;
 
 	if (sizeof LINE == 4) {
 		LINE = 020000000000UL;
@@ -2278,13 +2266,10 @@ main(int argc, char **argv)
 	progname = basename(argv[0]);
 	/*setlocale(LC_MESSAGES, "");*/
 	catd = catopen(CATNAME, NL_CAT_LOCALE);
-	if ((ttyfd = trytty(1)) < 0 && (ttyfd = trytty(2)) < 0) {
-		if ((i = open("/dev/tty", O_RDWR)) >= 0) {
-			if ((ttyfd = trytty(i)) < 0)
-				close(i);
-		}
-	}
-	if (ttyfd >= 0) {
+	if (tcgetattr(ttyfd, &otio) == 0 &&
+			(i = fcntl(ttyfd, F_GETFL)) >= 0 &&
+			(i & O_ACCMODE) == O_RDWR &&
+			read(ttyfd, &c, 0) == 0) {
 		ontty = 1;
 		if ((oldint = sigset(SIGINT, SIG_IGN)) != SIG_IGN)
 			sigset(SIGINT, sighandler);
