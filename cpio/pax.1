@@ -18,8 +18,8 @@
 .\"    misrepresented as being the original software.
 .\"
 .\" 3. This notice may not be removed or altered from any source distribution.
-.\" Sccsid @(#)pax.1	1.37 (gritter) 9/5/05
-.TH PAX 1 "9/5/05" "Heirloom Toolchest" "User Commands"
+.\" Sccsid @(#)pax.1	1.38 (gritter) 8/13/09
+.TH PAX 1 "8/13/09" "Heirloom Toolchest" "User Commands"
 .SH NAME
 pax \- portable archive interchange
 .SH SYNOPSIS
@@ -325,6 +325,8 @@ Any character can be used as delimiter instead of
 .RI ` / '.
 If a file name is empty after the replacement is done,
 the file is ignored.
+This option can be specified multiple times
+to execute multiple substitutions in the order specified.
 .TP
 .B \-t
 Resets the access times of files
