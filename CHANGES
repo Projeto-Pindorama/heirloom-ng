@@ -1,7 +1,4 @@
 Release ...
-* pax: Handle multiple "-s" options correctly, i.e. execute multiple
-  substitutions in the order specified. Previously, everything except
-  the first occurrence was ignored.
 * cpio: Skip over zip extra headers with fewer than four bytes (the minimum
   length for them to contain any information) instead of reporting a bad
   header and terminating.

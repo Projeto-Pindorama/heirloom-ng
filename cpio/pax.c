@@ -33,11 +33,11 @@
 #define	USED
 #endif
 #if defined (SU3)
-static const char sccsid[] USED = "@(#)pax_su3.sl	1.27 (gritter) 8/13/09";
+static const char sccsid[] USED = "@(#)pax_su3.sl	1.26 (gritter) 6/26/05";
 #else
-static const char sccsid[] USED = "@(#)pax.sl	1.27 (gritter) 8/13/09";
+static const char sccsid[] USED = "@(#)pax.sl	1.26 (gritter) 6/26/05";
 #endif
-/*	Sccsid @(#)pax.c	1.27 (gritter) 8/13/09	*/
+/*	Sccsid @(#)pax.c	1.26 (gritter) 6/26/05	*/
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -682,19 +682,13 @@ int
 pax_sname(char **oldp, size_t *olds)
 {
 	char	*new = NULL;
-	size_t	newsize;
+	size_t	newsize = 0;
 	regmatch_t	bralist[NBRA+1];
 	int	c, i, k, l, y, z;
-	int	innew, ef;
-	char	*inp;
+	int	innew = 0, ef = 0;
+	char	*inp = *oldp;
 
-	if (ren == 0)
-		return 1;
 	for (z = 0; z < ren; z++) {
-		new = NULL;
-		newsize = 0;
-		inp = *oldp;
-		innew = ef = 0;
 	in:	if (regexec(&rep[z].r_re, inp, NBRA+1, bralist, ef) != 0) {
 			if (ef == 0)
 				continue;
@@ -740,8 +734,9 @@ pax_sname(char **oldp, size_t *olds)
 		free(*oldp);
 		*oldp = new;
 		*olds = newsize;
+		return *new != '\0';
 	}
-	return *new != '\0';
+	return 1;
 }
 
 void
