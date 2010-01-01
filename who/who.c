@@ -33,9 +33,9 @@
 #define	USED
 #endif
 #ifdef	SUS
-static const char sccsid[] USED = "@(#)who_sus.sl	1.19 (gritter) 1/22/06";
+static const char sccsid[] USED = "@(#)who_sus.sl	1.20 (gritter) 1/1/10";
 #else
-static const char sccsid[] USED = "@(#)who.sl	1.19 (gritter) 1/22/06";
+static const char sccsid[] USED = "@(#)who.sl	1.20 (gritter) 1/1/10";
 #endif
 
 #include	<sys/types.h>
@@ -51,6 +51,10 @@ static const char sccsid[] USED = "@(#)who.sl	1.19 (gritter) 1/22/06";
 #include	<libgen.h>
 #include	<utmpx.h>
 #include	<limits.h>
+
+#ifndef LINE_MAX
+#define	LINE_MAX	2048
+#endif
 
 enum okay {
 	OKAY,
