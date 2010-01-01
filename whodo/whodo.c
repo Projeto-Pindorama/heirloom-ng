@@ -34,7 +34,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)whodo.sl	1.43 (gritter) 10/1/07";
+static const char sccsid[] USED = "@(#)whodo.sl	1.44 (gritter) 1/1/10";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -93,6 +93,10 @@ static const char sccsid[] USED = "@(#)whodo.sl	1.43 (gritter) 10/1/07";
 
 #ifndef	PRNODEV
 #define	PRNODEV		0
+#endif
+
+#ifndef _POSIX_PATH_MAX
+#define	_POSIX_PATH_MAX	255
 #endif
 
 #define	next(wc, s, n)	(mb_cur_max > 1 && *(s) & 0200 ? \
