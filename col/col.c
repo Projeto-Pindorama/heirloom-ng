@@ -43,7 +43,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)col.sl	1.9 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)col.sl	1.10 (gritter) 6/28/10";
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -425,7 +425,7 @@ emit (long long *s, int lineno)
 		while (*p) {
 			ncp = pcp;
 			while ((*p++&CMASK) == ' ') {
-				if ((++ncp & 7) == 0 && xflag) {
+				if ((++ncp & 7) == 0 && !xflag) {
 					pcp = ncp;
 					putchar ('\t');
 				}

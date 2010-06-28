@@ -10,6 +10,9 @@ Release ...
 * w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
   avoid a harmless error message (bug reported by Pierre Gentile).
 * ptime: Works on recent Linux kernels again.
+* col: The behavior of the -x flag has been inverted to actually match
+  the documentation, i.e. to suppress conversion of spaces to tabs (patch
+  by Markus Schnalke).
 
 Release 070715
 * cpio: A "-P" option has been introduced that allows to specify attributes
