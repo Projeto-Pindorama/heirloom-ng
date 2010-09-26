@@ -13,6 +13,8 @@ Release ...
 * col: The behavior of the -x flag has been inverted to actually match
   the documentation, i.e. to suppress conversion of spaces to tabs (patch
   by Markus Schnalke).
+* cut: With "-s", print the last field of a line that was also the last
+  field specified with "-f" (bugreport by Pierre Gentile).
 
 Release 070715
 * cpio: A "-P" option has been introduced that allows to specify attributes

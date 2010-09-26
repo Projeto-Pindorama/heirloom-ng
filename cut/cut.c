@@ -32,7 +32,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)cut.sl	1.20 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)cut.sl	1.21 (gritter) 9/26/10";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -257,7 +257,7 @@ cutf(struct iblok *ip)
 	static char	*line;
 	static size_t	linesize;
 	char	*cp, *lp, *lq;
-	int	c, i, n, m, gotcha;
+	int	c, i, n, m, otherfield, gotdelim;
 	char	b;
 	wint_t	wc;
 	const int	incr = 128;
@@ -265,7 +265,7 @@ cutf(struct iblok *ip)
 	if (linesize == 0)
 		line = smalloc(linesize = incr);
 	lp = line;
-	gotcha = 0;
+	gotdelim = otherfield = 0;
 	i = 1;
 	do {
 		if (multibyte)
@@ -281,22 +281,24 @@ cutf(struct iblok *ip)
 			}
 			n = 1;
 		}
+		if (wc == wcdelim)
+			gotdelim = 1;
 		if (cp == NULL || wc == '\n' || wc == wcdelim) {
-			if (have(i) && (!sflag || gotcha || wc == wcdelim) ||
+			if (have(i) && (!sflag || gotdelim || wc == wcdelim) ||
 					(!sflag && i == 1 &&
 						(cp == NULL || wc == '\n'))) {
-				if (gotcha)
+				if (otherfield)
 					for (m = 0; mbdelim[m]; m++)
 						putc(mbdelim[m], stdout);
 				for (lq = line; lq < lp; lq++)
 					putc(*lq, stdout);
-				gotcha = 1;
+				otherfield = 1;
 			}
 			if (wc == '\n') {
-				if (gotcha)
+				if (otherfield)
 					putc('\n', stdout);
 				i = 1;
-				gotcha = 0;
+				gotdelim = otherfield = 0;
 			} else
 				i++;
 			lp = line;
