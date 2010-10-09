@@ -4,6 +4,13 @@ Release ...
   header and terminating.
 * pg: Handle cases where standard output is a terminal but not open for
   reading (bug reported by Keith Doyle).
+* cpio, tar: If an archive contains a file that is a hardlink to itself on
+  extraction, do nothing at all instead of discarding its data. This mainly
+  happens if a file with more than one link is included under the same name
+  in an archive twice. Since special situations on extraction such as bind
+  mounts on Linux may lead to this scenario even in cases where both link
+  names are different, this is now treated like a successful link() step
+  (bugreport by Thomas Graf).
 * Made the getopt() substitute work with the getopt$UNIX2003() function
   redirection mechanism on Mac OS X Leopard.
 * mknod, pgrep, ps: Mac OS X Leopard compilation fixes.

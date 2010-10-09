@@ -43,7 +43,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
+static const char sccsid[] USED = "@(#)tar.sl	1.180 (gritter) 10/9/10";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -88,7 +88,9 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
 	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
 	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#ifndef __G__
 #include <sys/mtio.h>
+#endif
 #else	/* SVR4.2MP */
 #include <sys/scsi.h>
 #include <sys/st01.h>
@@ -98,7 +100,7 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #include <sys/sysmacros.h>
 #endif
 
-#ifndef	major
+#if !defined (major) && !defined (__G__)
 #include <sys/mkdev.h>
 #endif	/* !major */
 
@@ -377,6 +379,7 @@ static char	*sequence(void);
 static void	docomp(const char *);
 static int	jflag, zflag, Zflag;
 static int	utf8(const char *);
+static void	settmp(char *, size_t, const char *);
 
 int
 main(int argc, char *argv[])
@@ -678,11 +681,12 @@ dorep(char *argv[])
 			} while (!endtape(1));
 		}
 		if (tfile != NULL) {
-			char tname[] = "/tmp/tarXXXXXX";
+			char tname[PATH_MAX+1];
 			int tfd;
 			pid_t pid;
 			fflush(tfile);
 			rewind(tfile);
+			settmp(tname, sizeof tname, "%s/tarXXXXXX");
 			if ((tfd = mkstemp(tname)) < 0) {
 				fprintf(stderr, "%s: cannot create temporary "
 						"file (%s)\n", progname, tname);
@@ -1648,7 +1652,23 @@ xtrreg(const char *name, struct stat *sp)
 static int
 xtrlink(const char *name, struct stat *sp, int symbolic)
 {
-	remove(name);
+	struct stat	nst, ost;
+
+	if (lstat(name, &nst) == 0) {
+		if ((nst.st_mode & S_IFMT) == S_IFDIR)
+			rmdir(name);
+		else if (!symbolic && lstat(hbuf.rlinkname, &ost) == 0 &&
+				nst.st_dev == ost.st_dev &&
+				nst.st_ino == ost.st_ino)
+			/* An attempt to hardlink "name" to itself. This
+			 * happens if a file with more than link has been
+			 * stored in the archive more than once under the
+			 * same name. This is odd but the best we can do
+			 * is nothing at all in such a case. */
+			goto good;
+		else
+			unlink(name);
+	}
 	if ((symbolic?symlink:link)(symbolic?hbuf.linkname:hbuf.rlinkname,
 				name) < 0) {
 		if (symbolic)
@@ -1659,7 +1679,7 @@ xtrlink(const char *name, struct stat *sp, int symbolic)
 		edone(1);
 		return -1;
 	}
-	if (vflag)
+good:	if (vflag)
 		fprintf(stderr, "%s %s %s\n", name,
 				symbolic ? "symbolic link to" : "linked to",
 				hbuf.linkname);
@@ -2156,6 +2176,7 @@ static void
 tseek(int n, int rew)
 {
 	int	fault;
+#ifndef __G__
 	if (tapeblock > 0 && rew) {
 #if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
 	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
@@ -2171,6 +2192,7 @@ tseek(int n, int rew)
 		fault = ioctl(mt, t, a) < 0;
 #endif	/* SVR4.2MP */
 	} else
+#endif
 		fault = lseek(mt, TBLOCK*n, SEEK_CUR) == (off_t)-1;
 	if (fault && rew) {
 		fprintf(stderr, "%s: device seek error\n", progname);
@@ -2660,11 +2682,13 @@ domtstat(void)
 			}
 #endif	/* BLKBSZGET */
 		}
+#ifndef __G__
 	} else if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtget	mg;
 		if (ioctl(mt, MTIOCGET, &mg) == 0)
 			tapeblock = ((mg.mt_dsreg&MT_ST_BLKSIZE_MASK)
 					>> MT_ST_BLKSIZE_SHIFT);
+#endif
 	}
 #elif defined (__sun)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
@@ -2947,10 +2971,11 @@ readexcl(const char *fn)
 static void
 creatfile(void)
 {
-	char	tname[] = "/tmp/tarXXXXXX";
+	char	tname[PATH_MAX+1];
 
 	if (tfile != NULL)
 		return;
+	settmp(tname, sizeof tname, "%s/tarXXXXXX");
 	if ((tfile = fdopen(mkstemp(tname), "w")) == NULL) {
 		fprintf(stderr, "%s: cannot create temporary file (%s)\n",
 			progname, tname);
@@ -3165,4 +3190,15 @@ utf8(const char *cp)
 		}
 	}
 	return 1;
+}
+
+static void
+settmp(char *tbuf, size_t len, const char *template)
+{
+	char	*tmpdir;
+
+	if ((tmpdir = getenv("TMPDIR")) == NULL)
+		tmpdir = "/tmp";
+	if (snprintf(tbuf, len, template, tmpdir) >= len)
+		snprintf(tbuf, len, template, "/tmp");
 }
