@@ -1,0 +1,421 @@
+'\" t
+.\" Sccsid @(#)ps.1b	1.19 (gritter) 9/5/05
+.\" Parts taken from ps(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\" Parts taken from ps(1), 4.3BSD:
+.\" Copyright (c) 1980, 1990
+.\"     The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"     This product includes software developed by the University of
+.\"     California, Berkeley and its contributors.
+.\"     This product includes software developed by Gunnar Ritter
+.\"     and his contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS '\fIAS IS\fR' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.TH PS 1B "9/5/05" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+ps \- (BSD) process status
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fB/usr/ucb/ps\fR
+[\-\fBaAcglnrSuvwx\fR]
+[\fB\-o\fI property\fR[\fB=\fR[\fItitle\fR]], ...\fR]\ ...
+[\fB\-GptU\fI\ criteria\fR, ...]\ ...
+[\fIpid\fR]
+.br
+.hy 1
+.ad b
+.SH DESCRIPTION
+.B Ps
+prints certain indicia about active processes.
+If no options are specified,
+all processes on the current terminal
+that are owned by the invoking user
+and are not session leaders
+are selected.
+Specifying
+.B \-a
+selects other users' processes;
+specifying
+.B \-x
+selects processes without controlling terminals.
+The selection can further be changed
+by adding
+.I criteria
+with the options below;
+when a process satifies any criterion,
+it is selected.
+A
+.I criteria
+string can consist
+of multiple criteria
+separated by blanks or commas.
+If the
+.I pid
+argument is present,
+output is restriced to the selected process.
+.PP
+By default,
+.B ps
+prints the process id,
+controlling terminal device,
+process status,
+cumulative execution time
+and command of processes.
+.PP
+The
+.B ps
+command accepts the following options:
+.TP 12
+.B \-a
+Selects all processes with a controlling terminal device
+(including session leaders).
+.TP 12
+.B \-c
+Prints the command name,
+as stored internally in the system for purposes of accounting,
+rather than the command arguments,
+which are kept in the process' address space.
+This is more reliable, if less informative,
+since the process is free to destroy the latter information.
+.TP 12
+.B \-g
+Includes session leaders in the output.
+Without this option,
+.B ps
+only prints ``interesting'' processes.
+Processes are deemed to be uninteresting
+if they are session leaders.
+This normally eliminates top-level command interpreters
+and processes waiting for users to login on free terminals.
+.TP 12
+.B \-l
+Long listing;
+adds process flags,
+numeric user id,
+parent process id, cpu usage,
+priority, nice value,
+memory and resident set size in pages and the event waited for.
+See below for the meaning of columns.
+.TP 12
+.B \-n
+For a user listing as selected with
+.BR \-u ,
+print the numeric user ID instead of the user name.
+.TP 12
+.B \-r
+Causes only running processes to be printed.
+.TP 12
+.B \-S
+Includes the time used by children that have been waited for.
+.TP 12
+\fB\-t\fI device\fR
+Selects all processes with the current terminal
+.IR device .
+This may be the device name with either
+.B /dev/
+or
+.B /dev/tty
+omitted,
+as in
+.I ttyS2
+or
+.I S2
+for
+.IR /dev/ttyS2 .
+Giving
+.B ?
+as a device name selects processes with no controlling terminal.
+.TP 12
+.B \-u
+A user oriented output is produced; adds user name,
+processor usage, memory and resident set size,
+and the time when the process was started.
+.TP 12
+.B \-v
+A version of the output
+containing virtual memory statistics is output;
+adds memory and resident set size.
+.TP 12
+.B \-w
+Increase output width.
+The default width of 80 columns
+is set to 132 if this option is given once;
+if given more than once,
+the output width is unlimited.
+.TP 12
+.B \-x
+Include processes that have no controlling terminal.
+.PP
+The following options have been introduced by POSIX.2:
+.TP 12
+.B \-A
+Selects all processes.
+.TP 12
+\fB\-G\fI gidlist\fR
+Selects all processes that have one of the specified real \fIgroup ids\fR,
+which may be symbolic or numeric.
+.TP 12
+\fB\-o\fI property\fR[\fB=\fR[\fItitle\fR]],...
+The output is changed to reflect the named
+.IR property .
+Multiple properties can be given,
+separated by blanks or commas;
+it is also possible to specify multiple
+.B \-o
+options.
+Normally, the default property description is
+written in the first output line.
+If the
+.B = 
+character is present, but the
+.I title
+is missing in all format specifications,
+no descriptions are printed;
+if a
+.I title
+is given, it is used instead of the default.
+See below for valid
+.I property
+strings.
+.TP 12
+\fB\-p\fI pidlist\fR
+Selects all processes with one of the given \fIprocess ids\fR.
+.TP 12
+\fB\-U\fI uidlist\fR
+Selects all processes with one of the given real \fIuser ids\fR,
+which may be symbolic or numeric.
+.PP
+The meaning of columns and column headings
+are as follows:
+.PP
+.TS
+l2 l s s
+l2 l2 l4 l.
+F	T{
+Flags associated with the process
+(octal and additive):
+T}
+		01	in core;
+		02	system process;
+		04	T{
+locked in core (e.g. for physical I/O);
+T}
+		10	being swapped;
+		20	being traced by another process.
+.T&
+l2 l s s
+l2 l2 l4 l.
+S	The state of the process:
+		R	running;
+		S	sleeping;
+		I	intermediate;
+		Z	terminated;
+		T	stopped;
+		X	allocating memory.
+.T&
+l2 l s s.
+UID	T{
+The effective user ID of the process owner.
+T}
+USER	T{
+The name of the process owner,
+based on the effective user ID.
+T}
+PID	T{
+The process id of the process;
+as in certain cults
+it is possible to kill a process
+if you know its true name.
+T}
+PPID	The process ID of the parent process.
+CP	Processor utilization for scheduling.
+PRI	T{
+Priority.
+High numbers mean low priority.
+T}
+NI	Nice value, used in priority computation.
+ADDR	The core address of the process.
+RSS	T{
+The amount of memory in pages
+currently present in core.
+T}
+SZ	T{
+The size in pages of the core image of the process.
+T}
+WCHAN	T{
+The event for which the process is waiting or sleeping;
+if blank, the process is running.
+T}
+.\" Trailing no-break-spaces guarantee a minimum table width for nroff
+.\" without restricting troff to select the same.
+START	The time when the process was started.\ \ \ \ \ \ \ \ \ \ \ \ \ 
+TT	T{
+The controlling tty for the process.
+T}
+TIME	T{
+The cumulative execution time for the process,
+including its terminated children if \fB\-S\fR is present.
+T}
+COMMAND	T{
+The command line;
+with the \fB\-c\fR option,
+the command name.
+T}
+.TE
+.PP
+A process that has exited and has a parent,
+but has not yet been waited for by the parent
+is marked
+.IR <defunct> .
+.PP
+For the
+.B \-o
+option, the following properties
+(listed with their default column headings)
+can be given:
+.PP
+.TS
+l2fB l2 l.
+user	USER	Effective user name.
+ruser	RUSER	Real user name.
+group	GROUP	Effective group name.
+rgroup	RGROUP	Real group name.
+pid	PID	Process id.
+ppid	PPID	Parent process id.
+pgid	PGID	Process group id.
+sid	SID	Session id.
+class	CLASS	Scheduling class.
+pcpu	%CPU	Processor usage in percent.
+vsz	VSZ	Memory usage in kilobytes.
+nice	NI	Nice value.
+etime	ELAPSED	Time elapsed since the process was started.
+time	TIME	Cumulative execution time.
+tty	TTY	Controlling terminal device.
+comm	COMMAND	The first command line argument.
+args	COMMAND	Command line arguments separated by spaces.
+f	F	Process flags.
+s	S	Process state.
+c	C	Processor utilization for scheduling.
+uid	UID	Numeric effective user id.
+ruid	RUID	Numeric real user id.
+gid	GID	Numeric effective group id.
+rgid	RGID	Numeric real group id.
+pri	PRI	Priority; high numbers mean high priority.
+opri	PRI	Priority; high numbers mean low priority.
+psr	PSR	Processor.
+addr	ADDR	Core address.
+osz	SZ	Memory size in pages.
+wchan	WCHAN	Event for which the process is waiting.
+stime	STIME	Start time of the process.
+rss	RSS	Resident set size in kilobytes.
+pmem	%MEM	Memory usage in percent.
+fname	COMMAND	T{
+.ad l
+.nr ol \n(.l
+.ll 39n
+The first 16 characters of the executable file for the process.
+.br
+.ll \n(olu
+.ad b
+T}
+.TE
+.PP
+For those properties that correspond to user or group names,
+the numeric id is printed
+if the name does not fit into the column width.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B COLUMNS
+Overrides the default output width.
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the set of printable characters
+and the character width.
+Non-printable characters in arguments and file names
+are dropped if writing to a terminal.
+.TP
+.B LC_TIME
+Affects the format of date and time strings printed.
+.SH FILES
+.TP
+.B /etc/passwd
+Used for converting numeric and symbolic user ids.
+.TP
+.B /etc/group
+Used for converting numeric and symbolic group ids.
+.TP
+.B /etc/default/ps
+.TP
+.B /proc/
+.TP
+.B /dev/
+.SH "SEE ALSO"
+nice(1),
+priocntl(1),
+kill(1),
+proc(5),
+locale(7)
+.SH NOTES
+Things can change while ps is running;
+the picture it gives is only a close approximation to reality.

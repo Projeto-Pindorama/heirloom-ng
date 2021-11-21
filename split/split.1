@@ -1,0 +1,110 @@
+.\"
+.\" Derived from split(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH SPLIT 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+split \- split a file into pieces
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBsplit\fR
+[\fB\-b\fI\ bytes\fR[\fBk\fR|\fBm\fR] |
+\fB\-l\fI\ lines\fR | \fB\-\fIlines\fR]
+[\fB\-a\fI\ suffixlength\fR]
+[\fIfile\fR\ [\fIname\fR]]
+.br
+.hy 1
+.ad b
+.SH DESCRIPTION
+.I Split
+reads
+.I file
+and writes
+it in
+1000-line
+pieces
+as many as necessary,
+onto
+a set of output files.  The name of the first output
+file is
+.I name
+with
+.I aa
+appended, and so on
+lexicographically.
+If no output name is given,
+.B x
+is default.
+.PP
+If no input file is given, or
+if
+.B \-
+is given in its stead,
+then the standard input file is used.
+.PP
+The following options
+(all of them introduced by POSIX.2)
+are accepted:
+.TP 16
+\fB\-a\fI\ suffixlength\fR
+Use
+.I suffixlength
+characters for the appended part of the output file name
+different for each file instead of 2
+(using a
+.I suffixlength
+of 3 will create files named
+\fBx\fIaaa\fR\^\(en\^\fBx\fIzzz\fR,
+and so forth).
+.TP 16
+\fB\-b\fI\ n\fR[\fBk\fR|\fBm\fR]
+Split the file in pieces of
+.I n
+bytes each.
+If
+.B k
+is appended,
+.I n
+is taken in kilobyte (1024-byte) units;
+with
+.BR m ,
+in megabyte units.
+.TP 16
+\fB\-l\fI\ n\fR
+Split
+the file in pieces of
+.I n
+lines each.
+.SH "SEE ALSO"
+csplit(1)

@@ -1,0 +1,267 @@
+.\"
+.\" @(#)pg.1	1.18 (gritter) 1/24/05
+.TH PG 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+pg \- file perusal filter for CRTs
+.SH SYNOPSIS
+.HP
+.ad l
+\fBpg\fR [\fB\-\fInumber\fR] [\fB\-p\fI\ string\fR]
+[\fB\-cefnrs\fR] [\fB+\fIline\fR] [\fB+/\fIpattern\fB/\fR]
+[\fIfile\fR\ .\ .\ .]
+.br
+.ad b
+.SH DESCRIPTION
+.I Pg
+displays a text file on a
+.SM CRT
+one screenful at once.
+After each page, a prompt is displayed. The user may then either press the
+newline key to view the next page or one of the keys described below.
+.PP
+If no filename is given on the command line,
+.I pg
+reads from standard input.
+If the standard output is not a terminal,
+.I pg
+acts like
+.IR cat (1)
+but precedes each file with its name if there is more than one.
+.PP
+If input comes from a pipe,
+.I pg
+stores the data in a buffer file while reading
+to make navigation possible.
+.PP
+.I Pg
+accepts the following options:
+.TP
+.BI \- number
+The number of lines per page. Usually, this is the number of
+.SM CRT
+lines
+minus one.
+.TP
+.B \-c
+Clear the screen before a page is displayed
+if the terminfo entry for the terminal provides this capability.
+.TP
+.B \-e
+.I pg
+will not pause and display 
+.SM (EOF)
+at the end of a file.
+.TP
+.B \-f
+.I pg
+does not split long lines.
+.TP
+.B \-n
+Without this option, commands must be terminated by a newline character. With
+this option,
+.I pg
+advances once a command letter is entered.
+.TP
+.BI \-p \ string
+Instead of the prompt
+.I " :"
+,
+.I string
+is displayed.
+If
+.I string
+contains
+.I %d
+, its first occurrence is replaced by the number of the current page.
+.TP
+.B \-r
+Disallow the shell escape.
+.TP
+.B \-s
+Print messages in
+.I standout
+mode
+if the terminfo entry for the terminal provides this capability.
+.TP
+.BI + number
+Start at the given line.
+.TP
+.BI +/ pattern /
+Start at the line containing the regular expression
+.I pattern
+given.
+.PP
+The following commands may be entered at the prompt. Commands preceded by
+.I i
+in this document accept a number as argument, positive or negative.
+If this argument starts with
+.I +
+or
+.I \-,
+it is interpreted relative to the current position in the input file,
+otherwise relative to the beginning.
+.TP
+.IB i <newline>
+Display the next or the indicated page.
+.TP
+\fIi\fR\fBd\fR or \fB^D\fR
+Display the next halfpage. If
+.I i
+is given, it is always interpreted relative to the current position.
+.TP
+.IB i l
+Display the next or the indicated line.
+.TP
+.IB i f
+Skip a page forward.
+.I i
+must be a positive number and is always interpreted relative
+to the current position.
+.TP
+\fIi\fR\fBw\fR or \fIi\fR\fBz\fR
+Behave as
+.I <newline>
+except that 
+.I i
+becomes the new page size.
+.TP
+.BR . " or " ^L
+Redraw the screen.
+.TP
+.B $
+Advance to the last line of the input file.
+.TP
+.IB i / pattern /
+Search forward until the first or the \fIi\fR-th
+occurrence of the regular expression 
+.I pattern
+is found. The search starts
+after the current page and stops at the end of the file. No wrap-around is
+performed.
+.I i
+must be a positive number.
+.TP
+\fIi\fR\fB?\fR\fIpattern\fR\fB?\fR or \fIi\fR\fB^\fR\fIpattern\fR\fB^\fR
+Search backward until the first or the \fIi\fR-th
+occurrence of the regular expression
+.I pattern
+is found. The search starts
+before the current page and stops at the beginning of the file.
+No wrap-around is performed. 
+.I i
+must be a positive number.
+.PP
+The search commands accept an added letter. If
+.B t
+is given, the line containing the pattern is displayed at the top of the
+screen, which is the default.
+.B m
+selects the middle and
+.B b
+the bottom of the screen.
+The selected position is used in following searches, too.
+.TP
+.IB i n
+Advance to the next file or
+.I i
+files forward.
+.TP
+.IB i p
+Reread the previous file or
+.I i
+files backward.
+.TP
+.BI s \ filename
+Save the current file to the given
+.I filename.
+.TP
+.B h
+Display a command summary.
+.TP
+.BI ! command
+Execute
+.I command
+using the shell.
+.TP
+.BR q " or " Q
+Quit.
+.PP
+If the user presses the interrupt or quit key while
+.I pg
+reads from the
+input file or writes on the terminal,
+.I pg
+will immediately display the prompt.
+In all other situations these keys will terminate
+.I pg.
+.PP
+.I Pg
+uses limited regular expressions as described in
+.IR ed (1).
+.B /usr/5bin/pg
+uses simple regular expressions,
+.BR /usr/5bin/s42/pg ,
+.BR /usr/5bin/posix/pg ,
+and
+.B /usr/5bin/posix2001/pg
+use basic regular expressions.
+.SH "ENVIRONMENT VARIABLES"
+The following environment variables
+affect the behavior of
+.I pg:
+.TP
+.B COLUMNS
+Overrides the system-supplied number of columns if set.
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in basic regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters,
+whether a character is printable,
+and the availability and composition of character classes
+in basic regular expressions.
+.\".TP
+.\".B LC_MESSAGES
+.\"Sets the language used for diagnostic and informational messages.
+.TP
+.B LINES
+Overrides the system-supplied number of lines if set.
+.\".TP
+.\".B NLSPATH
+.\"See
+.\".IR catopen (3).
+.TP
+.B SHELL
+Used by the
+.B !\&
+command.
+.TP
+.B TERM
+Determines the terminal type.
+.SH "SEE ALSO"
+cat(1),
+ed(1),
+more(1),
+sh(1),
+terminfo(5),
+locale(7),
+regex(7),
+term(7)
+.SH NOTES
+.I Pg
+expects the terminal tabulators to set on eight positions.
+.PP
+.I Pg
+contains limited support for terminal escape sequences
+in its input,
+e.\|g. it is possible to view text in color and boldface as with
+``lc\ |\ pg''.
+Sequences that affect more than one output line
+are not supported, though.

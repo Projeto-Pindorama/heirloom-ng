@@ -1,0 +1,94 @@
+.\"
+.\" Sccsid @(#)tapecntl.1	1.6 (gritter) 12/9/04
+.TH TAPECNTL 1 "12/9/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+tapecntl \- tape control for tape devices
+.SH SYNOPSIS
+\fBtapecntl\fR
+[\fB\-etrwaluv\fR]
+[\fB\-c\ \fIarg\fR]
+[\fB\-p\ \fIarg\fR]
+[\fB\-d\ \fIdensity_in_decimal\fR]
+[\fB\-f\ \fIarg\fR]
+[\fIdevice\fR]
+.SH DESCRIPTION
+The
+.I tapecntl
+command performs certain control operations on tape devices.
+If neither a
+.I device
+argument is present
+nor the
+.I TAPE
+environment variable is set,
+the device /dev/rmt/c0s0n is used.
+.PP
+The following options are accepted:
+.TP
+.B \-e
+Erase the entire tape.
+.TP
+.B \-t
+Retension the tape,
+i.\|e. rewind the tape,
+wind the tape to end of reel
+and rewind it.
+.TP
+.B \-r
+Reset the tape device.
+.TP
+.B \-w
+Rewind the tape.
+.TP
+\fB\-p\ \fIposition\fR
+Position the tape
+at the data after the named file mark.
+The
+.I position
+argument is interpreted relative to the current tape position.
+.PP
+The following options are extensions:
+.TP
+.B \-a
+Position the tape at end of data.
+.TP
+.B \-l
+Load the tape.
+.TP
+.B \-u
+Unload the tape.
+.TP
+\fB\-d\ \fIdensity_in_decimal\fR
+Set the SCSI tape density.
+Some density codes are:
+0 = default (autodetect);
+4 = QIC-11;
+5 = QIC-24;
+15 = QIC-120;
+16 = QIC-150;
+17 = QIC-320;
+20 = EXB-8200;
+21 = EXB-8500;
+21 = QIC-1000;
+34 = QIC-2GB;
+140 = EXB-8500c;
+144 = EXB-8200c.
+.TP
+\fB\-c\ \fIarg\fR
+Enable compression (if \fIarg\fR is different from \fB0\fR)
+or disable it (if \fIarg\fR equals \fB0\fR).
+.TP
+\fB\-f\ \fIarg\fR
+Set the tape block size to
+.I arg
+bytes.
+.TP
+.B \-v
+Set variable tape block size.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+TAPE
+Used as tape device
+if no
+.I device
+argument is given on the command line.

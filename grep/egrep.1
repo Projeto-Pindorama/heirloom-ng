@@ -1,0 +1,388 @@
+'\" t
+.\" Sccsid @(#)egrep.1	1.42 (gritter) 8/14/05
+.\" Parts taken from grep(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH EGREP 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+egrep \- search a file for a pattern using full regular expressions
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fB/usr/5bin/egrep\fR [\fB\-e\fI\ pattern_list\fR\ ...]
+[\fB\-f\fI\ pattern_file\fR] [\fB\-bchilnrRvz\fR]
+[\fIpattern_list\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+.PD 0
+\fB/usr/5bin/posix/egrep\fR \fB\-e\fI\ pattern_list\fR\ ...
+[\fB\-f\fI\ pattern_file\fR] [\fB\-c\fR|\fB\-l\fR|\fB\-q\fR]
+[\fB\-bhinrRsvxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/egrep\fR \fB\-f\fI\ pattern_file\fR
+[\fB\-e\fI\ pattern_list\fR\ ...] [\fB\-c\fR|\fB\-l\fR|\fB\-q\fR]
+[\fB\-bhinrRsvxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/egrep\fR [\fB\-c\fR|\fB\-l\fR|\fB\-q\fR] [\fB\-bhinsrRvxz\fR]
+\fIpattern_list\fR [\fIfile\fR\ ...]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.B egrep
+command searches the lines of the specified files
+(or of standard input)
+for occurrences of
+.I pattern.
+The default behavior is to print each matching line to standard output.
+.PP
+The
+.B /usr/5bin/egrep
+command accepts full regular expressions;
+it uses a deterministic algorithm with moderate space requirements.
+.PP
+The
+.B /usr/5bin/posix/egrep
+command accepts extended regular expressions.
+It uses a deterministic algorithm with moderate space requirements
+unless the expression includes multi-character collating elements,
+which cause the use of a nondeterministic algorithm.
+.PP
+.B /usr/5bin/s42/egrep
+and
+.B /usr/5bin/posix2001/egrep
+are identical to
+.BR /usr/5bin/posix/egrep .
+.SS "Full Regular Expressions"
+.PP
+In the following description `character' excludes
+newline:
+.IP 1.
+A \fB\e\fR followed by a single character
+matches that character.
+.IP 2.
+The character \fB^\fR
+(\fB$\fR) matches the beginning (end) of a line
+as an \fIanchor\fR.
+.IP 3.
+A 
+.B .\&
+matches any character.
+.IP 4.
+A single character not otherwise endowed with special
+meaning matches that character.
+.IP 5.
+A string enclosed in brackets \fB[\|]\fR
+forms a \fIbracket expression\fR that
+matches any single character from the string.
+Ranges of ASCII character codes may be abbreviated
+as in `\fIa\fB\-\fIz0\fB\-\fI9\fR'.
+A ]
+may occur only as the first character of the string.
+A literal \- must be placed where it can't be
+mistaken as a range indicator.
+.IP 6.
+A regular expression followed by \fB*\fR (\fB+\fR, \fB?\fR) matches a sequence
+of 0 or more (1 or more, 0 or 1)
+matches of the regular expression.
+.IP 7.
+Two regular expressions concatenated
+match a match of the first followed by a match of 
+the second.
+.IP 8.
+Two regular expressions separated by \fB|\fR or newline
+match either a match for the first or a match for the
+second (\fIalternation\fR).
+.IP 9.
+A regular expression enclosed in parentheses \fB(\|)\fR
+matches a match for the regular expression (\fIgrouping\fR).
+.LP
+The order of precedence of operators
+is [\|] then (\|) then
+*+? then concatenation then | and newline.
+.SS "Extended Regular Expressions"
+Extended Regular Expressions add the following features
+to Full Regular Expressions:
+.IP 10.
+A regular expression
+followed by \fB{\fIm\fB,\fIn\fB}\fR
+forms an \fIinterval expression\fR that
+matches a sequence of \fIm\fR through \fIn\fR matches, inclusive,
+of the regular expression.
+The values of \fIm\fR and \fIn\fR must be non-negative
+and smaller than 255.
+The form \fB{\fIm\fB}\fR matches exactly \fIm\fR occurrences,
+\fB{\fIm\fB,}\fR matches at least \fIm\fR occurrences.
+.IP 11.
+In bracket expressions as described in 5.,
+the following character sequences are considered special:
+.IP
+Character class expressions of the form
+\fB[:\fIclass\fB:]\fR.
+In the C LC_CTYPE locale,
+the classes
+.sp
+.TS
+l l l l.
+[:alnum:]	[:cntrl:]	[:lower:]	[:space:]
+[:alpha:]	[:digit:]	[:print:]	[:upper:]
+[:blank:]	[:graph:]	[:punct:]	[:xdigit:]
+.TE
+.sp
+are recognized;
+further locale-specific classes may be available.
+A character class expression matches any character
+that belongs to the given class in the current LC_CTYPE locale.
+.IP
+Collating symbol expressions of the form
+\fB[.\fIc\fB.]\fR,
+where \fIc\fR is a collating symbol
+in the current LC_COLLATE locale.
+A collating symbol expression
+matches the specified collating symbol.
+.IP
+Equivalence class expressions of the form
+\fB[=\fIc\fB=]\fR,
+where \fIc\fR is a collating symbol
+in the current LC_COLLATE locale.
+An equivalence class expression
+matches any character that has the same collating weight
+as \fIc\fR.
+.LP
+The order of precedence of operators
+is [=\|=] [:\|:] [.\|.]
+then [\|]
+then (\|)
+then *+? {m,n}
+then concatenation
+then ^ $
+then | and newline.
+.PP
+Care should be taken when using the characters
+$ * [ ^ | ? \' " ( ) and \e in the expression
+as they are also meaningful to the Shell.
+It is safest to enclose the entire expression
+argument in single quotes \' \'.
+.PP
+Both
+.B /usr/5bin/egrep
+and
+.B /usr/5bin/posix/egrep
+accept the following options:
+.TP
+.B \-b
+Each line is preceded by the block number on which it was found.
+This is sometimes useful
+in locating disk block numbers by context.
+Block numbers start with 0.
+.TP
+.B \-c
+Only a count of matching lines is printed.
+.TP
+.BI \-e\  pattern_list
+Specifies one or more patterns, separated by newline characters.
+A line is selected if one or more of the specified patterns are found.
+.TP
+.BI \-f\  pattern_file
+One or more patterns, separated by newline
+characters, are read from
+.I pattern_file.
+If multiple
+.B \-e
+or
+.B \-f
+options are supplied to
+.BR /usr/5bin/posix/egrep ,
+all of the pattern lists will be evaluated.
+.TP
+.B \-h
+Normally, the name of each input file is printed before a match
+if there is more that one input file.
+When this option is present, no file names are printed.
+.TP
+.B \-i
+Upper- and lowercase differences are ignored when searching matches.
+.TP
+.B \-l
+The names of files with matching lines are listed
+(once) separated by newlines.
+.TP
+.B \-n
+Each line is preceded by its line number in the file.
+Line numbers start with 1.
+.TP
+.B \-v
+All lines but those matching are printed.
+.PP
+The following options are supported by
+.B /usr/5bin/posix/egrep
+only:
+.TP
+.B \-q
+Do not write anything to standard output.
+.TP
+.B \-s
+Error messages for nonexistent or unreadable files are suppressed.
+.TP
+.B \-x
+Consider only lines consisting of the pattern as a whole,
+like a regular expression surrounded by
+.I ^
+and
+.I $.
+.PP
+The following options are supported as extensions:
+.TP
+.B \-r
+With this option given,
+.I egrep
+does not directly search in each given file that is a directory,
+but descends it recursively
+and scans each regular file found below it.
+Device files are ignored.
+Symbolic links are followed.
+.TP
+.B \-R
+Operates recursively as with the
+.I \-r
+option,
+but does not follow symbolic links that point to directories
+unless if they are explicitly specified as arguments.
+.TP
+.B \-z
+If an input file is found to be compressed with
+.IR compress (1),
+.IR gzip (1),
+or
+.IR bzip2 (1),
+the appropriate compression program is started,
+and
+.I egrep
+searches for the pattern in its output.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in extended regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+in both full and extended regular expressions,
+the availability and composition of character classes
+in extended regular expressions,
+and the case mapping for the
+.B \-i
+option.
+.SH "SEE ALSO"
+ed(1),
+fgrep(1),
+grep(1),
+sed(1),
+locale(7)
+.SH DIAGNOSTICS
+Exit status is 0 if any matches are found,
+1 if none, 2 for syntax errors or inaccessible files.
+.SH NOTES
+If a line contains a
+.SM NUL
+character,
+only matches up to this character are found with
+.BR /usr/5bin/posix/egrep .
+The entire matching line will be printed.
+.PP
+The LC_COLLATE variable has currently no effect.
+Ranges in bracket expressions are ordered
+as byte values in single-byte locales
+and as wide character values in multibyte locales;
+equivalence classes match the given character only,
+and multi-character collating elements are not available.
+.PP
+For portable programs, restrict textual data
+to the US-ASCII character set,
+set the LC_CTYPE and LC_COLLATE variables to `C' or `POSIX',
+and use the constructs in the second column
+instead of the character class expressions as follows:
+.RS 
+.sp
+.TS
+l l.
+[[:alnum:]]	[0\-9A\-Za\-z]
+[[:alpha:]]	[A\-Za\-z]
+[[:blank:]]	[\fI<tab><space>\fR]
+[[:cntrl:]]	[^\fI<space>\fR\-~]
+[[:digit:]]	[0\-9]
+[[:graph:]]	[!\-~]
+[[:lower:]]	[a\-z]
+[[:print:]]	[\fI<space>\fR\-~]
+[[:punct:]]	[!\-/:\-@[\-`{\-~]
+[[:space:]]	[\fI<tab><vt><ff><cr><space>\fR]
+[[:upper:]]	[A\-Z]
+[[:xdigit:]]	[0\-9a\-fA\-F]
+.TE
+.sp
+.RE
+.IR <tab> ,
+.IR <space> ,
+.IR <vt> ,
+.IR <ff> ,
+and
+.I <cr>
+indicate inclusion of
+a literal tabulator, space, vertical tabulator, formfeed,
+or carriage return character, respectively.
+Do not put the
+.IR <vt> ,
+.IR <ff> ,
+and
+.I <cr>
+characters into the range expression for the
+.I space
+class unless you actually want to match these characters.
+.PP
+Interval expressions were newly introduced
+with extended regular expressions
+and cannot be used in portable programs.
+To put a literal
+.RB ` { '
+character into an expression,
+use
+.IR [{] .

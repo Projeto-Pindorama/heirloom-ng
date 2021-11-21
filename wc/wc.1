@@ -1,0 +1,93 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)wc.1	1.19 (gritter) 2/6/05
+.TH WC 1 "2/6/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+wc \- word count
+.SH SYNOPSIS
+\fBwc\fR [\fB\-c\fR|\fB\-m\fR] [\fB\-lw\fR] [\fIfile\fR ...]
+.SH DESCRIPTION
+Wc determines the number of lines, words and characters
+contained in each
+.I file
+and writes the count in that order to standard output,
+separated by spaces and followed by the filename.
+If no
+.I file
+argument is given,
+standard input is used
+and no filename is printed.
+If more than one input file was processed successfully,
+a grand total for all files is printed in the line of output.
+.PP
+The
+.B wc
+command accepts the following options;
+if any of them is present,
+output is restricted to the specified fields:
+.TP
+.B \-c
+Print the number of bytes.
+.TP
+.B \-l
+Print the number of lines (i.\ e. newline characters).
+.TP
+.B \-m
+Print the number of characters
+instead of the number of bytes.
+The number of characters equals
+the number of bytes in singlebyte locales.
+In multibyte locales,
+this is the count of byte sequences forming a valid character.
+This option was introduced by POSIX.2.
+.TP
+.B \-w
+Print the number of words.
+With
+.B /usr/5bin/wc
+and
+.BR /usr/5bin/s42/wc ,
+a word is a string of characters
+that contains at least one graphical character
+and is delimited by blank or newline characters.
+With
+.B /usr/5bin/posix/wc
+and
+.BR /usr/5bin/posix2001/wc ,
+a word is a nonempty string of characters
+that is delimited by white space.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B "LANG, LC_ALL"
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the byte sequences that form a character
+for the
+.B \-m
+option
+and for the interpretation of
+white space, graphical characters and newlines.
+.SH "SEE ALSO"
+cksum(1),
+locale(7)

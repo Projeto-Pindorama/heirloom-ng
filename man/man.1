@@ -1,0 +1,437 @@
+.\"
+.\" Sccsid @(#)man.1	1.18 (gritter) 2/5/05
+.\" Parts taken from intro(0), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH MAN 1 "2/5/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+man \- find and display reference manual pages
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBman\fR [\fB\-\fR] [\fB\-M\fI\ path\fR]
+[\fB\-T\fI\ macro-package\fR] [\fB\-adlptw\fR]
+[\fB\-m\fI\ system\fR]
+[\fB\-s\fI\ section\fR]
+[[\fIsection\fR]\ \fItitle\fR\ .\ .\ .]
+\fItitle\fR\ .\ .\ .
+.PP
+\fBman\fR [\fB\-M\fI\ path\fR] \fB\-k\fI\ keyword\fR\ .\ .\ .
+.PP
+\fBman\fR [\fB\-M\fI\ path\fR] \fB\-f\fI\ file\fR\ .\ .\ .
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.B man
+command shows information from the system reference manuals.
+For each given
+.IR title ,
+the manual path is searched for the first matching entry,
+which is formatted if appropriate.
+When printing to a terminal,
+or if the
+.B \-
+flag is given, the
+.B man
+command will invoke a pager to display the documentation,
+else,
+.IR cat (1)
+is used.
+.PP
+The
+.I section
+argument, if present,
+restricts the search to the given section of the manual.
+.I section
+consists of a single digit,
+optionally followed by a single letter,
+or one of
+.IR new ,
+.IR local ,
+.IR old ,
+or
+.IR public .
+Multiple
+.I section
+arguments may be present in the argument list,
+each applies to the 
+.I titles
+positioned behind.
+.PP
+The
+.B man
+command accepts the following options:
+.TP 12
+.BI \-f \ file
+Searches for manual entries related to the given
+.I files
+and print one-line summaries of them.
+Only the basename component of each
+.I file
+is used.
+A
+.B windex
+database as created by the
+.IR catman (8)
+command must exist for this operation.
+.TP 12
+.BI \-k \ keyword
+Prints one-line summaries matching any of the given
+.IR keywords .
+This also needs a
+.B windex
+database.
+.TP 12
+.BI \-M \ path
+Uses the given
+.I path
+as the manual search path, overriding both the configuration file
+and the environment. The format of this path is described below.
+.TP 12
+.B \-t
+If an entry is in
+.IR troff (1)
+source format, it is preformatted for a typesetter instead of a terminal.
+.TP 12
+.BI \-T \ macset
+Use the specified
+.IR troff (1)
+macro package instead of the standard
+.I \-man
+set.
+.PP
+The following options are accepted as extensions:
+.TP 12
+.B \-a
+Finds and displays all entries for each given
+.IR title ,
+not just the first one.
+.TP 12
+.B \-d
+Uses a file name relative to current directory as the location
+of the manual page
+instead of searching in the manual search path.
+The complete file name of a manual page source in troff format
+must be specified with this option
+instead of the page title.
+.TP 12
+.B \-l
+Lists the titles of all matching entries instead of manual page
+contents.
+.TP 12
+\fB\-m\ \fIsystem\fR
+For each entry in the manual search path,
+a directory named
+.I system
+below it is searched for manual pages.
+Thus to make the manual pages of other systems accessible,
+they can be put into separate subdirectories
+within the system default manual directory.
+.TP 12
+.B \-p
+Prints debugging messages instead of the formatted manual page.
+.TP 12
+.BI \-s \ section
+Provides an alternate method to restrict the search
+to specific sections of the manual.
+This is useful if the section name
+would otherwise be interpreted as a page name.
+Multiple section names may be specified, separated by commas;
+the order in which matches are displayed is not necessarily the
+one given at this point.
+.TP 12
+.B \-w
+Prints the full path name of the respective manual page(s)
+instead of their contents.
+.SS "Manual Structure"
+The manual is divided into
+eight sections:
+.RS
+.sp
+1.	User commands
+.br
+2.	System calls
+.br
+3.	Subroutines
+.br
+4.	Special files
+.br
+5.	File formats and conventions
+.br
+6.	Games
+.br
+7.	Macro packages and language conventions
+.br
+8.	Maintenance commands
+.sp
+.RE
+Commands are programs intended to be invoked directly by
+the user, in contradistinction to subroutines, which are
+intended to be called by the user's programs.
+Commands generally reside in a directory
+.I .\|.\|.\|/bin
+(for
+.IR bin \|ary
+programs).
+These directories are usually searched automatically
+by the command interpreter, see
+.IR sh (1).
+.LP
+System calls are entries into the
+kernel.
+Every system call has one or more C language interfaces
+described in section 2.
+.LP
+An assortment
+of subroutines is available;
+they are described in section 3.
+The primary libraries in which they are kept are described in
+.IR intro (3).
+The functions are described in terms of C, but most will
+work with Fortran as well.
+.LP
+The special files section 4 discusses the characteristics of
+each system `file' that actually refers to an I/O device.
+The names in this
+section may refer to the manufacturer device names for the
+hardware,
+instead of the names of
+the special files themselves.
+.LP
+The file formats and conventions section 5 documents the structure of particular
+kinds of files; for example, the form of the output of the loader and
+assembler is given.  Excluded are files used by only one command,
+for example the assembler's intermediate files.
+.LP
+Games have been relegated to section 6 to keep them from contaminating
+the more staid information of section 1.
+.LP
+Section 7 is a miscellaneous collection of information necessary to
+writing in various specialized languages:
+character codes, 
+macro packages for typesetting,
+etc.
+.LP
+The maintenance 
+section 8 discusses procedures not intended
+for use by the ordinary user.
+These procedures often involve use of commands
+of section 1, where an attempt has been made to
+single out peculiarly maintenance-flavored commands
+by marking them 1M.
+.LP
+Each section consists of a number of independent
+entries of a page or so each.
+The name of the entry is in the upper corners of its pages,
+together with the section number, and sometimes a
+letter characteristic of a subcategory, e.g. graphics is 1G,
+and the math library is 3M.
+.LP
+All entries are based on a common format,
+not all of whose subsections will always appear.
+.RS
+.LP
+The
+.I name
+subsection lists the exact names of the commands and subroutines
+covered under the entry and gives
+a very short description of their purpose.
+.LP
+The
+.IR synopsis ""
+summarizes the use of the
+program being described.
+A few conventions are used, particularly in the
+Commands subsection:
+.LP
+.RS
+.B Boldface
+words are considered literals, and
+are typed just as they appear.
+.LP
+Square brackets [ ] around an argument
+indicate that the argument is optional.
+When an argument is given as `name', it always
+refers to a file name.
+.LP
+Ellipses `.\|.\|.' are used to show that the previous argument-prototype
+may be repeated.
+.LP
+A final convention is used by the commands themselves.
+An argument beginning with a minus sign `\-'
+is often taken to mean some sort of option-specifying argument
+even if it appears in a position where a file name
+could appear.  Therefore, it is unwise to have files
+whose names begin with `\-'.
+.LP
+.RE
+The
+.IR description ""
+subsection discusses in detail the subject at hand.
+.LP
+The
+.IR files ""
+subsection gives the names of files which are
+built into the program.
+.LP
+A
+.I see also
+subsection gives pointers to related information.
+.LP
+A
+.I  diagnostics
+subsection discusses
+the diagnostic indications which may be produced.
+Messages which are intended to be self-explanatory
+are not listed.
+.LP
+The
+.IR bugs ""
+or
+.IR notes ""
+subsection gives remarks,
+known bugs and sometimes deficiencies.
+Occasionally also the suggested fix is
+described.
+.RE
+.SS Configuration
+The
+.B man
+command reads the configuration file
+.B /etc/default/man
+on startup. Lines containing the following strings are interpreted:
+.TP
+.BI MANPATH= path
+Sets the manual search path, formatted as a colon-separated list of
+directories.
+The default is
+.IR /usr/local/share/man:/usr/share/man .
+.TP
+.BI TROFF= command
+This command is invoked if the
+.B \-t
+option is given, usually
+.IR troff .
+.TP
+.BI NROFF= command
+Sets the command used to preformat manual pages for a terminal,
+defaults to
+.IR "nroff \-Tlp" .
+.TP
+.BI EQN= command
+The eqn command for formatting mathematics on a typesetter, normally
+.IR eqn .
+.TP
+.BI NEQN= command
+The neqn command for formatting mathematics on a terminal, normally
+.IR neqn .
+.TP
+.BI TBL= command
+The tbl command for formatting tables, usually
+.IR tbl .
+.TP
+.BI REFER= command
+The refer command for formatting bibliographic references,
+usually
+.IR refer .
+.TP
+.BI VGRIND= command
+The vgrind command for formatting program listings,
+normally
+.IR vgrind .
+.TP
+.BI MACSET= macro-package
+The
+.IR troff (1)
+macro set to be used, normally
+.IR \-man .
+.TP
+.BI COL= command
+The command used to filter
+.IR nroff (1)
+output, normally
+.IR col (1)
+with the option
+.IR \-x .
+.TP
+.BI PAGER= command
+The pager command that is used to display pages on a terminal instead of
+.IR pg .
+.TP
+.BI TCAT= command
+Used to display pages if the
+.B \-t
+option is present, defaults to
+.IR cat .
+.PP
+In addition, each directory within the manual search path may contain
+a file named
+.B man.cf
+with the following content:
+.TP
+.BI MANSECTS= sections
+Section search order for this directory. Multiple section names may
+be specified, separated by commas.
+.PP
+If no
+.B man.cf
+file is present, sections are searched in lexicographical order.
+.SH "ENVIRONMENT VARIABLES"
+If any of the strings described in the global configuration file format
+above is present within the environment, the latter setting is used.
+.TP
+.B MANPATH
+If the value of this variable contains the string
+``::'',
+the manual path specified in the configuration file is
+inserted at this point.
+.SH FILES
+.TP
+.B /etc/default/man
+Configuration file.
+.SH "SEE ALSO"
+apropos(1),
+cat(1),
+col(1),
+eqn(1),
+nroff(1),
+pg(1),
+refer(1),
+tbl(1),
+troff(1),
+vgrind(1),
+whatis(1),
+man(7),
+catman(8)

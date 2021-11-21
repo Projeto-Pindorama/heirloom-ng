@@ -1,0 +1,106 @@
+.\"
+.\" Sccsid @(#)units.1	1.5 (gritter) 10/11/03
+.\" Derived from units(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.if n .ds / /
+.if t .ds / \z/\h'\w'*'u'
+.TH UNITS 1 "10/11/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+units \- conversion program
+.SH SYNOPSIS
+.B units
+.SH DESCRIPTION
+.I Units
+converts quantities expressed
+in various standard scales to
+their equivalents in other scales.
+It works interactively in this fashion:
+.PP
+.I "	You have:"
+inch
+.br
+.I "	You want:"
+cm
+.br
+.I "		* 2.54000e+00
+.br
+.I "		\*/ 3.93701e\-01
+.PP
+A quantity is specified as a multiplicative combination of
+units optionally preceded by a numeric multiplier.
+Powers are indicated by suffixed positive integers,
+division by the usual sign:
+.PP
+.I "	You have:"
+15 pounds force/in2
+.br
+.I "	You want:"
+atm
+.br
+.I "		* 1.02069e+00"
+.br
+.I "		\*/ 9.79730e\-01"
+.PP
+.I Units 
+only does multiplicative scale changes.
+Thus it can convert Kelvin to Rankine, but not Centigrade to
+Fahrenheit.
+Most familiar units,
+abbreviations, and metric prefixes are recognized,
+together with a generous leavening of exotica
+and a few constants of nature including:
+.PP
+.nf
+	pi	ratio of circumference to diameter
+	c	speed of light
+	e	charge on an electron
+	g	acceleration of gravity 
+	force	same as g
+	mole	Avogadro's number
+	water	pressure head per unit height of water
+	au	astronomical unit
+.PP
+.fi
+`Pound' is a unit of
+mass.
+Compound names are run together, e.g. `lightyear'.
+British units that differ from their US counterparts
+are prefixed thus: `brgallon'.
+Currency is denoted `belgiumfranc', `britainpound', ...
+.PP
+For a complete list of units, `cat /usr/5lib/unittab'.
+.SH FILES
+/usr/5lib/unittab
+.SH NOTES
+Don't base your
+financial plans on the currency conversions.

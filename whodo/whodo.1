@@ -1,0 +1,84 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)whodo.1	1.12 (gritter) 10/19/03
+.TH WHODO 1 "10/19/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+whodo \- who is doing what
+.SH SYNOPSIS
+.B whodo
+[
+.B \-h
+] [
+.B \-l
+] [ user ]
+.SH DESCRIPTION
+Whodo shows a list of active logins,
+each followed by a list of associated processes.
+If a
+.I user
+name is given,
+the list is restricted to this user.
+.PP
+The
+.B whodo
+command accepts the following options:
+.TP
+.B \-h
+Omit the heading.
+.TP
+.B \-l
+Selects long output format.
+The following information is shown for each terminal:
+the user's name,
+the terminal line,
+the time of the day the user logged in,
+the idle time (the time since the last access to the terminal)
+in minutes,
+the time used by all processes that ran since login
+in seconds,
+the time used by the processes currently running on this terminal
+in seconds,
+and the command line of the currently active process.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the set of printable characters
+when printing command lines.
+.SH FILES
+.TP
+.B /proc
+list of processes
+.TP
+.B /var/run/utmp
+list of active logins
+.SH "SEE ALSO"
+ps(1),
+who(1),
+proc(5),
+utmp(5)
+.\".SH NOTES
+.\"Whodo omits information about logins that do not have a controlling terminal.
+.\"These logins are counted in the long format's header line, however.

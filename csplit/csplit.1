@@ -1,0 +1,166 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)csplit.1	1.9 (gritter) 8/14/05
+.TH CSPLIT 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+csplit \- context split
+.SH SYNOPSIS
+\fBcsplit\fR [\fB\-s\fR] [\fB\-k\fR] [\fB\-f\fI\ prefix\fR]
+[\fB\-n\fI\ digits\fR] \fIfile args\fR\ ...
+.SH DESCRIPTION
+.I Csplit
+reads
+.I file
+and writes it in pieces as specified by the further operands
+.IR args .
+The destination file names have the form
+\fBxx\fI00\fR, \fBxx\fI01, and so on by default.
+.PP
+The
+.I args
+operands can have one of the following forms:
+.TP 20
+\fB/\fIrexp\fB/\fR[[\fB+\fR|\fB\-\fR]\fIoffset\fR]
+Write text between the current line
+and the next line matching the regular expression
+.I rexp
+to an output file piece.
+If
+.I offset
+is also
+specified,
+writing ends
+.I offset
+lines below the matching line for positive values,
+or above the matching line for negative ones.
+The text section written to the next file piece
+starts at the matching line with
+.IR offset applied ;
+thus repeated matches with negative offsets
+will repeatedly write the same text part.
+With
+.BR /usr/5bin/csplit ,
+.I rexp
+is treated as a simple regular expression,
+whereas
+.BR /usr/5bin/s42/csplit ,
+.BR /usr/5bin/posix/csplit ,
+and
+.B /usr/5bin/posix2001/csplit
+treat it as a basic regular expression (see
+.IR ed (1).
+Backslash escapes a literal
+.RB ` / '
+in the expression.
+.TP 20
+\fB%\fIrexp\fB%\fR[[\fB+\fR|\fB\-\fR]\fIoffset\fR]
+Also match
+.I rexp
+as described above,
+but skip the text between the current line
+and the matching one (plus
+.IR offset )
+instead of writing it.
+Backslash escapes
+.RB ` % '.
+.TP 20
+\fInumber\fR
+Create a piece of the file
+for the text between the current line
+and line
+.IR number .
+Line numbering starts at 1.
+.TP 20
+\fB{\fIrepetition\fB}\fR
+Apply the previous argument additionally
+.I repetition
+times if it searches for a regular expression.
+If it specifies a line number,
+include the text between the current line
+and the current line plus the line count given in the argument,
+and repeat this process
+.I repetition
+times.
+.PP
+The following options can be used with
+.IR csplit :
+.TP
+\fB\-f\fI\ prefix\fR
+Use the given
+.I prefix
+as the first part of the file names created
+(instead of
+.BR xx ).
+.TP
+\fB\-n\fI\ digits\fR
+Use
+.I digits
+positions for the second part of the file names created,
+instead of the default 2.
+This allows for the creation of more than 100 file pieces.
+This option was introduced by POSIX.2.
+.TP
+.B \-k
+When
+.I csplit
+detects an error
+(as an argument that does not correspond to a part of the input file)
+or it is interrupted from the terminal,
+output files already created will be deleted.
+Specifying this option causes
+.I csplit
+to keep these files.
+.TP
+.B \-s
+The number of bytes written to each file piece
+is normally written to standard output;
+this option inhibits these statistics.
+.SH EXAMPLES
+Create individual files
+.IR section00 ,
+.I section01
+\&... for each section of a
+.I "troff \-ms"
+document:
+.RS
+.sp
+csplit \-k \-f section doc.ms \'/^\.[NS]H/\' {100}
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols in basic
+regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters,
+the set of word boundary characters
+and the composition of character classes
+in basic regular expressions.
+.SH "SEE ALSO"
+ed(1),
+split(1)

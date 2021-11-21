@@ -1,0 +1,369 @@
+.\"
+.\" Sccsid @(#)sed.1	1.19 (gritter) 1/24/05
+.\" Derived from sed(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH SED 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+sed \- stream editor
+.SH SYNOPSIS
+\fBsed\fR [\fB\-n\fR] [\fB\-e\fI\ script\fR] [\fB\-f\fI\ sfile\fR]
+[\fIfile\fR\ .\ .\ .]
+.SH DESCRIPTION
+.I Sed
+copies the named
+.I files
+(standard input default) to the standard output,
+edited according to a script of commands.
+The
+.B \-f
+option causes the script to be taken from file
+.IR sfile ;
+these options accumulate.
+If there is just one
+.B \-e
+option and no
+.BR \-f 's,
+the flag
+.B \-e
+may be omitted.
+The
+.B \-n
+option suppresses the default output.
+.PP
+A script consists of editing commands, one per line,
+of the following form:
+.IP
+[address [, address] ] function [arguments]
+.PP
+In normal operation
+.I sed
+cyclically copies a line of input into a
+.I pattern space
+(unless there is something left after
+a `D' command),
+applies in sequence
+all commands whose
+.I addresses
+select that pattern space,
+and at the end of the script copies the pattern space
+to the standard output (except under
+.BR \-n )
+and deletes the pattern space.
+.PP
+An
+.I address
+is either a decimal number that counts
+input lines cumulatively across files, a `$' that
+addresses the last line of input, or a context address,
+`/regular expression/', in the style of
+.IR ed (1)
+modified thus:
+.IP
+The escape sequence `\en' matches a
+newline embedded in the pattern space.
+.IP
+A command line with no addresses selects every pattern space.
+.IP
+A command line with
+one address selects each pattern space that matches the address.
+.IP
+A command line with
+two addresses selects the inclusive range from the first
+pattern space that matches the first address through
+the next pattern space that matches 
+the second.
+(If the second address is a number less than or equal
+to the line number first selected, only one
+line is selected.)
+Thereafter the process is repeated, looking again for the
+first address.
+.PP
+Editing commands can be applied only to non-selected pattern
+spaces by use of the negation function `!' (below).
+.PP
+Regular expressions are simple regular expressions with
+.BR /usr/5bin/sed ,
+and basic regular expressions with
+.BR /usr/5bin/posix/sed ,
+.BR /usr/5bin/posix2001/sed ,
+and
+.BR /usr/5bin/s42/sed .
+.PP
+In the following list of functions the 
+maximum number of permissible addresses
+for each function is indicated in parentheses.
+.PP
+An argument denoted
+.I text
+consists of one or more lines,
+all but the last of which end with `\e' to hide the
+newline.
+Backslashes in text are treated like backslashes
+in the replacement string of an `s' command.
+.PP
+An argument denoted
+.I rfile
+or
+.I wfile
+must terminate the command
+line.
+.B /usr/5bin/sed
+and
+.B /usr/5bin/s42/sed
+require that it is
+preceded by exactly one blank.
+Each
+.I wfile
+is created before processing begins.
+.TP 10
+(1)\|\fBa\e\fR
+.br
+.ns
+.TP 10
+.I text
+Append.
+Place
+.I text
+on the output before
+reading the next input line.
+.TP 10
+(2)\|\fBb \fIlabel\fR
+Branch to the `:' command bearing the
+.IR label .
+If
+.I label
+is empty, branch to the end of the script.
+.TP 10
+(2)\|\fBc\e\fR
+.br
+.ns
+.TP 10
+.I text
+Change.
+Delete the pattern space.
+With 0 or 1 address or at the end of a 2-address range, place
+.I text
+on the output.
+Start the next cycle.
+.TP 10
+(2)\|\fBd\fR
+Delete the pattern space.
+Start the next cycle.
+.TP 10
+(2)\|\fBD\fR
+Delete the initial segment of the 
+pattern space through the first newline.
+Start the next cycle.
+.TP 10
+(2)\|\fBg\fR
+Replace the contents of the pattern space
+by the contents of the hold space.
+.TP 10
+(2)\|\fBG\fR
+Append the contents of the hold space to the pattern space.
+.TP 10
+(2)\|\fBh\fR
+Replace the contents of the hold space by the contents of the pattern space.
+.TP 10
+(2)\|\fBH\fR
+Append the contents of the pattern space to the hold space.
+.TP 10
+(1)\|\fBi\e\fR
+.br
+.ns
+.TP 10
+.I text
+Insert.
+Place
+.I text
+on the standard output.
+.TP 10
+(2)\|\fBl\fR
+List the pattern space on the standard output in an
+unambiguous form.
+Non-printing ASCII characters are spelled
+in two- or three-digit ASCII,
+and long lines are folded.
+.TP 10
+(2)\|\fBn\fR
+Copy the pattern space to the standard output.
+Replace the pattern space with the next line of input.
+.TP 10
+(2)\|\fBN\fR
+Append the next line of input to the pattern space
+with an embedded newline.
+(The current line number changes.)
+.TP 10
+(2)\|\fBp\fR
+Print.
+Copy the pattern space to the standard output.
+.TP 10
+(2)\|\fBP\fR
+Copy the initial segment of the pattern space through
+the first newline to the standard output.
+.TP 10
+(1)\|\fBq\fR
+Quit.
+Branch to the end of the script.
+Do not start a new cycle.
+.TP 10
+(2)\|\fBr \fIrfile\fR
+Read the contents of
+.IR rfile .
+Place them on the output before reading
+the next input line.
+.TP 10
+(2)\|\fBs/\fIregular\ expression\fB/\fIreplacement\fB/\fIflags\fR
+Substitute the
+.I replacement
+string for instances of the
+.I regular expression
+in the pattern space.
+Any character may be used instead of `/'.
+For a fuller description see
+.IR ed (1).
+.I Flags
+is zero or more of
+.RS
+.TP
+.B g
+Global.
+Substitute for all nonoverlapping instances of the
+.I regular expression
+rather than just the
+first one.
+.TP
+.I n
+\fIn\fR=1\^\(en\^512.
+Substitute the \fIn\fRth occurrence of the
+.I regular expression
+only.
+.TP
+.B p
+Print the pattern space if a replacement was made.
+.TP
+\fBw \fIwfile\fB
+Write.
+Append the pattern space to
+.I wfile
+if a replacement
+was made.
+.RE
+.TP 10
+(2)\|\fBt \fIlabel\fR
+Test.
+Branch to the `:' command bearing the
+.I label
+if any
+substitutions have been made since the most recent
+reading of an input line or execution of a `t'.
+If 
+.I label
+is empty, branch to the end of the script.
+.TP 10
+(2)\|\fBw \fIwfile\fR
+Write.
+Append the pattern space to
+.IR wfile .
+.TP 10
+(2)\|\fBx\fR
+Exchange the contents of the pattern and hold spaces.
+.TP 10
+(2)\|\fBy/\fIstring1\fB/\fIstring2\fB/\fR
+Transform.
+Replace all occurrences of characters in
+.I string1
+with the corresponding character in
+.I string2.
+The lengths of
+.I
+string1
+and
+.I string2
+must be equal.
+.TP 10
+(2)\fB! \fIfunction\fB
+Don't.
+Apply the
+.I function
+(or group, if
+.I function
+is `{') only to lines
+.I not
+selected by the address(es).
+.TP 10
+(0)\|\fB: \fIlabel\fR
+This command does nothing; it bears a
+.I label
+for `b' and `t' commands to branch to.
+.TP 10
+(1)\|\fB=\fR
+Place the current line number on the standard output as a line.
+.TP 10
+(2)\|\fB{\fR
+Execute the following commands through a matching `}'
+only when the pattern space is selected.
+.TP 10
+(0)\|
+An empty command is ignored.
+.TP 10
+(0)\|\fB#\fP
+Ignore the entire line,
+except when the first two characters in the script are \fB#n\fP,
+which has the same effect as the \f2\-n\fP command line option.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP 
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in basic regular expressions.
+.TP
+.B LC_CTYPE 
+Determines the mapping of bytes to characters
+in both simple and basic regular expressions,
+for the
+.B l
+and
+.B y
+commands,
+and the availability and composition of character classes
+in basic regular expressions.
+.SH SEE ALSO
+ed(1),
+grep(1),
+awk(1),
+locale(7)

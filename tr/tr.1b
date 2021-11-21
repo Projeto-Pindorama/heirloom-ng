@@ -1,0 +1,195 @@
+.\"
+.\" Sccsid @(#)tr.1b	1.7 (gritter) 8/6/05
+.\" Parts taken from tr(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH TR 1B "8/6/05" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+tr \- (BSD) translate characters
+.SH SYNOPSIS
+\fB/usr/ucb/tr\fR [\fB\-cCds\fR] [\fIstring1\fR [\fIstring2\fR]]
+.SH DESCRIPTION
+.I Tr
+copies the standard input to the standard output with 
+substitution or deletion of selected characters.
+Input characters found in 
+.I string1
+are mapped into the corresponding characters of
+.IR string2 .
+When 
+.I string2
+is shorter than
+.IR string1 ,
+it is padded to the length of
+.I string1
+by duplicating its last character.
+Any combination of the options
+.B \-cds
+may be used:
+.TP
+.B \-c
+complements the set of characters in
+.I string1
+with respect to the universe of characters
+whose byte codes are 01 through 0377 octal,
+or with a multibyte character set,
+whose wide character codes start at 1.
+.TP
+.B \-d
+deletes all input characters in
+.I string1.
+.TP
+.B \-s
+squeezes all strings of repeated output characters that are
+in 
+.I string2
+to single characters.
+.PP
+The following option has been introduced by POSIX.1-2001:
+.TP
+.B \-C
+complements the set of characters in
+.I string1
+like
+.IR \-c ,
+but orders ranges according to the collation sequence.
+.PP
+In either string the following character sequences are
+treated specially:
+.TP 8
+\fB\e\fIoctal\fR
+The character
+`\e' followed by 1, 2 or 3 octal digits stands for the
+character whose byte code is given by those digits.
+Multibyte characters can be specified
+as a sequence of octal bytes.
+.TP
+\fB\e\fIchar\fR
+The escape sequences `\ea' (bell),
+`\eb' (backspace),
+`\ef' (form feed),
+`\en' (newline),
+`\er' (carriage return),
+`\et' (horizontal tabulator),
+and `\ev' (vertical tabulator)
+are supported.
+A `\e' followed by any other character (other than an octal digit)
+stands for that character.
+.TP 8
+\fIa\fB\-\fIz\fR
+means a range of characters from
+.I a
+to
+.I z
+in increasing byte order,
+or with a multibyte character set,
+in increasing wide character order.
+With the
+.I \-C
+option,
+characters are ordered according to the collation sequence.
+.TP 8
+\fB[:\fIclass\fB:]\fR
+means all characters that belong to character class
+.I class
+in the current LC_CTYPE locale
+in increasing byte order,
+or with a multibyte character set,
+in increasing wide character order.
+If both \fB[:upper:]\fR and \fB[:lower:]\fR appear
+at the same position in either string,
+upper-case characters are mapped to lower-case characters
+(and vice versa).
+.TP 8
+\fB[=\fIc\fB=]\fR
+where \fIc\fR is a collating symbol in the current LC_COLLATE locale,
+means all characters that belong to the same equivalence class as \fIc\fR,
+i.\ e. have the same collating weight as \fIc\fR.
+.TP 8
+\fB[\fIa\fB*\fIn\fB]\fR
+means
+.I n
+repetitions
+of the character
+.IR a ,
+with
+.I n
+as an octal number if it starts with `0'
+and as a decimal number otherwise.
+If
+.I a
+is omitted or zero,
+it is taken to be huge
+(useful for padding
+.I string2
+to the length of
+.IR string1 ).
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the composition of equivalence classes.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+in translation strings and input files, and
+the availability and composition of character classes.
+.SH EXAMPLES
+The following examples create a list of all
+the words in `file1' one per line in `file2',
+where a word is taken to be a maximal string of alphabetics.
+The second string is quoted
+to protect `\e' from the Shell.
+012 is the ASCII code for newline.
+.IP \& 2
+/usr/ucb/tr \-cs A\-Za\-z \'\e012\' <file1 >file2
+.SH "SEE ALSO"
+ed(1),
+ascii(7),
+locale(7)
+.SH NOTES
+tr does not handle ASCII NUL in
+.I string1
+or
+.IR string2 ;
+it always deletes NUL from input.
+.PP
+The LC_COLLATE variable is not respected;
+equivalence classes consist of exactly one character,
+and the
+.I \-c
+and
+.I \-C
+options produce identical results.

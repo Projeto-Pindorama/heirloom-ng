@@ -1,0 +1,126 @@
+.\"
+.\" Sccsid @(#)chown.1b	1.4 (gritter) 1/29/05
+.\" Parts taken from chown(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CHOWN 1B "1/29/05" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+chown \- (BSD) change file ownwer
+.SH SYNOPSIS
+\fB/usr/ucb/chown\fR [\fB\-fhHLPR\fR] \fIowner\fR[.\fIgroup\fR] \fIfile\fR ...
+.SH DESCRIPTION
+.B Chown
+changes the owner of the
+.I files
+to
+.IR owner ,
+and, if
+.I group
+is present,
+the group-ID of the
+.I files
+to
+.IR group .
+Both
+.I owner
+and
+.I group
+may be either a decimal
+.SM UID
+/
+.SM GID
+or a login / group name
+found in the password file.
+.PP
+The following options are accepted:
+.TP
+.B \-f
+Do not display errors.
+.TP
+.B \-h
+When a symbolic link is encountered,
+change the owner and group of the link itself,
+rather than the file it refers to.
+.TP
+.B \-R
+Recursively descend into each
+.I file
+operand.
+Whether owner and group of a symbolic link are changed
+depends on the
+.B \-h
+option,
+but the link is not followed otherwise.
+.PP
+The following options have been introduced by POSIX.1-2001:
+.TP
+.B \-H
+With the
+.I \-R
+option, if a symbolic link given on the command line
+points to a directory,
+follow that symbolic link
+and change owner and group in the files below,
+but do not handle any other symbolic links specially.
+.TP
+.B \-L
+With the
+.I \-R
+option, whenever a symbolic link is encountered
+that points to a directory,
+follow the symbolic link
+and change owner and group in the files below,
+.TP
+.B \-P
+With the
+.I \-R
+option, do not follow any symbolic links,
+but change owner and group of the links themselves.
+.SH FILES
+.B /etc/passwd
+.br
+.B /etc/group
+.SH "SEE ALSO"
+chown(2),
+passwd(5),
+group(5)
+.SH NOTES
+Permission to change owner and group is based
+either on historical System V behaviour,
+which is to allow the owner of the file or a privileged user
+a change to any value;
+or on historical
+.SM BSD
+behaviour,
+which is to restrict changing the owner
+to a privileged user
+and changing the group to a group to which the file owner belongs.

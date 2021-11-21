@@ -1,0 +1,211 @@
+.\"
+.\" Sccsid @(#)expr.1	1.16 (gritter) 2/3/05
+.\" Parts taken from expr(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH EXPR 1 "2/3/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+expr \- evaluate arguments as an expression
+.SH SYNOPSIS
+.B expr
+.I arguments
+\&.\|.\|.
+.SH DESCRIPTION
+The arguments are taken as an expression.
+After evaluation, the result is written on the standard output.
+Each token of the expression is a separate argument.
+.PP
+The operators and keywords are listed below.
+The list is in order of increasing precedence,
+with equal precedence operators grouped.
+.TP
+.I expr | expr
+yields the first
+.I expr
+if it is neither null nor `0', otherwise
+yields the second
+.I expr.
+.TP
+.I expr & expr
+yields the first
+.I expr
+if neither
+.I expr
+is null or `0', otherwise yields `0'.
+.TP
+.I expr relop expr
+where
+.I relop is one of
+< <= = != >= >,
+yields `1' if the indicated comparison is true, `0' if false.
+The comparison is numeric if both
+.I expr
+are integers, otherwise lexicographic.
+.TP
+.IR expr " + " expr
+.br
+.IR expr " - " expr
+.br
+addition or subtraction of the arguments.
+.TP
+.IR expr " * " expr
+.br
+.IR expr " / " expr
+.br
+.IR expr " % " expr
+.br
+multiplication, division, or remainder of the arguments.
+.TP
+.IR expr " : " expr
+The matching operator compares the string first argument
+with the regular expression second argument.
+Regular expression syntax is the same as that of
+.IR ed (1);
+.B /usr/5bin/expr
+uses simple regular expressions,
+.BR /usr/5bin/posix/expr ,
+.BR /usr/5bin/posix2001/expr ,
+and
+.B /usr/5bin/s42/expr
+use basic regular expressions.
+The
+\fB\\(\|.\|.\|.\|\\)\fP
+pattern symbols can be used to select a portion of the
+first argument.
+Otherwise,
+the matching operator yields the number of characters matched
+(`0' on failure).
+.TP
+.RI match " expr expr"
+Same as
+.IR expr " : " expr .
+.TP
+.RI ( " expr " )
+parentheses for grouping.
+.TP
+.I string
+Yields itself
+unless it is part of a larger expression.
+With
+.BR /usr/5bin/posix/expr
+and
+.BR /usr/5bin/posix2001/expr ,
+all
+.I strings
+that form valid decimal numbers
+are converted to the canonical form.
+.PP
+The following operators are supported only by
+.B /usr/5bin/s42/expr
+or if the
+.B SYSV3
+environment variable is set:
+.TP
+.RI length " string"
+Returns the number of characters in
+.IR string .
+.TP
+.RI substr " string index count"
+Returns a string that consists of
+.I count
+characters
+beginning at position
+.I index
+of
+.I string
+(starting at 1).
+.TP
+.RI index " string set"
+Returns the index in
+.I string
+(starting at 1) of the first occurrence
+of one of the characters in
+.IR set ,
+or 0 if no character is found.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See locale(7).
+.TP
+.B LC_COLLATE
+Sets the collation sequence for string comparison,
+and for range expressions,
+equivalence classes, and collation symbols
+in basic regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters in regular expressions,
+for the match, length, substr, and index operators,
+and the availability and composition of character classes
+in basic regular expressions.
+.TP
+.B SYSV3
+Enables some additional operators as described above.
+.SH EXAMPLES
+.PP
+To add 1 to the Shell variable
+.IR a :
+.IP
+a=\`expr $a + 1\`
+.PP
+To find the filename part (least significant part)
+of the pathname stored in variable
+.I a,
+which may or may not contain `/':
+.IP
+expr "$a" : \'.*/\e(\^.*\e)\' \'\^|\' "$a"
+.LP
+Note the quoted Shell metacharacters.
+.\" Historic example, not to be deleted and useful just because of its errors
+Also note that this example generates wrong results
+if the result of the substitution is `0'
+or if `$a' equals one of the
+.I expr
+operators.
+Be sure that your code avoids such problems
+and use
+.IR basename (1)
+if to actually cut out filename parts.
+.SH "SEE ALSO"
+ed(1), sh(1), test(1)
+.SH DIAGNOSTICS
+.I Expr
+returns the following exit codes:
+.PP
+	0	if the expression is neither null nor `0',
+.br
+	1	if the expression
+is null or `0',
+.br
+	2	for invalid expressions.
+.SH NOTES
+Integers are treated as 64-bit, 2's complement numbers.

@@ -1,0 +1,18 @@
+Notes for the more utility
+==========================
+
+The more utility provided here is essentially the 4.3BSD version with
+added support for System V more features, multibyte locales, lines of
+arbitrary length and backspace sequence filtering for searches. There
+is no POSIX.2 version provided here; POSIX.2 decided to standardize a
+derivative of the less utility and call it more. Since less is not
+part of any traditional System V Unix system, it is somewhat beyond
+the scope of this collection; moreover, since less is a maintained
+open source project, it seems not really necessary to provide a
+stripped-down derivative here.
+
+Thus if you need a POSIX.2 variant of more, you should use less. But
+if you desperately want to have the 4.4BSD more/less utility in the
+Heirloom Toolchest, you're invited to contribute your own port of it.
+
+	Gunnar Ritter						10/25/03

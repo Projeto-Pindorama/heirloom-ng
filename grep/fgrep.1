@@ -1,0 +1,179 @@
+.\"
+.\" Sccsid @(#)fgrep.1	1.24 (gritter) 1/24/05
+.\" Parts taken from grep(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH FGREP 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+fgrep \- search a file for a character string
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fB/usr/5bin/fgrep\fR [\fB\-e\fI\ string_list\fR\ ...]
+[\fB\-f\fI\ string_file\fR] [\fB\-bchilnrRvxz\fR]
+[\fIstring_list\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+.PD 0
+\fB/usr/5bin/posix/fgrep\fR \fB\-e\fI\ string_list\fR\ ...
+[\fB\-f\fI\ string_file\fR] [\fB\-c\fR|\fB\-l\fR]
+[\fB\-bhinrRvxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/fgrep\fR \fB\-f\fI\ string_file\fR
+[\fB\-e\fI\ string_list\fR\ ...] [\fB\-c\fR|\fB\-l\fR]
+[\fB\-bhinrRvxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/fgrep\fR [\fB\-c\fR|\fB\-l\fR] [\fB\-bhinrRvxz\fR]
+\fIstring_list\fR [\fIfile\fR\ ...]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.B fgrep
+command searches the lines of the specified files
+(or of standard input)
+for occurrences of any of the newline separated strings in
+.I string_list.
+The default behavior is to print each matching line to standard output.
+.PP
+Both
+.B /usr/5bin/fgrep
+and
+.B /usr/5bin/posix/fgrep
+accept the following options:
+.TP
+.B \-b
+Each line is preceded by the block number on which it was found.
+This is sometimes useful
+in locating disk block numbers by context.
+Block numbers start with 0.
+.TP
+.B \-c
+Only a count of matching lines is printed.
+.TP
+.BI \-e\  string_list
+Specifies one or more strings, separated by newline characters.
+A line is selected if one or more of the specified strings are found.
+.TP
+.BI \-f\  string_file
+One or more strings, separated by newline
+characters, are read from
+.I string_file.
+If multiple
+.B \-e
+or
+.B \-f
+options are supplied to
+.BR /usr/5bin/posix/fgrep ,
+all of the pattern lists will be evaluated.
+.TP
+.B \-h
+Normally, the name of each input file is printed before a match
+if there is more that one input file.
+When this option is present, no file names are printed.
+.TP
+.B \-i
+Upper- and lowercase differences are ignored when searching matches.
+.TP
+.B \-l
+The names of files with matching lines are listed
+(once) separated by newlines.
+.TP
+.B \-n
+Each line is preceded by its line number in the file.
+Line numbers start with 1.
+.TP
+.B \-v
+All lines but those matching are printed.
+.TP
+.B \-x
+(Exact) only lines matched in their entirety are printed.
+.PP
+The following options are supported as extensions:
+.TP
+.B \-r
+With this option given,
+.I fgrep
+does not directly search in each given file that is a directory,
+but descends it recursively
+and scans each regular file found below it.
+Device files are ignored.
+Symbolic links are followed.
+.TP
+.B \-R
+Operates recursively as with the
+.I \-r
+option,
+but does not follow symbolic links that point to directories
+unless if they are explicitly specified as arguments.
+.TP
+.B \-z
+If an input file is found to be compressed with
+.IR compress (1),
+.IR gzip (1),
+or
+.IR bzip2 (1),
+the appropriate compression program is started,
+and
+.I fgrep
+searches for the pattern in its output.
+.PP
+.B /usr/5bin/s42/fgrep
+and
+.B /usr/5bin/posix2001/fgrep
+are identical to
+.BR /usr/5bin/posix/fgrep .
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the case mapping for the
+.B \-i
+option.
+.SH "SEE ALSO"
+ed(1),
+egrep(1),
+grep(1),
+sed(1),
+locale(7)
+.SH DIAGNOSTICS
+Exit status is 0 if any matches are found,
+1 if none, 2 for syntax errors or inaccessible files.

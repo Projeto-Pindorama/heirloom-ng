@@ -1,0 +1,123 @@
+.\"
+.\" Sccsid @(#)tail.1	1.9 (gritter) 12/6/04
+.\" Parts taken from tail(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH TAIL 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+tail \- deliver the last part of a file
+.SH SYNOPSIS
+\fBtail\fR [\fB+\fR/\fB\-\fR[\fInumber\fR][\fBlbc\fR][\fBf\fR]] [\fIfile\fR]
+.br
+\fBtail\fR [\fB+\fR/\fB\-\fR[\fInumber\fR][\fBl\fR][\fBr\fR]] [\fIfile\fR]
+.br
+\fBtail\fR [\fB\-f\fR] [\fB\-c\fI number\fR|\fB\-n\fI number\fR] [\fIfile\fR]
+.SH DESCRIPTION
+The
+.B tail
+command copies the named
+.I file
+to the standard output beginning at a designated place.
+If no
+.I file
+is named,
+the standard input is used.
+.PP
+Copying begins at distance \fB+\fInumber\fR from the beginning,
+or \fB\-\fInumber\fR from the end of the input.
+.I Number
+is counted in units of lines, blocks or characters (i.\|e. bytes),
+according to the appended option
+.BR l ,
+.B b
+or
+.BR c .
+When no units are specified,
+counting is by lines;
+the default
+.I number
+is 10.
+.PP
+If the
+.B f
+(``follow'') option is present,
+.B tail
+will not terminate at end-of-file,
+but check for further data to write every second.
+.PP
+With the
+.B r
+option,
+the order of lines printed is reversed.
+If no
+.I number
+is specified,
+the entire file is printed.
+.I Number
+is always taken as count of lines from the end of input.
+.PP
+The
+.B tail
+command also accepts the following options
+that were introduced by POSIX.2,
+in the form shown in the third synopsis line:
+.TP
+\fB\-c\fR [\fB+\fR|\fB\-\fR]\fInumber\fR
+Copying will start at
+.I number
+bytes;
+if the option argument starts with a `\fB+\fR',
+from the begin of the file,
+with `\fB\-\fR'
+or no sign from its end.
+.TP
+.B \-f
+Follow file changes,
+as described above.
+.TP
+\fB\-n\fR [\fB+\fR|\fB\-\fR]\fInumber\fR
+Copying will start at
+.I number
+lines.
+The meaning of the sign
+is the same as for the
+.B \-c
+option.
+.SH "SEE ALSO"
+dd(1),
+head(1)
+.SH NOTES
+Tails relative to the end of the file
+are treasured up in a buffer,
+and thus are limited in length.
+Various kinds of anomalous behaviour
+may happen with character special files.

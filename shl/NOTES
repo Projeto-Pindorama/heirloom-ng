@@ -1,0 +1,35 @@
+
+		shl, the shell layer manager
+
+shl can run multiple shells in parallel on a single terminal. It was
+originally introduced in AT&T's SVr3 Unix, but discontinued by most
+vendors later since csh-style job control was considered superior.
+This free implementation avoids most of the complications by using
+regular SVR4-style pseudo terminals; it can be used together with
+job control. The user-visible differences to the original shl are:
+
+	* The layer terminal devices are /dev/pts/* instead of
+	  /dev/sxt/*.
+
+	* The stty loblk and stty -loblk commands have no effect;
+	  there is no way to block output from within a layer.
+
+	* Blocking a layer will stop its output from appearing on
+	  the user's terminal, but programs within the layer will
+	  continue to write() until the pseudo terminal's buffers
+	  are filled.
+
+With these exceptions, this implementation should conform to the
+description given in shl(AU_CMD) of the System V Interface Definition,
+Third Edition. It also contains some SCO and HP-UX extensions.
+
+shl has been tested on:
+
+	Solaris		8, 2.6
+	UnixWare	7.1.1, 2.1
+	Linux		2.6, 2.4 with glibc 2.2, 2.3
+
+It should run on most SVR4-like systems; please contact me to extend
+this list and send a diff if necessary.
+
+Gunnar Ritter							2/21/04

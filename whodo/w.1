@@ -1,0 +1,111 @@
+.\"
+.\" Sccsid @(#)w.1	1.8 (gritter) 10/19/03
+.\" partially derived from 4.2BSD's w(1)
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.TH W 1 "10/19/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+w \- who is on and what they are doing
+.SH SYNOPSIS
+.B w
+[
+.B \-h
+] [
+.B \-l
+] [
+.B \-s
+] [
+.B \-u
+] [
+.B \-w
+] [ user ]
+.SH DESCRIPTION
+W prints a summary of the current activity on the system,
+including what each user is doing.
+The heading line shows
+the current time of day,
+how long the system has been up,
+the number of users logged into the system,
+and the load averages.
+The load average numbers give
+the number of jobs in the run queue averaged over 1, 5 and 15 minutes.
+.PP
+The fields output are:
+the users login name,
+the name of the tty the user is on,
+the time of day the user logged on,
+the number of minutes since the user last typed anything,
+the CPU time used by all processes and their children on that terminal,
+the CPU time used by the currently active processes,
+the name and arguments of the current process.
+.PP
+If a
+.I user
+name is given,
+the output will be restricted to that user.
+.PP
+The
+.B w
+command accepts the following options:
+.TP
+.B \-h
+Omit the heading.
+.TP
+.B \-l
+Long output format, which is the default.
+.TP
+.B \-s
+Selects a short form of output that
+abbreviates the tty,
+leaves off the login time and cpu times,
+as the arguments to commands.
+.TP
+.B \-u
+Prints the first line of the heading only.
+.TP
+.B \-w
+Long output format, which is the default.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the set of printable characters
+when printing command lines.
+.SH FILES
+.TP
+.B /proc
+list of processes
+.TP
+.B /var/run/utmp
+list of active logins
+.SH "SEE ALSO"
+ps(1),
+uptime(1),
+who(1),
+whodo(1),
+proc(5),
+utmp(5)
+.\".SH NOTES
+.\"W omits information about logins that do not have a controlling terminal.
+.\"These logins are counted in the long format's header line, however.

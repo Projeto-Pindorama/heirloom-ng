@@ -1,0 +1,147 @@
+.\"
+.\" Sccsid @(#)tabs.1	1.5 (gritter) 5/19/03
+.\" Parts taken from tabs(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH TABS 1 "5/19/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+tabs \- set terminal tabs
+.SH SYNOPSIS
+\fBtabs\fR
+[\fItabspec\fR]
+[\fB+m\fIn\fR] [\fB\-T\fItype\fR]
+.SH DESCRIPTION
+.I Tabs
+sets the tabs on a variety of terminals,
+according to
+.IR tabspec ;
+if no such argument is present,
+the default is
+.B \-8
+(set tabulator stops at every eight positions).
+.PP
+The
+.I tabspec
+argument can be one of the following:
+.TP
+.BI \- n
+Set a tab stop at every
+.I n
+positions. If
+.I n
+is 0,
+all tab stops are cleared and no new ones are set.
+.TP
+.IB n1 , n2 , \ .\ .\ .
+Set a tab stop at
+.IR n1 ,
+.IR n2 ,
+and any following numbers.
+A number prefixed by a plus sign
+is interpreted as an increment to the previous position.
+.TP
+.B \-a
+1,10,16,36,72;
+IBM System/370 Assembler, first format.
+.TP
+.B \-a2
+1,10,16,40,72;
+IBM System/370 Assembler, second format.
+.TP
+.B \-c
+1,8,12,16,20,55;
+COBOL, normal format.
+.TP
+.B \-c2
+1,6,10,14,49;
+COBOL compact format (columns 1\^\(en\^6 omitted).
+.TP
+.B \-c3
+1,6,10,14,18,22,26,30,34,38,42,46,50,54,58,62,67;
+COBOL compact format with additional tabs.
+.TP
+.B \-f
+1,7,11,15,19,23;
+FORTRAN format.
+.TP
+.B \-p
+1,5,9,13,17,21,25,29,33,37,41,45,49,53,57,61;
+PL/1 format.
+.TP
+.B \-s
+1,10,55;
+SNOBOL format.
+.TP
+.B \-u
+1,12,20,44;
+UNIVAC 1100 Assembler format.
+.TP
+.BI \-\- file
+Read the tabulator specifications from the first line of
+.I file
+(if
+.I file
+is omitted, read from standard input).
+See
+.IR fspec (5)
+for the format of the tabulator specification line.
+.PP
+Other arguments are:
+.TP
+.BI \-T type
+Overrides the default terminal type.
+Various of the terminal names given in
+.IR term (7)
+are recognized.
+.TP
+.TP
+.BI +m n
+Sets the left margin to
+.I n
+or, if
+.I n
+is omitted, to 10
+(if supported by the terminal).
+The leftmost margin can be set with
+.BR +m0 .
+The left margin is not set
+unless this argument is present.
+.PP
+All operation is performed on standard output.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B TERM
+Specifies the default terminal type.
+.SH SEE ALSO
+stty(1),
+fspec(5),
+term(7)

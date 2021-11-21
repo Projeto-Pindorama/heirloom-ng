@@ -1,0 +1,47 @@
+.\"
+.\" Sccsid @(#)uptime.1	1.5 (gritter) 4/17/03
+.\" partially derived from 4.2BSD's uptime(1)
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.TH UPTIME 1 "4/17/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+uptime \- show how long system has been up
+.SH SYNOPSIS
+uptime
+.SH DESCRIPTION
+Uptime prints the current time,
+the length of time the system has been up,
+and the average number of jobs in the run queue
+over the last 1, 5 and 15 minutes.
+It is, essentially, the first line of a
+.IR w (1)
+command.
+.SH FILES
+.TP
+.B /proc
+list of processes
+.TP
+.B /var/run/utmp
+list of active logins
+.SH "SEE ALSO"
+w(1),
+proc(5),
+utmp(5)

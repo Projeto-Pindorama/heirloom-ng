@@ -1,0 +1,488 @@
+'\" t
+.\" Sccsid @(#)ps.1	1.47 (gritter) 10/13/05
+.\" Parts taken from ps(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH PS 1 "10/13/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+ps \- process status
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBps\fR [\-\fBaAcdefjlLPRy\fR]
+[\fB\-o\fI property\fR[\fB=\fR[\fItitle\fR]], ...\fR]\ ...
+[\fB\-gGpstuU\fI\ criteria\fR, ...]\ ...
+[\fB\-r \fIsysname\fR]
+.br
+.hy 1
+.ad b
+.SH DESCRIPTION
+.B Ps
+prints certain indicia about active processes.
+If no options are specified,
+all processes on the current terminal are selected;
+.B /usr/5bin/posix/ps
+and
+.B /usr/5bin/posix2001/ps
+further restrict this to processes owned by the invoking user.
+The selection can be changed
+by adding
+.I criteria
+with the options below;
+when a process satifies any criterion,
+it is selected.
+A
+.I criteria
+string can consist
+of multiple criteria
+separated by blanks or commas.
+.PP
+By default,
+.B ps
+prints the process id,
+controlling terminal device,
+cumulative execution time
+and command of processes.
+.PP
+The
+.B ps
+command accepts the following options:
+.TP 12
+.B \-a
+Selects all processes with a controlling terminal device,
+except for session leaders.
+.TP 12
+.B \-c
+Adds scheduling class and priority to the output.
+This is the default with
+.BR /usr/5bin/s42/ps .
+See below for the meaning of columns.
+.TP 12
+.B \-d
+Selects all processes except session leaders.
+.TP 12
+.B \-e
+Selects all processes.
+.TP 12
+.B \-f
+Full listing;
+adds user name, parent process id,
+processor utilization,
+and the time when the process was started.
+See below for the meaning of columns.
+.TP 12
+\fB\-g\fI pgrplist\fR
+For
+.B /usr/5bin/ps
+and
+.BR /usr/5bin/s42/ps ,
+all processes that belong to one of the process groups ids in
+.I pgrplist
+are selected;
+for
+.B /usr/5bin/posix/ps
+and
+.BR /usr/5bin/posix2001/ps ,
+all processes that belong to one of the session ids in
+.IR group .
+.TP 12
+.B \-j
+Adds process group id and session id to the output.
+See below for the meaning of columns.
+.TP 12
+.B \-l
+Long listing;
+adds process flags, process state,
+numeric user id,
+parent process id,
+processor utilization,
+priority, nice value,
+core address,
+memory size in pages and the event waited for.
+See below for the meaning of columns.
+.TP 12
+\fB\-p\fI pidlist\fR
+Selects all processes with one of the given \fIprocess ids\fR.
+.TP 12
+\fB\-r\fI sysname\fR
+Change the root directory to
+.IR sysname ,
+which may be either an absolute pathname
+or the basename component of a mounted file system.
+Requires presence of a selection criterion.
+.TP 12
+\fB\-s\fI sidlist\fR
+Selects all processes that belong to one of the session ids in
+.IR sidlist .
+.TP 12
+\fB\-t\fI device\fR
+Selects all processes with the current terminal
+.IR device .
+This may be the device name with either
+.B /dev/
+or
+.B /dev/tty
+omitted,
+as in
+.I ttyS2
+or
+.I S2
+for
+.IR /dev/ttyS2 .
+.TP 12
+\fB\-u\fI uidlist\fR
+Selects all processes with one of the given \fIuser ids\fR,
+which may be symbolic or numeric.
+The real user id is used with
+.B /usr/5bin/ps
+and
+.BR /usr/5bin/s42/ps ,
+the effective user id with
+.B /usr/5bin/posix/ps
+and
+.BR /usr/5bin/posix2001/ps .
+.PP
+The following options have been introduced by POSIX.2:
+.TP 12
+.B \-A
+Selects all processes.
+.TP 12
+\fB\-G\fI gidlist\fR
+Selects all processes that have one of the specified real \fIgroup ids\fR,
+which may be symbolic or numeric.
+.TP 12
+\fB\-o\fI property\fR[\fB=\fR[\fItitle\fR]],...
+The output is changed to reflect the named
+.IR property .
+Multiple properties can be given,
+separated by blanks or commas;
+it is also possible to specify multiple
+.B \-o
+options.
+Normally, the default property description is
+written in the first output line.
+If the
+.B = 
+character is present, but the
+.I title
+is missing in all format specifications,
+no descriptions are printed;
+if a
+.I title
+is given, it is used instead of the default.
+See below for valid
+.I property
+strings.
+.TP 12
+\fB\-U\fI uidlist\fR
+Selects all processes with one of the given real \fIuser ids\fR,
+which may be symbolic or numeric.
+.PP
+The following options are extensions:
+.TP 12
+.B \-L
+.hw LWPs
+Prints information on lightweight processes (LWPs);
+adds lightweight process id,
+lightweight process time,
+and, if \fI\-f\fR is also present,
+the number of lightweight processes.
+See below for the meaning of columns.
+.TP 12
+.B \-P
+Prints the processor on which the process is currently running.
+Disables printing of flags and memory address.
+.TP 12
+.B \-R
+Resource usage format;
+prints process id,
+memory and resident set size,
+buffer reads and writes,
+messages sent and received,
+user and system time,
+and command.
+See below for the meaning of columns.
+.TP 12
+.B \-y
+Modifies the
+.B \-l
+output format;
+process flags, address and size in pages are omitted,
+and resident set size
+and memory size in kilobytes are printed instead.
+.PP
+The meaning of columns and column headings
+for the
+.BR \-c ,
+.BR \-f ,
+.BR \-j ,
+.BR \-l
+and
+.B \-P
+options are as follows
+(the letters given in parentheses specify which option
+causes the column to appear;
+\fIall\fR means that the column is always printed):
+.PP
+.TS
+l2 l2 l s s
+l2 l2 l2 l4 l.
+F	(l)	T{
+Flags associated with the process
+(octal and additive):
+T}
+			01	in core;
+			02	system process;
+			04	T{
+locked in core (e.g. for physical I/O);
+T}
+			10	being swapped;
+			20	being traced by another process.
+.T&
+l2 l2 l s s
+l2 l2 l2 l4 l.
+S	(l)	The state of the process:
+			O	running on a processor;
+			R	runnable (on run queue);
+			S	sleeping;
+			I	intermediate;
+			Z	terminated;
+			T	stopped;
+			X	allocating memory.
+.T&
+l2 l2 l s s.
+UID	(f,l)	T{
+The real user ID of the process owner,
+or, for \fB/usr/5bin/posix/ps\fR
+and \fB/usr/5bin/posix2001/ps\fR,
+the effective user ID.
+With the \fB\-l\fR
+option,
+a numeric ID is printed,
+otherwise the user name.
+T}
+PID	(all)	T{
+The process id of the process;
+as in certain cults
+it is possible to kill a process
+if you know its true name.
+T}
+PPID	(f,j,l)	The process ID of the parent process.
+PGID	(j)	The process group ID of the process.
+SID	(j)	The session ID of the process.
+LWP	(L)	The lightweight process ID of the process.
+NLWP	(fL)	T{
+The number of lightweight processes
+in the process.
+T}
+PSR	(P)	T{
+The processor on which the process is currently running.
+T}
+C	(f,l)	Processor utilization for scheduling.
+CLS	(c)	Scheduling class.
+PRI	(c,l)	T{
+Priority.
+With \fB\-l\fR, high numbers mean low priority.
+With \fB\-c\fR, high numbers mean high priority;
+time-sharing processes have priorities below 60;
+for real-time processes,
+the priority is computed as \fI100 + scheduling priority.\fR
+T}
+NI	(l)	Nice value, used in priority computation.
+ADDR	(l)	The core address of the process.
+RSS	(ly)	T{
+The amount of memory in kilobytes
+currently present in core.
+T}
+SZ	(l,R)	T{
+The size in pages of the core image of the process.
+If the \fB\-y\fR option is also given,
+the size is printed in kilobytes.
+T}
+MRSZ	(R)	T{
+The amount of memory in pages
+currently present in core.
+T}
+PFLTS	(R)	T{
+The number of major page faults
+that have occurred with the process.
+T}
+BUFR	(R)	T{
+Buffer reads performed on behalf of the process.
+T}
+BUFW	(R)	T{
+Buffer writes performed on behalf of the process.
+T}
+MRCV	(R)	T{
+Messages received by the process.
+T}
+MSND	(R)	T{
+Messages sent by the process.
+T}
+WCHAN	(l)	T{
+The event for which the process is waiting or sleeping;
+if blank, the process is running.
+T}
+.\" Trailing no-break-spaces guarantee a minimum table width for nroff
+.\" without restricting troff to select the same.
+STIME	(f)	The time when the process was started.\ \ \ \ \ \ 
+TTY	(all)	T{
+The controlling tty for the process.
+T}
+TIME	(all)	T{
+The cumulative execution time for the process.
+T}
+LTIME	(L)	T{
+The cumulative execution time for the lightweight process.
+T}
+UTIME	(R)	T{
+The cumulative time the process spent in user mode.
+T}
+KTIME	(R)	T{
+The cumulative time the process spent in system (kernel) mode.
+T}
+COMD	(all)	T{
+The command name;
+with the \fB\-f\fR option,
+the command line.
+The heading `CMD' is printed
+for \fB/usr/5bin/posix/ps\fR
+and \fB/usr/5bin/posix2001/ps\fR;
+the heading `COMMAND' is printed
+if the \fBSYSV3\fR
+environment variable is set
+and the \fI\-l\fR option is not present.
+T}
+.TE
+.PP
+A process that has exited and has a parent,
+but has not yet been waited for by the parent
+is marked
+.IR <defunct> .
+.PP
+For the
+.B \-o
+option, the following properties
+(listed with their default column headings)
+can be given:
+.PP
+.TS
+l2fB l2 l.
+user	USER	Effective user name.
+ruser	RUSER	Real user name.
+group	GROUP	Effective group name.
+rgroup	RGROUP	Real group name.
+pid	PID	Process id.
+ppid	PPID	Parent process id.
+pgid	PGID	Process group id.
+sid	SID	Session id.
+class	CLASS	Scheduling class.
+pcpu	%CPU	Processor usage in percent.
+vsz	VSZ	Memory usage in kilobytes.
+nice	NI	Nice value.
+etime	ELAPSED	Time elapsed since the process was started.
+time	TIME	Cumulative execution time.
+tty	TTY	Controlling terminal device.
+comm	COMMAND	The first command line argument.
+args	COMMAND	Command line arguments separated by spaces.
+f	F	Process flags.
+s	S	Process state.
+c	C	Processor utilization for scheduling.
+uid	UID	Numeric effective user id.
+ruid	RUID	Numeric real user id.
+gid	GID	Numeric effective group id.
+rgid	RGID	Numeric real group id.
+pri	PRI	Priority; high numbers mean high priority.
+opri	PRI	Priority; high numbers mean low priority.
+psr	PSR	Processor.
+addr	ADDR	Core address.
+osz	SZ	Memory size in pages.
+wchan	WCHAN	Event for which the process is waiting.
+stime	STIME	T{
+Start time of the process (may contain whitespace).
+T}
+rss	RSS	Resident set size in kilobytes.
+pmem	%MEM	Memory usage in percent.
+fname	COMMAND	T{
+.ad l
+.nr ol \n(.l
+.ll 39n
+The first eight characters of the executable file for the process.
+.br
+.ll \n(olu
+.ad b
+T}
+.TE
+.PP
+For those properties that correspond to user or group names,
+the numeric id is printed
+if the name does not fit into the column width.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the set of printable characters
+and the character width.
+Non-printable characters in arguments and file names
+are dropped if writing to a terminal.
+.TP
+.B LC_TIME
+Affects the format of date and time strings printed.
+.TP
+.B SYSV3
+Changes the text of some headings as described above.
+.SH FILES
+.TP
+.B /etc/passwd
+Used for converting numeric and symbolic user ids.
+.TP
+.B /etc/group
+Used for converting numeric and symbolic group ids.
+.TP
+.B /etc/default/ps
+.TP
+.B /proc/
+.TP
+.B /dev/
+.SH "SEE ALSO"
+nice(1),
+kill(1),
+priocntl(1),
+proc(5),
+locale(7)
+.SH NOTES
+Things can change while ps is running;
+the picture it gives is only a close approximation to reality.

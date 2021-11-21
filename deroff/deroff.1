@@ -1,0 +1,100 @@
+.\"
+.\" Changes by Gunnar Ritter, Freiburg i. Br., Germany, May 2004.
+.\"
+.\" Derived from Plan 9 v4 /sys/man/1/deroff
+.\"
+.\" Copyright (C) 2003, Lucent Technologies Inc. and others.
+.\" All Rights Reserved.
+.\"
+.\" Distributed under the terms of the Lucent Public License Version 1.02.
+.\"
+.\" Sccsid @(#)deroff.1	1.7 (gritter) 9/22/06
+.\"
+.TH DEROFF 1 "9/22/06" "Heirloom Toolchest" "User Commands"
+.SH NAME
+deroff \- remove nroff/troff, tbl, and eqn constructs
+.SH SYNOPSIS
+\fBderoff\fR [\fB\-m\fIx\fR] [\fB\-w\fR] [\fB\-x\fIN\fR] [ \fIfiles\fR ]
+.SH DESCRIPTION
+.I Deroff
+reads each file in sequence
+and removes all
+.I nroff
+and
+.IR troff (1)
+requests and non-text arguments, backslash constructions,
+and constructs of preprocessors such as
+.IR eqn (1),
+.IR pic (1),
+and
+.IR tbl (1).
+Remaining text is written on the standard output.
+.I Deroff
+follows files included by
+\&.so
+and
+\&.nx
+commands;
+if a file has already been included, a
+\&.so
+for that file is ignored and a
+\&.nx
+terminates execution.
+If no input file is given,
+.I deroff
+reads from standard input.
+.PP
+The options are
+.TP
+.B \-w
+Output a word list, one `word' (string of letters, digits, and
+properly embedded ampersands and apostrophes,
+beginning with a letter) per line.
+Other characters are skipped.
+Otherwise, the output follows the original, with the deletions mentioned above.
+.\".TP
+.\".B \-_
+.\"Like
+.\".BR \-w ,
+.\"but consider underscores to be alphanumeric rather than punctuation.
+.TP
+.B \-i
+Ignore
+\&.so
+and
+\&.nx
+equests.
+.TP
+.BR \-ms
+.PD 0
+.TP
+.B \-mm
+Remove titles, attachments, etc., as well as ordinary 
+.IR troff
+constructs, from
+.IR ms (7)
+or
+.IR mm (7)
+documents.
+.PD
+.TP
+.B \-ml
+Same as
+.BR \-mm ,
+but remove lists as well.
+.TP
+.BI \-x N
+Set the extension level to \fIN\fR
+(cf. the \fIHeirloom nroff/troff User's Manual).
+.I deroff
+also sets the extension level
+when it encounters the \fB.do\fR and \fB.xflag\fR commands,
+so use of this option will often be unnecessary.
+.SH "SEE ALSO"
+troff(1), 
+spell(1)
+.SH NOTES
+.B Deroff
+is not a complete troff
+interpreter, so it can be confused by subtle constructs.
+Most errors result in too much rather than too little output.

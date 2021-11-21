@@ -1,0 +1,102 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)logins.1	1.8 (gritter) 4/17/03
+.TH LOGINS 1 "4/17/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+logins \- list login information
+.SH SYNOPSIS
+\fBlogins\fR [\fB\-admopstux\fR] [\fB\-g\ \fIgroup\fR[,...]]
+[\fB\-l\ \fIlogin\fR[,...]]
+.SH DESCRIPTION
+.I Logins
+lists the system's login database.
+.PP
+The
+.B logins
+command accepts the following options:
+.TP
+.B \-a
+Add the days of inactivity the password remains valid,
+and the password expiration date to the output.
+.TP
+.B \-d
+Show logins with duplicate uids only.
+.TP
+.B \-m
+For every login, show all of its group memberships.
+.TP
+.B \-o
+Separate output by colons.
+.TP
+.B \-p
+Show logins with an empty password string only.
+.TP
+.B \-s
+Show system logins only.
+.TP
+.B \-t
+Sort output by login name instead of used id.
+.TP
+.B \-u
+Show regular user logins only.
+.TP
+.B \-x
+Extended format.
+Adds the following fields for each login:
+home directory,
+login shell,
+password status (PS for password, NP for no password, LK for locked),
+date of last password change formatted as
+.I mmddyy,
+minimal number of days between password changes,
+maximum number of days between password changes,
+days before an expiration warning message is issued to the user.
+.TP
+.BI \-g \ group,[...]
+Restrict output to the given
+.I group.
+Multiple groups may be given,
+separated by commas.
+.TP
+.BI \-l \ login,[...]
+Restrict output to the given
+.I login.
+Multiple logins may be given,
+separated by commas.
+.SH FILES
+.TP
+.B /etc/passwd
+user database
+.TP
+.B /etc/group
+group database
+.TP
+.B /etc/shadow
+password and aging information database
+.SH "SEE ALSO"
+listusers(1),
+passwd(5),
+shadow(5)
+.SH NOTES
+System logins are the ones whose user id is below 100.
+.PP
+Reading password and aging information requires special privilege.

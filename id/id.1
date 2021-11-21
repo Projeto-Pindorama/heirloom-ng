@@ -1,0 +1,120 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)id.1	1.10 (gritter) 1/24/05
+.TH ID 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+id \- print user and group IDs and names
+.SH SYNOPSIS
+\fB/usr/5bin/id\fR
+.br
+\fB/usr/5bin/id\fR \fB\-a\fR
+.sp
+\fB/usr/5bin/posix/id\fR [\fIuser\fR]
+.br
+\fB/usr/5bin/posix/id\fR \fB\-a\fR [\fIuser\fR]
+.br
+\fB/usr/5bin/posix/id\fR \fB\-G\fR [\fB\-n\fR] [\fIuser\fR]
+.br
+\fB/usr/5bin/posix/id\fR \fB\-g\fR [\fB\-nr\fR] [\fIuser\fR]
+.br
+\fB/usr/5bin/posix/id\fR \fB\-u\fR [\fB\-nr\fR] [\fIuser\fR]
+.SH DESCRIPTION
+The
+.I id
+command outputs the numerical and symbolic
+user and group IDs
+of the invoking user or,
+if the
+.I user
+argument is given for
+.BR /usr/5bin/posix/id ,
+for the named
+.IR user.
+If an effective ID does not match the corresponding real ID,
+both are printed.
+.PP
+The
+.B /usr/5bin/posix/id
+adds supplementary group memberships to the output by default.
+.PP
+.B /usr/5bin/s42/id
+and
+.B /usr/5bin/posix2001/id
+are identical to
+.BR /usr/5bin/posix/id .
+.PP
+The following options are accepted:
+.SS /usr/5bin/id
+.TP
+.B \-a
+Adds supplementary group memberships to the output.
+.SS /usr/5bin/posix/id
+.TP
+.B \-a
+Adds the primary group to the list of supplementary groups.
+.TP
+.B \-G
+Writes real, effective and supplementary group ID numbers only.
+.TP
+.B \-g
+Writes the effective group ID number only.
+.TP
+.B \-n
+Modifies the output of the
+.BR \-G ,
+.BR \-g ,
+and
+.B \-u
+options to print symbolic instead of numeric IDs.
+.TP
+.B \-r
+Causes real instead of effective IDs to be printed.
+.TP
+.B \-u
+Writes the effective user ID number only.
+.SH FILES
+.TP
+.B /etc/passwd
+.TP
+.B /etc/group
+.SH "SEE ALSO"
+groups(1),
+logins(1),
+getuid(2),
+geteuid(2),
+getgroups(2),
+group(5),
+passwd(5)
+.SH NOTES
+Use of
+.I id
+with any options or arguments is unportable.
+For portable programs, use
+.IR sed (1)
+to cut the appropriate portions off the default output of
+.I id
+(using the invariable `uid=' and `gid=' strings as orientation)
+and
+.IR groups (1)
+or
+.IR logins (1)
+if you need more information than available by this method.

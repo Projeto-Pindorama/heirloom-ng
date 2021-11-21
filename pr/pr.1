@@ -1,0 +1,211 @@
+.\"
+.\" Sccsid @(#)pr.1	1.8 (gritter) 1/24/05
+.\" Parts taken from pr(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH PR 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+pr \- print files
+.SH SYNOPSIS
+.B pr
+[ option ] ...\&
+[ file ] ...
+.SH DESCRIPTION
+.I Pr
+produces a printed listing of one or more
+.I files.
+The output is separated into pages headed by a date,
+the name of the file or a specified header, and the page number.
+If there are no file arguments,
+.I pr
+prints its standard input.
+.PP
+Options apply to all files:
+.TP
+.BI \- n
+Produce
+.IR n -column
+output,
+with the lines of each file
+aligned in columns for each output page.
+.TP
+.BI + n
+Begin printing with page
+.I  n.
+.TP
+.B \-a
+For multi-column output,
+print the lines of each file
+columnized in rows across the page.
+.TP
+.B \-d
+Double-space the output,
+i.\|e print two newline characters at the end of each line.
+.TP
+\fB\-e\fR[\fIc\fR][\fIn\fR]
+Replace occurrences of tab characters in input
+with
+.I n
+spaces,
+or with 8 spaces if
+.I n
+is omitted.
+If the non-numeric character
+.I c
+is present,
+it is taken as tab character on input.
+.TP
+.B \-f
+Print a single formfeed character
+instead of the five-newline sequence
+at the footer of each page.
+.TP
+.B \-F
+For
+.B /usr/5bin/pr
+and
+.BR /usr/5bin/s42/pr ,
+fold the lines of input files
+for single-column output,
+or stretch excess data across multiple cells
+of multi-column output.
+This option is the same as
+.B \-f
+with
+.B /usr/5bin/posix/pr
+and
+.BR /usr/5bin/posix2001/pr .
+.TP
+.BI  \-h " header"
+Take the next argument as a page header.
+.TP
+\fB\-i\fR[\fIc\fR][\fIn\fR]
+Replace spaces with tab characters in output
+if they align to the
+.IR n -th
+column or a multiple of it.
+If the non-numeric character
+.I c
+is present,
+it is taken instead as tab character on output.
+For
+.B /usr/5bin/posix/pr
+and
+.BR /usr/5bin/posix2001/pr ,
+single space characters preceding a column alignment are not replaced.
+.TP
+.BI \-l n
+Take the length of the page to be
+.I n
+lines instead of the default 66.
+.TP
+.B  \-m
+Print all
+.I files
+simultaneously,
+each in one column.
+.TP
+\fB\-n\fR[\fIc\fR][\fIn\fR]
+Number the output lines,
+or if multi-column output is produced,
+the output cells.
+The width of numbers is set to
+.I n
+(default 5).
+Numbers are separated from file data by the character
+.IR c ;
+it defaults to a tab character
+if this part of the argument is missing.
+.TP
+.BI \-o n
+Precede each output line by
+.I n
+space characters.
+The width set with
+.B \-w
+is not affected.
+.TP
+.B \-p
+Ring the terminal bell before producing output for each page
+and wait for the user to type a newline character.
+This option has no effect
+if output is not sent to a terminal.
+.TP
+.B \-r
+Do not print an error message
+if a file cannot be opened.
+.TP
+.BI \-s c
+Separate columns by the single character
+.I c
+instead of by the appropriate amount of white space.
+A missing
+.I c
+is taken to be a tab.
+.TP
+.B  \-t
+Do not print the 5-line header or the
+5-line trailer normally supplied for each page.
+.TP
+.BI \-w n
+For purposes of multi-column and folded output,
+take the width of the page to be
+.I n
+characters instead of the default 72.
+.PP
+Inter-terminal messages via
+.IR write (1)
+are
+forbidden during a
+.IR pr .
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the width of characters.
+.TP
+.B LC_TIME
+Affects the format of date strings printed.
+.SH FILES
+.TP 10
+/dev/tty?
+to suspend messages
+and to read user input with the
+.B \-p
+option.
+.SH "SEE ALSO"
+cat(1),
+pg(1)

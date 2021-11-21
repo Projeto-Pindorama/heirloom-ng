@@ -1,0 +1,177 @@
+.\"
+.\" Derived from join(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH JOIN 1 "2/5/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+join \- relational database operator
+.SH SYNOPSIS
+\fBjoin\fR [\fIoptions\fR] [\fIfile1\fR] [\fIfile2\fR]
+.SH DESCRIPTION
+.I Join
+forms, on the standard output,
+a join
+of the two relations specified by the lines of
+.I file1
+and
+.IR file2 .
+If either
+.I file1
+or
+.I file2
+is `\-', the standard input is used.
+.PP
+.I File1
+and 
+.I file2
+must be sorted in increasing current collating
+sequence on the fields
+on which they are to be joined,
+normally the first in each line.
+.PP
+There is one line in the output 
+for each pair of lines in 
+.I file1 
+and 
+.I file2
+that have identical join fields.
+The output line normally consists of the common field,
+then the rest of the line from 
+.IR file1 ,
+then the rest of the line from
+.IR file2 .
+.PP
+Fields are normally separated by blank, tab or newline.
+In this case, multiple separators count as one, and
+leading separators are discarded.
+.PP
+These options are recognized:
+.TP
+.BI \-a n
+In addition to the normal output,
+produce a line for each unpairable line in file
+.IR n ,
+where
+.I n
+is 1 or 2.
+.TP
+.BI \-e \ s
+Replace empty output fields by string
+.IR s .
+.TP
+.BI \-j n\ m
+Join on the
+.IR m th
+field of file
+.IR n .
+If
+.I n
+is missing, use the
+.IR m th
+field in each file.
+.TP
+.BI \-o \ list
+Each output line comprises the fields specified in
+.IR list ,
+each element of which has the form
+.IR n . m ,
+where
+.I n
+is a file number and
+.I m
+is a field number;
+or
+.BR 0 ,
+which specifies the join field.
+The
+.I list
+may either consist of multiple arguments,
+or of a single argument with elements separated by spaces or commas.
+.TP
+.BI \-t c
+Use character
+.I c
+as a separator (tab character).
+Every appearance of
+.I c
+in a line is significant.
+.PP
+The following options have been introduced by POSIX.2:
+.TP
+.BI \-v n
+Suppress normal output
+and produce a line for each unpairable line in file
+.IR n ,
+where
+.I n
+is 1 or 2.
+.TP
+\fB\-1\fI\ m\fR
+Join on the
+.IR m th
+field of file
+.IR 1 .
+.TP
+\fB\-2\fI\ m\fR
+Join on the
+.IR m th
+field of file
+.IR 2 .
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters.
+.TP
+.B LC_COLLATE
+Specifies the collation sequence.
+.SH "SEE ALSO"
+sort(1),
+comm(1),
+awk(1),
+locale(7)
+.SH NOTES
+With default field separation,
+the collating sequence is that of
+.IR sort\ \-b ;
+with
+.BR \-t ,
+the sequence is that of a plain sort.
+.PP
+The conventions of
+.I join, sort, comm, uniq
+and
+.IR awk (1)
+are wildly incongruous.

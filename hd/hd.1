@@ -1,0 +1,160 @@
+.\"
+.\" Sccsid @(#)hd.1	1.8 (gritter) 12/5/04
+.TH HD 1XNX "12/5/04" "Heirloom Toolchest" "XENIX System Compatibility"
+.SH NAME
+hd \- (XENIX) display files in hexadecimal format
+.SH SYNOPSIS
+\fBhd\fR
+[\fB\-acbwlAxdov\fR]
+[\fB\-t\fR]
+[\fB\-s\fI\ offset\fR]
+[\fB\-n\fI\ count\fR]
+[\fIfiles\fR]
+.SH DESCRIPTION
+The
+.I hd
+command
+displays the contents
+of the given
+.I files
+(or of standard input
+if no such argument is present)
+in hexadecimal, decimal or octal format,
+16 bytes per line.
+It optionally displays printable ASCII characters in the rightmost column.
+The file address is printed in the leftmost column.
+.PP
+Output format selection is done
+with options; each format selection option consists
+(optionally) of a format selector and a base selector.
+.PP
+The format selectors are as follows;
+if no format selector is present,
+the base selector is applied to all available format selectors:
+.TP
+.B \-b
+Separates the input in bytes;
+each byte is printed as a numerical value.
+.TP
+.B \-c
+Separates the input in bytes;
+each byte that is also a printable character
+is printed as such,
+certain characters are printed as C language escapes,
+others as a numerical value.
+.TP
+.B \-w
+Separates the input in 16-bit words;
+each word is printed as a numerical value.
+.TP
+.B \-l
+Separates the input in 32-bit long words;
+each word is printed as a numerical value.
+.PP
+The following base selectors are accepted;
+if the base selector is omitted,
+all base selectors are applied to the chosen format selectors:
+.TP
+.B \-o
+Selects octal output.
+.TP
+.B \-d
+Selects unsigned decimal output.
+.TP
+.B \-x
+Selects hexadecimal output.
+.PP
+The format of the addresses at the left
+can also be selected by using the
+.TP
+.B \-a
+option followed by one of the base selectors;
+only one base selector is applied.
+The default address base is hexadecimal.
+.PP
+The following options also affect the output format:
+.TP
+.B \-A
+Causes bytes that are printable characters to be displayed
+as such at the right; nonprintable bytes are printed as `.'.
+.TP
+.B \-t
+Text file format; overrides all other format options except
+.IR \-a .
+Each line of the input is preceded by its address;
+printable characters are displayed as such,
+except for `\e', `^', and '~', which are prefixed by a `\e' character.
+ASCII control characters are prefixed by `^'.
+Bytes with the highest bit set that do not form a printable character
+are indicated by '~',
+followed by the corresponding ASCII character as above.
+.TP
+.B \-v
+Unless
+.I \-t
+is used,
+a set of immediately following indentical 16-byte sets
+is abbreviated by printing `*' for the second and further ones.
+This option inhibits this behavior
+and causes all lines to be displayed.
+This option is an extension.
+.PP
+If no output selection is present, the default is
+.IR \-bxA .
+.PP
+The following options affect the handling of input files:
+.TP
+\fB\-s\fI\ offset\fR
+Selects a starting offset within each file.
+.I Offset
+is interpreted as a decimal value
+unless prefixed by
+.BR 0 ,
+which causes interpretation as an octal value,
+or
+.BR 0x ,
+which causes interpretation as a hexadecimal value.
+The suffixes
+.BR w ,
+.BR l ,
+.BR b ,
+and
+.B k
+cause multiplication by
+2 (`words'),
+4 (`long words'),
+512 (`blocks'),
+or
+1024 (`kilobytes'),
+respectively.
+Value and suffix may be separated by a `*' character
+to suppress interpretation of `b' as a hexadecimal digit.
+.TP
+\fB\-n\fI\ count\fR
+Causes only
+.I count
+characters of the file to be displayed;
+.I count
+is handled as the
+.I offset
+for
+.I \-s
+described above.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Selects the set of printable single-byte characters
+for the
+.I \-A
+and
+.I \-c
+options
+and the set of printable characters for the
+.I \-t
+option.
+.SH "SEE ALSO"
+od(1)

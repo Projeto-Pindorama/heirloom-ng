@@ -1,0 +1,179 @@
+.\"
+.\" Sccsid @(#)mv.1	1.15 (gritter) 1/24/05
+.\" Parts taken from cp(1) and mv(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH MV 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+mv \- move or rename files and directories
+.SH SYNOPSIS
+\fBmv\fR [\fB\-f\fR] [\fB\-i\fR] [\fB\-b\ \fIsize\fR]
+\fIfile1\fR [\fIfile2\fR .\ .\ .\ ] \fItarget\fR
+.SH DESCRIPTION
+.B Mv
+moves (changes the name of)
+.I file1
+to
+.IR target .
+If
+.I target
+is an existing regular file,
+its content is overwritten.
+Its mode and owner are preserved;
+the mode of the source file is used otherwise.
+If
+the mode of
+.I target
+forbids writing
+(and standard input is terminal for
+.B /usr/5bin/mv
+and
+.BR /usr/5bin/s42/mv ),
+.B mv
+prints the mode
+(see
+.IR chmod (2))
+and reads the standard input
+to obtain a line;
+if the line begins with y,
+the move takes place;
+if not,
+the file is not moved.
+.PP
+If
+.I target
+is a directory,
+one or more files are copied
+into the directory with their original file-names.
+.PP
+.B Mv
+refuses to move a file onto itself.
+.PP
+The
+.B mv
+command accepts the following options:
+.TP
+.B \-f
+.B Mv
+will not ask for confirmation
+even if the modes of the
+.I target
+file do not permit writing.
+Overrides the
+.B \-i
+option in
+.B /usr/5bin/posix/mv
+and
+.BR /usr/5bin/posix2001/mv .
+.TP
+.B \-i
+.B mv
+will ask for confirmation
+before overwriting an existing target.
+For
+.B /usr/5bin/mv
+and
+.BR /usr/5bin/s42/mv ,
+this flag will be automatically disabled
+if standard input is not a terminal.
+Overrides the
+.B \-f
+option in
+.B /usr/5bin/posix/mv
+and
+.BR /usr/5bin/posix2001/mv .
+.PP
+The following option is an extension:
+.TP
+\fB\-b\ \fIsize\fR
+When a regular file is moved to another file system,
+its data must be copied.
+This option overrides the automatically determined
+i/o buffer size for such copies;
+.I size
+is given in bytes.
+.SH "SEE ALSO"
+cp(1),
+cat(1),
+pr(1),
+unlink(2)
+.SH NOTES
+Use either
+.RS
+.sp
+.B mv
+.B \-\-
+.I \-file
+.I target
+.sp
+.RE
+or
+.RS
+.sp
+.B mv
+.I ./\-file
+.I target
+.sp
+.RE
+to move files that begin with a hyphen character.
+.PP
+If source and target
+lie on different file systems,
+.B mv
+must copy the file and delete the original.
+In this case
+any linking relationship with other files is lost,
+but
+.B mv
+will preserve linkage inside the moved tree.
+.B Mv
+will try to preserve access and modification times,
+user and group ownerships,
+and file permission bits.
+Failing to preserve these modes
+is not considered an error,
+only
+.B /usr/5bin/posix/mv
+and
+.B /usr/5bin/posix2001/mv
+will print an error message.
+Special files
+such as block and character devices,
+FIFOs,
+and symbolic links
+are recreated in the target hierarchy.
+.PP
+The pathname contained in a symbolic link
+is not changed when the link is moved.
+Symbolic links with relative pathnames
+may thus change or lose their target
+if moved to a different level in the file hierarchy.

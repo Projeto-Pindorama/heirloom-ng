@@ -1,0 +1,473 @@
+.\"
+.\" Derived from tar(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\" Sccsid @(#)tar.1	1.46 (gritter) 3/1/05
+.TH TAR 1 "3/1/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+tar \- tape archiver
+.SH SYNOPSIS
+\fBtar\fR [\ \fIkey\fR\ ] [\ \fIfiles\fR\ ]
+.SH DESCRIPTION
+.I Tar
+saves and restores files
+on magtape or other media.
+Its actions are controlled by the
+.I key
+argument.
+The
+.I key
+is a string of characters containing
+at most one function letter and possibly
+one or more function modifiers.
+Other arguments to the command are file or directory
+names specifying which files are to be dumped or restored.
+In all cases, appearance of a directory name refers to
+the files and (recursively) subdirectories of that directory.
+.PP
+The function portion of
+the key is specified by one of the following letters;
+use of the leading hyphen is optional:
+.TP 8
+.B  \-r
+The named files
+are written
+on the end of the tape.
+The
+.B \-c
+function implies this.
+.TP 8
+.B  \-x
+The named files are extracted from the tape.
+If the named file matches a directory whose contents 
+had been written onto the tape, this directory is (recursively) extracted.
+The owner and mode are restored (if possible).
+If no file argument is given, the entire content of the
+tape is extracted.
+Note that if multiple entries specifying the same file
+are on the tape, the last one overwrites
+all earlier.
+Existing target files are removed
+before the file in the archive is extracted.
+.TP 8
+.B  \-t
+The names of the specified files are listed each time they occur
+on the tape.
+If no file argument is given,
+all of the names on the tape are listed.
+.TP 8
+.B  \-u
+The named files are added to the tape if either they
+are not already there or have
+been modified since last put on the tape.
+.TP 8
+.B  \-c
+Create a new tape; writing begins on the beginning
+of the tape instead of after the last file.
+This command implies
+.B \-r.
+.PP
+The following characters may be used in addition to the letter
+which selects the function desired.
+.TP 10
+.BI 0 \&...\& 9
+This
+modifier selects the drive on which the tape (or other media) is mounted.
+Each number selects an `archive\fIN\fR=' entry in
+.IR /etc/default/tar ,
+which is followed by up to four fields:
+device name,
+blocking factor,
+size in kilobytes,
+and tape flag (`n' or `N' for no tape).
+The entry `archive=' is the default
+if neither this modifier nor the
+.B f
+key is given
+and the
+.I TAPE
+environment variable is not present.
+The following example sets up a tape,
+a 1.44 MB floppy drive
+for use with `0', using a blocking factor of 18,
+and a 1.2 MB floppy drive for use with `1',
+using a blocking factor of 15:
+.sp
+    archive=/dev/rmt/c0s0     20    0
+.br
+    archive0=/dev/dsk/f03ht   18    1440   N
+.br
+    archive1=/dev/dsk/f15ht   15    1200   N
+.TP 10
+.B  v
+Normally
+.I tar
+does its work silently.
+The
+.B v
+(verbose)
+option causes it to type the name of each file it treats
+preceded by the function letter.
+With the
+.B t
+function,
+.B v
+gives more information about the
+tape entries than just the name.
+.TP 10
+.B  w
+causes
+.I tar
+to print the action to be taken followed by file name, then
+wait for user confirmation. If a word beginning with `y'
+is given, the action is performed. Any other input means
+don't do it.
+.TP 10
+.B f
+causes 
+.I tar
+to use the next argument as the name of the archive instead
+of the default (see the description for the `0\&...\&9' key above).
+If the name of the file is `\-', tar writes to
+standard output or reads from standard input, whichever is
+appropriate. Thus,
+.I tar
+can be used as the head or tail of a filter chain.
+.I Tar
+can also be used to move hierarchies with the command
+.sp
+    cd fromdir; tar cf \- . | (cd todir; tar xfp \-)
+.TP 10
+.B b
+causes
+.I tar
+to use the next argument as the blocking factor for tape
+records. The default is device dependent.
+This option should only be used with raw magnetic tape archives (See
+.B f
+above).
+.TP 10
+.B l
+tells
+.I tar
+to complain if it cannot resolve all of the links
+to the files dumped. If this is not specified, no
+error messages are printed.
+.TP 10
+.B o
+causes
+.I tar
+to set the owner and group of restored files
+to those of the invoking user
+instead of those specified in the archive.
+This is the default
+unless the caller is the super-user.
+.TP 10
+.B p
+causes
+.I tar
+to set the permission bits of extracted files
+exactly to those given in the archive;
+normally, the current
+.I umask
+is applied.
+.TP 10
+.B i
+tells
+.I tar
+not to exit when a directory checksum error is encountered.
+.TP 10
+.B e
+tells
+.I tar
+to exit at several minor error conditions
+that normally cause only a warning.
+.TP 10
+.B n
+tells
+.I tar
+that the input file is not a tape.
+This causes block sizes to be
+reported in kilobytes instead of tape blocks with the `v' modifier.
+.TP 10
+.B m
+causes
+.I tar
+not to restore modification times on extracted files;
+the modification time is the time when the file was restored.
+.TP 10
+.B h
+causes
+.I tar
+to store the target of a symbolic link in the archive
+and to follow symbolic links to directories
+instead of storing the link itself.
+.TP 10
+.B L
+Same as
+.BR h .
+.TP 10
+.B A
+causes
+.I tar
+to strip a leading `/' when storing and restoring pathnames,
+i.\|e. to store and extract relative names instead of absolute ones.
+.TP 10
+.B k
+can be used to create and extract multi-volume archives.
+The next unevaluated argument is used as the maximum size in kilobytes
+for each part.
+If the archive does not fit on one medium,
+the user is prompted for the next.
+The same sizes must be given for creation and extraction
+of multi-volume archives.
+.TP 10
+.B B
+causes
+.I tar
+to repeat a
+.IR read (2)
+operation if it gets fewer data than expected.
+This is useful when reading from pipes, network transports etc.,
+and is enabled per default if reading from standard input,
+pipes, or sockets.
+.TP 10
+.B F
+specifies the name of a file with additional pathnames
+in the next unevaluated argument.
+Each line of this file must contain a pathname
+(without any leading or trailing white-space)
+that is put into the archive
+before further files specified on the command line.
+.TP 10
+.B X
+specifies the name of a file
+that contains pathnames to be excluded,
+in the same format as with
+.BR F .
+This option may be specified multiple times,
+causing pathnames contained in any of the files
+to be excluded.
+.PP
+.I Tar
+also accepts the following options
+intermixed with the file
+.IR names :
+.TP 10
+\fB\-C\fI dir\fR
+Change the working directory to
+.I dir
+before archiving the file
+.I name
+immediately following
+.IR dir ;
+.I name
+is interpreted relative to
+.IR dir .
+.TP 10
+\fB\-I\fI file\fR
+Specifies a file with additional pathnames
+as described for the
+.B F
+key above,
+inserted at the current position in the archive.
+.PP
+The archive format written by
+.I tar
+is expected to be compatible
+with the `Extended tar Format' as defined in
+IEEE Std. 1003.1, 1996,
+although the numerical
+.I uid
+and
+.I gid
+fields are always used for extraction,
+ignoring the symbolic
+.I uname
+and
+.I gname
+fields.
+.PP
+IEEE Std. 1003.1, 2001
+.I pax
+format extended headers are created by
+.I tar
+under the following circumstances:
+A path name exceeds 255 bytes
+or does not contain a slash character at an appropriate position,
+and does not contain non-UTF-8 characters;
+the name of a linked file exceeds 100 bytes;
+a file is larger than 8\ GB;
+a user or group ID exceeds the number 2097151.
+When updating GNU or old format archives,
+no extended headers are created
+and any path names are limited to 100 bytes.
+Most GNU extensions are supported when reading archives,
+and Sun extensions also for appending.
+.PP
+Multi-volume archives are splitted single-volume archives.
+For an archive created with
+.sp
+    tar cfk /dev/dsk/f03ht 1440 \fIinput\fR
+.sp
+it is thus possible to generate a single-volume archive by executing
+.sp
+    dd if=/dev/dsk/f03ht bs=1k count=1440 >>singlevolume
+.sp
+once for each floppy disk.
+.PP
+On archives compressed with
+.IR bzip2 (1),
+.IR compress (1),
+or
+.IR gzip (1),
+the appropriate decompression program is run automatically
+with the
+.I t
+and
+.I x
+keys.
+.PP
+The following keys are supported as extensions:
+.TP 10
+.B z
+causes
+.I tar
+to pipe its output through
+.IR gzip (1)
+when creating archives.
+When reading archives,
+this option is ignored.
+.TP 10
+.B j
+Similar to
+.IR z ,
+but using
+.IR bzip2 (1)
+as compression program.
+.TP 10
+.B Z
+Similar to
+.IR z ,
+but using
+.IR compress (1)
+as compression program.
+.SH EXAMPLES
+List the contents of a software distribution archive:
+.in +2
+.sp
+tar tvf distribution.tar.gz
+.in -2
+.PP
+Extract a software distribution archive,
+preserving file permissions,
+but setting the owner of all extracted files
+to the invoking user
+(even if invoked by
+.IR root ):
+.in +2
+.sp
+tar xfop distribution.tar.gz
+.in -2
+.PP
+Write the current directory to the default archive location:
+.in +2
+.sp
+tar c .
+.sp
+.in -2
+If the default location is a floppy drive,
+the archive is split across multiple volumes if necessary.
+.PP
+Create a
+.IR gzip (1)
+compressed archive of the directory
+.I project
+and its contents:
+.in +2
+.sp
+tar cf \- project | gzip \-c > project.tar.gz
+.in -2
+.SH "ENVIRONMENT VARIABLES"
+.TP 10
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP 10
+.B LC_TIME
+Used for the time string printed with when the keys
+.B tv
+are given.
+.TP 10
+.B SYSV3
+If set,
+old tar format archives are created with `c',
+and the meaning of the `e' key is changed
+such that archiving is aborted
+if a file cannot fit on a single volume
+of a multi-volume archive.
+.TP 10
+.B TAPE
+Used as default archive
+if neither the `f' nor the `0\&...\&9' keys are present.
+.SH FILES
+/etc/default/tar
+.br
+/tmp/tar*
+.SH "SEE ALSO"
+cpio(1),
+ls(1),
+pax(1),
+umask(2)
+.SH DIAGNOSTICS
+Complaints about bad key characters and tape read/write errors.
+.PP
+Complaints if enough memory is not available to hold
+the link tables.
+.SH NOTES
+There is no way to ask for the
+.IR n -th
+occurrence of a file.
+.PP
+Tape errors are handled ungracefully.
+.PP
+The
+.B u
+option can be slow.
+.PP
+Use of the
+.B r
+and
+.B u
+options with tape devices requires
+drives capable of writing between filemarks.

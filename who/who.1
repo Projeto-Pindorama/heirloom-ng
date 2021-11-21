@@ -1,0 +1,161 @@
+.\"
+.\" Sccsid @(#)who.1	1.8 (gritter) 10/11/03
+.\" Parts taken from who(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH WHO 1 "10/11/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+who \- who is on the system
+.SH SYNOPSIS
+\fBwho\fR [\fB\-abdHlmpqRrstTu\fR] [\fIutmp_file\fR]
+.br
+\fBwho\fR \fB\-q\fR [\fB\-n\fI x\fR] [\fIutmp_file\fR]
+.br
+\fBwho\fR [\fBam i\fR]
+.br
+\fBwho\fR [\fBam I\fR]
+.SH DESCRIPTION
+The
+.B who
+command,
+without an argument,
+lists the login name,
+terminal name,
+and login time
+for each current user.
+.PP
+Without an argument,
+.B who
+examines the
+.B /var/run/utmp
+file to obtain its information.
+If a
+.I utmp_file
+is given,
+that file is examined.
+Typically the given file will be
+.BR /var/log/wtmp ,
+which contains a record
+of all the logins since it was created.
+Then
+.B who
+lists logins, logouts and crashes
+since the creation of the wtmp file.
+Each login is listed with user name,
+terminal name (with `\fB/dev/\fR' suppressed),
+and date and time.
+.PP
+With the two-argument synopsis forms
+`\fBwho am i\fR' and `\fBwho am I\fR',
+who tells who you are logged in as.
+.PP
+The
+.B who
+command accepts the following options:
+.TP
+.B \-a
+Same as \fB\-bdlprtTu\fR.
+.TP
+.B \-b
+Writes reboot records.
+.TP
+.B \-d
+Writes records about dead processes
+along with their termination and exit values.
+.TP
+.B \-H
+Causes column headings to be printed in the first line.
+.TP
+.B \-l
+Writes records about lines
+on which the system is waiting for someone to login.
+.TP
+.B \-m
+Outputs only records about the current terminal,
+as `\fBwho am I\fR' does.
+.TP
+\fB\-n\fI number\fR
+Sets the number of columns for the
+.B \-q
+option.
+.TP
+.B \-p
+Lists records about other processes currently active
+that have been spawned by
+.BR init .
+.TP
+.B \-q
+Quick output format.
+For each login record,
+the user name is printed.
+All other options are ignored.
+.TP
+.B \-R
+Adds the host name field to the output.
+.TP
+.B \-r
+Writes the current run-level of the
+.B init
+process.
+.TP
+.B \-s
+Omits idle time and
+login process ID (default).
+.TP
+.B \-t
+Writes records concerning system time changes.
+.TP
+.B \-T
+Shows write access to the user's terminal (see
+.IR mesg (1):
+`\fB+\fR' if writing is permitted,
+`\fB-\fR' if writing is denied, and
+`\fB?\fR' if the status cannot be determined.
+For
+.B /usr/5bin/who
+and
+.BR /usr/5bin/s42/who ,
+.B \-u
+is implied.
+.TP
+.B \-u
+Adds idle time
+(the time since the last keypress on the terminal)
+and login process ID to the output.
+A terminal that has not been accessed for 24 hours
+is considered `\fBold\fR';
+a terminal that has been accessed within the last minute
+is marked with a dot `\fB.\fR'.
+.SH "SEE ALSO"
+mesg(1),
+utmp(5),
+init(8)

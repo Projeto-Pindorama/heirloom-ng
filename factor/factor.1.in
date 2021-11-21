@@ -1,0 +1,70 @@
+.\"
+.\" Sccsid @(#)factor.1.in	1.5 (gritter) 8/18/03
+.\" Parts taken from factor(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH FACTOR 1 "8/18/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+factor \- factor a number
+.SH SYNOPSIS
+\fBfactor\fR [\fInumber\fR]
+.SH DESCRIPTION
+When
+.I factor
+is invoked without an argument, it waits for a number to be typed in.
+If you type in a positive
+number less than 2\u\s7@@MANT_DIG@@\s0\d (about
+.ie t @@EXP@@\(mu10\u\s7@@MNT@@\s0\d\|)
+.el @@EXP@@e@@MNT@@)
+it will factor the number and print its prime factors; each one is printed
+the proper number of times.
+Then it waits for another number.
+It exits if it encounters a zero or any non-numeric character.
+.PP
+If
+.I factor
+is invoked with an argument, it factors the number
+as above and then exits.
+.PP
+Maximum time to factor is proportional to
+.ie t \(sr\o'\fIn\fR\(rn'
+.el sqrt(n)
+and occurs when
+.I n
+is prime
+or the square of a prime.
+.\"It takes 1 minute to factor a prime
+.\"near
+.\"10\u\s714\s0\d
+.\"on a PDP11.
+.SH DIAGNOSTICS
+`Ouch.' for input out of range or for garbage input.

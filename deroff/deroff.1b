@@ -1,0 +1,83 @@
+.\"
+.\" Sccsid @(#)deroff.1b	1.4 (gritter) 10/25/03
+.\"
+.\" from 4.4BSD deroff.1
+.\"
+.\" Copyright (c) 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" This module is believed to contain source code proprietary to AT&T.
+.\" Use and redistribution is subject to the Berkeley Software License
+.\" Agreement and your Software Agreement with AT&T (Western Electric).
+.\"
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.\"	from deroff.1	8.1 (Berkeley) 6/6/93
+.\"
+.TH DEROFF 1B "10/25/03" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+deroff \- (BSD) remove nroff, troff, tbl and eqn constructs
+.SH SYNOPSIS
+\fB/usr/ucb/deroff\fR [\fB\-w\fR] \fIfile\fR ...
+.SH DESCRIPTION
+.B Deroff
+reads each file in sequence and removes all
+.IR nroff (1)
+and
+.IR troff (1)
+command lines, backslash constructions, macro definitions,
+.IR eqn (1)
+constructs (between `.EQ' and `.EN' lines or between delimiters),
+and table descriptions and writes the remainder on the standard output.
+.B Deroff
+follows chains of included files (`.so' and `.nx' commands);
+if a file has already been included, a `.so' is ignored and a `.nx'
+terminates execution.  If no input file is given,
+.B deroff
+reads from the standard input.
+.PP
+If the
+.B \-w
+flag is given, the output is a word list, one `word' (string of letters,
+digits, and apostrophes, beginning with a letter; apostrophes are removed)
+per line, and all other characters ignored.
+Otherwise, the output follows the original, with the deletions mentioned above.
+.SH "SEE ALSO"
+eqn(1),
+tbl(1),
+troff(1)
+.SH NOTES
+.B Deroff
+is not a complete troff
+interpreter, so it can be confused by subtle constructs.
+Most errors result in too much rather than too little output.

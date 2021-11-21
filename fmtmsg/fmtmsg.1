@@ -1,0 +1,118 @@
+'\" t
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License, Version 1.0 only
+.\" (the "License").  You may not use this file except in compliance
+.\" with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"
+.\" Copyright (c) 2005 Gunnar Ritter, Freiburg i. Br., Germany.
+.\"
+.\" Sccsid @(#)fmtmsg.1	1.3 (gritter) 9/25/05
+.TH FMTMSG 1 "9/25/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+fmtmsg \- display a message in standard format
+.SH SYNOPSIS
+.HP
+.ad l
+.nl
+\fBfmtmsg\fR [\fB\-a\ \fIaction\fR] [\fB\-c\ \fIclass\fR]
+[\fB\-l\ \fIlabel\fR] [\fB\-s\ \fIseverity\fR] [\fB\-t\ \fItag\fR]
+[\fB\-u\ \fIsubclass\fR[,\fIsubclass\fR[,...]]] [\fItext\fR]
+.br
+.ad b
+.SH DESCRIPTION
+The
+.I fmtmsg
+command writes a message either to standard error,
+to
+.IR /dev/console ,
+or to both.
+The
+.I text
+argument specifies the actual message.
+.PP
+The following options are accepted:
+.TP 12
+\fB\-a\ \fIaction\fR
+A hint to the user what to do to fix the situation.
+The
+.I action
+string is written in a second line following the actual message
+and is preceded by `TO FIX:'.
+.TP
+\fB\-c\ \fIclass\fR
+A classification for the problem.
+May be one of `hard' for Hardware,
+`soft' for Software,
+or `firm' for Firmware.
+.TP
+\fB\-l\ \fIlabel\fR
+The
+.I label
+indicates which component issued the message,
+for example,
+the name of the command which invokes
+.IR fmtmsg .
+.TP
+\fB\-s\ \fIseverity\fR
+The
+.I severity
+argument may be one of `halt',
+`error', `warn', or `info'.
+It is printed immediately before the actual message.
+.TP
+\fB\-t\ \fItag\fR
+An additional identifier for the message.
+It is written at the end of a second line
+following the actual message.
+.TP
+\fB\-u\ \fIsubclass\fR[,\fIsubclass\fR[,...]]
+A comma-separated list of strings that specifies the message destination,
+or gives further details about the message.
+Valid values for
+.I subclass
+are:
+.TS
+l2fB lw(38).
+appl	T{
+The message originates from an application.
+T}
+util	T{
+The message originates from a utility.
+T}
+opsys	T{
+The message originates from the operating system.
+T}
+recov	T{
+The problem is recoverable.
+T}
+nrecov	T{
+The problem is not recoverable.
+T}
+print	T{
+Print the message to standard error.
+T}
+console	T{
+Print the message to
+.IR /dev/console .
+T}
+.TE
+.PP
+Unless at least one of
+`\-u print' or `\-u console' is given,
+.I fmtmsg
+produces no output.

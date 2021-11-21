@@ -1,0 +1,20 @@
+Notes for the 'nawk' utility
+============================
+
+Changes since the version published by Caldera in OS Utilities 0.1a
+(<http://unixtools.sourceforge.net/>) include:
+
+- The lex part of the code can be built with both Unix lex and flex.
+- Support for multibyte characters.
+- Proper support for LC_TIME (locale-specifix radix character recognized
+  in input data, but not in scripts).
+- No line length limitations on input and output data.
+- No limit on the number of fields per record.
+
+4.4BSD old awk and Brian W. Kernighan's 'One True awk' (available at
+<http://cm.bell-labs.com/cm/cs/who/bwk/index.html>) have been used as
+reference for some of the changes; in addition, the manual page
+enclosed here has been derived from 'One True awk' since Caldera
+did not enclose one.
+
+	Gunnar Ritter						7/30/05

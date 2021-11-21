@@ -1,0 +1,272 @@
+.\"
+.\" Sccsid @(#)chmod.1	1.15 (gritter) 1/24/05
+.\" Derived taken from chmod(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CHMOD 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+chmod \- change mode
+.SH SYNOPSIS
+\fBchmod\fR [\fB\-R\fR] \fImode\fR \fIfile\fR ...
+.SH DESCRIPTION
+The mode of
+each named file
+is changed
+according to
+.I mode,
+which may be absolute or symbolic.
+An absolute
+.I mode
+is an octal
+number constructed
+from the OR of the
+following modes:
+.TP 10
+4000
+Set user ID on execution.
+.br
+.br
+.ns
+.TP 10
+20#0
+Set group ID on execution if # is 7, 5, 3, or 1
+and
+.I file
+is not a directory.
+.br
+Enable mandatory locking if # is 6, 4, 2, or 0
+and
+.I file
+is not a directory.
+.br
+If
+.I file
+is a directory,
+files created in this directory
+will get the group
+.SM ID
+of the directory
+instead of the current process
+(may be set or cleared using explicit symbolic modes only).
+.br
+.br
+.ns
+.TP 10
+1000
+Sticky bit.
+If file is a directory,
+only the owner of the file or the super-user
+can rename or delete a file in that directory.
+.br
+.br
+.ns
+.TP 10
+0400
+Read by owner.
+.br
+.br
+.ns
+.TP 10
+0200
+Write by owner.
+.br
+.br
+.ns
+.TP 10
+0100
+Execute (search in directory) by owner.
+.br
+.br
+.ns
+.TP 10
+0070
+Read, write, execute (search) by group.
+.br
+.br
+.ns
+.TP 10
+0007
+Read, write, execute (search) by others.
+.PP
+A symbolic
+.I mode
+has the form:
+.IP
+.RI [ who ]
+.I op permission
+.RI [ "op permission" "] ..."
+.PP
+The
+.I who
+part is a combination
+of the letters 
+.B u
+(for user's permissions),
+.B g
+(group)
+and
+.B o
+(other).
+The letter
+.B a
+stands for
+.B ugo.
+If
+.I who
+is omitted,
+the default is
+.I a
+but the setting of
+the file creation mask
+(see umask(2))
+is taken into account
+for
+.B /usr/5bin/posix/chmod
+and
+.BR /usr/5bin/posix2001/chmod.
+.PP
+.I Op
+can be
+.B +
+to add
+.I permission
+to the file's mode,
+.B \-
+to take away
+.I permission
+and
+.B =
+to assign
+.I permission
+absolutely
+(all other bits will
+be reset).
+.PP
+.I Permission
+is any combination of the letters
+.B r
+(read),
+.B w
+(write),
+.B x
+(execute),
+.B X
+(execute if file is a directory
+or if it already has at least one execute bit set),
+.B s
+(set owner or group id),
+.B t
+(save text \- sticky),
+and
+.B l
+(mandatory locking).
+Letters
+.BR u,
+.B g
+or
+.B o
+indicate that
+.I permission
+is to be taken
+from the current
+mode.
+Omitting
+.I permission
+is only useful
+with
+.B =
+to take away
+all permissions.
+.PP
+The first example denies write permission to others,
+the second makes a file executable:
+.IP
+chmod o\-w file
+.br
+chmod +x file
+.PP
+Multiple symbolic modes separated by commas may be given.
+Operations are performed
+in the order specified.
+The letter
+.B s
+is only useful
+with
+.B u
+or
+.B g.
+.PP
+Only the owner of a file (or the super-user) may change its mode.
+.PP
+The
+.B chmod
+command accepts the following option:
+.TP
+.B \-R
+Recursively descend each
+.I file
+operand.
+If a symbolic link is encountered,
+the permissions of its target are changed,
+but the link is not followed otherwise.
+.SH "SEE ALSO"
+chown(1),
+ls(1),
+chmod(2),
+stat(2),
+umask(2)
+.SH NOTES
+Use of the
+.B \-R
+option is not generally recommended
+since symbolic links can lead to modification
+of files at arbitrary places outside the file hierarchies
+specified as arguments. The
+.IR find (1)
+command can be used in combination with
+.I chmod
+to achieve the desired result in a more controlled manner.
+For example,
+.in +2
+.sp
+find . ! \-type l \-exec chmod u+w {} +
+.sp
+.in -2
+will add write permission for the invoking user,
+and
+.in +2
+.sp
+find . \-type d \-exec chmod a+rx {} + \-o \e
+        ! \-type l ! \-type d \-exec chmod a+r {} +
+.sp
+.in -2
+will make the file hierarchy accessible to all users.

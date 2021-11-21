@@ -1,0 +1,61 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)news.1	1.4 (gritter) 4/17/03
+.TH NEWS 1 "4/17/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+news \- print news items
+.SH SYNOPSIS
+\fBnews\fR [\fB\-a\fR] [\fB\-n\fR] [\fB\-s\fR] [\fIitems\fR]
+.SH DESCRIPTION
+The
+.B news
+command prints files from the systems news directory
+that have been added or modified
+since its previous invocation,
+preceded by a header,
+starting with the most recent file.
+.PP
+It accepts the following options:
+.TP
+.B \-a
+Print all files in the system news directory.
+The recorded time of the previous invocation is not changed.
+.TP
+.B \-n
+Print only the names of added or modified files.
+The recorded time of the previous invocation is not changed.
+.TP
+.B \-s
+Print only the count of added or modified files.
+The recorded time of the previous invocation is not changed.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B HOME
+User's home directory.
+.SH FILES
+.TP
+\fB$HOME/.news_time\fR
+The time of the previous invocation is recorded
+as the modification time of this file.
+.TP
+\fB/var/news\fR
+System news directory.

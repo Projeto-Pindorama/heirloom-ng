@@ -1,0 +1,57 @@
+.\"
+.\" Sccsid @(#)catman.8	1.4 (gritter) 1/11/03
+.TH CATMAN 8 "1/11/03" "Heirloom Toolchest" "Maintenance Commands"
+.SH NAME
+catman \- create the formatted files for the reference manual
+.SH SYNOPSIS
+\fBcatman\fR [\fB\-M\fI\ path\fR] [\fB\-T\fI\ macro-package\fR]
+[\fB\-pnw\fR] [\fIsections\fR]
+.SH DESCRIPTION
+The
+.B catman
+command generates plain text versions of
+.IR nroff (1)
+manual pages and a
+.B windex
+database for the
+.IR apropos (1)
+and
+.IR whatis (1)
+commands.
+.PP
+The
+.B catman
+command accepts the following options:
+.TP
+.B \-p
+Prints the steps to be done instead of actually executing them.
+.TP
+.B \-n
+Inhibits the creation of
+.B windex
+databases.
+.TP
+.B \-w
+Only the
+.B windex
+database is created, no preformatting is done.
+.TP
+.BI \-M \ path
+Specifies a colon-separated list of manual directories.
+Usually, this is determined by the same method used in
+.IR man (1).
+.TP
+.BI \-T \ macro-package
+Specifies the nroff macro package to be used
+instead of the default.
+.SH FILES
+.TP
+.B /etc/default/man
+Configuration, as described in
+.IR man (1).
+.SH "SEE ALSO"
+apropos(1),
+nroff(1),
+man(1),
+whatis(1),
+man(7)

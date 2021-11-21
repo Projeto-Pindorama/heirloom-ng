@@ -1,0 +1,49 @@
+.\"
+.\" Sccsid @(#)settime.1	1.1 (gritter) 8/23/03
+.TH SETTIME 1XNX "8/23/03" "Heirloom Toolchest" "XENIX System Compatibility"
+.SH NAME
+settime \- (XENIX) change the access and modification dates of files
+.SH SYNOPSIS
+\fBsettime\fR [\fB\-f\fI\ ref_file\fR] [\fIMMDDhhmm\fR[\fIYY\fR]] \fIfile\fR ...
+.SH DESCRIPTION
+The
+.B settime
+utility
+changes the access and modification times of files.
+Arguments that do not refer to existing files are ignored.
+If none of the arguments specify the time to set,
+the current time is used.
+.PP
+If the
+.B \-f
+option is not used
+and the first non-option argument consists of exactly eight or ten digits,
+the times of the files are set to the given time.
+.PP
+The meaning of fields in time specifications is as follows:
+.RS
+.PP
+\fICC\fP	The first two digits of the year.
+.br
+\fIYY\fP	The second two digits of the year.
+.br
+\fIMM\fP	The month of the year (01-12).
+.br
+\fIDD\fP	The day of the month (01-31).
+.br
+\fIhh\fP	The hour of the day (00-23).
+.br
+\fImm\fP	The minute of the hour (00-59).
+.br
+\fISS\fP	The second of the minute (00-61).
+.RE
+.PP
+Unless
+.I YY
+is present, the current year is used.
+.PP
+With the \fB\-f\fI ref_file\fR argument,
+the times of the files are set to those of
+.IR ref_file .
+.SH "SEE ALSO"
+touch(1)

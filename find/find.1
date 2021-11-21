@@ -1,0 +1,558 @@
+'\" t
+.\" Sccsid @(#)find.1	1.44 (gritter) 8/14/05
+.\" Parts taken from find(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.TH FIND 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+find \- find files
+.SH SYNOPSIS
+.B find
+.I pathname-list expression
+.SH DESCRIPTION
+.I Find
+recursively descends
+the directory hierarchy for
+each pathname in the
+.I pathname-list
+(i.\|e., one or more pathnames)
+seeking files that match a boolean
+.I expression
+written in the primaries given below.
+In the descriptions, the argument
+.I n
+is used as a decimal integer
+where
+.I +n
+means more than
+.I n,
+.I \-n
+means less than
+.I n
+and
+.I n
+means exactly
+.IR n .
+.TP 10n
+.BR \-name " filename"
+True if the
+.I filename
+argument matches the current file name.
+Normal
+Shell
+argument syntax
+as described in
+.IR glob (7)
+may be used if escaped (watch out for
+`[', `?' and `*').
+The internationalization constructs
+`[[:class:]]', `[[=e=]]', and `[[.cs.]]'
+are understood with
+.BR /usr/5bin/s42/find ,
+.BR /usr/5bin/posix/find ,
+and
+.BR /usr/5bin/posix2001/find ,
+but not with
+.BR /usr/5bin/find .
+.TP
+.BR \-perm " mode"
+True if the file permission flags
+exactly
+match the
+octal number
+or symbolic
+.I mode
+(see
+.IR  chmod (1)).
+If
+.I mode
+is prefixed by a minus sign,
+the flags are compared:
+.IR (flags&mode)==mode .
+.TP
+.BR \-type " c"
+True if the type of the file
+is
+.I c,
+where
+.I c
+is
+.sp
+.TS
+lfB l.
+b	block special file;
+c	character special file;
+d	directory;
+D	Solaris door;
+f	plain file;
+l	symbolic link;
+n	HP-UX network special file;
+p	named pipe;
+s	socket.
+.TE
+.TP
+.B \-follow
+Always true;
+causes find to follow symbolic links.
+The `\fB\-type\fR l' condition never occurs in this case.
+.TP
+.BR \-links " n"
+True if the file has
+.I n
+links.
+.TP
+.BR \-user " uname"
+True if the file belongs to the user
+.I uname
+(login name or numeric user ID).
+.TP
+.BR \-group " gname"
+True if the file belongs to group
+.I gname
+(group name or numeric group ID).
+.TP
+.BR \-size " n[" c ]
+True if the file is
+.I n
+blocks long (512 bytes per block),
+or, with
+.BR c ,
+.I n
+bytes long.
+.TP
+.BR \-inum " n"
+True if the file has inode number
+.I n.
+.TP
+.BR \-atime " n"
+True if the file has been accessed in
+.I n
+days.
+.TP
+.BR \-mtime " n"
+True if the file has been modified in
+.I n
+days.
+.TP
+.BR \-ctime " n"
+True if the file inode has been changed in
+.I n
+days.
+.TP
+.BR \-exec " command ... " ;
+True if the executed command returns
+a zero value as exit status.
+The end of the command must be punctuated by an (escaped)
+semicolon.
+A command argument `{}' is replaced by the
+current pathname.
+.TP
+.BR \-exec " command ... " "{} +"
+Always true.
+The
+.B {}
+argument is replaced by a set of aggregated pathnames.
+Each pathname is passed to the command as a single argument.
+Every time a limit of arguments is reached
+by the pathnames found so far,
+the command is executed,
+and aggregating starts using a new set
+beginning with the next pathname.
+If any invocation of command
+returns a non-zero exit status,
+find will return a non-zero exit status
+when its processing is done.
+.TP
+.BR \-ok " command ... " ;
+Like
+.B \-exec
+except that the generated command is written on
+the standard output, then the standard input is read
+and the command executed only upon response
+.BR y .
+.TP
+.B  \-print
+Always true;
+causes the current pathname to be printed.
+If no expression is given,
+.B \-print
+is used per default
+(as a change introduced by POSIX.2).
+.TP
+.BR \-newer " file"
+True if
+the current file has been modified more recently than the argument
+.I file.
+.TP
+.BR \-anewer " file"
+True if
+the current file has been accessed more recently than the argument
+.I file
+was modified.
+This primary is an extension.
+.TP
+.BR \-cnewer " file"
+True if a status change
+has occurred on the current file
+more recently than the argument
+.I file
+was modified.
+This primary is an extension.
+.TP
+.B \-depth
+Always true;
+causes the contents of each directory
+to be examined before the directory itselves.
+.TP
+.BR \-fstype " type"
+True if the current file
+resides on a file system of the given type.
+.TP
+.B \-local
+True if the file is on a local file system.
+Are file system types except for
+.I nfs
+and
+.I smbfs
+are currently considered local.
+.TP
+.B \-mount
+Always true;
+restricts the search to directories
+that have the same device id
+as the currently examined path operand.
+.TP
+.B \-xdev
+The same as
+.BR \-mount .
+This primary has been introduced by POSIX.
+.TP
+.B \-nouser
+True if the file is owned by a user
+that has no login name.
+.TP
+.B \-nogroup
+True if the file is owned by a group
+that lacks a group name.
+.TP
+.B \-prune
+Always true.
+Causes the search for the current path
+to be stopped once the primary is evaluated.
+When combined with
+.BR \-depth ,
+.B \-prune
+has no effect.
+.TP
+.BR \-cpio " device"
+Always true.
+Writes the file on the named device
+in binary cpio format (5120-byte records).
+Implies
+.BR \-depth .
+.TP
+.BR \-ncpio " device"
+Always true.
+Writes the file on the named device
+in SVR4 ASCII cpio format (5120-byte records).
+Implies
+.BR \-depth .
+.PP
+The primaries may be combined using the following operators
+(in order of decreasing precedence):
+.TP 4
+1)
+A parenthesized group of primaries and operators
+(parentheses are special to the Shell and must be escaped).
+.TP 4
+2)
+The negation of a primary
+(`!' is the unary
+.I not
+operator).
+.TP 4
+3)
+Concatenation of primaries
+(the
+.I and
+operation
+is implied by the juxtaposition of two primaries
+or by an explicit
+.B \-a
+operator).
+.TP 4
+4)
+Alternation of primaries
+.RB "(`" \-o "' is the"
+.I or
+operator).
+.PP
+Options have been introduced by POSIX.1-2001
+in addition to the expression operators.
+They must preceed the
+.I pathname-list
+one the command line
+and have no effect on boolean expression processing.
+.TP
+.B \-H
+Follow symbolic links given on the command line,
+but do not follow symbolic links encountered during directory traversal.
+.TP
+.B \-L
+Follow all symbolic links found,
+like the
+.I \-follow
+primary.
+.PP
+With the
+.I \-follow
+primary or the
+.I \-L
+option, hierarchy loops caused by symbolic links are detected,
+but only
+.B /usr/5bin/posix2001/find
+prints an error message.
+The offending link is not followed,
+and operation continues with the next directory entry found.
+.SH EXAMPLES
+To remove all files named
+`a.out' or `*.o' that have not been accessed for a week:
+.IP "" .2i
+find / \\( \-name a.out \-o \-name \'*.o\' \\)
+\-atime +7 \-exec rm {} \\;
+.PP
+The rm command is executed once for each file.
+The form
+.IP "" .2i
+find / \\( \-name a.out \-o \-name \'*.o\' \\)
+\-atime +7 \-exec rm {} +
+.PP
+is faster since the rm command is executed with a set of pathnames.
+.PP
+To find all files below the directory `documents'
+that contain the regular expression `string':
+.IP "" .2i
+find documents \-type f \-exec grep string {} +
+.PP
+To find all files in the directory `home',
+not descending into its subdirectories:
+.IP "" .2i
+find home ! \-name home \-prune
+.PP
+To check whether the file `diary'
+has been updated within the last two days;
+the name of the file is printed if true,
+and is not printed otherwise:
+.IP "" .2i
+find diary \-prune \-mtime \-2
+.SH FILES
+/etc/passwd
+.br
+/etc/group
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols in patterns with
+.BR /usr/5bin/s42/find ,
+.BR /usr/5bin/posix/find ,
+and
+.BR /usr/5bin/posix2001/find .
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and character class expressions
+in patterns.
+.TP
+.B SYSV3
+Causes the text of some diagnostic messages to be changed;
+causes
+.I \-ncpio
+to create traditional ASCII cpio format archives.
+.SH "SEE ALSO"
+chmod(1),
+cpio(1),
+pax(1),
+sh(1),
+xargs(1),
+stat(2),
+glob(7),
+locale(7)
+.SH NOTES
+Undesired effects can result if file names printed by
+.I find
+contain newline characters,
+as shown by the following command sequence:
+.RS
+.sp
+.nf
+$ mkdir \-p \'dummy
+> /etc\'
+$ touch \'dummy
+> /etc/passwd\'
+$ find . \-print
+\&.
+\&./dummy
+.sp
+\&./dummy
+/etc
+\&./dummy
+/etc/passwd
+$\ 
+.fi
+.sp
+.RE
+Shell scripts or utilities unaware of this problem
+will operate on
+.I /etc/passwd
+(or other arbitrary file names)
+when reading such output;
+a malicious user might create such files
+to read or overwrite privileged information.
+To circumvent this problem,
+one of the following proposals should be taken
+unless the file hierarchy traversed by the
+.I find
+command is definitively known not to contain such file names:
+.IP \(en 2
+If the output is read by the
+.I xargs
+utility to gain faster execution by aggregating command arguments as in
+.in +2
+.sp
+find . \-print | xargs \fIcommand\fR
+.sp
+.in -2
+a safe and equally fast substitute is the
+.in +2
+.sp
+find . \-exec \fIcommand\fR {} +
+.sp
+.in -2
+operand of
+.IR find ;
+it is not portably accepted by
+.I find
+implementations, though.
+.IP \(en 2
+A universal solution for submitting file names to the
+.I xargs
+utility is given in the
+.I NOTES
+section of
+.IR xargs (1).
+.IP \(en 2
+The method employed by this script can be generalized as follows:
+If the script or utility reading the output of
+.I find
+provides the necessary parsing capabilities,
+special path prefixes can be given to the
+.I find
+command, such as
+.in +2
+.sp
+find /.//. \-print
+.sp
+.in -2
+for absolute path names or
+.in +2
+.sp
+find .//. \-print
+.sp
+.in -2
+for relative path names.
+Since adjacent slash characters never appear
+in relative file names found during directory traversal,
+they can be taken as delimiters;
+a line starts a new path name
+only if the delimiter appears.
+.IP \(en 2
+The
+.I \-name
+operand can be used to exclude all path names
+that contain newline characters, as in
+.in +2
+.sp
+.nf
+$ find . \-name \'* 
+> *\' \-prune \-o ! \-name \'*
+> *\' \-print
+.sp
+.fi
+.in -2
+Note that certain other implementations of
+.I find
+require a leading period in the pattern
+to match file names with a leading period;
+it may be necessary to exclude such patterns as well.
+.IP \(en 2
+The
+.I \-depth
+operand cannot be combined with the
+.I \-prune
+operand used in the previous example.
+When the directory name must be printed
+after file names below that directory,
+as with the
+.IR cpio
+command,
+file names that leave the specified path hierarchy
+should be filtered out:
+.in +2
+.sp
+find . \-depth | egrep \'^\e./\' | cpio \-oc \-O /dev/rmt/c0s0
+.sp
+.in -2
+(note the escaped regular expression meta-character).
+.IP \(en 2
+The
+.I \-cpio
+and
+.I \-ncpio
+operands will automatically exclude file names
+that contain newline characters
+with this
+.I find
+implementation.
+.PP
+The
+.I \-print0
+operand supported by some other implementations
+is considered a very limited work-around
+since it does not allow the output to be processed
+by utilities unaware of NUL characters;
+it has therefore not been included here.

@@ -1,0 +1,90 @@
+.\"
+.\" Sccsid @(#)tape.1	1.4 (gritter) 2/29/04
+.TH TAPE 1 "2/29/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+tape \- magnetic tape maintenance
+.SH SYNOPSIS
+\fBtape\fR [\fB\-\fItape\fR] [\fB\-a\fI arg\fR] \fIcommand\fR [\fIdevice\fR]
+.SH DESCRIPTION
+The
+.I tape
+command performs control operations on tape devices.
+If no
+.I device
+is given on the command line,
+the file /etc/default/tape
+is scanned for a line beginning with `device=';
+the remainder of the lines specifies the default device.
+.PP
+The
+.I command
+argument may be one of:
+.TP
+.B status
+Print status information about the drive.
+.TP
+.B reten
+Retension the tape.
+.TP
+.B erase
+Erase the tape.
+.TP
+.B reset
+Reset tape drive.
+.TP
+.B rewind
+Rewind tape.
+.TP
+.B rfm
+Skip to the next file.
+.TP
+.B eod
+Seek to the end of written data.
+.TP
+.B wfm
+Write a filemark at the current position.
+.TP
+.B load
+Load the tape device.
+.TP
+.B unload
+Unload the tape device.
+.TP
+.B setblk
+Set the block size (in bytes) for the tape device.
+.TP
+.B setcomp
+Set tape compression.
+A value of 0 means no compression,
+all other values mean compression
+.TP
+.B setdensity
+Set tape density (in hexadecimal).
+Some density codes are:
+0 = default (autodetect);
+4 = QIC-11;
+5 = QIC-24;
+F = QIC-120,
+10 = QIC-150;
+11 = QIC-320;
+14 = EXB-8200;
+15 = EXB-8500;
+15 = QIC-1000;
+22 = QIC-2GB;
+8C = EXB-8500c;
+90 = EXB-8200c.
+.PP
+The
+.B \-a
+option gives a count for the
+.IR rfm ,
+.IR wfm ,
+.IR setblk ,
+.IR setcomp ,
+and
+.I setdensity
+commands.
+.PP
+The
+[\fB\-\fItape\fR]
+option is currently ignored.

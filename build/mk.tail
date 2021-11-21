@@ -1,0 +1,3 @@
+
+mrproper: clean
+	rm -f Makefile $(MRPROPER)

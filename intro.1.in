@@ -1,0 +1,289 @@
+'\" t
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)intro.1.in	1.22 (gritter) 1/22/06
+.TH INTRO 1 "1/22/06" "Heirloom Toolchest" "User Commands"
+.SH NAME
+intro \- introduction to commands
+.SH DESCRIPTION
+The
+.I Heirloom Toolchest
+is a collection of standard Unix utilities
+that is intended to provide maximum compatibility with traditional Unix
+while incorporating additional features necessary today.
+To achieve this,
+utilities are derived from original Unix sources
+if permitted by its licenses.
+This means that material from Unix 6th Edition,
+Unix 7th Edition, and Unix 32V was used,
+since these systems were put under an Open Source license
+by Caldera in January 2002.
+In addition, 4BSD source
+(governed by the University's copyright and partially
+derived from 32V) has been used.
+(Other sources were Sun's `OpenSolaris',
+Caldera's `Open Source Unix[tm] Tools',
+the MINIX utility collection,
+Plan 9,
+and Info-ZIP's compression codes.)
+If no freely available Unix sources were available
+(for example, for tools introduced in System III or System V),
+utilities were rewritten from scratch.
+(The exact license terms are provided in a separate document.)
+.PP
+The tools in this collection are oriented
+on the specifications or systems named below.
+Since there are some incompatibilities between them,
+some tools are present in more than one version.
+.IP \(en
+System V Interface Definition, Third Edition
+(UNIX System Laboratories, 1992) (SVID3).
+This specification corresponds to a System V Release 4
+or Solaris 2 system.
+Utilities in
+.B /usr/5bin
+are modeled after this specification and related system environments.
+If extensions introduced in POSIX.2 or POSIX.1-2001 (see below)
+did not provoke conflicts with the behavior at this level,
+they were incorporated in these utilities as well.
+This is the most traditional personality
+available with the
+.IR "Heirloom Toolchest" ;
+prominently,
+regular expressions do not have any of the internationalization features
+(see
+.IR ed (1)
+and
+.IR egrep (1)),
+and
+.I awk
+is the old version,
+.IR oawk (1).
+Use this personality to get best compatibility
+with traditional System V behavior.
+.IP \(en
+System V Interface Definition, Fourth Edition
+(Novell, Inc., 1995) (SVID4).
+This specification corresponds to a System V Release 4.2 MP system.
+Utilities in
+.B /usr/5bin/s42
+are modeled after this specification and related system environments.
+If extensions introduced in POSIX.2 or POSIX.1-2001 (see below)
+did not provoke conflicts with the behavior at this level,
+they were incorporated in these utilities as well.
+The most essential difference between this and the SVID3 personality
+are internationalized regular expressions
+and the choice of the new awk,
+.IR nawk (1),
+for
+.IR awk .
+Use this personality to get traditional System V behavior
+combined with internationalized regular expressions.
+.IP \(en
+ISO/IEC 9945-2:1993 / ANSI/IEEE Std 1003.2-1992 (POSIX.2),
+with the extensions of
+The Single UNIX Specification, Version 2 (The Open Group, 1997).
+Utilities in
+.B /usr/5bin/posix
+are intended to fully comply to this specification
+even in cases of conflict with historical behavior.
+Non-conflicting extensions to POSIX.2
+found in the environments described above
+are also present in these utilities.
+Use this personality if you need POSIX.2 features
+in preference to traditional System V ones.
+.IP \(en
+ISO/IEC 9945-1:2001 / ANSI/IEEE Std 1003.1-2001 (POSIX.1-2001),
+with the extensions of
+The Single UNIX Specification, Version 3 (The Open Group, 2001).
+Utilities in
+.B /usr/5bin/posix2001
+are intended to fully comply to this specification
+even in cases of conflict with historical behavior.
+Non-conflicting extensions to POSIX.1-2001
+found in the environments described above
+are also present in these utilities.
+Use this personality if you need POSIX.1-2001 features
+in preference to traditional System V ones.
+.PP
+To use the
+.IR "Heirloom Toolchest" ,
+select one of these personalities
+and put the corresponding directory
+at the beginning of the PATH environment variable,
+immediately followed by the toolchest base directory,
+.B @.DEFBIN.@
+(which contains the tools that are the same for all personalities).
+For example, to use the toolchest with a SVID4 personality, execute
+.RS
+.sp
+PATH=/usr/5bin/s42:\
+@.DEFBIN.@:$PATH export PATH
+.RE
+.PP
+You must select exactly one of the personalities above;
+you do not have access to the complete set of tools otherwise.
+.PP
+The manual pages generally note
+which behavior corresponds to which utility version.
+They also mark whether options and arguments
+were part of System V,
+were introduced with POSIX.2 or POSIX.1-2001,
+or if they are extensions provided by the Heirloom Toolchest,
+(possibly oriented at extensions introduced by other vendors).
+Such extensions are subject to change without a grace period;
+they are only intended for interactive usage
+and should not be included in scripts.
+.PP
+The toolchest also includes some utilities
+modeled after the BSD Compatibility environment
+of System V;
+these roughly correspond to 4.3BSD or SunOS 4 systems.
+These tools can be found in
+.BR /usr/ucb ;
+since they do not form a full personality set
+as the ones described above,
+they should be used in addition, as e.\|g.
+.RS
+.sp
+PATH=/usr/ucb:\
+/usr/5bin/s42:\
+@.DEFBIN.@:$PATH export PATH
+.sp
+.RE
+does.
+.PP
+While the
+.I Heirloom Toolchest
+is intended to be as compatible as possible
+with historical practice in general,
+annoying static limits of historical implementations
+are not present any longer.
+Input lines of unlimited length are generally accepted
+(as long as enough memory is available);
+most utilities are also able to handle binary input data
+(i.\|e. ASCII NUL characters in the input stream).
+.SS "Multibyte character encodings"
+The
+.I Heirloom Toolchest
+includes support for multibyte character encodings;
+if the underlying C library supports this
+and the
+.I LC_CTYPE
+locale
+(see
+.IR locale (7)
+for an introduction)
+is set appropriately,
+multiple input bytes can form a single character
+and are handled as such in regular expressions,
+display width computations etc.
+.PP
+Multibyte character support
+was designed with special regard to the UTF-8 encoding.
+Additional supported encodings are
+EUC-JP, EUC-KR, Big5, Big5-HKSCS, GB\ 2312, and GBK.
+Other encodings may also work,
+with the following restrictions:
+.IP \(en 2
+The character set must be a superset of ASCII
+(more specifically, of the International Reference Version of ISO\ 646).
+All ASCII characters must be encoded
+as a single byte with the same value as the ASCII character.
+This excludes 7-bit encodings like UTF-7.
+In addition,
+the C language implementation
+must map each ASCII character
+to a wide character with the same value.
+.IP \(en 2
+The first byte of each multibyte character
+must have the highest bit set,
+i.\|e. it must not be an ASCII character.
+This excludes encodings whose sequences start
+with ASCII characters like TCVN 5712.
+.IP \(en 2
+Locking-shift encodings,
+like those that use ISO\ 2022 escape sequences,
+are not supported.
+.PP
+Character comparison,
+regular expression matching
+and similar tasks are generally performed
+on the character representation obtained
+from the locale processing of the C library.
+A glyph formed by the application of combining characters
+to a base character
+will thus not normally be considered equal
+to the same glyph represented by a single base character.
+For string comparison,
+the results depend on the collation mechanism of the locale,
+which might or might not respect such relations.
+.PP
+Processing of multibyte character encodings
+is often notably slower than that of singlebyte character encodings.
+Since many widely-used languages
+(especially European ones based on Latin letters)
+contain few multibyte characters if encoded in UTF-8,
+and since experience shows that large amounts of textual data
+tend to be machine generated and to contain mostly ASCII characters
+(e.\|g. log files),
+while international language texts
+are mostly created by humans and tend to be smaller,
+processing of text in multibyte locales
+has generally been optimized
+for ASCII text.
+The performance penalty for using a multibyte locale
+is thus usually low
+if no or few multibyte characters actually occur in the data processed.
+.PP
+A problem with multibyte encodings
+that does not normally occur in singlebyte encodings
+is that of illegal byte sequences.
+In a singlebyte locale,
+each byte is treated as a character entity
+even if its value is not defined in the coded character set.
+For example, bytes with their highest bit set
+are simply passed through in the default `C' or `POSIX' locale,
+and can appear in option arguments as well as in input data.
+In multibyte locales however,
+byte sequences that do not form a valid character
+cannot be handled this way,
+because it is not always clear which bytes are to be grouped together.
+As an example, suppose that the `\e200' byte introduces a multibyte sequence.
+If this byte occurs in a string to be matched by a utility
+but is not followed by a valid continuation byte,
+it is unclear if it should match
+any byte sequence containing this byte,
+including valid ones that form a character,
+or if matches should be restricted
+to occurences in other incomplete sequences.
+For this reason,
+this implementation generally treats illegal byte sequences
+in command line arguments or programming scripts
+as syntax errors.
+Utilities do not issue a warning or even terminate with an error
+if such sequences appear in input data, though,
+since this frequently occurs in practice
+when processing binary or foreign-locale files.
+In most cases, the sequences are passed to the output unaltered.
+That data is accepted or generated by a utility
+can thus not be taken as an indication
+for its validity in respect to the current character encoding.

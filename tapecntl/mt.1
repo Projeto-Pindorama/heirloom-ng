@@ -1,0 +1,77 @@
+.\"
+.\" Sccsid @(#)mt.1	1.6 (gritter) 1/15/04
+.TH MT 1 "1/15/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+mt \- magnetic tape utility
+.SH SYNOPSIS
+\fBmt\fR [\fB\-v\fR] [\fB\-f\ \fIdevice\fR] \fIcommand\fR [\fIcount\fR]
+.SH DESCRIPTION
+The
+.I mt
+command performs certain
+control operations on tape devices.
+If no
+.I device
+is specified with the
+.B \-f
+option
+and the
+.I TAPE
+environment is not set,
+the device /dev/rmt/c0s0n is used.
+.PP
+The
+.I command
+argument may be one of:
+.TP
+.B erase
+Erase the entire tape.
+.TP
+.B rewind
+Rewind the tape.
+.TP
+.BR retension ", " ret
+Rewind the tape,
+then wind it to the end of reel,
+and rewind it again.
+.TP
+.BR wfm ", " eof ", " weof
+Write a file mark at the current position.
+.TP
+.BR sfm ", " fsf
+Seek past the next file mark.
+.TP
+.B bsf
+Seek back over the previous file mark.
+.TP
+.B fsr
+Seek forward to next record.
+.TP
+.B bsf
+Seek backward to previous record.
+.TP
+.BR enddata ", " append ", " feom
+Seek past the end of written data.
+.TP
+.BR offline ", " rewoffl
+Rewind the tape and place the tape unit offline.
+.TP
+.B status
+Report the status of the tape device.
+.PP
+The optional
+.I count
+argument specifies the number of blocks or records to seek,
+marks to be written, etc.
+.PP
+The
+.B \-v
+option causes
+.I mt
+to report the status of the tape device.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+TAPE
+Used as tape device
+if no device argument is given
+on the command line.

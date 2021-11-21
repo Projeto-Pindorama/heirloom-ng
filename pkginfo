@@ -1,0 +1,11 @@
+# Sccsid @(#)pkginfo	1.4 (gritter) 7/12/05
+PKG=heirloom
+NAME=Heirloom Toolchest
+DESC=A collection of standard Unix utilities.
+VENDOR=Gunnar Ritter
+HOTLINE=http://heirloom.sourceforge.net
+EMAIL=gunnarr@acm.org
+VERSION=070715
+ARCH=IA32,i386
+CATEGORY=utilities
+BASEDIR=/

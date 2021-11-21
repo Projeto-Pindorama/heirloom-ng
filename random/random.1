@@ -1,0 +1,31 @@
+.\"
+.\" Sccsid @(#)random.1	1.1 (gritter) 11/3/03
+.TH RANDOM 1XNX "11/3/03" "Heirloom Toolchest" "XENIX System Compatibility"
+.SH NAME
+random \- (XENIX) generate a random number
+.SH SYNOPSIS
+\fBrandom\fR [\fB\-s\fR] [\fIscale\fR]
+.SH DESCRIPTION
+.I Random
+computes a random value.
+The result is printed on standard output
+and is also returned as exit status.
+The
+.B \-s
+option inhibits printing of the result.
+When a
+.I scale
+is given,
+computed values lie between 0 and
+.IR scale .
+The maximum
+.I scale
+value is 255,
+the default is 1.
+.SH NOTES
+Since the current time in seconds
+is used as seed for computation,
+calling
+.I random
+more than once within the same second
+produces the same result for each call.

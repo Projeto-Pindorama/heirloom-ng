@@ -1,0 +1,297 @@
+'\" t
+.\" Sccsid @(#)grep.1	1.36 (gritter) 8/14/05
+.\" Parts taken from grep(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH GREP 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+grep \- search a file for a pattern
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fB/usr/5bin/grep\fR [\fB\-bchilnrRsvwz\fR]
+\fIpattern\fR [\fIfile\fR\ ...]
+.HP
+.PD 0
+.ad l
+\fB/usr/5bin/posix/grep\fR [\fB\-E\fR|\fB\-F\fR]
+\fB\-e\fI\ pattern_list\fR\ ...
+[\fB\-f\fI\ pattern_file\fR] [\fB\-c\fR|\fB\-l\fR|\fB\-q\fR]
+[\fB\-bhinrRsvwxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/grep\fR [\fB\-E\fR|\fB\-F\fR]
+\fB\-f\fI\ pattern_file\fR
+[\fB\-e\fI\ pattern_list\fR\ ...] [\fB\-c\fR|\fB\-l\fR|\fB\-q\fR]
+[\fB\-bhinrRsvwxz\fR] [\fIfile\fR\ ...]
+.HP
+.ad l
+\fB/usr/5bin/posix/grep\fR [\fB\-E\fR|\fB\-F\fR]
+[\fB\-c\fR|\fB\-l\fR|\fB\-q\fR] [\fB\-bhinrRsvwxz\fR]
+\fIpattern_list\fR [\fIfile\fR\ ...]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.B grep
+command searches the lines of the specified files
+(or of standard input)
+for occurrences of the regular expression
+.I pattern.
+The default behavior is to print each matching line to standard output.
+.PP
+The
+.B /usr/5bin/grep
+command accepts one pattern
+that is treated as a simple regular expression;
+it uses a compact nondeterministic algorithm.
+.PP
+The
+.B /usr/5bin/posix/grep
+command uses basic regular expressions by default
+and accepts a newline-separated list of patterns
+as described for the
+.B \-e
+option below.
+It uses a deterministic algorithm with moderate space requirements
+for most expressions;
+backreferences, word delimiters, and multi-character collating elements
+cause a nondeterministic algorithm to be used.
+.PP
+.B /usr/5bin/s42/grep
+and
+.B /usr/5bin/posix2001/grep
+are identical to
+.BR /usr/5bin/posix/grep .
+.PP
+See the description of
+.IR ed (1)
+for the specifications of simple and basic regular expressions.
+.PP
+Care should be taken when using the characters
+$ * [ ^ | ? \' " ( ) and \e in the expression
+as they are also meaningful to the Shell.
+It is safest to enclose the entire expression
+argument in single quotes \' \'.
+.PP
+Both
+.B /usr/5bin/grep
+and
+.B /usr/5bin/posix/grep
+accept the following options:
+.TP
+.B \-b
+Each line is preceded by the block number on which it was found.
+This is sometimes useful
+in locating disk block numbers by context.
+Block numbers start with 0.
+.TP
+.B \-c
+Only a count of matching lines is printed.
+.TP
+.B \-h
+Normally, the name of each input file is printed before a match
+if there is more that one input file.
+When this option is present, no file names are printed.
+.TP
+.B \-i
+Upper- and lowercase differences are ignored when searching matches.
+.TP
+.B \-l
+The names of files with matching lines are listed
+(once) separated by newlines.
+.TP
+.B \-n
+Each line is preceded by its line number in the file.
+Line numbers start with 1.
+.TP
+.B \-s
+Error messages for nonexistent or unreadable files are suppressed.
+.TP
+.B \-v
+All lines but those matching are printed.
+.PP
+The following options are supported by
+.B /usr/5bin/posix/grep
+only:
+.TP
+.BI \-e\  pattern_list
+Specifies one or more patterns, separated by newline characters.
+A line is selected if one or more of the specified patterns are found.
+.TP
+.B \-E
+All patterns are interpreted as extended regular expressions
+as described in
+.IR egrep (1).
+.TP
+.BI \-f\  pattern_file
+One or more patterns, separated by newline
+characters, are read from
+.I pattern_file.
+.TP
+.B \-F
+All patterns are interpreted as fixed strings,
+as with
+.IR fgrep (1).
+.TP
+.B \-q
+Do not write anything to standard output.
+.TP
+.B \-x
+Consider only lines consisting of the pattern as a whole,
+like a regular expression surrounded by
+.I ^
+and
+.I $.
+.PP
+The following options are supported as extensions:
+.TP
+.B \-r
+With this option given,
+.I grep
+does not directly search in each given file that is a directory,
+but descends it recursively
+and scans each regular file found below it.
+Device files are ignored.
+Symbolic links are followed.
+.TP
+.B \-R
+Operates recursively as with the
+.I \-r
+option,
+but does not follow symbolic links that point to directories
+unless if they are explicitly specified as arguments.
+.TP
+.B \-w
+Searches for the patterns treated as words,
+as if they were surrounded by `\e<\ \e>'.
+Only available if neither the
+.I \-E
+nor the
+.I \-F
+option are also supplied.
+.TP
+.B \-z
+If an input file is found to be compressed with
+.IR compress (1),
+.IR gzip (1),
+or
+.IR bzip2 (1),
+the appropriate compression program is started,
+and
+.I grep
+searches for the pattern in its output.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in basic regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+in both simple and basic regular expressions,
+the availability and composition of character classes
+in basic regular expressions,
+and the case mapping for the
+.B \-i
+option.
+.SH "SEE ALSO"
+ed(1),
+egrep(1),
+fgrep(1),
+sed(1),
+locale(7)
+.SH DIAGNOSTICS
+Exit status is 0 if any matches are found,
+1 if none, 2 for syntax errors or inaccessible files.
+.SH NOTES
+If a line contains a
+.SM NUL
+character,
+only matches up to this character are found
+(unless
+.B /usr/5bin/posix/grep
+is used with the
+.I \-F
+option).
+The entire matching line will be printed.
+.PP
+The LC_COLLATE variable has currently no effect.
+Ranges in bracket expressions are ordered
+as byte values in single-byte locales
+and as wide character values in multibyte locales;
+equivalence classes match the given character only,
+and multi-character collating elements are not available.
+.PP
+The options supported by
+.B /usr/5bin/posix/grep
+that are not accepted by
+.B /usr/5bin/grep
+can easily be replaced by portable constructs:
+Use
+.I egrep
+instead of
+.BR \-E ,
+.I fgrep
+instead of
+.BR \-F .
+Use
+.I egrep
+if you need the
+.B \-e
+or
+.B \-f
+option,
+use only one of them and that only once;
+if necessary, use text processing tools
+to generate a single expression list before.
+Redirect standard output to
+.I /dev/null
+for
+.B \-q
+(the possible speedup with
+.I \-q
+is never worth human time spent with porting scripts),
+and use the
+.RI ` ^ '
+and
+.RI ` $ '
+meta-characters instead of
+.BR \-x .

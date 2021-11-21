@@ -1,0 +1,18 @@
+.\"
+.\" Sccsid @(#)whoami.1	1.1 (gritter) 10/26/03
+.TH WHOAMI 1 "10/26/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+whoami \- display the effective current username
+.SH SYNOPSIS
+\fBwhoami\fR
+.SH DESCRIPTION
+.I Whoami
+prints the user name associated
+with its effective user id.
+If invoked after
+.IR su (1),
+the newly assumed name is printed,
+instead of the name previously used for logging in.
+.SH "SEE ALSO"
+id(1),
+who(1)

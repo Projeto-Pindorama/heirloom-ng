@@ -1,0 +1,72 @@
+.\"
+.\" Sccsid @(#)cal.1	1.4 (gritter) 1/11/03
+.\"
+.\" Derived from cal(1), Unix 32V:
+.\"
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CAL 1 "1/11/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+cal \- print calendar
+.SH SYNOPSIS
+\fBcal\fR [[\fImonth\fR] \fIyear\fR]
+.SH DESCRIPTION
+.I Cal
+prints a calendar for the specified year.
+If a month is also specified, a calendar
+just for that month is printed.
+If no year is given,
+the calendar for the current month is printed.
+.I Year
+can be between 1
+and 9999.
+The
+.I month
+is a number between 1 and 12.
+The calendar
+produced is that for England and her colonies.
+.PP
+Try September 1752.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+\fBLANG\fR, \fBLC_ALL\fR, \fBLC_CTYPE\fR, \fBLC_TIME\fR
+Determines the month and weekday strings.
+.SH "SEE ALSO"
+calendar(1),
+date(1),
+locale(7)
+.SH NOTES
+The year is always considered to start in January even though this
+is historically naive.
+.br
+Beware that `cal 78' refers to the early Christian era,
+not the 20th century.

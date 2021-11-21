@@ -1,0 +1,128 @@
+.\"
+.\" Derived from uniq(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH UNIQ 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+uniq \- report repeated lines in a file
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBuniq\fR [\fB\-udc\fR]
+[\fB\-f\ \fIfields\fR]
+[\fB\-s\ \fIletters\fR]
+[\fB+\fIletters\fR] [\fB\-\fIfields\fR]
+[\fIinput\fR\ [\fIoutput\fR]]
+.br
+.ad b
+.SH DESCRIPTION
+.I Uniq
+reads the input
+file comparing adjacent lines.
+In the normal case, the second and succeeding copies
+of repeated lines are
+removed; the remainder is written on the output file.
+Note that repeated lines must be adjacent
+in order to be found;
+see
+.IR  sort (1).
+If the
+.B \-u
+flag is used,
+just the lines that are not repeated
+in the original file are output.
+The
+.B \-d
+option specifies that
+one copy of just the repeated lines is to
+be written.
+The normal mode output is the union of the
+.B \-u
+and
+.B \-d
+mode outputs.
+.PP
+The
+.B \-c
+option supersedes
+.B \-u
+and
+.B \-d
+and generates
+an output report in default style
+but with each line preceded by a count of the
+number of times it occurred.
+.PP
+The
+.I letters
+and
+.I chars
+arguments specify skipping an initial portion of each line
+in the comparison:
+.TP 8
+.BI \- n
+The first
+.IR n 
+fields
+together with any blanks before each are ignored.
+A field is defined as a string of non-space, non-tab characters
+separated by tabs and spaces from its neighbors.
+.TP 8
+\fB\-f\fI n\fR
+Same as
+\fB\-\fIn\fR.
+This option was introduced by POSIX.2.
+.TP 8
+.BI + n
+The first
+.IR n 
+characters are ignored.
+Fields are skipped before characters.
+.TP 8
+\fB\-s\fI n\fR
+Same as
+\fB+\fIn\fR.
+This option was introduced by POSIX.2.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the set of blank characters.
+.SH "SEE ALSO"
+comm(1),
+sort(1),
+locale(7)

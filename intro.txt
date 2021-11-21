@@ -1,0 +1,528 @@
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+NAME
+     intro - introduction to commands
+
+DESCRIPTION
+     The Heirloom Toolchest is  a  collection  of  standard  Unix
+     utilities  that  is  intended to provide maximum compatibil‐
+     ity with traditional  Unix  while  incorporating  additional
+     features  necessary  today.   To achieve this, utilities are
+     derived from original  Unix  sources  if  permitted  by  its
+     licenses.   This  means that material from Unix 6th Edition,
+     Unix 7th Edition, and Unix 32V was used, since these systems
+     were  put  under  an  Open Source license by Caldera in Jan‐
+     uary 2002.  In addition, 4BSD source (governed by  the  Uni‐
+     versity’s copyright and partially derived from 32V) has been
+     used.  (Other sources were  Sun’s  ‘OpenSolaris’,  Caldera’s
+     ‘Open  Source Unix[tm] Tools’, the MINIX utility collection,
+     Plan 9, and Info‐ZIP’s compression  codes.)   If  no  freely
+     available  Unix  sources  were  available  (for example, for
+     tools introduced in System III or System V), utilities  were
+     rewritten  from  scratch.  (The exact license terms are pro‐
+     vided in a separate document.)
+
+     The tools in this collection are oriented on the  specifica‐
+     tions  or  systems named below.  Since there are some incom‐
+     patibilities between them, some tools are  present  in  more
+     than one version.
+
+     –    System V Interface Definition, Third Edition (UNIX Sys‐
+          tem  Laboratories,  1992)  (SVID3).  This specification
+          corresponds to a System V Release 4 or Solaris  2  sys‐
+          tem.   Utilities  in  /usr/5bin  are modeled after this
+          specification  and  related  system  environments.   If
+          extensions  introduced  in POSIX.2 or POSIX.1‐2001 (see
+          below) did not provoke conflicts with the  behavior  at
+          this  level,  they  were  incorporated  in these utili‐
+          ties as well.  This is the most  traditional  personal‐
+          ity available with the Heirloom Toolchest; prominently,
+          regular expressions do not have any of the internation‐
+          alization features (see ed(1) and egrep(1)), and awk is
+          the old version, oawk(1).  Use this personality to  get
+          best compatibility with traditional System V behavior.
+
+     –    System V Interface Definition, Fourth Edition  (Novell,
+          Inc.,  1995)  (SVID4).   This specification corresponds
+          to a System V Release  4.2  MP  system.   Utilities  in
+          /usr/5bin/s42  are modeled after this specification and
+          related system environments.  If extensions  introduced
+          in  POSIX.2  or  POSIX.1‐2001  (see below) did not pro‐
+          voke conflicts with the behavior at  this  level,  they
+          were incorporated in these utilities as well.  The most
+          essential difference between this and the SVID3 person‐
+          ality are internationalized regular expressions and the
+
+
+
+Heirloom Toolchest           1/22/06                            1
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+          choice of the new awk, nawk(1), for awk.  Use this per‐
+          sonality  to get traditional System V behavior combined
+          with internationalized regular expressions.
+
+     –    ISO/IEC  9945‐2:1993  /   ANSI/IEEE   Std   1003.2‐1992
+          (POSIX.2), with the extensions of The Single UNIX Spec‐
+          ification, Version 2 (The Open Group, 1997).  Utilities
+          in /usr/5bin/posix are intended to fully comply to this
+          specification even in cases of conflict with historical
+          behavior.   Non‐conflicting extensions to POSIX.2 found
+          in the environments described above  are  also  present
+          in  these  utilities.  Use this personality if you need
+          POSIX.2 features in preference to traditional System  V
+          ones.
+
+     –    ISO/IEC  9945‐1:2001  /   ANSI/IEEE   Std   1003.1‐2001
+          (POSIX.1‐2001),  with the extensions of The Single UNIX
+          Specification, Version 3 (The Open Group, 2001).  Util‐
+          ities in /usr/5bin/posix2001 are intended to fully com‐
+          ply to this specification even  in  cases  of  conflict
+          with  historical  behavior.  Non‐conflicting extensions
+          to POSIX.1‐2001 found  in  the  environments  described
+          above  are  also  present in these utilities.  Use this
+          personality if you need POSIX.1‐2001 features in  pref‐
+          erence to traditional System V ones.
+
+     To use the Heirloom Toolchest, select one of  these  person‐
+     alities and put the corresponding directory at the beginning
+     of the PATH environment variable,  immediately  followed  by
+     the  toolchest base directory, /usr/5bin (which contains the
+     tools that are the same for all personalities).   For  exam‐
+     ple, to use the toolchest with a SVID4 personality, execute
+
+          PATH=/usr/5bin/s42:/usr/5bin:$PATH export PATH
+
+     You must select exactly one of the personalities above;  you
+     do not have access to the complete set of tools otherwise.
+
+     The manual pages generally note which  behavior  corresponds
+     to  which  utility  version.  They also mark whether options
+     and arguments were part of System V,  were  introduced  with
+     POSIX.2  or POSIX.1‐2001, or if they are extensions provided
+     by the Heirloom Toolchest, (possibly oriented at  extensions
+     introduced  by  other vendors).  Such extensions are subject
+     to change without a grace period; they are only intended for
+     interactive usage and should not be included in scripts.
+
+     The toolchest also includes some utilities modeled after the
+     BSD  Compatibility  environment  of  System V; these roughly
+     correspond to 4.3BSD or SunOS 4 systems.  These tools can be
+     found  in  /usr/ucb; since they do not form a full personal‐
+     ity set as the ones described above, they should be used  in
+
+
+
+Heirloom Toolchest           1/22/06                            2
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     addition, as e.g.
+
+          PATH=/usr/ucb:/usr/5bin/s42:/usr/5bin:$PATH export PATH
+
+     does.
+
+     While the Heirloom Toolchest is intended to be as compatible
+     as  possible  with  historical practice in general, annoying
+     static limits of historical implementations are not  present
+     any  longer.   Input lines of unlimited length are generally
+     accepted (as long as enough memory is available); most util‐
+     ities  are also able to handle binary input data (i.e. ASCII
+     NUL characters in the input stream).
+
+  Multibyte character encodings
+     The Heirloom Toolchest includes support for multibyte  char‐
+     acter  encodings;  if the underlying C library supports this
+     and the LC_CTYPE locale (see locale(7) for an  introduction)
+     is set appropriately, multiple input bytes can form a single
+     character and are handled as such  in  regular  expressions,
+     display width computations etc.
+
+     Multibyte character support was designed with special regard
+     to  the  UTF‐8 encoding.  Additional supported encodings are
+     EUC‐JP, EUC‐KR, Big5, Big5‐HKSCS, GB 2312, and  GBK.   Other
+     encodings may also work, with the following restrictions:
+
+     – The character set  must  be  a  superset  of  ASCII  (more
+       specifically,  of  the  International Reference Version of
+       ISO 646).  All ASCII characters must be encoded as a  sin‐
+       gle byte with the same value as the ASCII character.  This
+       excludes 7‐bit encodings like UTF‐7.  In addition,  the  C
+       language implementation must map each ASCII character to a
+       wide character with the same value.
+
+     – The first byte of each multibyte character must  have  the
+       highest  bit  set, i.e. it must not be an ASCII character.
+       This excludes encodings whose sequences start  with  ASCII
+       characters like TCVN 5712.
+
+     – Locking‐shift encodings,  like  those  that  use  ISO 2022
+       escape sequences, are not supported.
+
+     Character comparison, regular expression matching and  simi‐
+     lar tasks are generally performed on the character represen‐
+     tation obtained from the locale processing of the C library.
+     A glyph formed by the application of combining characters to
+     a base character will thus not normally be considered  equal
+     to  the  same  glyph represented by a single base character.
+     For string comparison, the results depend on  the  collation
+     mechanism  of  the  locale, which might or might not respect
+     such relations.
+
+
+
+Heirloom Toolchest           1/22/06                            3
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     Processing of multibyte character encodings is often notably
+     slower  than  that of singlebyte character encodings.  Since
+     many widely‐used languages (especially European  ones  based
+     on  Latin  letters)  contain  few  multibyte  characters  if
+     encoded in UTF‐8, and  since  experience  shows  that  large
+     amounts  of  textual  data  tend to be machine generated and
+     to contain mostly ASCII characters (e.g. log  files),  while
+     international  language  texts  are mostly created by humans
+     and tend to be smaller,  processing  of  text  in  multibyte
+     locales  has  generally  been optimized for ASCII text.  The
+     performance penalty for using a  multibyte  locale  is  thus
+     usually low if no or few multibyte characters actually occur
+     in the data processed.
+
+     A problem  with  multibyte  encodings  that  does  not  nor‐
+     mally  occur in singlebyte encodings is that of illegal byte
+     sequences.  In a singlebyte locale, each byte is treated  as
+     a  character  entity even if its value is not defined in the
+     coded character set.  For example, bytes  with  their  high‐
+     est  bit  set  are  simply passed through in the default ‘C’
+     or ‘POSIX’ locale, and can appear  in  option  arguments  as
+     well  as  in input data.  In multibyte locales however, byte
+     sequences that do not form a valid character cannot be  han‐
+     dled  this  way,  because it is not always clear which bytes
+     are to be grouped together.  As an example, suppose that the
+     ‘\200’  byte  introduces a multibyte sequence.  If this byte
+     occurs in a string to be matched by a  utility  but  is  not
+     followed  by  a valid continuation byte, it is unclear if it
+     should match any byte sequence containing this byte, includ‐
+     ing  valid  ones that form a character, or if matches should
+     be restricted to occurences in other  incomplete  sequences.
+     For  this reason, this implementation generally treats ille‐
+     gal byte sequences in command line arguments or  programming
+     scripts  as syntax errors.  Utilities do not issue a warning
+     or even terminate with an error if such sequences appear  in
+     input data, though, since this frequently occurs in practice
+     when processing binary or  foreign‐locale  files.   In  most
+     cases,  the  sequences  are  passed to the output unaltered.
+     That data is accepted or generated by a utility can thus not
+     be taken as an indication for its validity in respect to the
+     current character encoding.
+
+  List of commands
+     Name      Appears on Page Description
+     apropos   apropos(1)      locate commands by keyword lookup
+     banner    banner(1)       make posters
+     basename  basename(1)     return non‐directory portion of a pathname
+     basename  basename(1B)    (BSD) return non‐directory portion of a pathname
+     bc        bc(1)           arbitrary‐precision arithmetic language
+     bdiff     bdiff(1)        big diff
+     bfs       bfs(1)          big file scanner
+     cal       cal(1)          print calendar
+
+
+
+Heirloom Toolchest           1/22/06                            4
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     calendar  calendar(1)     reminder service
+     cat       cat(1)          concatenate and print files
+     catman    catman(8)       create the formatted files for the reference manual
+     chgrp     chown(1)        change owner or group
+     chmod     chmod(1)        change mode
+     chown     chown(1)        change owner or group
+     chown     chown(1B)       (BSD) change file ownwer
+     cksum     cksum(1)        write file checksums and sizes
+     cmp       cmp(1)          compare two files
+     col       col(1)          filter reverse line feeds
+     comm      comm(1)         select or reject lines common to two sorted files
+     copy      copy(1XNX)      (XENIX) copy groups of files
+     cp        cp(1)           copy files
+     cpio      cpio(1)         copy file archives in and out
+     csplit    csplit(1)       context split
+     cut       cut(1)          cut out selected fields of each line of a file
+     date      date(1)         print or set the date
+     dc        dc(1)           desk calculator
+     dd        dd(1)           convert and copy a file
+     deroff    deroff(1)       remove nroff/troff, tbl, and eqn constructs
+     deroff    deroff(1B)      (BSD) remove nroff, troff, tbl and eqn constructs
+     df        df(1)           disk free
+     df        df(1B)          (BSD) disk free
+     dfspace   df(1)           disk free
+     diff      diff(1)         differential file comparator
+     diff3     diff3(1)        3‐way differential file comparison
+     dircmp    dircmp(1)       directory comparison
+     dirname   dirname(1)      return the directory portion of a pathname
+     du        du(1)           summarize disk usage
+     du        du(1B)          (BSD) summarize disk usage
+     echo      echo(1)         echo arguments
+     echo      echo(1B)        (BSD) echo arguments
+     ed        ed(1)           text editor
+     egrep     egrep(1)        search a file for a pattern using full regular expressions
+     env       env(1)          set environment for command invocation
+     expand    expand(1)       convert tabs to spaces
+     expr      expr(1)         evaluate arguments as an expression
+     factor    factor(1)       factor a number
+     false     true(1)         provide truth values
+     fgrep     fgrep(1)        search a file for a character string
+     file      file(1)         determine file type
+     find      find(1)         find files
+     fmt       fmt(1)          simple text formatter
+     fmtmsg    fmtmsg(1)       display a message in standard format
+     fold      fold(1)         fold long lines
+     getconf   getconf(1)      get configuration values
+     getopt    getopt(1)       parse command options
+     grep      grep(1)         search a file for a pattern
+     groups    groups(1)       show group memberships
+     groups    groups(1B)      (BSD) show group memberships
+     hd        hd(1XNX)        (XENIX) display files in hexadecimal format
+     head      head(1)         display first few lines of files
+
+
+
+Heirloom Toolchest           1/22/06                            5
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     hostname  hostname(1)     set or print name of current host system
+     id        id(1)           print user and group IDs and names
+     install   install(1B)     (BSD) install files
+     join      join(1)         relational database operator
+     kill      kill(1)         terminate a process
+     lc        ls(1)           list contents of directory
+     line      line(1)         read one line
+     listusers listusers(1)    print a list of user logins
+     ln        ln(1)           make a link
+     ln        ln(1B)          (BSD) make links
+     logins    logins(1)       list login information
+     logname   logname(1)      get login name
+     ls        ls(1)           list contents of directory
+     ls        ls(1B)          (BSD) list contents of directory
+     mail      mail(1)         send or receive mail among users
+     man       man(1)          find and display reference manual pages
+     mesg      mesg(1)         permit or deny messages
+     mkdir     mkdir(1)        make a directory
+     mkfifo    mkfifo(1)       make FIFO special file
+     mknod     mknod(1M)       build special file
+     more      more(1)         browse or page through a text file
+     mt        mt(1)           magnetic tape utility
+     mv        mv(1)           move or rename files and directories
+     mvdir     mvdir(1)        move a directory
+     nawk      nawk(1)         pattern scanning and processing language
+     newform   newform(1)      change the format of a text file
+     news      news(1)         print news items
+     nice      nice(1)         run a command at low priority
+     nl        nl(1)           line numbering filter
+     nohup     nohup(1)        run a command immune to hangups
+     oawk      oawk(1)         pattern scanning and processing language
+     od        od(1)           octal dump
+     page      more(1)         browse or page through a text file
+     paste     paste(1)        merge same lines of several files or subsequent lines of one file
+     pathchk   pathchk(1)      check pathnames
+     pax       pax(1)          portable archive interchange
+     pg        pg(1)           file perusal filter for CRTs
+     pgrep     pgrep(1)        find or signal processes by name and other attributes
+     pkill     pgrep(1)        find or signal processes by name and other attributes
+     pr        pr(1)           print files
+     printenv  printenv(1)     print out the environment
+     printf    printf(1)       print a text string
+     priocntl  priocntl(1)     process scheduler control
+     ps        ps(1)           process status
+     ps        ps(1B)          (BSD) process status
+     psrinfo   psrinfo(1)      displays information about processors
+     ptime     time(1)         time a command
+     pwd       pwd(1)          working directory name
+     random    random(1XNX)    (XENIX) generate a random number
+     renice    renice(1)       alter priority of running processes
+     rm        rm(1)           remove directory entries
+     rmdir     rmdir(1)        remove directories
+
+
+
+Heirloom Toolchest           1/22/06                            6
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     sdiff     sdiff(1)        print file differences side‐by‐side
+     sed       sed(1)          stream editor
+     setpgrp   setpgrp(1)      set process group ID and session ID
+     settime   settime(1XNX)   (XENIX) change the access and modification dates of files
+     shl       shl(1)          shell layer manager
+     sleep     sleep(1)        suspend execution for an interval
+     sort      sort(1)         sort or merge files
+     spell     spell(1)        find spelling errors
+     split     split(1)        split a file into pieces
+     stty      stty(1)         set the options for a terminal
+     stty      stty(1B)        (BSD) set the options for a terminal
+     su        su(1)           become super‐user or another user
+     sum       sum(1)          sum and count blocks in a file
+     sum       sum(1B)         (BSD) sum and count blocks in a file
+     sync      sync(1M)        update the super block
+     tabs      tabs(1)         set terminal tabs
+     tail      tail(1)         deliver the last part of a file
+     tape      tape(1)         magnetic tape maintenance
+     tapecntl  tapecntl(1)     tape control for tape devices
+     tar       tar(1)          tape archiver
+     tcopy     tcopy(1)        copy a magnetic tape
+     tee       tee(1)          pipe fitting
+     test      test(1)         condition command
+     test      test(1B)        (BSD) condition command
+     time      time(1)         time a command
+     touch     touch(1)        update file access and modification times
+     tr        tr(1)           translate characters
+     tr        tr(1B)          (BSD) translate characters
+     true      true(1)         provide truth values
+     tsort     tsort(1)        topological sort
+     tty       tty(1)          get terminal name
+     ul        ul(1)           underline
+     uname     uname(1)        get system name
+     unexpand  unexpand(1)     convert spaces to tabs
+     uniq      uniq(1)         report repeated lines in a file
+     units     units(1)        conversion program
+     uptime    uptime(1)       show how long system has been up
+     users     users(1)        display a compact list of users logged in
+     w         w(1)            who is on and what they are doing
+     wc        wc(1)           word count
+     what      what(1)         identify SCCS files
+     whatis    whatis(1)       display a one‐line summary about a keyword
+     who       who(1)          who is on the system
+     whoami    whoami(1)       display the effective current username
+     whodo     whodo(1)        who is doing what
+     xargs     xargs(1)        construct argument list(s) and execute command
+     yes       yes(1XNX)       (XENIX) print strint repeatedly
+
+  Other manual entries
+     Page     Description
+     fspec(5) format specifications in text files
+     intro(1) introduction to commands
+
+
+
+Heirloom Toolchest           1/22/06                            7
+
+
+
+
+
+
+INTRO(1)                  User Commands                  INTRO(1)
+
+
+
+     man(7)   macros to typeset manual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Heirloom Toolchest           1/22/06                            8
+
+
+

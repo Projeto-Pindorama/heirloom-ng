@@ -1,0 +1,132 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)touch.1	1.18 (gritter) 2/10/05
+.TH TOUCH 1 "2/10/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+touch \- update file access and modification times
+.SH SYNOPSIS
+\fBtouch\fR [\fB\-amc\fR] [\fIMMDDhhmm\fR[\fIYY\fR]] \fIfile\fR ...
+.br
+\fBtouch\fR [\fB\-amc\fR]
+[\fB\-r\fI\ ref_file\fR|\fB\-t\fI\ time\fR] \fIfile\fR ...
+.SH DESCRIPTION
+The
+.B touch
+utility
+changes the access and modification times of files.
+It creates a file if it does not already exist.
+If none of the arguments specify the time to set,
+the current time is used.
+.PP
+If neither the
+.B \-r
+nor the
+.B \-t
+option is used to specify a time value
+and the first non-option argument begins with a digit,
+and it consists of exactly eight or ten digits with
+.B /usr/5bin/posix/touch
+and
+.BR /usr/5bin/posix2001/touch ,
+the times of the files are set to the given time.
+.PP
+The meaning of fields in time specifications is as follows:
+.RS
+.PP
+\fICC\fP	The first two digits of the year.
+.br
+\fIYY\fP	The second two digits of the year.
+.br
+\fIMM\fP	The month of the year (01-12).
+.br
+\fIDD\fP	The day of the month (01-31).
+.br
+\fIhh\fP	The hour of the day (00-23).
+.br
+\fImm\fP	The minute of the hour (00-59).
+.br
+\fISS\fP	The second of the minute (00-61).
+.RE
+.PP
+Unless
+.I YY
+is present, the current year is used.
+If
+.I YY
+is given without
+.IR CC ,
+the century is 19 if
+.I YY
+is in the range of 69\^\(en\^99,
+or 20 for
+.I YY
+values of 00\^\(en\^68.
+.PP
+The following options are accepted:
+.TP
+.B \-a
+Change the access time,
+but not the modification time unless
+.B \-m
+is also present.
+.TP
+.B \-c
+If a file does not exist, it is not created.
+No diagnostic message is printed; for
+.B /usr/5bin/touch
+and
+.BR /usr/5bin/s42/touch ,
+the exit status is incremented.
+The exit status is not affected for
+.B /usr/5bin/posix/touch
+and
+.BR /usr/5bin/posix2001/touch .
+.TP
+.B \-m
+Change the access time,
+but not the modification time unless
+.B \-a
+is also present.
+.PP
+The following options have been introduced by POSIX.2:
+.TP
+.BI \-r \ ref_file
+The corresponding time of the specified file is used
+instead of the current time.
+.TP
+.BI \-t \ time
+Instead of the current time,
+the
+.I time
+specified as
+.RS
+.IP
+.RI [[ CC ] YY ] MMDDhhmm [. SS ]
+.PP
+is used.
+.RE
+.PP
+The exit status is the number of files
+that were not successfully processed.
+.SH "SEE ALSO"
+date(1),
+utime(2)

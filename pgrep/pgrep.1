@@ -1,0 +1,258 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)pgrep.1	1.9 (gritter) 8/14/05
+.TH PGREP 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+pgrep, pkill \- find or signal processes by name and other attributes
+.SH SYNOPSIS
+.HP
+.ad l
+\fBpgrep\fR [\fB\-flnovx\fR] [\fB-d\ \fIdelim\fR]
+[\fB\-P\ \fIppidlist\fR] [\fB\-g\ \fIpgrplist\fR] [\fB\-s\ \fIsidlist\fR]
+[\fB\-u\ \fIeuidlist\fR] [\fB\-U\ \fIuidlist\fR]
+[\fB-G\ \fIgidlist\fR] [\fB\-t\ \fItermlist\fR] [\fIpattern\fR]
+.HP
+.ad l
+\fBpkill\fR [\fB-\fIsignal\fR] [\fB\-fnovx\fR]
+[\fB\-P\ \fIppidlist\fR] [\fB\-g\ \fIpgrplist\fR] [\fB\-s\ \fIsidlist\fR]
+[\fB\-u\ \fIeuidlist\fR] [\fB\-U\ \fIuidlist\fR]
+[\fB-G\ \fIgidlist\fR] [\fB\-t\ \fItermlist\fR] [\fIpattern\fR]
+.br
+.ad b
+.SH DESCRIPTION
+.I Pgrep
+searches the currently active processes
+for occurences of the specified
+.I pattern
+and prints the process IDs of the matching ones.
+.I Pattern
+is treated as an extended regular expression
+as described in
+.IR egrep (1).
+A number of options can be used in addition to the
+.I pattern
+(or without specifying
+.IR pattern )
+to further restrict the set of matching processes.
+Multiple criteria can be specified for each of these options,
+separated by commas or blanks,
+or by giving the option more than once.
+In this case,
+all processes that match any of the given criteria
+are considered matches.
+If more than one kind of criterion is specified,
+a process must match each kind of criterion.
+.PP
+.I Pkill
+is similar to
+.IR pgrep ,
+but a signal (SIGTERM by default)
+is sent to matching processes
+instead of printing its process ID.
+The signal can be changed with the
+\fB\-\fIsignal\fR
+argument;
+this argument must appear before all options
+to be recognized.
+.I Signal
+can be either numeric
+or symbolic with the SIG prefix omitted
+(as in QUIT for SIGQUIT).
+.PP
+Zombie processes and the current
+.I pgrep
+or
+.I pkill
+process are never included.
+.PP
+Both commands accept the following options:
+.TP 12
+\fB\-d \fIdelim\fR
+Use the specified
+.I delimiter
+string to separate process IDs in output.
+By default, a newline character is used.
+This option is accepted by
+.I pgrep
+only.
+.TP 12
+.B \-f
+Use the command line arguments of each process
+instead of the name of its executable file
+for matching,
+and, if
+.B \-l
+is also specified,
+for printing.
+.TP 12
+\fB\-g\fI pgrplist\fR
+Restrict matches to processes
+whose process group ID
+appears in
+.IR pgrplist .
+If an ID is `0',
+the process group ID of the current process is used.
+.TP 12
+\fB\-G\fI gidlist\fR
+Restrict matches to processes
+whose real group ID
+appears in
+.IR gidlist .
+.TP 12
+.B \-l
+Print the command name in addition to the process ID.
+This option is accepted by
+.I pgrep
+only.
+.TP 12
+.B \-n
+Select only the newest (most recently created) process
+of all processes that matched the other criteria.
+Cannot be combined with
+.IR \-o .
+.TP 12
+.B \-o
+Select only the oldest (least recently created) process
+of all processes that matched the other criteria.
+Cannot be combined with
+.IR \-n .
+.TP 12
+\fB\-P\fI ppidlist\fR
+Restrict matches to processes
+whose parent ID appears in
+.IR ppidlist .
+.TP 12
+\fB\-s\fI sidlist\fR
+Restrict matches to processes
+that are members of a session given in
+.IR sidlist .
+If an ID is `0',
+the session ID of the current process is used.
+.TP 12
+\fB\-t\fI termlist\fR
+Restrict matches to processes
+that run on any controlling terminal given in
+.IR termlist .
+Terminal specifications have the format described in
+.IR ps (1).
+.TP 12
+\fB\-u\fI uidlist\fR
+Restrict matches to processes
+whose effective user ID
+appears in
+.IR uidlist .
+.TP 12
+\fB\-U\fI uidlist\fR
+Restrict matches to processes
+whose real user ID
+appears in
+.IR uidlist .
+.TP 12
+.B \-v
+Reverse the match,
+that is,
+select all processes that fail to fulfill the given criteria.
+.TP 12
+.B \-x
+Require the entire process name to be matched,
+as if
+.I pattern
+was surrounded by `^( )$'.
+.SH EXAMPLES
+.PP
+Determine the process ID of the
+.I inetd
+process:
+.RS
+.sp
+pgrep \-x inetd
+.sp
+.RE
+Print all processes that have a first argument starting with
+.I /bin/
+along with their arguments:
+.RS
+.sp
+pgrep \-l \-f \'^/bin/\'
+.sp
+.RE
+Send a SIGHUP signal to all processes that are owned by either the
+.I root
+or the
+.I daemon
+user and are children of the
+.I init
+process
+(process ID 1):
+.RS
+.sp
+pkill \-HUP \-u root,daemon \-P 1
+.sp
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in extended regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters and
+the availability and composition of character classes
+in extended regular expressions.
+.SH "SEE ALSO"
+egrep(1),
+ps(1),
+locale(7)
+.SH DIAGNOSTICS
+.I Pgrep
+and
+.I Pkill
+exit with
+.TP
+0
+if matching processes were found,
+and the \fI\-v\fR option was not specified;
+.br
+.ns
+.TP
+1
+if no matching processes were found,
+or the \fI\-v\fR option was specified without any matches;
+.br
+.ns
+.TP
+2
+if an invalid command line argument was found;
+.br
+.ns
+.TP
+3
+on fatal errors.
+.SH NOTES
+Command names are limited to 18 characters,
+process arguments to 80 characters;
+excess characters are stripped.

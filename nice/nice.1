@@ -1,0 +1,73 @@
+.\"
+.\" Sccsid @(#)nice.1	1.7 (gritter) 12/6/04
+.\" Parts taken from nice(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH NICE 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+nice \- run a command at low priority
+.SH SYNOPSIS
+\fBnice\fR [\fB\-n\fI number\fR] \fIutility\fR [\fIargument\fR ...]
+.sp
+\fBnice\fR [\fB\-\fInumber\fR] \fIutility\fR [\fIargument\fR ...]
+.SH DESCRIPTION
+The
+.B nice
+command
+executes
+.I utility
+with low scheduling priority.
+If the
+.I number
+argument
+is present,
+the priority is incremented
+(higher numbers mean lower priority)
+by that amount up to a limit of 19.
+The default number is 10.
+.PP
+An user with appropriate privileges
+may run commands with priority higher than normal
+by using a negative priority,
+e.\ g. `\fI\-\-10\fR'.
+.PP
+The \fI\-n\ number\fR syntax was introduced by POSIX.2.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B PATH
+Used to locate
+.IR utility .
+.SH "SEE ALSO"
+priocntl(1),
+sh(1),
+nice(2),
+execvp(3)

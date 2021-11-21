@@ -1,0 +1,157 @@
+.\"
+.\" Sccsid @(#)shl.1	1.4 (gritter) 10/8/03
+.TH SHL 1 "10/8/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+shl \- shell layer manager
+.SH SYNOPSIS
+.B shl
+.SH DESCRIPTION
+.B shl
+provides a method to handle multiple shells in parallel
+on a single terminal.
+Each shell is put in its own session
+and has its own controlling pseudo-terminal.
+At a time, one shell layer can receive input,
+but output is multiplexed from all layers.
+When the
+.SM SWTCH
+key (assigned to
+.B ^Z
+at startup if unset) is pressed,
+.B shl
+takes control over the terminal
+and allows the user to manage layers.
+The prompt
+.B >>>
+is used by
+.B shl
+when commands may be entered.
+.SS Definitions
+Commands and arguments are separated by spaces or tabs
+and terminated by a new-line.
+A layer name
+consists of printable characters
+other than space, tab, or new-line.
+Only the first eight characters are significant.
+.SS Commands
+The following commands may be entered at the
+.B shl
+prompt;
+any unique prefix is accepted.
+.TP
+.BR create " [\-[\fIname\fP] | \fIname\fP [\fIcommand\fP]]"
+Create a new layer that has the specified
+.I name.
+If
+.I name
+is omitted, it is taken from an internal counter and formed as
+.RI ( digit ).
+A name may later be referenced with or without these braces.
+If
+.I name
+begins with \-, a login shell is started,
+that is, the first argument to the shell begins with \-, too.
+An optional
+.I command
+can be executed instead of the shell.
+The shell prompt variable
+.SM PS1
+is set to the name of the layer followed by a space character.
+.TP
+.BR name " [\fIoldname\fP] \fInewname\fP"
+Rename the layer
+.I oldname
+or the current layer to
+.I newname.
+.TP
+.BR ! " [\fIcommand\fP]"
+Execute
+.I command
+or the default shell
+in a subshell on the same terminal device as
+.B shl
+operates on.
+Switching between layers is not possible
+until the command terminates.
+.TP
+.BR block " \fIname\fP [\fIname ...\fP]"
+Block output of the given layers
+when they are not current layers.
+.TP
+.BR delete " \fIname\fP [\fIname ...\fP]"
+Delete the given layers, that is,
+send a
+.SM SIGHUP
+to each process group.
+.TP
+.BR help " (or \fB?\fP)"
+Print the syntax of all
+.B shl
+commands.
+.TP
+.BR layers " [\-l] [\fIname ...\fP]"
+For each given layer, or for all layers,
+print the layer name and its process group.
+If the
+.B \-l
+option is present,
+a
+.BR ps (1)-like
+output format is used.
+.TP
+.BR resume " [\fIname\fP]"
+Resume the specified layer, or the last current layer.
+.TP
+.B toggle
+Resume the previous current layer to that of the current layer.
+.TP
+.BR unblock " \fIname\fP [\fIname ...\fP]"
+Unblock output of the given layers.
+.TP
+.B quit
+Quit
+.B shl
+and send a
+.SM SIGHUP
+signal to all remaining layers.
+.TP
+.I name
+Resume the specified layer. Any unique name prefix is accepted.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SHELL
+Default shell program.
+.TP
+.B SYSV3
+Causes the text of some messages to be changed.
+.SH "SEE ALSO"
+ps(1),
+sh(1),
+stty(1),
+termio(7I)
+.SH NOTES
+This
+.B shl
+implementation uses regular pseudo terminals
+and thus works slightly different than the original System V one.
+.PP
+The
+.B block
+command will not suspend a layer from execution immediately.
+The layer will continue to run
+until the pseudo terminal's buffer is filled.
+This can lead to lots of output
+once the layer is resumed or unblocked.
+.PP
+The
+.B loblk
+setting of
+.BR stty (1)
+is not honored.
+.PP
+While pseudo-terminal settings are
+an attribute of a specific layer,
+terminal states set by escape sequences are not
+and can cause unpredictable results when layers are switched.
+It might be better to stop or quit screen-handling programs
+on some output devices.

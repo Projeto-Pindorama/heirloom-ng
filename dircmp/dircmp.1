@@ -1,0 +1,59 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License, Version 1.0 only
+.\" (the "License").  You may not use this file except in compliance
+.\" with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"
+.\" Copyright (c) 2005 Gunnar Ritter, Freiburg i. Br., Germany.
+.\"
+.\" Sccsid @(#)dircmp.1	1.1 (gritter) 6/25/05
+.TH DIRCMP 1 "6/25/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+dircmp \- directory comparison
+.SH SYNOPSIS
+\fBdircmp\fR [\fB\-ds\fR] [\fB\-w\fI width\fR] \fIdirectory directory\fR
+.SH DESCRIPTION
+The
+.I dircmp
+command creates a list of files which are 
+identical, different, or exist in only one of the two
+.I directories
+given.
+.PP
+With the
+.B \-d
+option, differing files are compared using
+.IR diff (1),
+and its output is included.
+.PP
+The
+.B \-s
+option suppresses messages about identical files.
+.PP
+Output is paginated through
+.IR pr (1).
+The
+.B \-w
+option specifies a maximum
+.I width
+for the formatted output.
+.SH "SEE ALSO"
+diff(1)
+.SH NOTES
+.I dircmp
+ignores files whose names contain backslash or newline characters.

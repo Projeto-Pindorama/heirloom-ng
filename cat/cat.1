@@ -1,0 +1,120 @@
+.\"
+.\" Sccsid @(#)cat.1	1.12 (gritter) 4/17/05
+.\" Parts taken from cat(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CAT 1 "4/17/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+cat \- concatenate and print files
+.SH SYNOPSIS
+\fBcat\fR [\fB\-suv\fR [\fB\-et\fR]] [\fB\-B\ \fIsize\fR] [\fIfile\fR ...]
+.SH DESCRIPTION
+.B Cat
+reads each file in sequence and writes it
+on the standard output. Thus
+.RS
+.sp
+cat file
+.sp
+.RE
+prints the file and
+.RS
+.sp
+cat file1 file2 >file3
+.sp
+.RE
+concatenates the first two files and places the result
+on the third.
+.PP
+If no file is given,
+or if the argument `\-' is encountered,
+.B cat
+reads from the standard input.
+.PP
+The
+.B cat
+command accepts the following options:
+.TP
+.B \-u
+Ensures output to be unbuffered.
+.TP
+.B \-s
+Causes
+.B cat
+to be silent about files that cannot be opened,
+read problems and similar error conditions.
+.TP
+.B \-v
+With this option given,
+non-printable characters are detected
+and printed as `\fB^\fIn\fR' for control characters
+and `\fBM\-\fIn\fR' for characters with the high bit set.
+.TP
+.B \-t
+If
+.B \-v
+is present,
+this option causes tab and formfeed characters
+to be handled as control characters.
+.TP
+.B \-e
+If
+.B \-v
+is present,
+this option causes end-of-line to be marked with `$'.
+.PP
+The following option is an extension:
+.TP
+\fB\-B\ \fIsize\fR
+Causes input and output to be performed in
+.I size
+byte units.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the set of printable characters
+for the
+.B \-v
+option.
+.SH "SEE ALSO"
+cp(1),
+pg(1),
+pr(1),
+locale(7)
+.SH NOTES
+Beware of `cat a b >a' and `cat a b >b',
+which destroy input files before reading them.

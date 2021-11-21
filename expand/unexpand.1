@@ -1,0 +1,83 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)unexpand.1	1.3 (gritter) 12/6/04
+.TH UNEXPAND 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+unexpand \- convert spaces to tabs
+.SH SYNOPSIS
+\fBunexpand\fR [\fB\-a\fR]
+[\fB\-t\ \fItablist\fR | \fB\-\fItablist\fR] [\fIfile\fR\ ...]
+.SH DESCRIPTION
+The
+.I unexpand
+utility converts multiple space characters found
+at the beginning of each line
+of its input
+.I files
+(or of standard input if no
+.I file
+argument is present)
+to tabulators if appropriate
+and writes the result to standard output.
+The input is ordered in columns
+according to the width of characters;
+a backspace character causes the column to be decremented.
+By default, a tabulator stop is assumed at every eight positions.
+.PP
+The following options alter the behavior of
+.IR unexpand :
+.TP
+.B \-a
+Causes conversion also to apply
+to sequences of two or more spaces
+found after the first character on each line other than a space.
+.TP
+.B \fB\-t\ \fItablist\fR
+Specify the positions of tabulator stops.
+If
+.I tablist
+is a single number,
+a tabulator stop is assumed at every
+.I tablist positions.
+If
+.I tablist
+is a list of numbers
+in strictly ascending order
+separated by commas or blanks,
+a tabulator stop is assumed at each numbered position.
+For column positions beyond the last tabulator stop,
+each tabulator character is converted to a single space character.
+Implies
+.IR \-a .
+This option was introduced by POSIX.2.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Specifies the mapping of bytes to characters
+and the width of characters.
+.SH "SEE ALSO"
+expand(1),
+tabs(1)

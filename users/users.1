@@ -1,0 +1,19 @@
+.\"
+.\" Sccsid @(#)users.1	1.2 (gritter) 10/26/03
+.TH USERS 1 "10/26/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+users \- display a compact list of users logged in
+.SH SYNOPSIS
+\fBusers\fR [\fIfile\fR]
+.SH DESCRIPTION
+.I Users
+gives a on-line summary of the names of users
+currently logged in.
+If a
+.I file
+argument is given,
+.I users
+uses this file to get the list of users instead of
+.BR /var/run/utmp.
+.SH "SEE ALSO"
+who(1)

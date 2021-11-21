@@ -1,0 +1,145 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)cut.1	1.8 (gritter) 12/6/04
+.TH CUT 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+cut \- cut out selected fields of each line of a file
+.SH SYNOPSIS
+\fBcut \-b \fIlist\fR [\fB\-n\fR] [\fIfile\fR\ .\ .\ .\ ]
+.br
+\fBcut \-c \fIlist\fR [\fIfile\fR\ .\ .\ .\ ]
+.br
+\fBcut \-f \fIlist\fR [\fB\-d \fIchar\fR] [\fB\-s\fR] [\fIfile\fR\ .\ .\ .\ ]
+.SH DESCRIPTION
+The
+.B cut
+utility selects columns of
+.I files
+for printing
+based either on byte position, character position,
+or field delimiters.
+.PP
+If no
+.I file
+is given,
+or if
+.I file
+is
+.BR \- ,
+.B cut
+reads from standard input.
+.PP
+The
+.I list
+consists of numbers separated by commas or blanks
+that select the corresponding input field,
+starting at 1.
+Ranges of fields may be given as in
+.TP
+\fIm\fB\-\fIn\fR
+Selects all fields from
+.I m
+to
+.IR n .
+.TP
+\fIm\fB\-\fR
+Selects all fields from
+.I m
+to the last field of each input line.
+.TP
+\fB\-\fIn\fR
+Selects all fields from the first field
+to
+.IR n .
+.PP
+The
+.B cut
+command accepts the following options:
+.TP
+\fB\-c\fI list\fR
+Each character of an input line forms a column.
+All selected characters are printed without intervening separators;
+all newline characters of the input file are passed through.
+.TP
+\fB\-d\fI char\fR
+Sets the field delimiter character for the
+.B \-f
+option to
+.IR char .
+.TP
+\fB\-f\fI list\fR
+Columns are sequences of zero or more characters
+separated by a field delimiter character,
+by default a tabulator (\et).
+The selected fields are printed,
+separated by the field delimiter character.
+Lines that do not contain the field delimiter character
+are passed through unchanged.
+.TP
+\fB\-s\fR
+With the
+.B \-f
+option,
+lines that do not contain the field delimiter character
+are not passed through.
+.PP
+The following options were introduced by POSIX.2:
+.TP
+\fB\-b\fI list\fR
+Each single byte of an input line forms a column.
+All selected bytes are printed without intervening separators;
+all newline characters of the input file are passed through.
+.TP
+\fB\-n\fR
+Changes the behavior of the
+.B \-b
+option such that ranges start and end at character boundaries.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+for the argument to the
+.B \-d
+option
+and in input files processed
+with the
+.BR \-bn ,
+.BR \-c ,
+and
+.B \-f
+options.
+.SH "SEE ALSO"
+paste(1),
+locale(7)
+.SH NOTES
+Since
+.I "cut \-f"
+cannot be told to recognize both space and tabulator as delimiters,
+or to take adjacent delimiter characters as single delimiters,
+it is not generally usable
+to select fields of white-space separated tables.
+Use
+.IR awk (1)
+for this purpose.

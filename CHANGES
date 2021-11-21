@@ -1,0 +1,925 @@
+Release 070715
+* cpio: A "-P" option has been introduced that allows to specify attributes
+  like the file owner when creating an archive. With it, unprivileged users
+  can set arbitrary attributes for files within an archive.
+* diff: Made it compile on CentOS 5.
+* Static linking against glibc is now possible since "optopt" is no longer
+  a common symbol, and there is no conflict anymore with "getopt.o".
+* cpio, tar: A compilation problem on some Linux systems has been fixed.
+* ul: A compilation problem for NetBSD and other systems that use termcap
+  instead of curses has been fixed (patch by Aleksey Cheusov).
+* bfs: An OpenSolaris-derived manual page is now included.
+
+Release 070227
+* The directory for development utilities, by default "/usr/ccs/bin", is
+  now configurable in "build/mk.config" . It is expected that the utilities
+  from the "Heirloom Development Tools" package are installed in it.
+* getconf: "/usr/ccs/bin" is now included in the default path as printed
+  with the "PATH" argument.
+* what: Has been replaced by an OpenSolaris-derived implementation.
+* tsort: Is now installed in "/usr/ccs/bin".
+* OpenSolaris-derived manual pages are now included for bdiff, newform,
+  and fspec(5).
+* psrinfo: Fixed the computation of the "on-line since" time for Linux 2.6.
+* cpio: Added a "-D" option to make it usable in combination with SVR4
+  packaging tools. This option is not intended for general use, and is
+  thus not documented.
+* The package build target "make pkg" for Solaris and Open UNIX is no
+  longer supported.
+
+Release 070115
+* deroff: Now recognizes the ".do" and ".xflag" requests as well as an "-xN"
+  command line option to handle Heirloom nroff/troff extensions.
+* ed: Substituting only a specific occurence of the pattern, as in the
+  command "s/x/y/3", now works correctly if the substitution "y" is not
+  equal in length to the pattern match "x" (Derek Thomas).
+* ps: Use the Linux 2.6 /proc/status "SleepAVG" field to compute the value
+  for the "C" column (cpu usage for scheduling).
+* priocntl: The "FF", "B", and "ISO" class names are now accepted with
+  the "-e" option too.
+* file: UTF-8 characters in troff input files are now recognized.
+* cp: The "-s" option now displays correct sizes and related statistics
+  for special files with st_size == 0.
+* grep: With the "-z" option, decompressor children processes are now
+  properly waited for, avoiding failures when processing many files.
+* su: Works with PAM on Mac OS X now (Stefan Tramm).
+* ps: Handles dead processes as on other platforms now (Stefan Tramm).
+* pgrep: Ignores dead processes now (Stefan Tramm).
+* spell: A value of the wrong type that was passed to scanf() could lead
+  to build errors on 64-bit platforms (Jeffrey H. Johnson).
+* ps, pgrep, whodo: Works on FreeBSD 6 now.
+* df, find, ps: Changes have been made to build on NetBSD 3 (Aleksey Cheusov).
+* Changes have been made to build on OpenBSD 3.8 (Aleksey Cheusov).
+* Changes have been made to build with GNU make 3.81.
+
+Release 060122
+* The tools have been ported to Mac OS X 10.4.3 (patches by Stefan Tramm).
+* The tools have been ported to DragonFlyBSD 1.3.7-DEVELOPMENT.
+
+Release 051118
+* rm: The output of the question before descending to a directory with
+  the "-i" option has been fixed.
+* /usr/ucb/ps: The "-a" option has been fixed; it incorrectly printed a
+  list of all processes since release 050411.
+* getconf: /usr/ucb is now put at the end of the Heirloom directory list
+  for the PATH variable.
+* The "-man" macro no longer produces cut marks when used with troff.
+* tr: When evaluating '[:class:]' expressions, the last position of the
+  coded character set was not included; this has been fixed.
+* ps: The "-R" option (resource usage format), which had been present
+  for some time, has been documented.
+* RPM package builds now require the new "Heirloom Development Tools"
+  package from <http://heirloom.sourceforge.net/devtools.html> to be
+  installed.
+
+Release 050815
+* The "getconf" utility has been added (derived from OpenSolaris code).
+* The "mesg" and "pathchk" utilities have been added.
+* tr: A new implementation that is based on 6th and 7th edition code is
+  now used. It stores the translation tables in arrays of variable size.
+  This results in better performance, under some circumstances at the
+  expense of higher memory consumption.
+* printf: Handle unsigned values larger than INT_MAX correctly with "%u",
+  "%o", "%x", and "%X".
+* printf: Handle SVID3 "position" fields in format specifications, such
+  as "%7$s", that specify which argument is used next.
+* pg: If a line does not fit on the screen, do not print a newline to
+  force wraparound unless it is really necessary. This allows to select
+  words across the wrap for copy-and-paste in an xterm.
+* pg: Discard the ESC[48m sequence on a terminal that supports colors.
+* ed: Do not print "expecting `w'" with the "q" command after a zero-byte
+  file has been written.
+* man: The tmac.an macros no longer use "@" as an escape character; its
+  previous use lead to weird output with Unix nroff when an "@" appeared
+  in titles or hanging labels.
+* man: The "TCAT" post processor is now invoked separately for each manual
+  entry. Previously, when the -t option was given with multiple entries and
+  TCAT=dpost, only the first entry was actually printed.
+* Some issues with building on AIX have been fixed.
+
+Release 050713
+* The 'echo' and 'test' commands have been added as standalone versions of
+  those of the Heirloom Bourne shell.
+* The 'false', 'kill', 'printf', 'pwd', and 'true' commands have been added.
+* ed: Copying a larger number of lines with the 't' command could cause a
+  segmentation fault because some pointers were not updated after calling
+  realloc().
+* ed: Do not warn about an 'input error' anymore when reading a file that
+  lacks the terminating newline.
+* ed: Disallow the 'u' command if no change has been made yet after a file
+  specified on the command line has been read.
+* mail: The Content-Length header field is not used anymore; it is ignored
+  when a folder is read, and is omitted when a message is written.
+* mail: The LC_CTYPE locale now determines the set of printable characters.
+* mail: MIME header fields are no longer generated; the mail command is far
+  away from conforming to MIME and should not fake such information.
+
+Release 050628
+* The Bourne shell (derived from OpenSolaris code) has been added to the
+  Heirloom project as a separate package. It is recommended to install it
+  before the new version of the tools, and to adapt 'build/mk.config' such
+  that it is used.
+* New versions of the 'mail' and 'spell' utilities have been introduced;
+  they have been derived from OpenSolaris code.
+* The 'bdiff, 'bfs', 'dircmp', 'fmtmsg', 'getopt', and 'mvdir' utilities
+  are now available (derived from OpenSolaris code).
+* Both Unix lex and flex can now be used for building the tools.
+* xargs: The '-l' and '-L' options override previous occurrences of the
+  '-i' or '-I' option.
+* awk (POSIX version): A command line argument that contains a '=' character
+  but starts with a digit is no longer treated as a variable assignment.
+
+Release 050612
+* Fixed a double free() call that could occur in multibyte locales with
+  all programs using traditional (simple) regular expressions.
+* man: Handle .so requests that do not contain a path to the target file.
+* tar: Fixed a NULL pointer dereference that occured if the 'b' option was
+  given without a corresponding argument.
+* tar: Immediately issue an error if calls to read() for an input archive
+  return fewer bytes than the first one and the archive has not yet been
+  processed completely. This condition was previously not detected in the
+  rare case where the previous contents of the input buffer accidentally
+  formed a valid continuation of the archive.
+* shl: The external 'ps' command is now used for the 'layers -l' command.
+* cp: An '-a' option was added that preserves hard links and all attributes
+  during a recursive copy.
+* tail: 'tail -f -n 0 file' now skips to the end of existing data before
+  waiting for changes, as demanded by POSIX interpretation XCU ERN 62.
+  'tail -0f file' continues the historical behavior of printing existing
+  data first. (Issue reported by Pierre Gentile.)
+
+Release 050411
+* diff: The -p option (print name of surrounding C function) has been added.
+* diff: The -X option (ignore patterns from file) has been added.
+* diff: The combination of the -h and -r options works again.
+* ps: Some values (e.g. LTIME) were determined incorrectly with the -L option
+  on Linux systems.
+* /usr/ucb/ps: Specifying -agx now has the same effect as specifying -ax.
+* Operate correctly if stat(2) returns a zero st_blksize field. This is the
+  case for the write side of pipes on NetBSD 2.0 and resulted in no output
+  when using tar to write to them.
+* sed: Handle a byte with the same value as the ASCII backslash at the second
+  or a following position of a multibyte sequence correctly with the 'a', 'c',
+  and 'i' commands.
+* ls: If the target file name contained in a symbolic link is empty, print
+  nothing (instead of "?") with the -l option etc.
+* df: Specifying the name of a mounted device as argument works again.
+* ln: When the existing file is a symbolic link, its target file is now hard
+  linked with the SVID4 and POSIX versions.
+* cpio: Print information about hard links with the -iv options.
+* cpio: If link() fails, no separate copy of an archive entry is created.
+* It is now possible to use hard links between installed files. The symbolic
+  links which are used by default are shorter now.
+
+Release 050309
+* find: The -anewer and -cnewer primaries were introduced.
+* ps: The /usr/ucb version now uses eight columns for the USER field as the
+  historic versions do (Bugreport by Matthew Fischer).
+* od: When the -C option was used with an empty input file, a division by
+  zero caused a core dump (Patch by Matthew Fischer).
+* touch: For the SVID versions, the first non-option argument is treated
+  as a time specification if it starts with a digit, regardless of the
+  following characters.
+* join: If a join field does not exist, substitute the empty string for it.
+* ed: With the SVID4 and POSIX versions, matches of zero length in substitute
+  commands do no longer lead to endless loops.
+* mkdir, mkfifo: When the -m option is given with a symbolic mode that has
+  no 'who' part, the umask is now respected with the POSIX versions.
+* chmod: When the -m option is given with a symbolic mode that has no 'who'
+  part, the umask is now respected with the POSIX versions even if the
+  previous file mode contained bits set within the umask.
+* fmt: Trailing blanks were left on lines with multibyte characters (Patch
+  by Matthew Fischer).
+* The value 255 is now accepted in interval expressions in traditional
+  (simple) regular expressions.
+* find: The expression '-type D' matches Solaris door files.
+* copy, cp, cpio, file, find, ls: Handle HP-UX network special files.
+* cp: If both the -i and the -r or -R option are given, the traditional
+  versions prompt for confirmation before copying to an existing directory.
+* cp: A SVID4 version was introduced which behaves like the SVID3 version
+  in the above respect but does not disable -i if standard input is not a
+  terminal.
+* cpio, pax, tar: Any filename that forms a valid UTF-8 string is now
+  accepted as input when creating a pax format archive.
+* cpio: Specifying -i, -o, or -p twice is no longer considered an error.
+* shl: When the LNEXT terminal special character is given twice, it is now
+  passed to the terminal buffer properly.
+* cpio: Accept smaller zip64 extra headers which are created by some other
+  zip archivers.
+* cp: The default i/o buffer size with the -D option is now 1 MB.
+
+Release 050206
+* POSIX.1-2001 was added as another personality. Binaries are installed in
+  /usr/5bin/posix2001 by default. mk.config files have to be augmented with
+  the SU3BIN macro if they are to be reused.
+  The POSIX.1-2001 personality still lacks some features for the 'file' and
+  'pax' commands.
+* find, ls: POSIX.1-2001 versions have been introduced.
+* chown, chgrp: The -H, -L, and -P options from POSIX.1-2001 have been added.
+  If changing the owner or group of a directory fails, chown and chgrp now
+  continue to process the hierarchy below it with the -R option.
+* cp: The -H, -L, and -P options from POSIX.1-2001 have been added.
+* du, find: The -H and -L options from POSIX.1-2001 have been added.
+* ls: The -H option from POSIX.1-2001 has been added.
+* od: A leading '+' is not required to introduce an offset argument for the
+  POSIX.1-2001 version. The SVID personalities also do no longer require it.
+* pax: The -H option from POSIX.1-2001 has been added; pax does not follow
+  symbolic links on the command line anymore unless this option is present.
+* pax: The POSIX.1-2001 version terminates immediately when it detects a
+  symbolic link loop with the -L option.
+* tr: The -C option from POSIX.1-2001 has been added.
+* dd: With 'conv=unblock', the last block was not converted.
+* grep: The content of a file that consisted only of a single byte other than
+  a newline was never matched.
+* csplit, ed, expr, grep, nl, pax, pg, sed: The POSIX versions no longer
+  accept reverted ranges like '[b-a]' in regular expressions.
+* touch: If one of -a or -m but no time specification was given, both
+  access and modification time were set to the current time.
+* sed: The length of labels is limited to 8 characters instead of 7 bytes now.
+* cut: If the -s option was specified but the first field was included in the
+  list to the -f option, lines without the delimiter character were printed.
+* cut: The -b, -c, and -f options did not accept the tabulator character as
+  a field specification separator.
+* paste: If standard input was used as input multiple times, a delimiter
+  was printed after the last line of regular output.
+* paste: If an inaccessible file is given with the -s option, the utility no
+  longer exits but continues with the next file.
+* od: When reading from standard input with the -N option, the file pointer
+  is now left after the last byte read.
+* xargs: The combination of the -n and -x options did not work properly.
+* xargs: Exit codes were aligned with POSIX.
+* ed: If no new text is given for a 'c' command, the current line is now
+  positioned for the POSIX versions as demanded by the standard.
+* ed: Can write empty files now.
+* ed: An unterminated 's' command inside a 'g' command is now handled
+  properly.
+* ed: The 'G' command accepts the 'l' and 'n suffices now.
+* ed: When a hangup signal is received, ed exits with failure status now.
+* ed: The address '0' is now accepted as '1' for the 'c' and 'i' commands
+  for the POSIX.1-2001 version.
+* ed: A 'POSIX_SHELL' makefile macro has been introduced. Existing mk.config
+  files have to be augmented if they are to be re-used.
+* sed: If the input is seekable and the 'q' command is used, the file
+  pointer is now left after the last line processed.
+* ln: The -f option is not ignored with the -s option for the POSIX version.
+* join: The list for the -o option must not be empty.
+* sort: With the -d option, digits were ignored erroneously.
+* sort: With '-k x,y', the second number refers to the last character of the
+  corresponding sort field.
+* uniq: The argument to the -f and -s options is required, and a '--' is
+  accepted to end the option list.
+* tail: Accept '+c' without a count; accept '--' to end the option list.
+* expr: If a parenthesis is followed by another character, the argument is
+  treated as a string now.
+* expr: With the POSIX versions, single string arguments that are valid
+  decimal numbers are converted to their canonical form (e.g. -0001 to -1).
+* csplit: If the last operand was of the form '%re%', lines following its
+  match were not written to an output file.
+* pr: Various output formatting bugs have been fixed.
+* bc, dc: Long lines are now properly broken with scale=10.
+* bc: Error messages are now printed to standard error (instead of standard
+  output).
+* bc: Uninitialized array values are now printed as '0' (instead of a
+  string of multipe nulls with machine-dependent length).
+* bc: Passing arrays to functions works properly now.
+* bc, dc: Output for obase>16 does not end with trailing spaces anymore.
+* bc: The '-=' operator did not work.
+* nawk: CONVFMT was used in the SVID personality but not in the POSIX
+  personality, contrary to the documentation.
+* nawk: printf("%u") did not work if the argument was larger that INT_MAX.
+* nawk: RLENGTH was not set correctly for matches of zero length.
+* nawk: The POSIX.1-2001 version accepts regular expressions as parts of
+  arithmetic expressions, e.g. "x = /p/ * 2".
+* file: The POSIX version does not exit with an error status if a file could
+  not be opened.
+* cpio, pax: The -plL (or -rwlL for pax) option combination now works; it
+  creates links to the targets of all symbolic links in the source hierarchy.
+* pax: The -pa and -pme option combinations now work.
+* pax: The -po option works for users other than root (but only affects the
+  group ownerships then).
+* pax: Without -ro or -re, set[ug]id bits are not preserved.
+* pax: A '&' in the replacement string for the '-s' option did not work.
+* pax: The '-b' option now accepts multiplication suffixes.
+* pax: The '-u' option is now respected in read mode too.
+* pax: The '-n' option in read mode does not mark a pattern as used if it
+  matched an archive entry but that entry was not selected due to '-u'.
+* pax: If link() fails, no separate copy of an archive entry is created.
+* pax: When a socket is encountered, print an error message and exit with
+  failure for the POSIX.1-2001 version.
+* pax: If invoked by a user other than the super-user and -po or -pe are
+  given, the POSIX.1-2001 version produces an error for any extracted file
+  not owned by the invoking user.
+* find: Symbolic modes for -perm that include the sgid bit now work properly.
+* cp: The -f option does not disable the -i option in the POSIX personality
+  and vice-versa.
+* df: Percentage values are now rounded to the next integer as demanded by
+  POSIX.
+* man: With the -k option, the exit status is now 0 if any matches have been
+  found.
+* stty: If ispeed and ospeed are different, both are printed separately.
+* stty: If the system does not support split input/output speed, the 'ispeed'
+  and 'ospeed' operands have no effect if both are given.
+* tabs: The -T option had no effect. Its argument is now required.
+* wc: Use a column-aligned output format for the POSIX version too since the
+  standard does not actually disallow it.
+* csplit, ed, grep, nl, pax, pg, sed: The POSIX.1-2001 versions try to avoid
+  null matches with BRE subexpressions.
+
+Release 050123
+* tr: The highest acceptable wide character for complementing strings is now
+  dynamically reset from 0x10FFFF to 0xFFFF if memory is sparse. The size of
+  the corresponding hash table has been raised to reduce computing time.
+* grep: With the -r option, directory loops caused by symbolic links are now
+  detected and avoided. The -R option does no longer follow symbolic links
+  that point to directories.
+* pg: If the end of file was located immediately after the line displayed
+  before the prompt, the same screen was displayed twice, once with the
+  regular prompt and then with '(EOF):'. The end-of-file condition is now
+  detected earlier, and the prompt is changed earlier accordingly.
+* od: Fixed a one-byte heap overflow in the output buffering mechanism.
+* more: If a 'n' command was given without a previous '/', a segmentation
+  fault occured. The error condition is now properly recognized (Bugreport
+  by Matthew Fischer).
+* more: Fixed underlining of multibyte characters (Bugreport by Matthew
+  Fischer).
+* ps: -o etime sometimes printed output like '00:00:4294967295' with
+  recently started processes (Bugreport by Matthew Fischer).
+* pg: The fix for the '(EOF):' prompt in the last release caused the '.'
+  command to advance a line if input came from a pipe but the current
+  screen was the last one that had already been buffered.
+* more: Do not rely on the state of continued calls to mbrtowc() but reset
+  its state each time and call it with the complete sequence again to work
+  around problems with glibc in EUC-JP locales (Patch by Matthew Fischer).
+* pg: Fixed the handling of backspaces following multicolumn characters.
+* pg: Allow the rmacs/ae escape sequence (end alternate character set) to
+  be sent to the terminal.
+
+Release 050106
+* grep: A '-z' option is now available; it decompresses compressed files and
+  looks for the pattern in the plain text.
+* file: Recognizes UTF-8 encoded text now.
+* basename, csplit, ed, grep, nl, pg, sed: The multibyte locale code of the
+  traditional regular expression matching functions lead to segmentation
+  faults and missing matches with some input sequences because of an
+  uninitialized variable.
+* rm: The traditional and POSIX versions have been fixed with regard to the
+  '-f' and '-i' options; if both were given, the traditional version behaved
+  as documented for the POSIX one and vice-versa.
+* pg: Compute the width of non-printable characters that correspond to a
+  multibyte sequence correctly. In UTF-8 locales, non-printable characters
+  are now substituted by Unicode control pictures or the Unicode replacement
+  character.
+* pg: Always print the '(EOF):' prompt on a new line, even if the input file
+  does not end with a newline character.
+* ps: If a user or group name is printed with property for the -o option and
+  the name does not fit into the column width, the numeric id is now written
+  instead.
+* rm: For the traditional command versions, 'rm -- -' now tries to remove a
+  file named '-'.
+* grep (traditional), nawk: Handle character case conversions correctly if
+  the length of the converted multibyte sequence is smaller than the original
+  one.
+* od: Accept '-j 0' and do not skip anything then; if both '-j' and '-N' are
+  given, format the given number of bytes as specified by POSIX and do not
+  substract the skip count from it (Bugreport by Andreas Hofmeister).
+* cmp: If the -w flag was given and the difference was located at the last
+  byte of an eight-byte group, the immediately following group was printed.
+
+Release 041214
+* Traditional and POSIX options as well as extensions are now marked as such
+  in the manual pages.
+* The functionality that was previously provided by specifying the -DADDONS
+  compile flag has been integrated into the base version and documented in
+  the manual pages, and other extensions have been added. This includes:
+  'cat -B size', 'cmp -w', 'cp -b size -d -D -s', 'date -b', 'dd conv=idirect
+  conv=odirect', 'df -h', 'du -h', the 'b', 'help', 'N', 'o', and 'z' commands
+  for 'ed', 'grep -r -R -w', 'ls -h -S -U -X', 'od -C', 'tar zjZ'. Note that
+  these extensions are only intended as a convenience add-on for interactive
+  use; their semantics might change without prior notice in future releases,
+  and their use in scripts is strongly discouraged.
+* split: Fixed a null pointer dereference that occured if the argument to
+  the -a, -b, or -l option was missing.
+* nice: Fixed a null pointer dereference that occured if the argument to
+  the -n option was missing.
+* pr: Fixed a null pointer dereference that occured if the argument to
+  the -o, -l, or -w option was missing.
+* dc: Do not call malloc(0). Doing this made some operations fail with diet
+  libc.
+* ls (BSD version): Print block sizes as units of 1024 kilobytes.
+* pg: Non-printable characters in multibyte locales no longer lead to wrong
+  results when the width of a line on the screen is computed.
+* head: Handle a single '-' on the command line like '-0'.
+* grep, oawk, pg: Work around a bug in HP-UX which can cause MB_CUR_MAX to
+  be influenced by setting the LC_COLLATE locale after LC_CTYPE.
+* ps: Some minor changes were made for NetBSD 2.0.
+* stty: If the LC_CTYPE locale uses the UTF-8 encoding, 'ituf8' is now set
+  with 'sane'.
+
+Release 041204
+* pgrep, pkill: The -o option (select oldest process only) was added.
+* tar: lseek() is now used again to skip faster over irrelevant portions
+  of archives that are regular files. This did not work correctly since
+  release 040402.
+* dc, more: Fixed some issues concerning machines where 'char' is an
+  unsigned type.
+* shl: Due to a Makefile script error, the program was not installed in the
+  previous release when bash was used as shell by make.
+* tr: The highest acceptable character for complementing strings has
+  been raised to 0x10FFFF to cover all of Unicode.
+* wc: Performance tuning made wc run approximately ten times faster than
+  previous versions on large ASCII files in multibyte locales.
+* dd, diff, egrep, grep, sort, tr: Minor performance enhancements were made
+  for ignoring/converting case for ASCII characters in multibyte locales.
+* grep: A segmentation fault that could occur if it was run with the -i
+  option in a multibyte locale has been fixed.
+* cpio, tar: Include <linux/fs.h> only with glibc builds because the kernel
+  include file normally used with other C libraries is not always suitable
+  for inclusion in user space. The optimum i/o size for block devices will
+  then not be detected automatically. (Reported by Patrick McHardy.)
+
+Release 041107
+* Ported to OpenBSD (except for priocntl, psrinfo, ptime, and shl).
+* Building with diet libc works again.
+* diff: Named pipes are only considered to be identical if both their
+  st_dev and st_ino values are equal. Regular files for which this is
+  the case are now also considered identical without comparing their
+  contents.
+* cal: A missing terminating NUL has been added. It could lead to garbage
+  output following the weekday characters row.
+* pg: A flag was set within the wrong struct termios member. This lead to
+  incorrect input processing on BSD systems, with the effect that characters
+  typed at the prompt did not appear correctly on the terminal.
+
+Release 041014
+* All tools can now be built with -D_GNU_SOURCE on both glibc and uClibc.
+* It is now possible to use a cross-compiler for building. Some programs
+  have to be run on the development machine. Set the new 'HOSTCC' variable
+  appropriately then.
+* spell: The hash databases are now always kept in little-endian order,
+  even if running on a big-endian machine. Unless site-specific tables
+  are used, no further action is needed after a 'make install'. Altered
+  tables have to be created again using the new version of the 'spellin'
+  program.
+* cpio, pax: If the C compiler pads structures consisting only of 'char'
+  types, these programs read and wrote incorrect headers for a number of
+  archive formats. (So far, this problem has only been observed with GCC
+  on ARM).
+* date: For setting the date, the year conversion for the 'mmddhhmmccyy'
+  was fixed.
+* pg: If compiled against termcap and the number of lines obtained from
+  the TIOCGWINSZ ioctl() is zero, use the value from the termcap library.
+* find: The '-fstype' and '-local' criteria were fixed to work on HP-UX.
+
+Release 040928
+* It is now possible to build using uClibc <http://www.uclibc.org/> on
+  Linux.
+* ps: Made the output of -lP include F and ADDR columns; documented that
+  the output of '-o stime' may contain whitespace; fixed it to recognize
+  the new 'dead (X)' internal state on Linux; fixed a possible integer
+  overflow in HZ/time conversion; the FIFO scheduling class is now 'FF',
+  the batch class is 'B', and the isochronous class is 'ISO'; do not limit
+  the CPU percentage field to 99; made the '-t' option print processes
+  without controlling terminal with '-t ?' or '-t -'. (Thanks to
+  Albert Cahalan for reviewing the code and noticing these issues.)
+* priocntl: The FIFO scheduling class is now 'FF', the batch class is 'B',
+  and the isochronous class is 'ISO', as for ps. The old names are still
+  accepted with '-i class'.
+* su: If the encrypted password string is empty, no password prompt appears
+  and the command succeeds immediately.
+
+Release 040907
+* touch: Unless the -a or -m flag was present, any time specifications
+  were completely ignored since release 040620.
+* ls, nawk, oawk: When invoking snprintf() to determine the length of
+  a formatted string, do not use a NULL pointer and a size argument of
+  zero but a dummy array and a size argument of two instead. This works
+  around a problem on some systems which are not conforming to ISO C99
+  in this respect. Affects the columnar output for 'ls -i' and 'ls -s';
+  printf results that are longer than 512 bytes with nawk, and printf
+  results that are 128 bytes longer than the size of the current input
+  record with oawk would have failed. These problem are fixed now for
+  (at least) Solaris 8, Open UNIX 8, and AIX 5.1; AIX even tried to
+  reference the NULL pointer and dumped core. HP-UX B.11.11 does not
+  work correctly even with the fix. Linux/glibc, Linux/dietlibc,
+  FreeBSD, and NetBSD are not affected by this issue.
+
+Release 040727
+* pr: The last release made it run into an endless loop, this has been
+  fixed. It also does not print a trailing newline anymore if the '-t'
+  option is given.
+* wc: The non-POSIX version has been optimized. Since the result is now
+  equally fast with gcc and Intel C on i386, there is no point in using
+  Intel C for compilation anymore and the ICC makefile definitions have
+  been removed.
+* ps: On NetBSD, one process too few was displayed.
+
+Release 040718
+* Ported to AIX (except for priocntl, psrinfo, ptime, and shl).
+* Ported to NetBSD (except for priocntl, psrinfo, ptime, and shl).
+* The tools now also compile and run on FreeBSD 4.9.
+* Some fixes for HP-UX on PA-RISC and with earlier 11.X versions were made.
+  The tools now compile in 32-bit and 64-bit mode.
+* cat: When input and output are pipes of FIFOs, do not require that they
+  are different files. This makes 'echo foo | cat - | cat' work on BSD
+  systems.
+* du: Does not exit immediately anymore when it encounters a file system
+  traversal error but continues with other files. Is able to descend to
+  hierarchies of arbitrary depth now even when the limit of open file
+  descriptors is exceeded.
+* file: HP-UX and AIX executable types were added to the magic file.
+* stty: Support the '[-]iutf8' input mode on Linux.
+* w, uptime: Display the load average on HP-UX too. Fixed uptime count on
+  HP-UX.
+
+Release 040712
+* Ported to HP-UX (except for priocntl, psrinfo, ptime, and shl).
+* diff: The new -B option causes changes that consist only of empty lines
+  to be ignored (as in GNU diff).
+* diff: Options -1 and -2 were added. They work like -N but output the text
+  of new files in the first (second) of both directories only.
+* ps: Fixed a null pointer dereference that occured when encountering a
+  zombie process on Solaris.
+* ps: When invoked with -L on Linux, print the process ID instead of the
+  thread ID in the PID column.
+
+Release 040701
+* cpio, pax: If the -a (-t) option is specified but no data was read from
+  a file, do not try to reset its access time.
+* cpio: Respect the -a option (reset access times) in -p (copy-pass) mode.
+* pax: Respect the -t option (reset access times) in -rw (copy) mode.
+* priocntl, ps: The batch scheduling class and the isochronous scheduling
+  class available on Linux with Con Kolivas' patch set are now supported.
+
+Release 040620
+* ps: -L flag (print thread information) added for Linux, Solaris, and
+  Open UNIX.
+* tar: Handle file names longer than 100 characters correctly with the 'X'
+  and 'u' options.
+* cpio, pax: Since the LZW patent is now expired in Europe too, the macro
+  LZW_CLEAN has been removed and support for the 'unshrink' zip format
+  decompressor is always enabled.
+* shl: Do not let a zombie process and a stale utmp entry remain when the
+  single existing layer is terminated using the 'delete' command.
+* touch: Use utime(file, NULL) if neither -a nor -m are given. This causes
+  the current time to be used regardless of the running time of the command
+  instance.
+* tar: When creating an intermediate directory fails, continue operation
+  unless -e is specified.
+* tar: Fixed a bug which inhibited extraction of archives with absolute
+  path names.
+
+Release 040603
+* pax: Complain if the target directory argument to -rw is missing.
+* lc: Made the -1 option work.
+* tar: Transparently read archives which were compressed two or more times.
+* tar: Automatically enable the B flag if reading from pipes or sockets.
+* ed, sed (SVR4.2MP and POSIX versions only); pax: If the RE of a repeated
+  substitution command matches the empty string, such as in 's/ *//g', do
+  not get in an endless loop but examine the line character-wise.
+* find, rm: Use O_DIRECTORY and, if applicable, O_NOFOLLOW when opening
+  directories.
+
+Release 040517
+* ed: When creating the temporary output file for a regular file fails,
+  do not refuse to write but truncate the original file if possible;
+  otherwise, really leave the original file intact until the new version
+  has been written entirely. Do not use temporary a temporary output
+  file if the original file has more than one link, or is a symbolic link.
+* diff: Optimized not to start a new process for each differing file when
+  operating recursively.
+* nawk: Do not recognize hexadecimal numbers, NaN, and infinity strings
+  as numeric values even if strtod() of the underlying system does.
+* nawk: Pre-POSIX version introduced. Prominent differences are the use
+  of full (instead of extended) regular expressions, the lack of CONVFMT
+  and of var=value file arguments.
+* deroff: New /usr/5bin version derived from Plan 9. The BSD-derived
+  version continues to be available in /usr/ucb.
+* ed: If used interactively, errors do not affect the exit status.
+* cpio, pax: When writing GNU tar format archives, append a '/' character
+  to the name of each directory archive member.
+
+Release 040502
+* It is now possible to use dietlibc. It will result in losing all
+  multibyte character functionality, though. Some commands (e. g.
+  units, od -f) do not work correctly because dietlibc currently
+  lacks support for the %e printf specifier.
+* dd: Close the output file descriptor on exit to catch write errors
+  that might happen at this time.
+* egrep, fgrep, grep, pg: When an input line is too long to fit in
+  memory, do not terminate but virtually split the line.
+* more: When running out of memory, restore previous tty state.
+* oawk: Fixed a pointer truncation problem that could occur on 64-bit
+  platforms with LP64 model, in particular the Itanium (thanks to HP
+  and the University of Freiburg for the test machine).
+* Use __attribute__ ((used)) with gcc 3.4 to prevent version strings
+  for what(1) to disappear with unit-at-a-time optimization.
+
+Release 040420
+* sed: Do not enter an endless loop if a '$' address is specified and
+  the input is not terminated with a newline character.
+* Supporting files changed for the new home page at
+  <http://heirloom.sourceforge.net>.
+* cpio, pax: When -k is specified and -H is used to select a tar format
+  other than the 'pax' format, ignore the size of linked entries (i. e.
+  do not expect that 'linkdata' was in effect when the archive was
+  created).
+
+Release 040416
+* Made it compile with 'bison -y' as yacc implementation.
+* cpio, pax: Implemented the 'linkdata' and 'times' option for the pax
+  archive format.
+* Portability fixes to make it compile on Playstation Linux.
+* cpio, pax, tar: When appending to a pax format archive that contains a
+  global header (not currently created by Heirloom tools), always override
+  the respective fields in new extended headers.
+* cpio, pax, tar: When writing to a Sun extended tar format archive, do not
+  create SUN.devmajor or SUN.devminor records for other files than devices.
+
+Release 040404_beta
+* Ported to FreeBSD (except for psrinfo, ptime, and shl).
+* find: Parse the '-local' primary correctly.
+
+Release 040402
+* cpio, pax, tar: Accept GNU long name 'K' and 'L' extended headers
+  regardless of archive magic. This works around a bug in GNU tar which
+  creates these headers even when advised to create old or ustar format
+  archives.
+* tar: Always accept checksums created using unsigned and signed chars
+  regardless of the archive format.
+* tar: When writing the second and following volumes to a block device,
+  use direct i/o on Linux as for the first volume.
+* cpio, pax: If -k (or -K) is given and a header format is explicitly
+  specified with -H (or -x), do not auto-detect extended formats based
+  on the specified format.
+* cpio, pax, tar: Preliminary support for the POSIX.1-2001 pax format. No
+  file names with non-ASCII characters are currently archived because the
+  issue of UTF-8 conversion still has to be resolved by the Austin Group.
+  Support for Sun's extended tar format (Solaris 7 and above) is also
+  included.
+* cpio, pax: If -k (or -K, respectively) is specified with a tar archive,
+  skip 512 bytes before probing for the next valid header block and require
+  a block of 512 zeroes at the end of the archive.
+
+Release 040318
+* cpio, pax: A bug was fixed that caused SGI extensions to be present in
+  binary archives and SCO extensions in SVR4 archives by default (if an
+  archived file exceeded 2 GB or used large device numbers; that is,
+  rarely). Large device numbers on systems other than Linux are properly
+  stored with the SGI format now.
+* cpio, pax: When the -A (or -a for pax) option was used with a zip archive
+  that contained zip data descriptors (as written by cpio and pax for files
+  larger than 196 kbytes), the zip central directory structure was not
+  correctly updated. This caused no problems with cpio and pax as they
+  ignore this structure, but could result in CRC errors being reported
+  by other zip archivers.
+* cpio, pax: Do not allow path names to exceed 65535 bytes even with those
+  formats that would support longer names by design. Such path names are
+  rejected by open() on any known Unix system; they are are a certain sign
+  for a corrupt archive and may cause a memory allocation failure unless
+  such precautions are taken.
+* cpio, pax: Support for the Cray UNICOS 5 cpio format added.
+* tar: Tuned the structures used when storing files with multiple hard links.
+  This resolves the extremely slow processing that happened when many such
+  files were archived.
+* ed: When writing a regular file, write the content to a temporary file
+  first, then rename it to the target file.
+
+Release 040314
+* cpio, pax: Fixed a null pointer dereference which occured when reading
+  invalid SVR4 format cpio archives that contain the file data for a hard
+  link multiple times. When extracting such archives, no hard links are
+  created.
+* pax: Standard output is always line-buffered in list mode.
+* cpio, pax, tar: Automatically decompress compressed input (gzip, bzip2,
+  etc.) also when reading from pipes, tapes or other nonseekable input.
+* cpio, pax: When writing archives in formats other than zip, report
+  a read error only once per archived file.
+* cpio, pax: Handle input file read errors correctly when writing a zip
+  archive entry in deflate format.
+* pr: Fixed a bug which sometimes caused the first character on a page of
+  single-column output to be garbled.
+* cpio, pax: For -Hcrc and various tar formats, checksums are created using
+  signed chars by some implementations and using unsigned chars by others.
+  cpio and pax now accept both without complaint or the need to use the -k
+  option (or -K for pax).
+* cpio, pax: Support for SunOS 4 'bar' format added.
+* cpio, pax: If -k (or -K for pax) is given and a checksum is not correct
+  with the -Hcrc format, do not restore an existing original file.
+
+Release 040306
+* tar: If a 0...9 key is specified but no corresponding entry exists in
+  /etc/default/tar, an error is reported instead of using /dev/null.
+* tar: If a file matched a pattern but was not successfully extracted, it
+  is handled as if it had not matched for the final statistics.
+* pg: When a search command is interrupted, return to the position in the
+  file on which the search was started.
+* tar: If a directory name appears in a file for the 'X' key, files below
+  that directory are also excluded. If 'v' is combined with 'X', excluded
+  files are reported on standard error.
+* tar: Don't report write errors a second time when closing the archive.
+* tape: Report the density code in hexadecimal (with the status command).
+* sed: Reallocation of substitution patterns sometimes left a dangling
+  pointer on the heap. This usually resulted in garbage characters in
+  the substituted string.
+
+Release 040227
+* find: If -depth was given, all attributes of struct stat (-perm, -type,
+  -links, -user, -group, -size, -inum, -[amc]time, -newer, -fstype, -local,
+  -nouser, -nogroup) were handled wrong for directories.
+* cpio: Support for UnixWare 7.1 extended cpio format added.
+* cpio, tar: Call close() for the archive when writing to detect write
+  errors that occur at this point.
+* cpio: Don't report the 'TRAILER!!!' end-of-archive marker with -ov.
+* cpio: Restore the original file if linking an entry of a tar archive
+  fails (Thanks to J"org Schilling).
+* pax: New in this tool collection (in fact, mainly another interface for
+  the cpio implementation).
+* ed: Reset subexpression count for 's' command in SVID4/POSIX version so
+  that e. g. '\3' will insert a literal '3' if a third subexpression does
+  not occur in the current RE but did occur in a previous one.
+* tcopy: Report read errors and continue operation without creating a new
+  file on the target tape.
+
+Release 040221
+* find: If the argument to '-type' begins with '-' or '+', use its second
+  character as file type specifier (i. e. '-f' does the same as 'f').
+* cpio: GNU tar extended fields are now also supported for st_rdev.
+* cpio: Added support for the Digital UNIX/Tru64 UNIX extended (-e) cpio
+  format.
+* tar: When writing old format archives, file descriptors were not properly
+  closed. This caused tar to complain that it could not open further files.
+* cpio: Can now handle DCL imploded zip archive entries (thanks to Mark
+  Adler's implementation which is distributed with zlib).
+* cpio: Use zip data descriptors when writing deflate compressed entries.
+  This results in a performance enhancement.
+* cpio: Handle zip data descriptor structure for zip64 archive entries.
+
+Release 040209
+* tar: The 'n' modifier causes reports in kilobytes instead of blocks and
+  has no further effect (tapes are automatically recognized).
+* dd: If a read error occurs and conv=noerror is specified, seek one input
+  block forward to skip past the error (unless reading from tapes).
+* tapecntl: New -v option.
+* tape: New in this tool collection.
+* dd: Do not allocate two buffers if only one is needed with bs= and
+  no conversion specified.
+* cpio: Can now append to archives on tape devices with -A (if supported
+  by the hardware).
+* tar: Can now update (-r, -u) blocked archives; can now update archives
+  on tape devices (if supported by the hardware).
+
+Release 040118
+* cpio: Copy-in of zip64 entries fixed.
+* cpio: Don't try to reset access times of symbolic links with -a.
+* cpio: Handle zip data descriptors for directories on extraction.
+* tapecntl: '-c' option added (control tape compression).
+* cpio: Support for bzip2 compression inside zip archives was added.
+* expand, newform, pg, ps, ul, unexpand: Handle zero-width multibyte
+  characters correctly when counting columns.
+* sdiff: Handle illegal multibyte sequences when counting columns.
+
+Release 031229
+* cpio: Files named 'TRAILER!!!' do not mark the end of tar or zip format
+  archives.
+* tcopy: New in this tool collection (ported from 4.3BSD).
+* tar: Report write errors correctly even for very small archives (below
+  one tape block).
+* mt, tapecntl: New in this tool collection.
+* diff: Use /proc/self to ensure that exactly the same binary is used
+  for single file diffs when descending directory hierarchies with -r.
+* ps: Display appropriate process flags on Solaris and Open UNIX.
+* sort: Don't dump core if a record is too large with glibc (call write()
+  instead of fprintf() if malloc() fails).
+* more: The character '\177' does not imply that the file is not text
+  (unless followed by 'ELF').
+* tar: If the -n option is given or input is read from a regular file,
+  use lseek() to skip over irrelevant portions of input (e. g. with -t).
+* tar: Respect the n flag given in /etc/default/tar.
+* ed: A '\.' line causes a single period '.' to be inserted with the a, c,
+  and i commands in the SVID4 version (as already done for the SVID3 one).
+* rmdir: The -p option was fixed to remove all directories of a relative
+  path name operand, including the first one. Traditional versions were
+  introduced that print a message if the operation was successful for a
+  whole path; this is not done for the POSIX.2 version.
+* bc: Terminate immediately if the first file given on the command line
+  cannot be opened.
+* spell: Handle filenames with embedded whitespace.
+* ls: If both -f and -p are given, only -f is effective.
+
+Release 031110
+* tar: Fixed the -u function not to skip modified files below directories
+  whose modification time was not changed.
+* mknod: Support 32-bit dev_t on Linux.
+* man: Set the TROFFMACS environment variable in the /etc/default/man
+  definitions for nroff and troff so that the Heirloom man macros are
+  used instead of the vendor's ones on Solaris and Open UNIX.
+* ps: Always treat zombie processes as processes without controlling tty.
+* tar: Revised temporary file handling does not leave stale files if the
+  operation is interrupted before any new files are appended with -u, and
+  does not try to remove files on exit that were not previously created.
+* tar: Really use the block size specified in /etc/default/tar.
+* cpio, tar: Use direct i/o with all block devices on writing. The rationale
+  is the same as for floppy disks; buffered writes make it impossible to
+  interrupt the write process on slow devices.
+* random: New in this tool collection.
+* pg: With the -f option, lines were still split when displaying search
+  results. This is no longer done.
+
+Release 031029
+* man: Use nroff with the -Tlp option and pass its output to col -x to
+  get proper display results with tbl output on Solaris. Since the default
+  command for nroff is set in /etc/default/man and this file is not
+  overwritten by make install if it exists, -Tlp should be added by
+  hand when upgrading.
+* man: Use ksh instead of bash if possible. This is done because ksh is
+  typically twice as fast with man and does not print 'broken pipe' when
+  piped output is aborted.
+* man: Made section selection work with pdksh.
+* ps: The default heading for '-o tty' is now 'TT' as in POSIX.2.
+* ps: Read the process flags from the psinfo file on Solaris, making ps
+  fully functional without special privilege on this platform.
+* hostname, logname, printenv, users, whoami: New in this tool collection.
+* pg: Fixed the command input handling not to reject valid characters after
+  a 'b', 'm', or 't' was given at an inappropriate position.
+* deroff: Handle ISO-8859-1 input characters; handle lines and input file
+  names of arbitrary length and an arbitrary number of input files. This
+  command is now in /usr/ucb since there might be another implementation
+  in /usr/5bin some day. Until then, a symbolic link points to the current
+  /usr/ucb version.
+* more, page: New in this tool collection (traditional version only, derived
+  from 4.3BSD).
+* apropos, catman, deroff, expand, man, renice, ul, unexpand, uptime,
+  w, whatis: Create compatibility symbolic links in /usr/ucb.
+* ul: New in this tool collection (derived from 4.3BSD).
+* pg: Pass through some formatting terminal escape sequences such as bold,
+  underline, or colors.
+* lc: Colorize file names even if standard output is not a terminal.
+* ptime: Don't install it on systems other than Linux.
+* tty: Recognize synchronous lines on Solaris and Open UNIX.
+
+Release 031020
+* Support for building pkgadd packages on Solaris and Open UNIX.
+* w, whodo: Fixed display of columns; replace nonprintable characters in
+  command lines with question marks.
+* Fixed use of getdents() on Open UNIX (affects du, find, rm, and tar).
+* Build fixes for glibc 2.2 systems.
+* shl: Specify the group ownership in the rpm spec file (for utmp updates).
+* dfspace: Do not print information for sysfs mounts on Linux.
+* pgrep, pkill: Handle '0' argument value to -g and -s.
+* Added 'chmod a+x /etc/default' to the rpm postinstall script. /etc/default
+  is part of the shadow-utils package on RedHat Linux, with mode 750. The
+  /etc/default/useradd file of this package is only readable by root anyway,
+  so it seems safe to allow directory access for anybody (Thanks to Pierre
+  Gentile).
+* man: Handle Solaris SGML format pages (needs /usr/lib/sgml/sgml2roff)
+  and Open UNIX HTML format pages (needs /usr/bin/html2ascii).
+* file: Recognition of big-endian machines fixed (caused cpio files to
+  be wrongly identified as byte-swapped).
+* ps, pgrep, pkill, uptime, w, whodo: Handle Solaris and Open UNIX /proc.
+* priocntl, psrinfo: Fall back to the native version in /usr/[s]bin and
+  don't install our binaries and manpages on systems other than Linux.
+* mkdir: Handle ENOSYS when trying to mkdir() an existing path name.
+* cpio: Made the -A option work with raw devices.
+* cpio, tar: When writing to a floppy block device on Linux, use O_DIRECT
+  instead of fsync() to avoid data buffering.
+* od: Don't print a '*' if the input is empty.
+* bc: If a file cannot be opened, include its name in the error message.
+* basename, cal, cat, chgrp, chown, df, dfspace, egrep, env, fgrep, grep,
+  lc, ls, news, nl, nohup, od, paste, pg, psrinfo, ptime, rm, setpgrp,
+  sleep, stty, time, touch, wc, what, yes: Handle argc == 0 (Thanks to
+  Stephane Chazelas).
+* ps: Documentation for cache file configuration is now provided in ps/NOTES
+  and ps/ps.dfl. The second file is normally installed in /etc/default/ps,
+  but it is not overwritten if it already exists; adjust it by hand if you
+  want to use the configuration settings when upgrading an installed system.
+
+Release 031013
+* ps: If /tmp/ps_cache was hard linked to another file, the contents of
+  that file were overwritten (Thanks to Stephane Chazelas).
+* hd: Fixed printing of '\', '^', and '~' characters with the -t option.
+* pgrep, pkill: Ignore leading space or colon in criterion lists.
+* ps: Complain if a criterion string starts with a space or colon character
+  (Thanks to Stephane Chazelas); complain but continue execution if both
+  valid and invalid user or group criterions are given.
+
+Release 031012
+* ps: Do not follow symbolic links when creating /tmp/ps_cache (Thanks
+  to Stephane Chazelas).
+* tee: Open output files in the order given on the command line.
+* dd: dup() standard input or standard output if no if/of arguments given.
+* tail: Do not accept more than one sign; handle +<c>r as on historical
+  systems (Thanks to Stephane Chazelas).
+* head: Fixed 'head -0' to print the header for more than one file but no
+  content; negative counts are not accepted anymore (Thanks to Stephane
+  Chazelas).
+* The path names in build/mk.config and in the uninstalled manual pages
+  are now the same as those in heirloom.spec (/usr/5bin, /usr/5lib etc.).
+  Note that you may have to change the paths in /etc/default/man by hand
+  if you switch to the new default location since this file is not
+  overwritten at installation.
+* The effects of the SYSV3 environment variable are described in the
+  manual pages for affected utilities.
+* expr: Problems with the historic basename example in the manual page are
+  marked (Thanks to Stephane Chazelas).
+* cpio: Allow -M without -O or -I in SYSV3 mode.
+* Deleted some stale license files in subdirectories.

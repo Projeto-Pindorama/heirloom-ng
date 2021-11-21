@@ -1,0 +1,354 @@
+********************************************************************************
+The license for newly written code and changes to existing code is:
+
+    Copyright (c) 2003 Gunnar Ritter
+
+    This software is provided 'as-is', without any express or implied
+    warranty. In no event will the authors be held liable for any damages
+    arising from the use of this software.
+
+    Permission is granted to anyone to use this software for any purpose,
+    including commercial applications, and to alter it and redistribute
+    it freely, subject to the following restrictions:
+
+    1. The origin of this software must not be misrepresented; you must not
+       claim that you wrote the original software. If you use this software
+       in a product, an acknowledgment in the product documentation would be
+       appreciated but is not required.
+
+    2. Altered source versions must be plainly marked as such, and must not be
+       misrepresented as being the original software.
+
+    3. This notice may not be removed or altered from any source distribution.
+
+The following tools have been rewritten from scratch:
+
+	basename	cat	chown	cmp	copy	cp
+	cpio*	csplit	cut	date	dd	df	dirname
+	du	env	expand	false 	fold	groups	hd
+	head	hostname	id	install	kill	line
+	listusers	logins	logname	man	mesg	mkdir
+	mkfifo	mknod	mt	newform	news	nice	nl
+	nohup	od	paste	pathchk	pg	pgrep	printenv
+	printf	priocntl	ps	psrinfo	pwd	rm
+	rmdir	sdiff	setpgrp	shl	sleep	split	stty
+	su	sync	tabs	tape	tapecntl	tee
+	time	touch	true	tty	uname	unexpand
+	users	wc	who	whoami	whodo	xargs	yes
+
+	* See below for the licenses on compression codes.
+
+All source code and documentation has been changed intensively, thus
+the above license applies to all material distributed here, further
+restricted by the original licenses.
+
+********************************************************************************
+Caldera's License for Unix 6th Edition, Unix 7th Edition, and Unix 32V
+applies to nearly all manual pages and to the utilities based on these
+Unix versions:
+
+    Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+      Redistributions of source code and documentation must retain the
+       above copyright notice, this list of conditions and the following
+       disclaimer.
+      Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+      All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+         This product includes software developed or owned by Caldera
+         International, Inc.
+      Neither the name of Caldera International, Inc. nor the names of
+       other contributors may be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+    INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+    LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+    BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+    EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+These utilities have been derived from Ancient Unix code:
+
+	banner	bc	cal	calendar	chmod	cksum
+	col	comm	dc	deroff(1b)	diff	diff3
+	ed	egrep	expr	factor	fgrep	file	find
+	grep	join	mkdir	oawk	pr	random	sed
+	sort	sum	tail	tar	tr	tsort	uniq
+	unit
+
+as well as the 'gmatch' and 'regexp' parts of libcommon.
+
+********************************************************************************
+Some utilities and manual pages are based on various releases of
+4BSD, governed by the following license:
+ 
+    Copyright (c) 1980, 1993
+    The Regents of the University of California.  All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+    3. All advertising materials mentioning features or use of this software
+       must display the following acknowledgement:
+    	This product includes software developed by the University of
+    	California, Berkeley and its contributors.
+    4. Neither the name of the University nor the names of its contributors
+       may be used to endorse or promote products derived from this software
+       without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS
+    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+    BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The following utilities include 4BSD code:
+
+	bc	ching	dc	deroff(1b)	diff	diff3	fmt
+	ln(1b)	more	nawk	oawk	renice	tcopy	ul
+
+********************************************************************************
+The following utilities are based on Sun's OpenSolaris code; the file
+OPENSOLARIS.LICENSE contains the licensing conditions for them:
+
+	bdiff	bfs	dircmp	echo	fmtmsg	getconf	getopt	mail
+	mvdir	spell	test	what
+
+Some manual pages have also been derived from OpenSolaris code; see
+the header of the respective page.
+Changes to these programs are also subject to the original license.
+********************************************************************************
+One utilities is based on the MINIX 2.0 sources, to which the
+following license applies:
+
+    Copyright (c) 1987,1997, Prentice Hall All rights reserved.
+    
+    Redistribution and use of the MINIX operating system in source and
+    binary forms, with or without modification, are permitted provided
+    that the following conditions are met:
+    
+    Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+    
+    Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+    
+    Neither the name of Prentice Hall nor the names of the software
+    authors or contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
+    
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, AUTHORS, AND
+    CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL PRENTICE HALL OR ANY AUTHORS OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+    STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The utility derived from MINIX sources is:
+
+	ls
+
+********************************************************************************
+The utility 'nawk' and the library 'libuxre' are based on the Unix tools
+released made available by Caldera at <http://unixtools.sourceforge.net/>.
+GNU GPL 2.0 applies to 'nawk' (see the file COPYING); GNU LGPL 2.1 applies
+to 'libuxre' (see COPYING.LGPL). Changes to these tools are subject to these
+licenses also.
+
+********************************************************************************
+The 'deroff' utility is derived from Plan 9 <http://cm.bell-labs.com/plan9dist/>
+and is distributed under the terms of the Lucent Public License Version 1.02;
+see the file LUCENT.
+
+********************************************************************************
+The CRC-32 function for cpio was derived from zlib 1.1.4:
+
+  Copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  Jean-loup Gailly        Mark Adler
+  jloup@gzip.org          madler@alumni.caltech.edu
+
+********************************************************************************
+The inflate decompression code for the zip support has been derived from
+Info-ZIP's zip 5.50:
+
+  This is version 2002-Feb-16 of the Info-ZIP copyright and license.
+  The definitive version of this document should be available at
+  ftp://ftp.info-zip.org/pub/infozip/license.html indefinitely.
+  
+  
+  Copyright (c) 1990-2002 Info-ZIP.  All rights reserved.
+  
+  For the purposes of this copyright and license, "Info-ZIP" is defined as
+  the following set of individuals:
+  
+     Mark Adler, John Bush, Karl Davis, Harald Denker, Jean-Michel
+     Dubois, Jean-loup Gailly, Hunter Goatley, Ian Gorman, Chris
+     Herborth, Dirk Haase, Greg Hartwig, Robert Heath, Jonathan Hudson,
+     Paul Kienitz, David Kirschbaum, Johnny Lee, Onno van der Linden,
+     Igor Mandrichenko, Steve P. Miller, Sergio Monesi, Keith Owens,
+     George Petrov, Greg Roelofs, Kai Uwe Rommel, Steve Salisbury, Dave
+     Smith, Christian Spieler, Antoine Verheijen, Paul von Behren, Rich
+     Wales, Mike White
+
+  This software is provided "as is," without warranty of any kind,
+  express or implied.  In no event shall Info-ZIP or its contributors
+  be held liable for any direct, indirect, incidental, special or
+  consequential damages arising out of the use of or inability to use
+  this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute
+  it freely, subject to the following restrictions:
+
+      1. Redistributions of source code must retain the above copyright
+         notice, definition, disclaimer, and this list of conditions.
+
+      2. Redistributions in binary form (compiled executables) must
+	 reproduce the above copyright notice, definition, disclaimer,
+	 and this list of conditions in documentation and/or other
+	 materials provided with the distribution.  The sole exception
+	 to this condition is redistribution of a standard UnZipSFX
+	 binary as part of a self-extracting archive; that is permitted
+	 without inclusion of this license, as long as the normal
+	 UnZipSFX banner has not been removed from the binary or
+	 disabled.
+
+      3. Altered versions--including, but not limited to, ports to new
+	 operating systems, existing ports with new graphical
+	 interfaces, and dynamic, shared, or static library
+	 versions--must be plainly marked as such and must not be
+	 misrepresented as being the original source.  Such altered
+	 versions also must not be misrepresented as being Info-ZIP
+	 releases--including, but not limited to, labeling of the
+	 altered versions with the names "Info-ZIP" (or any variation
+	 thereof, including, but not limited to, different
+	 capitalizations), "Pocket UnZip," "WiZ" or "MacZip" without
+	 the explicit permission of Info-ZIP.  Such altered versions
+	 are further prohibited from misrepresentative use of the
+	 Zip-Bugs or Info-ZIP e-mail addresses or of the Info-ZIP
+	 URL(s).
+
+      4. Info-ZIP retains the right to use the names "Info-ZIP," "Zip,"
+	 "UnZip," "UnZipSFX," "WiZ," "Pocket UnZip," "Pocket Zip," and
+	 "MacZip" for its own source and binary releases.
+
+********************************************************************************
+The unshrink decompression code is derived from Info-ZIP's unzip 5.40:
+
+     * Copyright (c) 1994 Greg Roelofs.
+     * Permission is granted to any individual/institution/corporate
+     * entity to use, copy, redistribute or modify this software for
+     * any purpose whatsoever, subject to the conditions noted in the
+     * Frequently Asked Questions section below, plus one additional
+     * condition:  namely, that my name not be removed from the source
+     * code.  (Other names may, of course, be added as modifications
+     * are made.)  Corporate legal staff (like at IBM :-) ) who have
+     * problems understanding this can contact me through Zip-Bugs...
+
+
+   Q. Can I use the source code of Zip and UnZip in my commercial
+      application?
+
+   A. Yes, so long as you include in your product an acknowledgment; a
+      pointer to the original, free compression sources; and a statement
+      making it clear that there are no extra or hidden charges resulting
+      from the use of our compression code in your product (see below for
+      an example).  The acknowledgment should appear in at least one piece
+      of human-readable documentation (e.g., a README file or man page),
+      although additionally putting it in the executable(s) is OK, too.
+      In other words, you are allowed to sell only your own work, not ours,
+      and we'd like a little credit.  (Note the additional restrictions
+      above on the code in unreduce.c, unshrink.c, vms.c, time_lib.c, and
+      everything in the wince and windll subdirectories.)  Contact us at
+      Zip-Bugs@lists.wku.edu if you have special requirements.  We also
+      like to hear when our code is being used, but we don't require that.
+
+         <Product> incorporates compression code from the Info-ZIP group.
+         There are no extra charges or costs due to the use of this code,
+         and the original compression sources are freely available from
+         http://www.cdrom.com/pub/infozip/ or ftp://ftp.cdrom.com/pub/infozip/
+         on the Internet.
+
+      If you only need compression capability, not full zipfile support,
+      you might want to look at zlib instead; it has fewer restrictions
+      on commercial use.  See http://www.cdrom.com/pub/infozip/zlib/ .
+
+********************************************************************************
+The blast decompression code (for DCL imploded zip archive entries) was
+derived from code by Mark Adler distributed with zlib 1.2.1:
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the author be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  Mark Adler    madler@alumni.caltech.edu
+
+********************************************************************************
+
+********************************************************************************
+The explode decompression code is derived from unzip 5.40; this version
+of this code was put in the public domain by Mark Adler.
+
+********************************************************************************
+
+Gunnar Ritter								2/3/07

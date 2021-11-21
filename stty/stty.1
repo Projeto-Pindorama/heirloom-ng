@@ -1,0 +1,293 @@
+'\" t
+.\" Parts taken from stty(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH STTY 1 "7/15/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+stty \- set the options for a terminal
+.SH SYNOPSIS
+\fBstty\fR [\fB\-a\fR] [\fB\-g\fR] [\fIoptions\fR]
+.SH DESCRIPTION
+.I Stty
+sets certain I/O options on the terminal
+currently associated with standard input.
+With no argument, it reports the current settings of selected options;
+the
+.B \-a
+flag
+causes it to report all options.
+With the
+.B \-g
+flag,
+.I stty
+prints all settings in a form
+that can be passed to it again
+to restore the current settings.
+.PP
+The option strings are
+selected from the following set;
+where an option is shown prefixed by `[\-]',
+it can be negated as described in the text.
+.PP
+Control modes:
+.PP
+.TS
+l1w(16n) l.
+[\fB\-\fR]\fBparenb\fR	enable (disable) parity bits
+[\fB\-\fR]\fBparodd\fR	select odd (even) parity
+\fBcs5 cs6 cs7 cs8\fR	set character size
+[\fB\-\fR]\fBcstopb\fR	use two (one) stop bits per character\ \ \ \ \ \ 
+[\fB\-\fR]\fBclocal\fR	line has (no) modem control
+[\fB\-\fR]\fBhupcl\fR	T{
+hang up (do not hang up) dataphone on last close
+T}
+[\fB\-\fR]\fBhup\fR	same as \fIhupcl\fR
+\fB0\fR	hang up phone line immediately
+T{
+.in 2n
+.ti 0
+.ad l
+\fB50 75 110 134 150 200 300 600 1200 1800 2400 4800 9600
+19200 38400 exta extb\fR
+.in 0
+.ad b
+T}	T{
+Set terminal baud rate to the number given, if possible
+(not all terminals support all rates).
+T}
+.TE
+.PP
+Input modes:
+.PP
+.TS
+l1w(16n) l.
+[\fB\-\fR]\fBignbrk\fR	ignore (respect) break character\ \ \ \ \ \ \ \ \ \ \ 
+[\fB\-\fR]\fBbrkint\fR	(do not) send interrupt on break
+[\fB\-\fR]\fBignpar\fR	(do not) ignore parity errors
+[\fB\-\fR]\fBparmrk\fR	(do not) mark parity errors
+[\fB\-\fR]\fBinpck\fR	enable (disable) parity checking
+[\fB\-\fR]\fBistrip\fR	T{
+(do not) strip characters to 7 bits
+T}
+[\fB\-\fR]\fBinlcr\fR	(do not) map NL to CR
+[\fB\-\fR]\fBigncr\fR	(do not) ignore CR
+[\fB\-\fR]\fBicrnl\fR	(do not) map CR to NL
+[\fB\-\fR]\fBiuclc\fR	(do not) map upper to lower case
+[\fB\-\fR]\fBixon\fR	enable start/stop control
+[\fB\-\fR]\fBixany\fR	any character (DC1 only) restarts output
+[\fB\-\fR]\fBixoff\fR	T{
+(do not) send start/stop characters
+when the input queue is nearly full
+T}
+[\fB\-\fR]\fBimaxbel\fR	T{
+(do not) ring the bell when running out of input buffers
+T}
+[\fB\-\fR]\fBiutf8\fR	(do not) handle input as UTF-8
+.TE
+.PP
+Output modes:
+.PP
+.TS
+l1w(16n) l.
+[\fB\-\fR]\fBopost\fR	enable (disable) output processing\ \ \ \ \ \ \ \ \ 
+[\fB\-\fR]\fBolcuc\fR	(do not) map upper to lower case
+[\fB\-\fR]\fBonlcr\fR	(do not) map NL to CR
+[\fB\-\fR]\fBonocr\fR	(do not) ignore CR
+[\fB\-\fR]\fBonlret\fR	NL is (not) return
+[\fB\-\fR]\fBofill\fR	(do not) use fill characters
+[\fB\-\fR]\fBofdel\fR	fill character is DEL (NUL)
+\fBcr0 cr1 cr2 cr3\fR	T{
+select style of delay for carriage return (see \fItermio\fR(3))
+T}
+\fBnl0 nl1 nl2 nl3\fR	select style of delay for linefeed 
+T{
+.in 2n
+.ti 0
+.ad l
+\fBtab0 tab1 tab2 tab3\fR
+.in 0
+.ad b
+T}	select style of delay for tab 
+\fBff0 ff1\fR	select style of delay for form feed 
+\fBbs0 bs1\fR	select style of delay for backspace
+\fBvt0 bt1\fR	select style of delay for vertical tab
+.TE
+.PP
+Local modes:
+.PP
+.TS
+l1w(16n) l.
+[\fB\-\fR]\fBisig\fR	T{
+enable (disable) intr, quit, and susp processing
+T}
+[\fB\-\fR]\fBicanon\fR	enable (disable) erase and kill processing\ 
+[\fB\-\fR]\fBxcase\fR	(no) canonical case presentation
+[\fB\-\fR]\fBecho\fR	(do not) echo every character typed
+[\fB\-\fR]\fBechoe\fR	(do not) echo erase character as `^H ^H'
+[\fB\-\fR]\fBechok\fR	(do not) echo NL after kill character
+[\fB\-\fR]\fBechonl\fR	(do not) echo NL regardless of \fIecho\fR
+[\fB\-\fR]\fBnoflsh\fR	(do not) flush after intr, quit, and susp
+[\fB\-\fR]\fBtostop\fR	send SIGTTOU for background output
+[\fB\-\fR]\fBechoctl\fR	T{
+(no) visual representation of control characters
+T}
+[\fB\-\fR]\fBechoprt\fR	(do not) echo erased characters
+[\fB\-\fR]\fBechoke\fR	T{
+(do not) print `^H ^H' sequences at line erase
+T}
+[\fB\-\fR]\fBflusho\fR	output is (not) flushed
+[\fB\-\fR]\fBpendin\fR	(do not) retype pending input
+[\fB\-\fR]\fBiexten\fR	T{
+enable (disable) extended control characters
+T}
+.TE
+.PP
+Control characters:
+.PP
+.TS
+l1w(16n) l.
+\fBintr \fIc\fP\fR	set intr character to \fIc\fR.
+\fBquit \fIc\fP\fR	set quit character to \fIc\fR.
+\fBerase \fIc\fP\fR	set erase character to \fIc\fR.
+\fBkill \fIc\fP\fR	set kill character to \fIc\fR.
+\fBeof \fIc\fP\fR	set eof character to \fIc\fR.
+\fBeol \fIc\fP\fR	set eol character to \fIc\fR.
+\fBeol2 \fIc\fP\fR	set eol2 character to \fIc\fR.
+\fBswtch \fIc\fP\fR	set swtch character to \fIc\fR.
+\fBstart \fIc\fP\fR	set start character to \fIc\fR.
+\fBstop \fIc\fP\fR	set stop character to \fIc\fR.
+\fBsusp \fIc\fP\fR	set susp character to \fIc\fR.
+\fBdsusp \fIc\fP\fR	set dsusp character to \fIc\fR.
+\fBrprnt \fIc\fP\fR	set rprnt character to \fIc\fR.
+\fBflush \fIc\fP\fR	set flush character to \fIc\fR.
+\fBwerase \fIc\fP\fR	set werase character to \fIc\fR.
+\fBlnext \fIc\fP\fR	set lnext character to \fIc\fR.
+.TE
+.PP
+A control character may be either given as a literal character,
+or as `\fB^\fIc\fR' for ASCII control characters CTRL-\fIc\fR;
+the special values `\fB^\-\fR' and `\fBundef\fR'
+disable the control function.
+Multibyte characters cannot be used as control characters;
+trying to do so will result in the control character
+set to the first byte of the multibyte character sequence,
+which has the undesired effect of applying the control function
+to more characters than the one supplied.
+.PP
+Combination modes et cetera:
+.PP
+.TS
+l1w(16n) l.
+[\fB\-\fR]\fBraw\fR	T{
+(no) raw mode input
+(i.\|e. no erase, kill, interrupt, quit, EOT; parity bit passed back)
+T}
+\fBcooked\fR	same as \fI\-raw\fR\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
+\fBsane\fR	reset all values to defaults
+[\fB\-\fR]\fBcbreak\fR	T{
+make each character available to \fIread\fR(2)
+as received; no erase and kill
+(make characters available to \fIread\fR
+only when newline is received)
+T}
+[\fB\-\fR]\fBoddp\fR	allow (disallow) odd parity
+[\fB\-\fR]\fBevenp\fR	allow (disallow) even parity
+[\fB\-\fR]\fBnl\fR	T{
+accept only new-line to end lines
+(allow carriage return for new-line,
+and output CR-LF for carriage return or new-line)
+T}
+[\fB\-\fR]\fBlcase\fR	T{
+(do not) map upper case to lower case
+T}
+[\fB\-\fR]\fBLCASE\fR	T{
+same as \fIlcase\fR
+T}
+[\fB\-\fR]\fBtabs\fR	T{
+(do not) replace tabs by spaces when printing
+T}
+\fBnul-fill\fR	use NUL to fill output
+\fBdel-fill\fR	use DEL to fill output
+[\fB\-\fR]\fBfill\fR	T{
+select NUL-filled output (disable output filling)
+T}
+\fBek\fR	T{
+reset erase and kill characters back to normal ^H and ^U
+T}
+\fBtty33\fR	T{
+set all modes suitable for the
+Teletype Corporation Model 33 terminal.
+T}
+\fBtty37\fR	T{
+set all modes suitable for the
+Teletype Corporation Model 37 terminal.
+T}
+\fBvt05\fR	T{
+set all modes suitable for Digital Equipment Corp. VT05 terminal
+T}
+\fBtn300\fR	T{
+set all modes suitable for a General Electric TermiNet 300
+T}
+\fBti700\fR	T{
+set all modes suitable for Texas Instruments 700 series terminal
+T}
+\fBtek\fR	T{
+set all modes suitable for Tektronix 4014 terminal
+T}
+\fBmin\fR	T{
+minimal number of bytes for non-canonical input
+T}
+\fBtime\fR	timeout for non-canonical input
+\fBrows\fR	T{
+set the height of the terminal in character cell units
+T}
+\fBcolumns\fR	T{
+set the width of the terminal in character cell units
+T}
+\fBypixels\fR	T{
+set the height of the terminal in pixels
+T}
+\fBxpixels\fR	T{
+set the width of the terminal in pixels
+T}
+.TE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SYSV3
+Affects the default and
+.B \-a
+output formats.
+.SH "SEE ALSO"
+termios(3),
+tabs(1)
+.SH NOTES
+Not all settings are available on all platforms.

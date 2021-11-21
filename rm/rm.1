@@ -1,0 +1,135 @@
+.\"
+.\" Sccsid @(#)rm.1	1.14 (gritter) 1/24/05
+.\" Parts taken from rm(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH RM 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+rm \- remove directory entries
+.SH SYNOPSIS
+\fBrm\fR [\fB\-f\&iRr\fR] \fIfile\fR ...
+.SH DESCRIPTION
+Rm removes the entries
+for one or more files from a directory.
+If an entry was the last link to the file,
+the file is destroyed.
+Removal of a file requires write permission in its directory,
+but neither read nor write permission on the file itself.
+.PP
+If a file has no write permission
+and the standard input is a terminal,
+its permissions are printed
+and a line is read from the standard input.
+If that line begins with `y'
+the file is deleted,
+otherwise the file remains.
+.PP
+When
+.B rm
+encounters a symbolic link,
+the link will be removed,
+but its target will remain in the file hierarchy.
+.PP
+The
+.B rm
+command accepts the following options:
+.TP
+.B \-f
+No questions are asked
+and neither error messages are printed
+nor the exit status is affected
+in case of nonexistent files.
+.B /usr/5bin/rm
+and
+.B /usr/5bin/s42/rm
+will not print an error message
+if removal of a file failed.
+For
+.B /usr/5bin/posix/rm
+and
+.BR /usr/5bin/posix2001/rm ,
+any previous occurrences of the
+.B \-i
+option are ignored.
+.TP
+.B \-i
+Causes
+.B rm
+to ask for confirmation
+before deleting any file,
+and,
+unter
+.BR \-r ,
+whether to examine each directory.
+For
+.B /usr/5bin/posix/rm
+and
+.BR /usr/5bin/posix2001/rm ,
+any previous occurrences of the
+.B \-f
+option are ignored.
+.TP
+.B \-R
+Same as
+.BR \-r .
+This option has been introduced by POSIX.2.
+.TP
+.B \-r
+.B Rm
+will recursively delete the entire contents
+of directories given as operands,
+and the directory itself.
+Without this option,
+an error comment is printed
+if a designated file is a directory.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SYSV3
+Causes the text of some messages to be changed.
+.SH "SEE ALSO"
+rmdir(1),
+unlink(2),
+rmdir(2)
+.SH NOTES
+It is forbidden to remove the files `.' and `..'
+merely to avoid the antisocial consequences
+of inadvertently doing something like `rm \-r .*'.
+.PP
+With
+.B /usr/5bin/rm
+and
+.BR /usr/5bin/s42/rm ,
+a single `\-' can be used to indicate the end of the options list,
+as with `rm \- \-file'.
+If `\-\-' is used to terminate the options list, though,
+a following `\-' will be interpreted as a file name,
+so `rm \-\- \-' will remove the file `\-'.

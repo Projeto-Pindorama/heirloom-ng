@@ -1,0 +1,171 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)df.1	1.32 (gritter) 12/9/04
+.TH DF 1 "12/9/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+df, dfspace \- disk free
+.SH SYNOPSIS
+.PD 0
+.HP
+.nh
+.ad l
+\fBdf\fR [\fB\-F\fI\ fstype\fR] [\fB\-M\fI\ mtab\fR]
+[\fB\-o\fI\ fsoptions\fR] [\fB\-befghiklnPtv\fR]
+[\fIfile\fR\ ...]
+.PP
+\fBdfspace\fR [\fB\-F\fI\ fstype\fR] [\fIfile\fR ...]
+.br
+.PD
+.ad b
+.SH DESCRIPTION
+Df prints file system statistics.
+A file system is selected
+by a file it contains,
+or by its device file,
+as specified by the
+.I file
+argument.
+If no
+.I file
+argument is given,
+statistics are printed for all mounted file systems.
+The basic size unit is a
+.I block
+consisting of 512 bytes.
+.PP
+.B dfspace
+prints available and total disk space in megabyte units.
+.PP
+The
+.B df
+command accepts the following options:
+.TP
+.B \-b
+Print only the number of kilobytes free.
+.TP
+.B \-be
+Print counts of free kilobytes and available files.
+.TP
+.B \-e
+Print only the number of available files.
+.TP
+.B \-f
+Omit the number of available files
+in traditional output format.
+.TP
+.BI \-F \ fstype
+Restrict output to filesystems of type
+.I fstype.
+.TP
+.B \-g
+Print the entire
+.IR statvfs (2)
+structure.
+Overrides the \-b, \-e, \-k, \-n, \-P, and \-t options.
+.TP
+.B \-k
+If given alone, the allocation is printed in kbytes,
+and a different output format is used.
+If combined with the \-P option,
+the size unit is changed from blocks to kbytes.
+Overrides the \-b, \-e, \-f, \-n, \-t, and \-v options.
+.TP
+.B \-l
+Omit statistics about non-local file systems.
+Currently, file systems with types of
+.B nfs
+and
+.B smbfs
+are considered to be non-local.
+.TP
+.B \-n
+Print the file system mount point and file system type only.
+.TP
+.BI \-o \ fsoptions
+Specifiy file-system specific options.
+There are none so this option will always cause an error message.
+.TP
+.B \-t
+Use the traditional output format as it is the default,
+but include total allocated-space figures in the output.
+Overrides the \-b, \-e and \-n options.
+.TP
+.B \-v
+Select verbose output format,
+that is,
+mount point, device;
+total, used, and free block counts;
+and usage in percent.
+.TP
+.B \-V
+Print command lines for each file system only.
+.PP
+The following option has been introduced by POSIX.2:
+.TP
+.B \-P
+Select the portable 
+.SM (POSIX)
+output format.
+.PP
+The following options are extensions:
+.TP
+.B \-h
+Prints the sizes in human-readable powers of 1024,
+i.\|e. `K' for kilobyte,
+`M' for megabyte,
+`G' for gigabyte,
+`T' for terabyte,
+`P' for petabyte,
+and `E' for exabyte.
+.TP
+.B \-i
+Print i-node statistics.
+.TP
+.BI \-M \ mtab
+Use the specified
+.I mtab
+file to get a list of mounted filesystems.
+.SH FILES
+.TP
+.B /etc/mtab
+default mount table
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SYSV3
+If this variable is set,
+the output text `files' is changed to `i-nodes'.
+.SH "SEE ALSO"
+find(1),
+statvfs(2),
+mtab(5),
+mount(8)
+.SH NOTES
+.PP
+This
+.I df
+implementation cannot handle unmounted file systems.
+.PP
+Some advanced file system designs allocate i-nodes dynamically.
+.I Df
+then tries to estimate free and total counts of available files.
+This is currently done for the
+.I reiserfs
+file system.

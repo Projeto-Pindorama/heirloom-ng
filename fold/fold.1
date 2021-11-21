@@ -1,0 +1,76 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)fold.1	1.4 (gritter) 12/6/04
+.TH FOLD 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+fold \- fold long lines
+.SH SYNOPSIS
+\fBfold\fR [\fB\-b\fR] [\fB\-s\fR] [\fB\-w\ \fIwidth\fR | \fB\-\fIwidth\fR]
+[\fIfile\ ...\fR]
+.SH DESCRIPTION
+.I Fold
+reads its input
+.IR files ,
+or of standard input if no
+.I file
+argument is present,
+and folds lines that exceed 80 columns
+(i.\|e. it inserts newline characters).
+It interprets backspace, tabulator,
+and carriage return characters in input.
+.PP
+The following options are accepted by
+.IR fold :
+.TP
+.B \-b
+Use bytes instead of columns.
+All characters except for the newline character
+are counted according to the space consumed in bytes.
+This option has been introduced by POSIX.2.
+.TP
+.B \-s
+Try to preserve words, if possible.
+If a blank character appears in an input line
+before it exceeds the width limit,
+the line is prematurely folded after this character.
+This option has been introduced by POSIX.2.
+.TP
+.B \-w\fI width\fR
+Set the maximum output line length (in columns or bytes) to
+.I width
+instead of the default 80.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the set of blank characters.
+Multibyte characters are not split by
+.IR fold ;
+the line is folded before the character
+that would cause it to exceed the maximum width.
+.SH "SEE ALSO"
+fmt(1),
+pr(1)

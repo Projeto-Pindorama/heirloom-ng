@@ -1,0 +1,31 @@
+# Sccsid @(#)man.dfl.in	1.21 (gritter) 8/9/05
+
+# Manual search path. Default is /usr/local/share/man:/usr/share/man
+MANPATH=@MANDIR@:/usr/node/share/man:/usr/local/share/man:/usr/ccs/share/man:/usr/old/share/man:/usr/contrib/share/man:/usr/share/man:/usr/share/man/en:/usr/X11R6/man
+
+# Command for nroff. Default is nroff -Tlp
+NROFF=GROFF_NO_SGR= GROFF_TMAC_PATH=@DEFLIB@/tmac${GROFF_TMAC_PATH+:$GROFF_TMAC_PATH} TROFFMACS=@DEFLIB@/tmac/tmac. nroff -Tlp
+
+# Command for troff (-t option). Default is troff
+TROFF=GROFF_TMAC_PATH=@DEFLIB@/tmac${GROFF_TMAC_PATH+:$GROFF_TMAC_PATH} TROFFMACS=@DEFLIB@/tmac/tmac. groff
+
+# Command for col. Default is col -x
+COL=col -x
+
+# Postprocessor for troff with the -t option. Default is nothing.
+#DPOST=dpost
+
+# Command for pager. Default is pg
+PAGER=pg
+
+# Command for eqn. Default is eqn
+EQN=eqn
+
+# Command for neqn. Default is neqn
+NEQN=neqn
+
+# Command for tbl. Default is tbl
+TBL=tbl
+
+# Macro set. Default is -man
+MACSET=-mandoc

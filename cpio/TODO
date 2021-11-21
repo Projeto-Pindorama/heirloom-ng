@@ -1,0 +1,63 @@
+TODO file for the cpio and pax commands
+=======================================
+
+The implementation of features is usually delayed even more once they
+are described in a TODO file. So this file documents not what will be
+done in the immediate future. Instead, it documents what will probably
+_never_ be implemented and why.
+
+Incremental backups
+-------------------
+
+Cpio and pax are primarily intended as tools for archive exchange,
+not for backing up file systems. Incremental backups are therefore
+outside the scope of this implementation.
+
+
+Sparse file support
+-------------------
+
+I would implement sparse file support if there were any documented
+operating system interfaces for detecting holes. But since archives
+with sparse files are not portable anyway, this is not a real issue
+for archive interchange and therefore not worth the trouble with
+the implementation.
+
+
+ANSI standard tape labels (as of ANSI X3.27-1987)
+-------------------------------------------------
+
+This format is problematic because it can only be used on tapes (it
+relies on the sequential positioning of several files separated by
+file marks). No sane person would want to use such a format on Unix
+today, except perhaps as a wrapper for a single archive file on tape.
+Moreover, many fields of this format are too small today, e. g. there
+cannot be more than 999,999 blocks in a volume.
+
+As a result, there are no plans to implement ANSI standard tape labels
+in cpio and pax. There is a Unix implementation called 'ansitar' that
+was posted on net.sources in 1984 and is still available via Usenet
+archives.
+
+
+Microsoft CAB file format
+-------------------------
+
+Since this format requires that the number of files and the total size
+of the archive are stored at the very beginning of the archive, it does
+not fit within a sequential access archiving scheme as that of cpio and
+pax. Writing such an archive to a pipe would require to write the whole
+archive to a temporary file first, setting the numbers at the beginning
+once the archive was written and then starting to write to the pipe. As
+sizes and counts in this file format are restricted to 32-bit integers,
+it could not be used as a general purpose archiving format today.
+
+Thus an implementation in cpio and pax could not work satisfactorily
+and will probably never be done. There is a program named 'cabextract'
+that can read such archives. In my opinion, there is no reason to create
+such archives for data exchange anyway since the zip format can be read
+in many more environments and does not exhibit any of the weaknesses of
+the CAB design.
+
+
+	Gunnar Ritter						2/14/05

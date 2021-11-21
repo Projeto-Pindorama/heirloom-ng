@@ -1,0 +1,27 @@
+README for license conditions of the Heirloom Toolchest
+=======================================================
+
+The Heirloom Toolchest is derived from a variety of sources; the
+respective licensing terms can be found in the other files in this
+directory; in addition, each source file contains the license terms
+of the original author at its top.
+
+All newly written code is put under a zlib-style license (except for
+additions to the GPL and LGPL code in awk and libuxre). The rationale
+is that for something distributed as widely as Unix code, any license
+that requires more than naming the author would only cause annoyance.
+
+In effect, this means that commercial Unix vendors who already have a
+Unix source code license can use nearly all of this code without being
+forced to mention it in other places than the source code files.
+
+However, if you work for such a vendor, don't do so. Instead, convince
+the management to release at least the utility source. There is really
+nothing to keep secret about it to have an advantage over competitors,
+as any person or company can simply use the source of this or another
+toolchest to have comparable functionality. So by releasing the source
+to your version, you lose nothing, but you will make your users happy
+since they can use it as a reference. And happy users also mean more
+money in the end.
+
+Gunnar Ritter							9/22/03

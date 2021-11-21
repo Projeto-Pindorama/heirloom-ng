@@ -1,0 +1,218 @@
+.\"
+.\" Sccsid @(#)cp.1	1.26 (gritter) 5/3/05
+.\" Parts taken from cp(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CP 1 "5/3/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+cp \- copy files
+.SH SYNOPSIS
+\fBcp\fR
+[\fB\-adDfiHLpPrRs\fR] [\fB\-b\ \fIsize\fR]
+\fIfile1\fR [\fIfile2\fR .\ .\ .\ ] \fItarget\fR
+.SH DESCRIPTION
+.I File1
+is copied onto
+.IR target .
+If
+.I target
+is an existing regular file,
+its content is overwritten.
+Its mode and owner are preserved;
+the mode of the source file is used otherwise.
+.PP
+If
+.I target
+is a directory,
+one or more files are copied
+into the directory with their original file-names.
+.PP
+.I Cp
+refuses to copy a file onto itself.
+.PP
+The
+.I cp
+command accepts the following options:
+.TP
+.B \-i
+.I Cp
+will ask for confirmation
+before overwriting an existing target file.
+For
+.B /usr/5bin/cp
+and
+.BR /usr/5bin/s42/cp ,
+.I cp
+will also ask for confirmation before overwriting a directory
+with the
+.I \-r
+or
+.I \-R
+option.
+For
+.BR /usr/5bin/cp ,
+this flag will be automatically disabled
+if standard input is not a terminal.
+.TP
+.B \-p
+.I Cp
+will try to preserve access and modification times,
+user and group ownerships,
+and file permission bits.
+Failing to preserve these modes
+is always considered an error,
+but only
+.BR /usr/5bin/s42/cp ,
+.BR /usr/5bin/posix2001/cp ,
+and
+.B /usr/5bin/posix/cp
+will print an error message.
+.TP
+.B \-r
+The source file operands may be directories
+that will be copied recursively.
+Symbolic links are followed.
+The content of all non-directory files encountered
+is tried to be reproduced in a regular file.
+.PP
+The following options have been added by POSIX.2:
+.TP
+.B \-f
+If overwriting a target file fails,
+.I cp
+will try to unlink that file and proceed.
+.TP
+.B \-R
+The source file operands may be directories
+that will be copied recursively.
+Special files
+such as block and character devices,
+FIFOs,
+and symbolic links encountered during traversal
+are recreated in the target hierarchy.
+If a symbolic link is given as an operand,
+its target is copied.
+.PP
+The following options have been added by POSIX.1-2001:
+.TP
+.B \-H
+With the
+.I \-R
+option, follow symbolic links given as operands,
+but do not follow symbolic links encountered during traversal
+of the source hierarchy.
+This is the default.
+.TP
+.B \-L
+With the
+.I \-R
+option, follow all symbolic links.
+.TP
+.B \-P
+With the
+.I \-R
+option, do not follow any symbolic links.
+.PP
+The following options are extensions:
+.TP
+.B \-a
+Perform a recursive copy and, if possible,
+preserve hard links as well as any attributes.
+This is the same as the combination of the
+.I \-Rdp
+options.
+.TP
+\fB\-b\ \fIsize\fR
+With this option given,
+.I cp
+performs input and output in units of
+.I size
+bytes.
+The default size depends on the current input file.
+.TP
+.B \-d
+With the
+.I \-r
+or
+.I \-R
+options,
+hard links between copied files are usually splitted,
+i.\|e. each copied file is assigned to a separate i-node.
+When this option is given,
+hard links between copied files
+are reproduced in the destination hierarchy.
+.TP
+.B \-D
+Causes
+.I cp
+to use direct i/o
+when copying file data.
+See the description of `O_DIRECT' in
+.IR open (2)
+for more information.
+.TP
+.B \-s
+With this option,
+.I cp
+prints i/o statistics for each single file
+of which data was copied.
+.SH "SEE ALSO"
+cat(1),
+cpio(1),
+mv(1),
+pr(1),
+rm(1)
+.SH NOTES
+Use either
+.RS
+.sp
+.B cp
+.B \-\-
+.I \-file
+.I target
+.sp
+.RE
+or
+.RS
+.sp
+.B cp
+.I ./\-file
+.I target
+.sp
+.RE
+to copy files that begin with a hyphen character.
+.PP
+A copy of a symbolic link
+contains the same pathname as the original.
+Symbolic links with relative pathnames
+may thus change or lose their target
+if copied to a different level in the file hierarchy.

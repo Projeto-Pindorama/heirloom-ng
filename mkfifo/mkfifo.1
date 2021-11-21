@@ -1,0 +1,30 @@
+.\"
+.\" Sccsid @(#)mkfifo.1	1.1 (gritter) 8/15/03
+.TH MKFIFO 1 "8/15/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+mkfifo \- make FIFO special file
+.SH SYNOPSIS
+\fBmkfifo\fR [\fB\-m\fI\ mode\fR] \fIpath\fR ...
+.SH DESCRIPTION
+.B Mkfifo
+creates FIFO special files on the given
+.I path
+names.
+The default mode is 666,
+and is affected by the file creation mask (see
+.IR umask (2)).
+.PP
+The following options are accepted:
+.TP
+\fB\-m\fR \fImode\fP
+Uses the given
+.I mode
+to create the directory,
+ignoring the file creation mask.
+.I Mode
+can be given in octal or in symbolic form,
+as described in
+.IR chmod (1).
+.SH "SEE ALSO"
+mknod(1),
+mkfifo(2)

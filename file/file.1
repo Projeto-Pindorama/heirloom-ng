@@ -1,0 +1,114 @@
+.\"
+.\" Sccsid @(#)file.1	1.8 (gritter) 2/6/05
+.\" Parts taken from file(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH FILE 1 "2/6/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+file \- determine file type
+.SH SYNOPSIS
+\fBfile\fR [\fB\-h\fR] [\fB\-m\fI\ mfile\fR] [\fB\-f\fI\ ffile\fR] [\fB\-z\fR]
+\fIarg\fR\ .\|.\|.
+.br
+\fBfile\fR [\fB\-h\fR] [\fB\-m\fI\ mfile\fR] [\fB\-z\fR] \-f\fI\ ffile\fR
+.br
+\fBfile\fR [\fB\-c\fR] [\fB\-m\fI\ mfile\fR]
+.SH DESCRIPTION
+.I File
+performs a series of tests on each argument
+in an attempt to classify it.
+If an argument appears to be ascii,
+.I file
+examines the first 512 bytes
+and tries to guess its language.
+.PP
+File formats identified by a magic number
+(that is a defined value at a defined place of the file)
+are detected using the definitions in a magic file
+.RB ( /usr/5lib/magic " by default)."
+.PP
+The
+.I file
+command accepts the following options:
+.TP
+.B \-c
+Complain about format errors in the magic file
+and display a summary of the magic known after reading.
+.TP
+\fB\-f\fI\ ffile\fR
+The file given contains the names of other files to be examined,
+one file name per line.
+.TP
+.B \-h
+Symbolic links are normally followed.
+This option causes
+.I file
+not to follow symbolic links
+but to print their target instead.
+.TP
+\fB\-m\fI\ mfile\fR
+Use
+.I mfile
+instead of
+.B /usr/5lib/magic
+as the magic file.
+.TP
+.B \-z
+If a file turns out to be compressed with
+.IR compress (1),
+.IR gzip (1),
+or
+.IR bzip2 (1),
+do not further examine the file itself
+but run the appropriate decompression program
+and examine its output.
+This option is an extension.
+.SH FILES
+/usr/5lib/magic
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SYSV3
+Causes the text of some messages to be changed.
+.SH NOTES
+.I File
+often makes mistakes.
+In particular it often suggests that
+command files are C programs.
+.PP
+.I File
+does not currently accept the
+.BR \-d ,
+.BR \-i ,
+\fB\-M \fIfile\fR,
+and
+\fB\-m \fIfile\fR
+options from POSIX.1-2001.

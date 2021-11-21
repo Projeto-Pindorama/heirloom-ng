@@ -1,0 +1,108 @@
+.\"
+.\" Sccsid @(#)du.1b	1.11 (gritter) 1/23/05
+.\" Parts taken from du(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH DU 1B "1/23/05" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+du \- (BSD) summarize disk usage
+.SH SYNOPSIS
+\fBdu\fR [\fB\-ahHLsxo\fR] [\fIname\fR ...]
+.SH DESCRIPTION
+.I Du
+gives the number of blocks (1024 bytes) contained in all files
+and (recursively) directories within each specified directory or
+file
+.IR name .
+If
+.I name
+is missing, 
+`\fB.\fR'
+is used.
+.PP
+The following options are supported:
+.TP
+.B \-a
+This option causes an entry to be generated
+for each file.
+Absence of either causes an entry to be generated for
+each directory only.
+.TP
+.B \-s
+This option causes only the grand total to
+be given.
+Overrides the \-a option.
+.PP
+The following option has been introduced by POSIX.2:
+.TP
+.B \-x
+Do not cross device boundaries
+when descending a directory hierarchy.
+.PP
+The following options have been introduced by POSIX.1-2001:
+.TP
+.B \-H
+Follow symbolic links given on the command line
+and count the size of the files they refer to,
+but do not follow symbolic links found during directory traversal
+and count the sizes of these symbolic links themselves.
+.TP
+.B \-L
+Always follow symbolic links
+and count the sizes of the files they refer to.
+.PP
+The following options are extensions:
+.TP
+.B \-h
+Print statistics in human-readable powers of 1024,
+i.\|e. `K' for kilobyte,
+`M' for megabyte,
+`G' for gigabyte,
+`T' for terabyte,
+`P' for petabyte,
+and `E' for exabyte.
+.TP
+.B \-o
+Do not add sizes of subdirectories to parent directories.
+.PP
+A file which has two links to it is only counted once.
+.SH "SEE ALSO"
+df(1)
+.SH NOTES
+Non-directories
+given as arguments (not under
+.B \-a
+or
+.B \-s
+options) are not listed.
+.PP
+Files with holes may produce incorrect results.

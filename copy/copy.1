@@ -1,0 +1,144 @@
+.\"
+.\" Sccsid @(#)copy.1	1.8 (gritter) 12/8/04
+.TH COPY 1XNX "12/8/04" "Heirloom Toolchest" "XENIX System Compatibility"
+.SH NAME
+copy \- (XENIX) copy groups of files
+.SH SYNOPSIS
+\fBcopy\fR
+[\fB\-a\fR[\fBd\fR]]
+[\fB\-nlsmorvh\fR]
+\fIsource\fR\ .\ .\ .\ [\fIdestination\fR]
+.SH DESCRIPTION
+The
+.I copy
+command
+creates a copy of each
+.I source
+file in
+.IR destination .
+If no
+.I destination
+argument is present,
+the current directory is used.
+If more than one
+.I source
+argument is given,
+.I destination
+must be an existing directory;
+otherwise, if
+.I destination
+does not exist, it is created.
+For a directory given as
+.IR source ,
+its contents are copied to
+.IR destination ,
+but subdirectories are normally ignored
+(see the
+.I \-r
+option below).
+Special files are copied as such.
+.PP
+If a destination file exists,
+its content will be overwritten,
+but it will retain its permissions and ownership.
+Otherwise, files are created
+with the owner and group set to those of the invoking user
+and with the permissions of the source file (minus umask, see
+.IR umask (2)).
+.PP
+The
+.I copy
+command accepts the following options,
+which may be given at any position
+regarding the file operands:
+.TP
+.B \-a
+Asks for confirmation for each file before a copy is attempted,
+and for each directory before it is examined.
+.TP
+.B \-ad
+Asks for confirmation for each directory before it is examined.
+Implies the
+.I \-r
+option.
+.TP
+.B \-h
+By default, symbolic links are followed.
+This option causes symbolic links
+encountered during traversal to be copied
+(symbolic links given as arguments
+will still be followed).
+This option is an extension.
+.TP
+.B \-l
+If possible,
+files are hard linked instead of being copied.
+This does not apply to directories or special files.
+.TP
+.B \-m
+Sets access and modification times of copied files
+to those of source files
+instead of current time.
+.TP
+.B \-n
+Create new files only: If a destination file exists,
+it is not overwritten.
+.TP
+.B \-o
+Sets the owner and group of each destination file
+to those of the source file
+instead of those of the invoking user.
+.TP
+.B \-r
+Recusively copies subdirectories of the source arguments encountered.
+.TP
+.B \-s
+Similar to
+.IR \-l ,
+but uses soft links.
+This option is an extension.
+.TP
+.B \-v
+Prints the name of each file or directory
+before it is copied or examined.
+.SH "SEE ALSO"
+cp(1),
+cpio(1)
+.SH NOTES
+Files copied will lose all hard link connection.
+.PP
+In contrast to
+.IR cp (1),
+if a directory is copied to an existing destination directory,
+its contents will be written directly into that directory,
+without a subdirectory being created.
+For example, if the directory
+.I source
+contains the files
+.I file1
+and
+.IR file2 ,
+the command
+.RS
+.sp
+copy source dest
+.sp
+.RE
+will create files
+.I dest/file1
+and
+.IR dest/file2 ,
+while the command
+.RS
+.sp
+cp \-r source dest
+.sp
+.RE
+will create
+.I dest/source/file1
+and
+.IR dest/source/file2 .
+Thus if a single directory is named
+and no explicit destination is given,
+copies of the files below that directory
+will be created in the current directory.

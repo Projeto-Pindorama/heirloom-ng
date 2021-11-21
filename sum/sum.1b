@@ -1,0 +1,64 @@
+.\"
+.\" Sccsid @(#)sum.1b	1.6 (gritter) 10/11/03
+.\" Parts taken from sum(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH SUM 1B "10/11/03" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+sum \- (BSD) sum and count blocks in a file
+.SH SYNOPSIS
+\fB/usr/ucb/sum\fR [\fIfile\fR]
+.SH DESCRIPTION
+.I Sum
+calculates and prints a 16-bit checksum for the named file,
+and also prints the number of kilobytes in the file.
+It is typically used to look for bad spots, or
+to validate a file communicated over
+some transmission line.
+.SH "SEE ALSO"
+cksum(1),
+wc(1)
+.SH DIAGNOSTICS
+`Read error'
+is indistinguishable from end of file on
+most devices; check the block count.
+.SH NOTES
+The checksum is identical to that obtained with the
+.B \-r
+option of
+.BR /usr/5bin/sum .
+.PP
+The algorithm
+may produce different results in different implementations.
+For this reason,
+.IR cksum (1)
+should be used in preference.

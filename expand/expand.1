@@ -1,0 +1,72 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)expand.1	1.1 (gritter) 5/5/03
+.TH EXPAND 1 "5/5/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+expand \- convert tabs to spaces
+.SH SYNOPSIS
+\fBexpand\fR [\fB\-t\ \fItablist\fR | \fB\-\fItablist\fR] [\fIfile\fR\ ...]
+.SH DESCRIPTION
+The
+.I expand
+utility converts all tabulators found in its input
+.I files
+(or in standard input if no
+.I file
+argument is present)
+to spaces
+and writes the result to standard output.
+The input is ordered in columns
+according to the width of characters;
+a backspace character causes the column to be decremented.
+By default, a tabulator stop is assumed at every eight positions.
+.PP
+The following options alter the behavior of
+.IR expand :
+.TP
+.B \fB\-t\ \fItablist\fR
+Specify the positions of tabulator stops.
+If
+.I tablist
+is a single number,
+a tabulator stop is assumed at every
+.I tablist positions.
+If
+.I tablist
+is a list of numbers
+in strictly ascending order
+separated by commas or blanks,
+a tabulator stop is assumed at each numbered position.
+For column positions beyond the last tabulator stop,
+each tabulator character is converted to a single space character.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Specifies the mapping of bytes to characters
+and the width of characters.
+.SH "SEE ALSO"
+tabs(1),
+unexpand(1)

@@ -1,0 +1,82 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)psrinfo.1	1.5 (gritter) 4/17/03
+.TH PSRINFO 1 "4/17/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+psrinfo \- displays information about processors
+.SH SYNOPSIS
+.B psrinfo
+[
+.B \-v
+] [ processor_id ... ]
+.PP
+.B psrinfo
+.B \-s
+processor_id
+.PP
+.B psrinfo
+.B \-n
+.SH DESCRIPTION
+The
+.B psrinfo
+command displays processor information.
+.PP
+If no
+.I processor_id
+is given,
+all processors are assumed.
+.I processor_id
+can be a single number,
+or a range,
+as in
+.I 0\-3
+to select the first four processors.
+.PP
+The
+.B psrinfo
+command accepts the following options:
+.TP
+.B \-n
+Displays the number of processors.
+.TP
+.B \-s
+Silent operation. Exactly one
+.I processor_id
+is processed, and it must be a single number.
+The exit status is zero if the processor is present,
+non-zero otherwise.
+.TP
+.B \-v
+Verbose operation. Displays processor type, clock speed,
+and availability of a floating point unit.
+.SH FILES
+.TP
+.B /proc/cpuinfo
+Used to determine the clock speeds.
+.TP
+.B /proc/stat
+Used to determine the number of processors
+and the on-line times.
+.SH "SEE ALSO"
+uname(1),
+uname(2),
+proc(5)

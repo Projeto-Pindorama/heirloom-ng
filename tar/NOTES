@@ -1,0 +1,61 @@
+Notes for the tar utility
+=========================
+
+- tar is able to extract many GNU tar format archives; notably, large file
+  sizes, user and group ids, and long file and link names are supported.
+  Multivolume archives, sparse files, and incremental backups are not
+  supported. Thus for extraction for GNU tar archives, this tar behaves
+  identically to our cpio (and can extract GNU tar format archives written
+  by cpio).
+
+  tar is also able to update GNU tar format archives so that GNU tar can
+  read them, but it does not use any of the GNU extensions then; thus file
+  names are limited to 99 characters. It currently does not allow the 
+  creation of new GNU tar format archives; use cpio if you want to do
+  that.
+
+- The multivolume format is identically to that in cpio (both our and SVr4
+  derived implementations) and incompatible to that in System V tar. Besides
+  the obvious advantage of interoperability, the format can be easily read
+  with standard Unix tools if no special support in tar or cpio is available
+  on foreign platforms (see the manual page). A disadvantage is that no
+  volume numbers are stored on the media, the user has to ensure the
+  correct order of parts himself.
+
+- Although the archives written by tar are intended to be compatible with
+  the tar format given in IEEE Std. 1003.1, 1996 (POSIX.1), extraction of
+  archives is not compliant with this standard since we use the numerical
+  uid and gid fields instead of the symbolic uname and gname fields when
+  restoring ownership of files. This is done because use of the symbolic
+  fields can easily lead to conflicts if the numerical user id of a user
+  that has no local name stored in the archive is identical to the local
+  numeric user id of a user whose symbolic name is mapped to a different
+  uid than that stored in the archive, e. g.
+
+  name on tape	uid on tape	local name	local uid	result
+  foo		100		foo		101		101
+  bar		101		(none)		(none)		101
+
+  Use of the numeric fields avoids such clashes, at least if extraction
+  takes place in an empty directory, and allows mapping of user ids using
+  the 'find' and 'chown' utilities after extraction.
+
+  In the wording of the standard, this is not 'a privileged, protection-
+  preserving version of the utility' (10.1.1, p. 235, l. 202-203).
+
+- Extraction does not conform to the tar(XCU) specification (LEGACY) in
+  The Single UNIX Specification, Version 2, The Open Group 1997, since
+  the 'x' key described there demands extraction with the same modes as
+  on the tape if the files are newly created, which is not done by this
+  implementation (as well as by any traditional Unix implementation
+  known to me) unless the 'p' key is also given. The modes of existing
+  files are also not preserved since such files are always removed before
+  extraction of the corresponding archived file by this implementation.
+
+  This conflict between standard and implementations actually existed
+  already with the System V Interface Definition, Third and Fourth
+  Editions, tar(AU_CMD), which demand the same behavior as SUSv2; it
+  seems that no System V implementation has ever fulfilled USL's own
+  specification for tar.
+
+	Gunnar Ritter						9/22/03

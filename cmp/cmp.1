@@ -1,0 +1,90 @@
+.\"
+.\" Sccsid @(#)cmp.1	1.5 (gritter) 12/5/04
+.\" Parts taken from cmp(1), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH CMP 1 "12/5/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+cmp \- compare two files
+.SH SYNOPSIS
+\fBcmp\fR [\fB\-l\fR] [\fB\-s\fR] [\fB\-w\fR]
+\fIfile1 file2\fR [\fIskip1\fR [\fIskip2\fR]]
+.SH DESCRIPTION
+The two files are
+compared.
+(If a file is `\-',
+the standard input is used.)
+Under default options,
+.I cmp
+makes no comment if the files are the same;
+if they differ, it announces the byte and line number
+at which the difference occurred.
+If one file is an initial subsequence
+of the other, that fact is noted.
+If
+.I skip1
+or
+.I skip2
+are given,
+the indicated number of bytes is read from each file
+before the comparison starts.
+The
+.I skip
+values may be either decimal or,
+if beginning with `0', octal.
+.PP
+Options:
+.TP 6
+.B  \-l
+Print the byte number (decimal) and the
+differing bytes (octal) for each difference.
+.TP 6
+.B  \-s
+Print nothing for differing files;
+return codes only.
+.PP
+The following option is an extension:
+.TP 6
+.B  \-w
+For each difference,
+the surrounding 8-byte unit,
+measured from the beginning of the file,
+is printed for both files
+as a 64-bit MSB integer in octal,
+and as a byte string,
+with non-ASCII and control characters replaced by an underscore.
+.SH "SEE ALSO"
+diff(1), comm(1)
+.SH DIAGNOSTICS
+Exit code 0 is returned for identical
+files, 1 for different files, 2 for an
+inaccessible or missing argument.

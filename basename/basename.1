@@ -1,0 +1,66 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)basename.1	1.6 (gritter) 1/24/05
+.TH BASENAME 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+basename \- return non-directory portion of a pathname
+.SH SYNOPSIS
+\fBbasename\fR \fIstring\fR [\fIsuffix\fR]
+.SH DESCRIPTION
+.I Basename
+deletes the directory part of the filename-like
+.I string
+and prints the result.
+If
+.I suffix
+is specified,
+and
+.I suffix
+matches the last part of the result
+while characters remain,
+the matched portion of
+.I string
+is also deleted.
+.B /usr/5bin/basename
+and
+.B /usr/5bin/s42/basename
+interpret
+.I suffix
+as a simple regular expression
+as described in
+.IR ed (1);
+.B /usr/5bin/posix/basename
+and
+.B /usr/5bin/posix2001/basename
+treat it as a fixed string.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters.
+.SH "SEE ALSO"
+dirname(1),
+ed(1),
+sh(1),
+locale(7)

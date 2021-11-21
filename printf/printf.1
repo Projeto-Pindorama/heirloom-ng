@@ -1,0 +1,254 @@
+.\"
+.\" Copyright (c) 2005 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)printf.1	1.2 (gritter) 7/17/05
+.TH PRINTF 1 "7/17/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+printf \- print a text string
+.SH SYNOPSIS
+\fBprintf\fR \fIformat\fR [\fIargument\fR ...]
+.SH DESCRIPTION
+The
+.I printf
+command writes a string to standard output
+with a controlled
+.IR format .
+It is essentially a utility variant of the `C' language function
+.IR printf (3).
+.PP
+Most characters in the
+.I format
+string
+are simply copied.
+The only exceptions are the backslash `\e' and percent `%' characters.
+.PP
+The backslash `\e' character in the
+.I format
+string
+serves as an escape for the following character.
+The sequences
+`\ea' (alert),
+`\eb' (backspace),
+`\ef' (formfeed),
+`\en' (newline),
+`\er' (carriage return),
+`\et' (tabulator),
+and `\ev' (vertical tabulator)
+cause the corresponding control characters to be printed.
+The sequence `\e\fInnn\fR',
+where
+.I nnn
+is a one-, two-, or three-digit octal number,
+cause the character (byte) with the corresponding number
+to be printed.
+`\e\e' prints the backslash character itself.
+.PP
+The percent `%' character in the
+.I format
+string introduces a conversion specification
+consisting of up to five parts,
+of which the first four are optional:
+.TP 14
+.I position
+A positive decimal integer followed by a dollar `$' character
+that specifies the
+.I argument
+to be used instead of the next unused one
+for the following conversions.
+.TP 14
+.I flags
+Zero or more of
+.RS
+.PD 0
+.TP 8
+.B \-
+left-justify the field
+.TP 8
+.B +
+always include a sign when printing a number
+.TP
+<space>
+prefix the result by a space if there is no sign
+.TP 8
+.B #
+alternate format
+.TP 8
+.B 0
+pad numbers with leading zeros
+.PD
+.RE
+.TP 14
+.I field width
+A decimal number giving the minimum width of the output printed.
+The output is padded if necessary,
+as controlled by the flags described above.
+By default, no padding is performed.
+If the field width is `*',
+it is taken from the next unused
+.IR argument .
+.TP 14
+.I precision
+A dot `.',
+followed by a decimal number giving
+the minimum digits written for integer numeric conversions,
+the minumum digits after the radix character
+for floating-point numeric conversions,
+or maximum bytes written for string conversions.
+If the precisision is `.*',
+it is taken from the next unused
+.IR argument .
+.TP 14
+.I specifier
+A character controlling the type of the conversion performed:
+.RS
+.PD 0
+.TP 5
+.B s
+The next unused
+.I argument
+is written as a plain string.
+.TP 5
+.B b
+The next unused
+.I argument
+is written as a string containing escape sequences
+similar to those of
+.IR echo (1).
+The backslash sequences described above are supported,
+except that the octal number must be prefixed by a zero
+as in `\e0\fInnn\fR'.
+A `\ec' sequence causes
+.I printf
+to exit immediately when it is encountered.
+.TP 5
+.B c
+The first character (byte) of the next unused
+.I argument
+is written.
+Any following characters in this argument are ignored.
+.TP 5
+.BR d ", i
+The next unused
+.I argument
+is written as a signed decimal number.
+.TP 5
+.B o
+The next unused
+.I argument
+is written as an octal number.
+With the `#' flag,
+it is prefixed by `0'.
+.TP 5
+.B u
+The next unused
+.I argument
+is written as an unsigned decimal number.
+.TP 5
+.B x
+The next unused
+.I argument
+is written as a hexadecimal number,
+using lowercase characters.
+With the `#' flag,
+it is prefixed by `0x'.
+.TP 5
+.B X
+The next unused
+.I argument
+is written as a hexadecimal number,
+using uppercase characters.
+With the `#' flag,
+it is prefixed by `0X'.
+.TP 5
+.B f
+The next unused
+.I argument
+is written as a floating-point number
+in the style `[\-]\fInnn.nnn\fR'.
+.TP 5
+.B e
+The next unused
+.I argument
+is written as a floating-point number
+in the style `[\-]\fIn.nnn\fRe[+|\-]\fInn'.
+.TP 5
+.B E
+The next unused
+.I argument
+is written as a floating-point number
+in the style `[\-]\fIn.nnn\fRE[+|\-]\fInn'.
+.TP 5
+.B g
+The next unused
+.I argument
+is written as a floating-point number
+like an integer if there is no fractional part,
+as described for `f' if the exponent is small,
+or as described for `g' if the exponent is large.
+.TP 5
+.B G
+The next unused
+.I argument
+is written as a floating-point number
+like an integer if there is no fractional part,
+as described for `f' if the exponent is small,
+or as described for `G' if the exponent is large.
+.TP 5
+.B %
+A percent character is printed.
+No
+.I argument
+is consumed.
+.PD
+.RE
+.PP
+If the argument for the numeric specifiers starts with a
+single- or double quote (`'\fIc\fR' or `"\fIc\fR'),
+the numeric value of the following character (byte sequence)
+in the current character encoding is used.
+.PP
+If the
+.I format
+string consumes at least an
+.IR argument ,
+no format specification contains a
+.I position
+part,
+but there are still unused
+.I arguments
+after the entire format string has been evaluated once,
+it is evaluated repeatedly until all arguments are consumed.
+Missing
+.I arguments
+default to the empty string for string conversions,
+and to zero if a numeric value is expected.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+for `'\fIc\fR' and `"\fIc\fR'.
+.SH "SEE ALSO"
+echo(1),
+printf(3)

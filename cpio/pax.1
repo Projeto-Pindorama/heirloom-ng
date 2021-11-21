@@ -1,0 +1,917 @@
+'\" t
+.\" Copyright (c) 2004 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)pax.1	1.37 (gritter) 9/5/05
+.TH PAX 1 "9/5/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+pax \- portable archive interchange
+.SH SYNOPSIS
+.PD 0
+.HP
+.nh
+.ad l
+\fBpax\fR [\fB\-cdnvK\fR] [\fB\-b\ \fIsize\fR]
+[\fB\-f\ \fIfile\fR] [\fB\-s\ \fIreplstr\fR]
+[\fB\-x\ \fIhdr\fR] [\fIpatterns\fR]
+.HP
+.ad l
+\fBpax\fR \fB\-r\fR[\fBcdiknuvK\fR] [\fB\-b\ \fIsize\fR]
+[\fB\-f\ \fIfile\fR]
+[\fB\-o\ \fIoptions\fR]
+[\fB\-p\ \fIpriv\fR] [\fB\-s\ \fIreplstr\fR]
+[\fB\-x\ \fIhdr\fR] [\fIpatterns\fR]
+.HP
+.ad l
+\fBpax\fR \fB\-w\fR[\fBadiHtuvLX\fR] [\fB\-b\ \fIsize\fR]
+[\fB\-f\ \fIfile\fR]
+[\fB\-o\ \fIoptions\fR]
+[\fB\-s\ \fIreplstr\fR]
+[\fB\-x\ \fIhdr\fR] [\fIfiles\fR]
+.HP
+.ad l
+\fBpax\fR \fB\-rw\fR[\fBdiHklntuvLX\fR]
+[\fB\-p\ \fIpriv\fR] [\fB\-s\ \fIreplstr\fR]
+[\fIfiles\fR] \fIdirectory\fR
+.br
+.ad b
+.hy 1
+.PD
+.SH DESCRIPTION
+.I Pax
+creates and extracts file archives and copies files.
+.PP
+If neither the
+.I \-r
+or
+.I \-w
+options are given,
+.I pax
+works in
+.I list
+mode
+and prints the contents of the archive.
+.PP
+With the
+.B \-r
+option,
+.I pax
+works in
+.RI ` read '
+mode and extracts files from a file archive.
+By default,
+the archive is read from standard input.
+Optional arguments are interpreted as
+.I patterns
+and restrict the set of extracted files
+to those matching any of the
+.IR patterns .
+The syntax is identical to that described in
+.IR glob (7),
+except that the slash character
+.RB ` / '
+is matched by
+meta-character constructs with
+.RB ` * ',
+.RB ` ? '
+and
+.RB ` [ '.
+Care must be taken to quote meta-characters appropriately from the shell.
+If a pattern matches the prefix name of a directory in the archive,
+all files below that directory are also extracted.
+File permissions are set to those in the archive;
+if the caller is the super-user,
+ownerships are restored as well.
+options are specified.
+Archives compressed with
+.IR bzip2 (1),
+.IR compress (1),
+.IR gzip (1),
+or
+.IR rpm (1)
+are transparently de\%compressed on input.
+.PP
+With
+.BR \-w ,
+.I pax
+works in
+.RI ` write '
+mode,
+creates archives
+and writes them to standard output per default.
+A list of filenames to be included in the archive is
+read from standard input;
+if the name of a directory appears,
+all its members and the directory itself are recursively
+included in the archive.
+The
+.IR find (1)
+utility is useful to generate a list of files
+(see also its
+.I \-cpio
+and
+.I \-ncpio
+operators).
+When producing a filename list for
+.IR pax ,
+find should always be invoked with
+.I \-depth
+since this makes it possible to extract write-protected directories
+for users other than the super-user.
+If
+.I files
+are given on the command line,
+they are included in the archive
+in the same manner as described above
+and standard input is not read.
+.PP
+The
+.B \-rw
+options selects
+.RI ` copy '
+mode;
+a list of
+.I files
+is read from standard input
+or taken from the command line
+as described for
+.IR \-w ;
+files are copied to the specified
+.IR directory ,
+preserving attributes as described for
+.IR \-r .
+Special files are re-created in the target hierarchy,
+and hard links between copied files are preserved.
+.PP
+When a premature end-of-file is detected with
+.I \-r
+and
+.I \-w
+and the archive is a block or character special file,
+the user is prompted for new media.
+.PP
+The following options alter the behavior of
+.IR pax :
+.TP
+.B \-a
+Append files to the archive.
+The archive must be seekable,
+such as a regular file or a block device,
+or a tape device capable of writing between filemarks.
+.TP
+\fB\-b\fI size\fR[\fBw\fR|\fBb\fR|\fBk\fR|\fBm\fR]
+Blocks input and output archives at
+.I size
+byte records.
+The optional suffix multiplies
+.I size
+by 2 for
+.BR w ,
+512 for
+.BR b ,
+1024 for
+.BR k ,
+and 1048576 for
+.BR m .
+.TP
+.B \-c
+Reverses the sense of patterns
+such that a file that does not match any of the patterns
+is selected.
+.TP
+.B \-d
+Causes
+.I pax
+to ignore files below directories.
+In read mode,
+patterns matching directories
+cause only the directory itself to extracted,
+files below will be ignored
+unless another pattern applies to them.
+In write mode,
+arguments or standard input lines referring to directories
+do not cause files below the respective directory
+to be archived.
+.TP
+\fB\-f\fI\ file\fR
+Selects a
+.I file
+that is read with the
+.I \-r
+option instead of standard input
+or written with the
+.I \-w
+option instead of standard output.
+.TP
+.B \-H
+Follow symbolic links given on the command line when reading files with
+.I \-w
+or
+.IR \-rw ,
+but do not follow symbolic links encountered during directory traversal.
+.TP
+.B \-i
+Rename files interactively.
+Before a file is extracted from the archive,
+its file name is printed on standard error
+and the user is prompted to specify a substitute file name.
+If the line read from the terminal is empty,
+the file is skipped;
+if the line consists of a single dot,
+the name is retained;
+otherwise,
+the line forms the new file name.
+.TP
+.B \-k
+Causes existing files not to be overwritten.
+.TP
+.B \-K
+Try to continue operation on read errors and invalid headers.
+If an archive contains another archive,
+files from either archive may be chosen.
+.TP
+.B \-l
+Link files instead of copying them with
+.I \-rw
+if possible.
+.TP
+.B \-L
+Follow symbolic links when reading files with
+.I \-w
+or
+.IR \-rw .
+.B /usr/posix2001/bin/pax
+terminates immediately when it
+detects a symbolic link loop with this option.
+.TP
+.B \-n
+If any
+.I pattern
+arguments are present,
+each pattern can match exactly one archive member;
+further members that could match the particular pattern are ignored.
+Without
+.I pattern
+arguments,
+only the first occurence of
+a file that occurs more than once in the archive
+is selected, the following are ignored.
+.TP
+\fB\-o\ \fIoption\fB,\fR[\fIoption\fB,\fR\|...]
+Specifies options as described for \fI\-x pax\fR.
+.TP
+\fB\-p\ \fIstring\fR
+Specifies which file modes are to be preserved or ignored.
+.I string
+may contain one or more of
+.RS
+.TP
+.B a
+Inhibits preservation of file access times.
+.TP
+.B e
+Causes preservation of every possible mode, ownership and time.
+.TP
+.B m
+Inhibits preservation of file modification times.
+.TP
+.B o
+Causes preservation of owner and group IDs.
+.TP
+.B p
+Causes preservation of file mode bits
+regardless of the umask
+(see
+.IR umask (2)).
+.RE
+.IP
+If file ownership is preserved,
+.I pax
+tries to set the group ownerships to those specified in the archive
+or the original hierarchy, respectively,
+regardless of the privilegues of the invoking user.
+.BR /usr/5bin/pax ,
+.BR /usr/5bin/s42/pax ,
+and
+.B /usr/5bin/posix/pax
+try to set the user ownerships only if invoked by the super-user;
+if invoked by regular users,
+.B /usr/5bin/posix2001/pax
+will produce an error for any file that is not owned by the invoking user.
+.TP
+\fB\-s\ /\fIregular expression\fB/\fIreplacement\fB/\fR[\fBgp\fR]
+Modifies file names in a manner similar to that described in
+.IR ed (1).
+The
+.I p
+flag causes each modified file name to printed.
+Any character can be used as delimiter instead of
+.RI ` / '.
+If a file name is empty after the replacement is done,
+the file is ignored.
+.TP
+.B \-t
+Resets the access times of files
+that were included in the archive with
+.IR \-r .
+.TP
+.B \-u
+In read mode,
+.I pax
+will not overwrite existing target files
+that were modified more recently than the file in the archive
+when this option is given.
+In write mode,
+.I pax
+will read the archive first.
+It will then only append those files to the archive
+that are not already included
+or were more recently modified.
+.TP
+.B \-v
+Prints the file names of archived or extracted files with
+.I \-r
+and
+.I \-w
+and a verbose output format
+if neither of them is given.
+.TP
+\fB\-x\fI header\fR
+Specifies the archive header format to be one of:
+.sp
+.in +6
+.TS
+lfB l.
+\fBnewc\fR	SVR4 ASCII cpio format;\ 
+\fBcrc\fR	SVR4 ASCII cpio format with checksum;\ 
+\fBsco\fR	T{
+SCO UnixWare 7.1 ASCII cpio format;
+T}
+\fBscocrc\fR	T{
+SCO UnixWare 7.1 ASCII cpio format with checksum;
+T}
+\fBodc\fR	T{
+traditional ASCII cpio format, as standardized in IEEE Std. 1003.1, 1996;
+T}
+\fBcpio\fR	T{
+same as \fIodc\fR;
+T}
+\fBbin\fR	binary cpio format;
+\fBbbs\fR	byte-swapped binary cpio format;
+\fBsgi\fR	T{
+SGI IRIX extended binary cpio format;
+T}
+\fBcray\fR	T{
+Cray UNICOS 9 cpio format;
+T}
+\fBcray5\fR	T{
+Cray UNICOS 5 cpio format;
+T}
+\fBdec\fR	T{
+Digital UNIX extended cpio format;
+T}
+\fBtar\fR	tar format;
+\fBotar\fR	old tar format;
+\fBustar\fR	T{
+IEEE Std. 1003.1, 1996 tar format;
+T}
+.T&
+l s.
+\fBpax\fR[\fB:\fIoption\fB,\fR[\fIoption\fB,\fR\|...]]
+.T&
+l l.
+\&	T{
+IEEE Std. 1003.1, 2001 pax format.
+Format-specific \fIoptions\fR are:
+.in +2n
+.ti 0
+.br
+\fBlinkdata\fR
+.br
+For a regular file which has multiple hard links,
+the file data is stored once for each link in the archive,
+instead of being stored for the first entry only.
+This option must be used with care
+since many implementations are unable
+to read the resulting archive.
+.ti 0
+.br                                                                            
+\fBtimes\fR
+.br
+Causes the times of last access and last modification
+of each archived file
+to be stored in an extended \fIpax\fR header.
+This in particular allows the time of last access
+to be restored when the archive is read.
+.br
+.in -2n
+T}
+\fBsun\fR	T{
+Sun Solaris 7 extended tar format;
+T}
+\fBbar\fR	T{
+SunOS 4 bar format;
+T}
+\fBgnu\fR	T{
+GNU tar format;
+T}
+\fBzip\fR[\fB:\fIcc\fR]	T{
+zip format with optional compression method.
+If \fIcc\fR is one of
+\fBen\fR (normal, default),
+\fBex\fR (extra),
+\fBef\fR (fast),
+or
+\fBes\fR (super fast),
+the standard \fIdeflate\fR compression is used.
+\fBe0\fR selects no compression,
+and
+\fBbz2\fR selects \fIbzip2\fR compression.
+T}
+.TE
+.in -6
+.sp
+This option is ignored with
+.I \-r
+unless the
+.I \-K
+option is also present.
+The default for
+.I \-w
+is traditional ASCII cpio
+.I (odc)
+format.
+.PP
+.ne 38
+Characteristics of archive formats are as follows:
+.sp
+.TS
+allbox;
+l r r r l
+l1fB r2 n2 r2 c.
+	T{
+.ad l
+maximum user/\%group id
+T}	T{
+.ad l
+maximum file size
+T}	T{
+.ad l
+maximum pathname length
+T}	T{
+.ad l
+bits in dev_t (major/minor)
+T}
+\-x\ bin	65535	2 GB\ 	256	\ 16
+\-x\ sgi	65535	9 EB\ 	256	\ 14/18
+T{
+\-x\ odc
+T}	262143	8 GB\ 	256	\ 18
+\-x\ dec	262143	8 GB\ 	256	\ 24/24
+T{
+\-x\ newc,
+\-x\ crc
+T}	4.3e9	4 GB\ 	1024	\ 32/32
+T{
+\-x\ sco, \-x\ scocrc
+T}	4.3e9	9 EB\ 	1024	\ 32/32
+T{
+\-x\ cray, \-x\ cray5
+T}	1.8e19	9 EB\ 	65535	\ 64
+\-x\ otar	2097151	8 GB\ 	99	\ n/a
+T{
+\-x\ tar,
+\-x\ ustar
+T}	2097151	8 GB\ 	256 (99)	\ 21/21
+\-x\ pax	1.8e19	9 EB\ 	65535	\ 21/21
+\-x\ sun	1.8e19	9 EB\ 	65535	\ 63/63
+\-x\ gnu	1.8e19	9 EB\ 	65535	\ 63/63
+\-x\ bar	2097151	8 GB\ 	427	\ 21
+\-x\ zip	4.3e9	9 EB\ 	60000	\ 32
+.TE
+.sp
+.PP
+The byte order of
+.B binary
+cpio archives
+depends on the machine
+on which the archive is created.
+Unlike some other implementations,
+.I pax
+fully supports
+archives of either byte order.
+.I \-x\ bbs
+can be used to create an archive
+with the byte order opposed to that of the current machine.
+.PP
+The
+.B sgi
+format extends the binary format
+to handle larger files and more device bits.
+If an archive does not contain any entries
+that actually need the extensions,
+it is identical to a binary archive.
+.I \-x\ sgi
+archives are always created in MSB order.
+.PP
+The
+.B odc
+format was introduced with System\ III
+and standardized with IEEE Std. 1003.1.
+All known
+.I cpio
+and
+.I pax
+implementations since around 1980 can read this format.
+.PP
+The
+.B dec
+format extends the
+.I odc
+format
+to support more device bits.
+Archives in this format are generally incompatible with
+.I odc
+archives
+and need special implementation support to be read.
+.PP
+The
+.B \-x\ newc
+format was introduced with System\ V Release\ 4.
+Except for the file size,
+it imposes no practical limitations
+on files archived.
+The original SVR4 implementation
+stores the contents of hard linked files
+only once and with the last archived link.
+This
+.I pax
+ensures compatibility with SVR4.
+With archives created by implementations that employ other methods
+for storing hard linked files,
+each file is extracted as a single link,
+and some of these files may be empty.
+Implementations that expect methods other than the original SVR4 one
+may extract no data for hard linked files at all.
+.PP
+The
+.B crc
+format is essentially the same as the
+.I \-x\ newc
+format
+but adds a simple checksum (not a CRC, despite its name)
+for the data of regular files.
+The checksum requires the implementation to read each file twice,
+which can considerably increase running time and system overhead.
+As not all implementations claiming to support this format
+handle the checksum correctly,
+it is of limited use.
+.PP
+The
+.B sco
+and
+.B scocrc
+formats are variants of the
+.I \-x\ newc
+and
+.I \-x\ crc
+formats, respectively,
+with extensions to support larger files.
+The extensions result in a different archive format
+only if files larger than slightly below 2\ GB occur.
+.PP
+The
+.B cray
+format extends all header fields to 64 bits.
+It thus imposes no practical limitations of any kind
+on archived files,
+but requires special implementation support
+to be read.
+Although it is originally a binary format,
+the byte order is always MSB as on Cray machines.
+The
+.B cray5
+format is an older variant
+that was used with UNICOS 5 and earlier.
+.PP
+The
+.B otar
+format was introduced with the Unix 7th Edition
+.I tar
+utility.
+Archives in this format
+can be read on all Unix systems since about 1980.
+It can only hold regular files
+(and, on more recent systems, symbolic links).
+For file names that contain characters with the most significant bit set
+(non-ASCII characters),
+implementations differ in the interpretation of the header checksum.
+.PP
+The
+.B ustar
+format was introduced with IEEE Std. 1003.1.
+It extends the old
+.I tar
+format
+with support for directories, device files,
+and longer file names.
+Pathnames of single-linked files can consist of up to 256 characters,
+dependent on the position of slashes.
+Files with multiple links can only be archived
+if the first link encountered is no longer than 100 characters.
+Due to implementation errors,
+file names longer than 99 characters
+can not considered to be generally portable.
+Another addition of the
+.I ustar
+format
+are fields for the symbolic user and group IDs.
+These fields are created by
+.IR pax ,
+but ignored when reading such archives.
+.PP
+With
+.BR "\-x tar" ,
+a variant of the
+.I ustar
+format is selected
+which stores file type bits in the mode field
+to work around common implementation problems.
+These bits are ignored by
+.I pax
+when reading archives.
+.PP
+The
+.B pax
+format is an extension to the
+.I ustar
+format.
+If attributes cannot be archived with
+.IR ustar ,
+an extended header is written.
+Unless the size of an entry is greater than 8\ GB,
+a
+.I pax
+archive should be readable by any implementation                               
+capable of reading
+.I ustar
+archives,
+although files may be extracted under wrong names
+and extended headers may be extracted as separate files.
+If a file name contains non-UTF-8 characters,
+it may not be archived or extracted correctly
+because of a problem of the
+.I pax
+format specification.
+.PP
+The
+.B sun
+format extends the
+.I ustar
+format similar as the
+.I pax
+format does.
+The extended headers in
+.I sun
+format archives are not understood
+by implementations that support only the
+.I pax
+format and vice-versa.
+The
+.I sun
+format has also problems with non-UTF-8 characters in file names.
+.PP
+The
+.B GNU
+.I tar
+format is mostly compatible with the other
+.I tar
+formats,
+unless an archive entry actually uses its extended features.
+There are no practical limitations on files archived with this format.
+The implementation of
+.I pax
+is limited to expanded numerical fields
+and long file names;
+in particular,
+there is no support for sparse files or incremental backups.
+If
+.I pax
+creates a multi-volume
+.I GNU
+archive,
+it just splits a single-volume archive in multiple parts,
+as with the other formats;
+.I GNU
+multi-volume archives are not supported.
+.PP
+The
+.B bar
+format is similar to the
+.I tar
+format, but can store longer file names.
+It requires special implementation support to be read.
+.PP
+The
+.B zip
+format can be read in many non-Unix environments.
+There are several restrictions on archives
+intended for data exchange:
+only regular files should be stored;
+file times, permissions and ownerships
+might be ignored by other implementations;
+there should be no more than 65536 files in the archive;
+the total archive size should not exceed 2 GB;
+only
+.I deflate
+compression should be used.
+Otherwise,
+.I pax
+stores all information available with other archive formats
+in extended
+.I zip
+file headers,
+so if archive portability is of no concern,
+the
+.I zip
+implementation in
+.I pax
+can archive complete Unix file hierarchies.
+.I Pax
+supports the
+.I zip64
+format extension for large files;
+it automatically writes
+.I zip64
+entries if necessary.
+.I Pax
+can extract all known
+.I zip
+format compression codes.
+It does not support
+.I zip
+encryption.
+Multi-volume
+.I zip
+archives are created as splitted single-volume archives,
+as with the other formats written by
+.IR pax ;
+generic multi-volume
+.I zip
+archives are not supported.
+.SH EXAMPLES
+Extract all files named
+.I Makefile
+or
+.I makefile
+from the archive stored on
+.IR /dev/rmt/c0s0 ,
+overwriting recent files:
+.RS 2
+.sp
+pax \-r \-f /dev/rmt/c0s0 \'[Mm]akefile\' \'*/[Mm]akefile\'
+.RE
+.PP
+List the files contained in a software distribution archive:
+.RS 2
+.sp
+pax \-v \-f distribution.tar.gz
+.RE
+.PP
+Write a
+.IR gzip (1)
+compressed
+.I ustar
+archive containing all files below the directory
+.I \%project
+to the file
+.IR \%project.tar.gz ,
+excluding all directories named
+.I CVS
+or
+.I SCCS
+and their contents:
+.RS 2
+.sp
+find project \-depth \-print | egrep \-v \'/(CVS|SCCS)(/|$)\' |
+.br
+      pax \-wd \-x ustar | gzip \-c > project.tar.gz
+.RE
+.PP
+Copy the directory
+.I work
+and its contents
+to the directory
+.IR \%savedfiles ,
+preserving all file attributes:
+.RS 2
+.sp
+pax \-rw \-pe work savedfiles
+.RE
+.PP
+Self-extracting zip archives are not automatically recognized,
+but can normally be read using the
+.I \-K
+option, as with
+.RS 2
+.sp
+pax \-rK \-x zip \-f archive.exe
+.sp
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Selects the mapping of bytes to characters
+used for matching patterns
+and regular expressions.
+.TP
+.B LC_TIME
+Sets the month names printed in list mode.
+.SH "SEE ALSO"
+cpio(1),
+find(1),
+tar(1)
+.SH DIAGNOSTICS
+.I Pax
+exits with
+.sp
+.TS
+l8fB l.
+0	after successful operation;
+1	on usage errors;
+2	when operation was continued after minor errors;
+3	on fatal error conditions.
+.TE
+.SH NOTES
+Device and inode numbers
+are used for hard link recognition
+with the various cpio formats.
+Since the header space cannot hold
+large numbers present in current file systems,
+devices and inode numbers are set on a per-archive basis.
+This enables hard link recognition with all cpio formats,
+but the link connection to files appended with
+.I \-a
+is not preserved.
+.PP
+If a numeric user or group id does not fit
+within the size of the header field in the selected format,
+files are stored with the user id (or group id, respectively)
+set to 60001.
+.PP
+Use of the
+.I \-a
+option with a
+.I zip
+format archive may cause data loss
+if the archive was not previously created by
+.I cpio
+or
+.I pax
+itself.
+.PP
+If the file names passed to
+.I "pax -w"
+begin with a slash character,
+absolute path names are stored in the archive
+and will be extracted to these path names later
+regardless of the current working directory.
+This is normally not advisable,
+and relative path names should be passed to
+.I pax
+only.
+The
+.I \-s
+option can be used to substitute relative for absolute path names
+and vice-versa.
+.PP
+.I Pax
+does not currently accept the
+\fB\-o delete\fR,
+\fB\-o exthdr.name\fR,
+\fB\-o globexthdr.name\fR,
+\fB\-o invalid\fR,
+\fB\-o listopt\fR,
+and
+\fB\-o keyword\fR
+options from POSIX.1-2001.

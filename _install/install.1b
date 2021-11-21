@@ -1,0 +1,113 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)install.1b	1.3 (gritter) 4/17/03
+.TH INSTALL 1B "4/17/03" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+install \- (BSD) install files
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fB/usr/ucb/install\fR [\fB\-cs\fR] [\fB-g\fI\ group\fR] [\fB\-m\fI\ mode\fR]
+[\fB-o\fI\ owner\fR]
+\fIfile1 file2\fR
+.HP
+.ad l
+.nh
+\fB/usr/ucb/install\fR [\fB\-cs\fR] [\fB-g\fI\ group\fR] [\fB\-m\fI\ mode\fR]
+[\fB-o\fI\ owner\fR]
+\fIfile\fR\ .\ .\ .\ \fIdirectory\fR
+.HP
+.ad l
+.nh
+\fB/usr/ucb/install\fR \fB\-d\fR [\fB\-g\fI\ group\fR] [\fB\-m\fI\ mode\fR]
+[\fB\-o\fI\ owner\fR] \fIdirectory\fR
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.I install
+command copies one regular file to a destination file
+or one or more regular files into a destination directory.
+It is commonly used within Makefiles
+to install newly created software components.
+.PP
+If the
+.B \-d
+option is present,
+.I install
+creates the named
+.IR directory ,
+also creating non-existent parent directories.
+It is not an error if the directory already exists.
+The
+.BR \-g ,
+.BR \-m ,
+and
+.B \-o
+options
+apply to the last pathname component only;
+attributes are set whether the directory is newly created or not.
+Parent directories are always created using a default mode of 777
+minus umask
+and default ownerships.
+.PP
+The following options are also accepted:
+.TP 10
+.B \-c
+This option is ignored and exists for compatibility only.
+Ancient versions of this command removed the source file
+unless this option was present.
+.TP 10
+.B \-s
+Strip the target files
+(i.\|e. execute the
+.IR strip (1)
+command on them).
+.TP 10
+\fB\-g\fI group\fR
+Use the given
+.I group
+ownership for target files.
+By default,
+the group of the invoking user is used.
+.TP 10
+\fB\-m\fI mode\fR
+Set the access permissions of target files to octal
+.IR mode .
+By default,
+mode 755 is used.
+.TP 10
+\fB\-o\fI owner\fR
+Specifies the
+.I owner
+of target files.
+By default,
+target files are owned by the invoking user.
+.SH "SEE ALSO"
+cp(1),
+chgrp(1),
+chmod(1),
+chown(1),
+make(1),
+mkdir(1),
+strip(1)

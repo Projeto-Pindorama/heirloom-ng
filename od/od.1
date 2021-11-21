@@ -1,0 +1,291 @@
+.\"
+.\" Sccsid @(#)od.1	1.10 (gritter) 2/6/05
+.\" Parts taken from od(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH OD 1 "2/6/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+od \- octal dump
+.SH SYNOPSIS
+.PD 0
+.HP
+.ad l
+\fBod\fR [\fB\-bcCdDfFoOsSvxX\fR] [\fIfile\fR]
+[[\fB+\fR]\fIoffset\fR[\fB.\fR][\fBb\fR]]
+.HP
+.ad l
+\fBod\fR [\fB\-v\fR] [\fB\-A\ \fIaddress_base\fR] [\fB\-j\ \fIskip\fR]
+[\fB\-N\ \fIcount\fR] [\fB\-t\ \fItype_string\fR] ... [\fIfile\fR ...]
+.br
+.PD
+.ad b
+.SH DESCRIPTION
+.I Od
+dumps
+.I file
+in
+one or more formats
+as
+selected by the option arguments.
+If no format specification is present,
+.B \-o
+is default.
+The meanings of the option arguments are:
+.TP
+.B  \-b
+Interpret bytes in octal.
+.TP
+.B  \-c
+Interpret characters.
+Certain non-graphic characters appear as C escapes:
+null=\e0,
+backspace=\eb,
+formfeed=\ef,
+newline=\en,
+return=\er,
+tab=\et;
+others appear as 3-digit octal numbers.
+For a multibyte character,
+the graphical representation is printed for its first byte,
+remaining bytes are marked
+.BR ** .
+.TP
+.B  \-d
+Interpret unsigned two-byte words in decimal.
+.TP
+.B \-D
+Interpret unsigned four-byte words in decimal.
+.TP
+.B \-f
+Interpret floating point format as single precision.
+.TP
+.B \-F
+Interpret floating point format as double precision.
+.TP
+.B  \-o
+Interpret two-byte words in octal.
+.TP
+.B \-O
+Interpret four-byte words in octal.
+.TP
+.B  \-s
+Interpret signed two-byte words in decimal.
+.TP
+.B \-S
+Interpret signed four-byte words in decimal.
+.TP
+.B \-v
+Print identical groups of output lines
+that immediately follow each other
+instead of abbreviating
+all but the first one by printing a single
+.B *
+character.
+.TP
+.B  \-x
+Interpret two-byte words in hexadecimal.
+.TP
+.B  \-X
+Interpret four-byte words in hexadecimal.
+.PP
+The following option is supported as an extension:
+.TP
+.B \-C
+Prints the input data interpreted as characters
+as another column right next to the regular output.
+Non-printable characters are replaced by periods.
+.PP
+The
+.I file
+argument specifies which file is to be dumped.
+If no file argument is specified,
+the standard input is used.
+If more than one file argument is specified,
+the concatenation of all files
+without an intervening separator
+is dumped.
+.PP
+The offset argument specifies the offset
+in the file where dumping is to commence.
+This argument is normally interpreted
+as octal bytes.
+If `\fB.\fR' is appended, the offset is interpreted in
+decimal.
+If `\fBb\fR' is appended, the offset is interpreted in
+blocks of 512 bytes.
+If the file argument is omitted,
+the offset argument must be preceded by
+.RB ` + '
+with
+.BR /usr/5bin/posix/od .
+.PP
+The following options have been introduced by POSIX.2.
+If any of these options is present,
+an offset-like argument
+is always interpreted as the name of a file to be dumped.
+.TP
+\fB\-A \fIaddress_base\fR
+Sets the format of the file offset printed in the first column.
+Valid values for \fIaddress_base\fR are:
+.RS
+.TP 3
+.B d
+Print offset as decimal.
+.TP 3
+.B n
+Print no offset column.
+.TP 3
+.B o
+Print offset as octal (default).
+.TP 3
+.B x
+Print offset as hexadecimal.
+.RE
+.TP
+\fB\-j \fIskip\fR
+Skip
+.I skip
+bytes of input,
+where
+.I skip
+may be either a decimal number,
+an octal number preceded by
+.BR 0 ,
+or a hexadecimal number preceded by
+.B 0x
+or
+.BR 0X .
+If the last character of
+.I skip
+is
+.B b
+(if not a hexadecimal number),
+.BR k ,
+or
+.BR m ,
+the value is multiplied by
+512, 1024, or 1048576, respectively.
+.TP
+\fB\-N \fIcount\fR
+Terminate processing after
+.I count
+bytes of input,
+where
+.I count
+may be either a decimal number,
+an octal number preceded by
+.BR 0 ,
+or a hexadecimal number preceded by
+.B 0x
+or
+.BR 0X .
+.TP
+\fB\-t \fItype_string\fR
+Set output format.
+\fItype_string\fR may consist of one or more specifications as follows:
+.RS
+.TP
+\fBa\fR
+Print characters,
+ignoring the most significant bit.
+ASCII control characters are printed as their names,
+other nonprintable characters are printed as octal bytes.
+.TP
+\fBc\fR
+Print characters.
+Non-printable characters are either printed as escape sequences
+`\e0', `\ea', `\eb', `\ef', `\en', `\er', `\et', `\ev'
+or as octal bytes.
+For a multibyte character,
+the graphical representation is printed for its first byte,
+remaining bytes are marked
+.BR ** .
+.TP
+\fBd\fR[\fB1\fR|\fB2\fR|\fB4\fR|\fB8\fR|\fBC\fR|\fBS\fR|\fBI\fR|\fBL\fR]
+Print signed decimal words,
+with the word length indicated by the second character
+(\fB1\fR one byte per word,
+\fB2\fR two bytes per word,
+\fB4\fR four bytes per word,
+\fB8\fR eight bytes per word,
+\fBC\fR the size of the C language `char' data type,
+\fBS\fR the size of the C language `short' data type,
+\fBI\fR the size of the C language `int' data type,
+and \fBL\fR the size of the C language `long' data type).
+The default is the machine word length.
+.TP
+\fBf\fR[\fB4\fR|\fB8\fR|\fBF\fR|\fBD\fR|\fBL\fR]
+Print floating point format,
+with the precision indicated by the second character
+(\fB4\fR and \fBF\fR single precision,
+\fB8\fR, \fBD\fR, and \fBL\fR double precision).
+The default is double precision.
+.TP
+\fBo\fR[\fB1\fR|\fB2\fR|\fB4\fR|\fB8\fR|\fBC\fR|\fBS\fR|\fBI\fR|\fBL\fR]
+Print octal words,
+with the word length indicated by the second character
+as described for
+.B d
+above.
+.TP
+\fBu\fR[\fB1\fR|\fB2\fR|\fB4\fR|\fB8\fR|\fBC\fR|\fBS\fR|\fBI\fR|\fBL\fR]
+Print unsigned decimal words,
+with the word length indicated by the second character
+as described for
+.B d
+above.
+.TP
+\fBx\fR[\fB1\fR|\fB2\fR|\fB4\fR|\fB8\fR|\fBC\fR|\fBS\fR|\fBI\fR|\fBL\fR]
+Print hexadecimal words,
+with the word length indicated by the second character
+as described for
+.B d
+above.
+.RE
+.PP
+Unless the
+.B \-N
+option is given,
+dumping continues until end-of-file.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+for the
+.B \-c
+and
+.B \-tc
+options.

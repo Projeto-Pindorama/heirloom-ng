@@ -1,0 +1,39 @@
+# Sccsid @(#)ps.dfl	1.4 (gritter) 10/13/03
+
+#
+# ps needs to know whether a new-style O(1) scheduler (as in 2.6
+# kernels) or an old-style scheduler (as in stock 2.4 kernels)
+# is used. This is normally auto-detected, but it is impossible
+# to do this perfectly given the large number of variations and
+# backports.
+#
+#O1_SCHEDULER=1
+
+#
+# Unless this feature was deactivated at compilation time, ps keeps
+# a cache file of /dev entries to accelerate the search of names of
+# terminal devices. The file is automatically kept up to date by
+# ps and owned by the effective user ID ps is invoked with. The
+# following settings have no effect if no cache file is kept.
+#
+
+#
+# The location of the ps cache file.
+#
+CACHE_FILE=/tmp/ps_cache
+
+#
+# The octal permission mode for the ps cache file.
+#
+CACHE_MODE=664
+
+#
+# The group owner of the ps cache file.
+#
+CACHE_GROUP=sys
+
+#
+# If DROPPRIVS=1 ps will drop setuid privileges after it has created
+# the cache file.
+#
+DROPPRIVS=0

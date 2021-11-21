@@ -1,0 +1,505 @@
+#
+#	Sccsid	@(#)magic	1.38 (gritter) 10/3/05
+#
+# This is the magic file for the Heirloom Toolchest file command.
+# The format is as follows:
+# Lines that start with a '#' are ignored.
+# Each other line forms a magic entry. The line consists of four columns,
+# separated by tabs (spaces are not recognized as column separators);
+# basically, if a file matches the description in the first three columns,
+# file will print the text in the fourth column.
+# There are two principal kinds of lines: lines that start with a '>' and
+# lines which do not. The latter kind starts a new type of file. If such a
+# line is matched, all the immediately following lines starting with '>'
+# are examined for further matches; this can be used to recognize sub-formats
+# of a given file type. At the next line without a '>', examination stops and
+# the file type is regarded to be successfully recognized. Otherwise, if a
+# line without initial '>' is not matched, the file command looks for the
+# next line without '>' and repeats the process. The rest of the first column
+# is the offset of the match, which is normally a decimal value, but an octal
+# if prefixed by '0' or a hexadecimal if prefixed by '0x'.
+# The second column specifies the kind of information to match. It is either
+# 'string', meaning that a byte-wise matching is performed, 'byte', to match
+# a single byte, 'short', to match two bytes, or 'long', to match four bytes.
+# The 'short' and 'long' keywords may be prefixed by 'be' or 'le' to indicate
+# MSB or LSB order, respectively; without such a prefix, the native byte order
+# of the machine is used.
+# The third column gives the information that is to be matched. If the second
+# column was 'string', this is a text to be matched; the text ends with the
+# next tab and no other characters are special. Thus all characters except
+# binary NUL, tab, and newline can be specified by the appropriate value.
+# Otherwise, a numerical value is expected; normally a decimal value, and
+# again octal if prefixed by '0' or hexadecimal if prefixed by '0x'. An
+# optional prefix character gives the kind of operation to be performed:
+# a '=' (or no such prefix) indicates that the value must be matched exactly,
+# a '<' indicates any value lower than the given one, a '>' indicates any
+# value greater than the given one, a '&' indicates that at least the bits
+# given in the value must be present, a '^' indicates that at least one of
+# the bits given in the value must not be present, and a 'x' indicates that
+# the value does not matter (useful with '>' at the start of the line only).
+# The fourth column gives the string to be printed if the line matches. This
+# is a text string, except that it may contain a single '%d' or '%ld' to print
+# the value matched (as in printf(3)).
+#
+# The information in this file has been collected from various places, namely
+# a lot of vendor magic files and the magic information of the file command by
+# Ian F. Darwin, Christos Zoulas and others.
+#
+#
+# ELF format.
+#
+0	string	ELF		ELF
+>4	byte	1		32-bit
+>4	byte	2		64-bit
+>5	byte	1		LSB
+>5	byte	2		MSB
+>16	leshort	0		unknown type
+>16	leshort	1		relocatable
+>16	beshort	1		relocatable
+>16	leshort	2		executable
+>16	beshort	2		executable
+>16	leshort	3		dynamic lib
+>16	beshort	3		dynamic lib
+>16	leshort	4		core file
+>16	beshort	4		core file
+>18	leshort	0		unknown machine
+>18	beshort	1		WE32100
+>18	leshort	1		WE32100
+>18	beshort	2		SPARC
+>18	leshort	2		SPARC
+>18	beshort	3		80386
+>18	leshort	3		80386
+>18	beshort	4		M68000
+>18	leshort	4		M68000
+>18	beshort	5		M88000
+>18	leshort	5		M88000
+>18	beshort	6		80486
+>18	leshort	6		80486
+>18	beshort	7		80860
+>18	leshort	7		80860
+>18	beshort	8		MIPS I
+>18	leshort	8		MIPS I
+>18	beshort	9		IBM 370
+>18	leshort	9		IBM 370
+>18	beshort	10		MIPS
+>18	leshort	10		MIPS
+>18	beshort	11		RS6000
+>18	leshort	11		RS6000
+>18	beshort	15		PA-RISC
+>18	leshort	15		PA-RISC
+>18	beshort	16		nCUBE
+>18	leshort	16		nCUBE
+>18	beshort	17		Fujitsu VPP500
+>18	leshort	17		Fujitsu VPP500
+>18	beshort	18		SPARC32PLUS
+>18	leshort	18		SPARC32PLUS
+>18	beshort	19		Intel 80960
+>18	leshort	19		Intel 80960
+>18	beshort	20		PowerPC
+>18	leshort	20		PowerPC
+>18	beshort	21		PowerPC64
+>18	leshort	21		PowerPC64
+>18	beshort	36		NEC V800
+>18	leshort	36		NEC V800
+>18	beshort	37		Fujitsu FR20
+>18	leshort	37		Fujitsu FR20
+>18	beshort	38		TRW RH-32
+>18	leshort	38		TRW RH-32
+>18	beshort	39		Motorola RCE
+>18	leshort	39		Motorola RCE
+>18	beshort	40		ARM
+>18	leshort	40		ARM
+>18	beshort	41		ALPHA
+>18	leshort	41		ALPHA
+>18	beshort	42		Hitachi SH
+>18	leshort	42		Hitachi SH
+>18	beshort	43		SPARC V9
+>18	leshort	43		SPARC V9
+>18	beshort	44		Tricore
+>18	leshort	44		Tricore
+>18	beshort	45		ARC
+>18	leshort	45		ARC
+>18	beshort	46		Hitachi H8/300
+>18	leshort	46		Hitachi H8/300
+>18	beshort	47		Hitachi H8/300H
+>18	leshort	47		Hitachi H8/300H
+>18	beshort	48		Hitachi H8S
+>18	leshort	48		Hitachi H8S
+>18	beshort	49		Hitachi H8/500
+>18	leshort	49		Hitachi H8/500
+>18	beshort	50		IA-64
+>18	leshort	50		IA-64
+>18	beshort	51		MIPS-X
+>18	leshort	51		MIPS-X
+>18	beshort	52		Coldfire
+>18	leshort	52		Coldfire
+>18	beshort	53		M68HC12
+>18	leshort	53		M68HC12
+>18	beshort	54		Fujitsu MMA
+>18	leshort	54		Fujitsu MMA
+>18	beshort	55		Siemens PCP
+>18	leshort	55		Siemens PCP
+>18	beshort	56		Sony nCPU
+>18	leshort	56		Sony nCPU
+>18	beshort	57		Denso NDR1
+>18	leshort	57		Denso NDR1
+>18	beshort	58		STARCODE
+>18	leshort	58		STARCODE
+>18	beshort	59		Toyota ME16
+>18	leshort	59		Toyota ME16
+>18	beshort	61		TinyJ
+>18	leshort	61		TinyJ
+>18	beshort	62		x86-64
+>18	leshort	62		x86-64
+>18	beshort	66		Siemens FX66
+>18	leshort	66		Siemens FX66
+>18	beshort	67		ST9PLUS
+>18	leshort	67		ST9PLUS
+>18	beshort	68		ST7
+>18	leshort	68		ST7
+>18	beshort	69		M68HC16
+>18	leshort	69		M68HC16
+>18	beshort	70		M68HC11
+>18	leshort	70		M68HC11
+>18	beshort	71		M68HC08
+>18	leshort	71		M68HC08
+>18	beshort	72		M68HC05
+>18	leshort	72		M68HC05
+>18	beshort	73		SG SVx
+>18	leshort	73		SG SVx
+>18	beshort	74		ST19
+>18	leshort	74		ST19
+>18	beshort	75		VAX
+>18	leshort	75		VAX
+>18	beshort	76		CRIS
+>18	leshort	76		CRIS
+>18	beshort	77		JAVELIN
+>18	leshort	77		JAVELIN
+>18	beshort	78		FIREPATH
+>18	leshort	78		FIREPATH
+>18	beshort	79		LSI DSP16
+>18	leshort	79		LSI DSP16
+>18	beshort	80		Knuth MMIX
+>18	leshort	80		Knuth MMIX
+>18	beshort	81		HUANY
+>18	leshort	81		HUANY
+>18	beshort	82		PRISM
+>18	leshort	82		PRISM
+>20	lelong	1		Version 1
+>20	belong	1		Version 1
+>36	lelong	1		MAU Required
+>36	belong	1		MAU Required
+#
+# Old Linux executables.
+#
+0	lelong	0x00640107	Linux/i383 impure executable (OMAGIC)
+>16	lelong	>0		not stripped
+0	lelong	0x00640108	Linux/i386 pure executable (NMAGIC)
+>16	lelong	>0		not stripped
+0	lelong	0x0064010b	Linux/i386 demand-paged executable (ZMAGIC)
+>16	lelong	>0		not stripped
+0	lelong	0x006400cc	Linux/i386 demand-paged executable (QMAGIC)
+>16	lelong	>0		not stripped
+#
+# Other executables.
+#
+0	leshort	0407		pdp11/pre System V vax executable
+>8	leshort	>0		not stripped
+>15	byte	>0		- version %d
+0	leshort	0401		pdp11 unix-rt ldp
+0	leshort	0405		pdp11 overlay
+0	leshort	0410		pdp11/pre System V vax pure executable
+>8	leshort	>0		not stripped
+>15	byte	>0		- version %d
+0	leshort	0411		pdp11 separate I&D executable
+>8	leshort	>0		not stripped
+>15	byte	>0		- version %d
+0	leshort	0437		pdp11 kernel overlay
+0	lelong	0413		VAX demand load format a.out object file
+>0x10	long	>0		not stripped
+0	leshort	0413		pdp11 demand-paged pure executable
+>8	leshort	>0		not stripped
+0	leshort	0430		pdp11 overlaid pure executable
+>8	leshort	>0		not stripped
+0	leshort	0431		pdp11 overlaid separate executable
+>8	leshort	>0		not stripped
+0	leshort	0570		vax executable
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %d
+0	leshort	0575		vax pure executable
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %d
+0	leshort	0502		basic-16 executable
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %d
+0	leshort	0503		basic-16 executable (TV)
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %d
+0	leshort	0510		x86 executable
+>12	lelong	>0		not stripped
+0	leshort	0511		x86 executable (TV)
+>12	lelong	>0		not stripped
+0	leshort	0512		iAPX 286 executable small model (COFF)
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %d
+0	leshort	0522		iAPX 286 executable large model (COFF)
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %ld
+0	leshort	0514		iAPX 386 executable
+>12	lelong	>0		not stripped
+>22	leshort	>0		- version %ld
+1	string			SPARC demand load format a.out object file
+>16	belong	>0		not stripped
+1	string			SPARC pure format a.out object file
+>16	belong	>0		not stripped
+1	string			SPARC a.out object file
+>16	belong	>0		not stripped
+0	belong	0xcafebabe	java class file
+#
+# HP-UX executables.
+#
+0	belong	0x02100106	PA-RISC1.1 relocatable object
+0	belong	0x02100107	PA-RISC1.1 executable
+>96	belong	>0		not stripped
+0	belong	0x02100108	PA-RISC1.1 shared executable
+>96	belong	>0		not stripped
+0	belong	0x0210010b	PA-RISC1.1 demand-load executable
+>96	belong	>0		not stripped
+0	belong	0x0210010e	PA-RISC1.1 shared library
+>96	belong	>0		not stripped
+0	belong	0x0210010d	PA-RISC1.1 dynamic load	library
+>96	belong	>0		not stripped
+0	belong	0x02140106	PA-RISC2.0 relocatable object
+0	belong	0x02140107	PA-RISC2.0 executable
+>96	belong	>0		not stripped
+0	belong	0x02140108	PA-RISC2.0 shared executable
+>96	belong	>0		not stripped
+0	belong	0x0214010b	PA-RISC2.0 demand-load executable
+>96	belong	>0		not stripped
+0	belong	0x0214010e	PA-RISC2.0 shared library
+>96	belong	>0		not stripped
+0	belong	0x0214010d	PA-RISC2.0 dynamic load	library
+>96	belong	>0		not stripped
+0	belong	0x020b0106	PA-RISC1.0 relocatable object
+0	belong	0x020b0107	PA-RISC1.0 executable
+>96	belong	>0		not stripped
+0	belong	0x020b0108	PA-RISC1.0 shared executable
+>96	belong	>0		not stripped
+0	belong	0x020b010b	PA-RISC1.0 demand-load executable
+>96	belong	>0		not stripped
+0	belong	0x020b010e	PA-RISC1.0 shared library
+>96	belong	>0		not stripped
+0	belong	0x020b010d	PA-RISC1.0 dynamic load	library
+>96	belong	>0		not stripped
+0	belong	0x213c6172	archive	file
+>68	belong	0x020b0619	PA-RISC1.0 relocatable library
+>68	belong	0x02100619	PA-RISC1.1 relocatable library
+>68	belong	0x02110619	PA-RISC1.2 relocatable library
+>68	belong	0x02140619	PA-RISC2.0 relocatable library
+#
+# AIX executables.
+#
+0	beshort	0x01df		executable (RISC System/6000) or object module
+>12	belong	>0		not stripped
+0	beshort	0x01f7		64-bit XCOFF executable or object module
+>20	belong	>0		not stripped
+0	beshort	0x01ef		Discontinued 64-bit XCOFF executable or object module
+>20	belong	>0		not stripped
+0	beshort	0x0104		shared library (RISC System/6000)
+#
+# SUPER-UX executables.
+#
+0	beshort	02040		SUPER-UX executable (SX-3)
+>16	belong	>0		not stripped
+>20	belong	>0		not stripped
+>38	byte	>0		uses floating point data
+>38	byte	1		(float1 mode)
+>38	byte	2		(float2 mode)
+>38	byte	3		(float1/float2 mode)
+>40	beshort	0410		large paging
+>40	beshort	0411		small paging
+>40	beshort	0510		large paging
+0	beshort	02042		SUPER-UX executable (SX-4)
+>16	belong	>0		not stripped
+>20	belong	>0		not stripped
+>38	byte	>0		uses floating point data
+>38	byte	1		(float1 mode)
+>38	byte	2		(float2 mode)
+>38	byte	3		(float0/float1/float2 mode)
+>38	byte	4		(float0 mode)
+>40	beshort	0410		large paging
+>40	beshort	0411		small paging
+>40	beshort	0420		512G Layout large paging
+>40	beshort	0510		large paging
+>40	beshort	0520		512G Layout large paging
+0	beshort	02043		SUPER-UX executable (SX-5)
+>16	belong	>0		not stripped
+>20	belong	>0		not stripped
+>38	byte	>0		uses floating point data
+>40	beshort	0410		large paging
+>40	beshort	0411		small paging
+>40	beshort	0420		512G Layout large paging
+>40	beshort	0510		large paging
+>40	beshort	0520		512G Layout large paging
+#
+# Mach executables.
+#
+0	belong	0xfeedface	Mach-O
+>12	belong	1		object
+>12	belong	2		executable
+>12	belong	3		shared library
+>12	belong	4		core
+>12	belong	5		preload executable
+>12	belong	6		dynamically linked shared library
+>12	belong	7		dynamic linker
+>12	belong	8		bundle
+>4	belong	7		i386
+>4	belong	18		ppc		
+#
+# Archives.
+#
+0	short	070707		cpio archive
+0	short	0143561		byte-swapped cpio archive
+6	beshort	070707		Cray UNICOS cpio archive
+0	string	070707		pre-SVR4 ASCII cpio archive
+0	string	070701		SVR4 ASCII cpio archive
+0	string	070702		SVR4 ASCII cpio archive with checksum
+0	short	070703		tcpio archive
+0	short	0141561		byte-swapped tcpio archive
+0	string	070703		ASCII tcpio archive
+# Note that the next string is 'ustar '.
+257	string	ustar 		GNU tar archive
+257	string	ustar		ustar archive
+65	leshort	000126		bar archive
+0	leshort	0177555		obsolete ar archive
+0	leshort	0177545		pdp11/pre System V ar archive
+0	string	<ar>		System V Release 1 ar archive
+0	string	!<arch>		current ar archive
+0	string	<bigaf>		archive (big format) (RISC System/6000)
+0	string	<aiaff>		archive (RISC System/6000)
+#
+# Compressed files.
+#
+0	leshort	017037		packed data
+0	leshort	0116437		compressed data
+>2	byte	0214		- with 12 bits
+>2	byte	0215		- with 13 bits
+>2	byte	0216		- with 14 bits
+>2	byte	0217		- with 15 bits
+>2	byte	0220		- with 16 bits
+0	leshort	0105437		gzip compressed data
+0	string	BZh		bzip2 compressed data
+0	leshort	0120037		SCO LZH-compressed data
+0	string		Heirloom encrypted data
+#
+# Compressing archivers.
+#
+0	lelong	0xdbeeabed	rpm package data
+>4	byte	>0		version %d
+0	string	# PaCkAgE DaTaStReAm	SVR4 package datastream
+0	string	PK		zip archive
+0	leshort	0xea60		ARJ archive
+0	string	Rar!		RAR archive
+20	lelong	0xfdc4a7dc	Zoo archive
+0	lelong	0x4643534d	Microsoft cabinet archive
+#
+# Image files.
+#
+0	string	GIF8		GIF image data
+>4	string	7a		version 87a
+>4	string	9a		version 89a
+>6	leshort	>0		(%d x
+>8	leshort	>0		%d)
+0	beshort	0xffd8		JPEG image data
+>6	string	JFIF		JFIF standard
+>6	string	Exif		EXIF standard
+0	string	‰PNG		PNG image data
+>16	belong	>0		(%ld x
+>20	belong	>0		%ld)
+>24	byte	>0		%d-bit
+>25	byte	0		grayscale
+>25	byte	2		color RGB
+>25	byte	3		colormap
+>25	byte	4		gray+alpha
+>25	byte	6		color RGBA
+>28	byte	1		interlaced
+# TIFF LSB
+0	lelong	0x002a4949	TIFF image data
+# TIFF MSB
+0	lelong	0x2a004d4d	TIFF image data
+4	belong	7		X Window dump data
+0	belong	0x00000100	Windows icon data
+0	string	BM		PC bitmap data
+0	string	P1		PPM image data
+0	string	P2		PPM image data
+0	string	P3		PPM image data
+0	string	P4		PPM image data
+0	string	P5		PPM image data
+0	string	P6		PPM image data
+#
+# Font formats and related things.
+#
+0	belong	0x00010000	TrueType font data
+0	string	OTTO		CFF-based OpenType font data
+0	string	%!PS-AdobeFont-1.0	PostScript Type 1 font text
+0	string	%!PS-AdobeFont-1.0	PostScript Type 1 font program data
+0	belong	04		X11 SNF font data, MSB first
+0	lelong	04		X11 SNF font data, LSB first
+0	string	STARTFONT 	X11 BDF font text
+0	string	fcp		X11 Portable Compiled Font data
+>12	byte	0x02		LSB first
+>12	byte	0x0a		MSB first
+0	string	%PDF-		PDF document
+#
+# Misc stuff.
+#
+0	leshort	0x011a		Compiled Terminfo Entry
+0	leshort	0x011b		Curses screen image
+0	leshort	0x011c		Curses screen image
+0	belong	0x053162	Berkeley DB database B-tree format maps
+0	lelong	0x053162	Berkeley DB database B-tree format maps
+0	belong	0x061561	Berkeley DB database hash format maps
+0	lelong	0x061561	Berkeley DB database hash format maps
+12	belong	0x053162	Berkeley DB database MSB B-tree format maps
+12	lelong	0x053162	Berkeley DB database LSB B-tree format maps
+12	belong	0x061561	Berkeley DB database MSB hash format maps
+12	lelong	0x061561	Berkeley DB database LSB hash format maps
+12	belong	0x042253	Berkeley DB database MSB queue format maps
+12	lelong	0x042253	Berkeley DB database LSB queue format maps
+#
+# Cray executables.
+#
+6	beshort	0407		executable
+>4	byte	&0200		shared-text
+>4	byte	&0100		bdm-safe
+>4	byte	&040		ieee
+>4	byte	&020		J90 cache safe
+>5	byte	02		CRAY-1S
+>5	byte	03		CRAY X-MP (22-bit)
+>5	byte	04		CRAY X-MP
+>5	byte	05		CRAY X-MP (24-bit)
+>5	byte	06		CRAY-2
+>5	byte	07		CRAY Y-MP
+>5	byte	010		CRAY Y-MP/C90
+>5	byte	011		incremental load code fragment
+>5	byte	012		CRAY-T3D
+>5	byte	013		CRAY-TS
+>5	byte	014		CRAY-T3E
+>5	byte	>014		undefined CRAY machine
+>32	belong	>0		not stripped
+>36	belong	>0		not stripped
+38	beshort	0407		executable
+>37	byte	012		CRAY T3D
+>36	byte	&0200		shared-text
+>44	byte	^0200		not stripped
+#
+# Microsoft formats. These are at the very end of the file since they are
+# not quite unique.
+#
+0	string	MZ		DOS executable (EXE)
+>0x4e	string	This program cannot be run in DOS mode	for Microsoft Windows
+0	string	LZ		DOS built-in
+0	byte	0xe9		DOS executable (COM)
+0	byte	0x8c		DOS executable (COM)
+0	byte	0xeb		DOS executable (COM)
+0	byte	0xb8		DOS executable (COM)

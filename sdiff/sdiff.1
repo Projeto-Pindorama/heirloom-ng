@@ -1,0 +1,127 @@
+'\" t
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)sdiff.1	1.1 (gritter) 4/30/03
+.TH SDIFF 1 "4/30/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+sdiff \- print file differences side-by-side
+.SH SYNOPSIS
+\fBsdiff\fR [\fB\-ls\fR] [\fB\-o\fI\ name\fR] [\fB\-w\fI\ width\fR]
+\fIfile1 file2\fR
+.SH DESCRIPTION
+.I sdiff
+presents the lines of
+.I file1
+and
+.I file2
+side-by-side in two columns.
+Lines that are equal in both files are separated by blanks;
+lines that differ are separated by one of the following characters:
+.sp
+.RS
+.TS
+lfB l.
+<	the line is in file1 only
+|	the line differs in file1 and file2
+>	the line is in file2 only.
+.TE
+.RE
+.sp
+This might look as
+.sp
+.RS
+.nf
+only in file1        <  
+in both files           in both files
+this line            |  is different
+                     >  only in file2
+also in both files      also in both files
+.fi
+.RE
+.PP
+The behavior of
+.I sdiff
+can be influenced with the following options:
+.TP 10
+.B \-l
+Print the first column only
+for lines equal in both files.
+.TP 10
+.B \-s
+Omit equal lines in output.
+.TP 10
+\fB\-w\fI width\fR
+Set the width of output (both lines and separators added) to
+.IR width ;
+the default is 130.
+Long lines are truncated to fit within this space.
+.TP 10
+\fB\-o\fI name\fR
+Generate a merged version of both input files in the file
+.I name
+in addition to normal output.
+Lines that are equal are written to
+.IR name ;
+for each set of different lines,
+the prompt `%' is printed and
+the user may then choose the action
+by typing one of the following commands:
+.sp
+.RS
+.TS
+lfB l.
+l	T{
+Write the lines of the left (first) file to \fIname\fR.
+T}
+r	T{
+Write the lines of the right (second) file to \fTname\fR.
+T}
+s	Do not print equal lines to standard output.
+v	Turn printing of equal lines on.
+e\ l	T{
+Invoke the editor on the lines of the left file
+and append the result to \fIname\fR.
+T}
+e\ r	T{
+Invoke the editor on the lines of the right file.
+T}
+e\ b	T{
+Concatenate the lines of both files
+and invoke the editor on the result.
+T}
+e	Invoke the editor with an empty file.
+q	T{
+Quit \fIsdiff\fR and do not write further lines to \fIname\fR.
+T}
+.TE
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+and the width of characters.
+.SH "SEE ALSO"
+diff(1),
+ed(1)

@@ -1,0 +1,197 @@
+.\"
+.\" Sccsid @(#)man.7	1.4 (gritter) 7/21/03
+.\"
+.\" Derived from Unix 7th Edition man(7)
+.\"
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH MAN 7 "7/21/03" "Heirloom Toolchest" "Headers, Tables and Macros"
+.SH NAME
+man \- macros to typeset manual
+.SH SYNOPSIS
+.B
+nroff  \-man\ 
+file ...
+.PP
+.B
+troff  \-man\ 
+file ...
+.SH DESCRIPTION
+These macros are used to lay out pages of this manual.
+.PP
+Any text argument
+.I t
+may be zero to six words.
+Quotes may be used to include blanks in a `word'.
+If 
+.I text
+is empty,
+the special treatment is applied to
+the next input line with text to be printed.
+In this way
+.BR . I
+may be used to italicize a whole line, or
+.BR . SM
+followed by
+.BR . B
+to make small bold letters.
+.PP
+A prevailing indent distance is remembered between
+successive indented paragraphs,
+and is reset to default value upon reaching a non-indented paragraph.
+Default units for indents
+.I i
+are ens.
+.PP
+Type font and size are reset to default values
+before each paragraph, and after processing
+font and size setting macros.
+.PP
+These strings are predefined by
+.BR \-man :
+.IP \e*R
+.if t `\*R', `(Reg)' in
+.if t .I nroff.
+.if n `(Reg)', trademark symbol in
+.if n .I troff.
+.IP \e*S
+Change to default type size.
+.SH REQUESTS
+.ad l
+.ta \w'.TH n c d x s 'u +\w'Cause 'u +\w'Argument\ 'u
+.di xx
+			\ka
+.br
+.di
+.in \nau
+.ti 0
+Request	Cause	If no	Explanation
+.ti 0
+	Break	Argument
+.ti 0
+\&.B \fIt\fR	no	\fIt\fR=n.t.l.*	Text
+.I t
+is bold.
+.ti 0
+\&.BI \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating bold and italic.
+.ti 0
+\&.BR \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating bold and Roman.
+.ti 0
+\&.DT	no	.5i 1i...	Restore default tabs.
+.ti 0
+\&.HP \fIi\fR	yes	\fIi\fR=p.i.*	Set prevailing indent to
+.I i.
+Begin paragraph with hanging indent.
+.ti 0
+\&.I \fIt\fR	no	\fIt\fR=n.t.l.	Text
+.I t
+is italic.
+.ti 0
+\&.IB \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating italic and bold.
+.ti 0
+\&.IP \fIx i\fR	yes	\fIx\fR=""	Same as .TP with tag
+.I x.
+.ti 0
+\&.IR \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating italic and Roman.
+.ti 0
+\&.LP	yes	-	Same as .PP.
+.ti 0
+\&.PD \fId\fR	no	\fId\fR=.4v	Interparagraph distance is 
+.I d.
+.ti 0
+\&.PP	yes	-	Begin paragraph.
+Set prevailing indent to .5i.
+.ti 0
+\&.RE	yes	-	End of relative indent.
+Set prevailing indent to amount of starting .RS.
+.ti 0
+\&.RB \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating Roman and bold.
+.ti 0
+\&.RI \fIt\fR	no	\fIt\fR=n.t.l.	Join
+words of
+.I t
+alternating Roman and italic.
+.ti 0
+\&.RS \fIi\fR	yes	\fIi\fR=p.i.	Start relative indent,
+move left margin in distance
+.I i.
+Set prevailing indent to .5i for nested indents.
+.ti 0
+\&.SH \fIt\fR	yes	\fIt\fR=n.t.l.	Subhead.
+.ti 0
+\&.SB \fIt\fR	no	\fIt\fR=n.t.l.	Text
+.I t
+is small and bold.
+.ti 0
+\&.SM \fIt\fR	no	\fIt\fR=n.t.l.	Text
+.I t
+is small.
+.ti 0
+\&.TH \fIn c d x s\fR	yes	-	Begin page named
+.I n
+of chapter
+.IR c;
+.I d
+is date of last change;
+.I x
+is extra commentary, e.g. `local', for page foot;
+.I s
+is a section description.
+Set prevailing indent and tabs to .5i.
+.ti 0
+\&.TP \fIi\fR	yes	\fIi\fR=p.i.	Set prevailing indent to
+.I i.
+Begin indented paragraph
+with hanging tag given by next text line.
+If tag doesn't fit, place it on separate line.
+.PP
+.ti 0
+* n.t.l. = next text line; p.i. = prevailing indent
+.SH SEE ALSO
+nroff(1), troff(1), man(1)
+.SH NOTES
+Relative indents don't nest.

@@ -1,0 +1,493 @@
+.\"
+.\" Copyright (c) 1980 Regents of the University of California.
+.\" All rights reserved.  The Berkeley software License Agreement
+.\" specifies the terms and conditions for redistribution.
+.\"
+.\"	from 4.3BSD diff.1	6.4 (Berkeley) 5/19/86
+.\"
+.\" This code contains changes by
+.\" Gunnar Ritter, Freiburg i. Br., Germany, March 2003. All rights reserved.
+.\"
+.\" Conditions 1, 2, and 4 and the no-warranty notice below apply
+.\" to these changes.
+.\"
+.\"
+.\" Copyright (c) 1980, 1993
+.\" 	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowedgement:
+.\" 	This product includes software developed by the University of
+.\" 	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.TH DIFF 1 "6/28/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+diff \- differential file comparator
+.SH SYNOPSIS
+.HP
+.nh
+.ad l
+\fBdiff\fR
+[\fB\-abBiptw\fR]
+[\fB\-cefhnu\fR]
+[\fB\-C\ \fInumber\fR]
+[\fB\-U\ \fInumber\fR]
+\fIfile1\fR \fIfile2\fR
+.HP
+.nh
+.ad l
+\fBdiff\fR
+[\fB\-abBiptw\fR]
+[\fB\-D\ \fIstring\fR]
+\fIfile1\fR \fIfile2\fR
+.HP
+.nh
+.ad l
+\fBdiff\fR
+[\fB\-abBiNptw12\fR]
+[\fB\-cefhnu\fR]
+[\fB\-C\ \fInumber\fR]
+[\fB\-U\ \fInumber\fR]
+[\fB\-lrs\fR]
+[\fB\-S\ \fIname\fR]
+[\fB\-x\ \fIpattern\fR]
+[\fB\-X\ \fIname\fR]
+\fIdirectory1\fR \fIdirectory2\fR
+.br
+.hy 1
+.SH DESCRIPTION
+.I Diff
+tells what lines must be changed in two files to bring them
+into agreement.
+If
+.I file1
+.RI ( file2 )
+is `\-', the standard input is used.
+If
+.I file1
+.RI ( file2 )
+is a directory, then a file in that directory
+whose file-name is the same as the file-name of
+.I file2
+.RI ( file1 )
+is used.
+The normal output contains lines of these forms:
+.IP "" 5
+.I n1
+a
+.I n3,n4
+.br
+.I n1,n2
+d
+.I n3
+.br
+.I n1,n2
+c
+.I n3,n4
+.PP
+These lines resemble
+.I ed
+commands to convert
+.I file1
+into
+.IR file2 .
+The numbers after the letters pertain to
+.IR file2 .
+In fact, by exchanging `a' for `d' and reading backward
+one may ascertain equally how to convert 
+.I file2
+into
+.IR file1 .
+As in 
+.I ed,
+identical pairs where
+.I n1
+=
+.I n2
+or
+.I n3
+=
+.I n4
+are abbreviated as a single number.
+.PP
+Following each of these lines come all the lines that are
+affected in the first file flagged by `<', 
+then all the lines that are affected in the second file
+flagged by `>'.
+.TP 10
+.B \-a
+causes a list of differences to be output
+for all files,
+even for those found to have binary content.
+This option is an extension.
+.TP 10
+.B \-b
+causes trailing whitespace characters
+to be ignored, and other
+strings of whitespace to compare equal.
+.TP 10
+.B \-i
+ignores the case of letters.  E.g., ``A'' will compare equal to ``a''.
+.TP 10
+.B \-p
+causes the name of the surrounding C function,
+or, more exactly,
+of the first previous unchanged line
+beginning with a letter, the dollar sign, or the underscore,
+to be output with each set of changes.
+Implies
+.I \-c
+unless
+.I \-u
+is also present.
+This option is an extension.
+.TP 10
+.B \-t
+will expand tabs in output lines.  Normal,
+.B \-c
+or
+.B \-u
+output adds character(s) to the front of each line which may screw up
+the indentation of the original source lines and make the output listing
+difficult to interpret.  This option will preserve the original source's
+indentation.
+.TP 10
+.B \-w
+is similar to
+.B \-b
+but causes whitespace characters
+to be totally ignored.
+E.g., ``if\ (\ a\ ==\ b\ )'' will compare equal to ``if(a==b)''.
+.TP 10
+.B \-B
+causes changes that consist entirely of empty lines added or deleted
+to be ignored.
+This option is an extension.
+.PP
+The following options are mutually exclusive:
+.TP 10
+.B \-c
+produces a diff with three lines of context.
+With
+.B \-c
+the output format is modified slightly:
+the output beginning with identification of the files involved and
+their creation dates and then each change is separated
+by a line with a dozen *'s.
+The lines removed from
+.I file1
+are marked with `\(mi '; those added to
+.I file2
+are marked `+ '.  Lines which are changed from one
+file to the other are marked in both files with with `! '.
+.\".sp
+.\"Changes which lie within <context> lines of each other are grouped
+.\"together on output.  (This is a change from the previous ``diff -c''
+.\"but the resulting output is usually much easier to interpret.)
+.TP 10
+\fB\-C\ \fInumber\fR
+Same as
+.B \-c
+but uses
+.I number
+of lines of context.
+.TP 10
+\fB\-D\ \fIstring\fR
+causes
+.I diff
+to create a merged version of
+.I file1
+and
+.I file2
+on the standard output, with C preprocessor controls included so that
+a compilation of the result without defining \fIstring\fR is equivalent
+to compiling
+.I file1,
+while defining
+.I string
+will yield
+.I file2.
+.TP 10
+.B \-e
+produces a script of
+.I "a, c"
+and 
+.I d
+commands for the editor
+.I ed,
+which will recreate
+.I file2
+from
+.IR file1 .
+In connection with
+.BR \-e ,
+the following shell program may help maintain
+multiple versions of a file.
+Only an ancestral file ($1) and a chain of 
+version-to-version
+.I ed
+scripts ($2,$3,...) made by
+.I diff
+need be on hand.
+A `latest version' appears on
+the standard output.
+.IP
+\ \ \ \ \ \ \ \ (shift; cat $*; echo \'1,$p\') \(bv ed \- $1
+.IP
+Extra commands are added to the output when comparing directories with
+.B \-e,
+so that the result is a
+.IR sh (1)
+script for converting text files which are common to the two directories
+from their state in
+.I dir1
+to their state in
+.I dir2.
+.TP 10
+.B \-f
+produces a script similar to that of
+.B \-e,
+not useful with
+.I ed,
+and in the opposite order.
+.TP 10
+.B \-h
+does a fast, half-hearted job.
+It works only when changed stretches are short
+and well separated,
+but does work on files of unlimited length.
+.TP 10
+.B \-n
+produces a script similar to that of
+.B \-e,
+but in the opposite order and with a count of changed lines on each
+insert or delete command.
+.\"This is the form used by
+.\".IR rcsdiff (1).
+.TP 10
+.B \-u
+produces a unified diff with three lines of context.
+The output begins with identification of the files involved
+and their creation dates,
+followed by the changes
+separated by `@@ \-range +range @@'.
+Lines removed from
+.I file1
+are marked with `\(mi',
+those added to
+.I file2
+are marked `+'.
+This option is an extension.
+.TP 10
+\fB\-U\ \fInumber\fR
+Same as
+.B \-u
+but uses
+.I number
+of lines of context.
+This option is an extension.
+.PP
+If both arguments are directories,
+.I diff
+sorts the contents of the directories by name, and then runs the
+regular file
+.I diff
+algorithm on text files which are different.
+Binary files which differ,
+common subdirectories, and files which appear in only one directory
+are listed.
+.PP
+Options when comparing directories are:
+.TP 10
+.B \-l
+long output format; each text file
+.I diff
+is piped through
+.IR pr (1)
+to paginate it,
+other differences are remembered and summarized
+after all text file differences are reported.
+.TP 10
+.B \-N
+causes the text of files
+that exist in one directory only
+to be output
+as if compared to an empty file modified at 1/1/70.
+This option is an extension.
+.TP 10
+.B \-1
+is similar to
+.IR \-N ,
+but causes just the text of files that exist in
+.I directory1
+only to be output.
+Files that exist only in
+.I directory2
+are listed.
+This option is an extension.
+.TP 10
+.B \-2
+is similar to
+.IR \-N ,
+but causes just the text of files that exist in
+.I directory2
+only to be output.
+Files that exist only in
+.I directory1
+are listed.
+This option is an extension.
+.TP 10
+.B \-r
+causes application of
+.I diff
+recursively to common subdirectories encountered.
+.TP 10
+.B \-s
+causes 
+.I diff
+to report files which are the same, which are otherwise not mentioned.
+.TP 10
+.BI \-S " name"
+starts a directory
+.I diff
+in the middle beginning with file
+.I name.
+.TP 10
+.BI \-x " pattern"
+excludes all file names that match
+.I pattern
+(as described in
+.IR glob (7))
+from comparison.
+If
+.I pattern
+matches a directory,
+files below that directory are also excluded.
+This option is an extension.
+.TP 10
+.BI \-X " name"
+excludes all file names contained in
+.IR name .
+This option is an extension.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale(7).
+.TP
+.B LC_CTYPE
+Sets the mapping of bytes to characters,
+character case translation
+and the set of whitespace characters.
+.TP
+.B SYSV3
+If this variable is set,
+invalid options are ignored instead of being rejected,
+and the text of some diagnostic messages is changed.
+.SH FILES
+.ta \w'/usr/5lib/diffh   'u
+/tmp/d?????
+.br
+/usr/5lib/diffh	for \fB\-h\fR
+.br
+diff	for directory diffs
+.br
+pr
+.SH "SEE ALSO"
+bdiff(1),
+cmp(1),
+cc(1),
+comm(1),
+ed(1),
+diff3(1),
+patch(1),
+locale(7)
+.SH DIAGNOSTICS
+Exit status is 0 for no differences, 1 for some, 2 for trouble.
+.SH NOTES
+Editing scripts produced under the
+.BR \-e " or"
+.BR \-f " option are naive about"
+creating lines consisting of a single `\fB.\fR'.
+.PP
+When comparing directories with the
+\fB\-b, \-w\fP, or \fB\-i\fP
+options specified,
+.I diff
+first compares the files ala
+.I cmp,
+and then decides to run the
+.I diff
+algorithm if they are not equal.
+This may cause a small amount of spurious output if the files
+then turn out to be identical because the only differences are
+insignificant blank string or case differences.
+.PP
+When
+.I diff
+output is used with
+.IR ed (1)
+or
+.IR patch (1)
+for file synchronization,
+it is recommended that it is run in the
+.I C
+or another single-byte LC_CTYPE locale
+since character-to-byte conversion
+might otherwise hide some changes.

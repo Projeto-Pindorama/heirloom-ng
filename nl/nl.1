@@ -1,0 +1,270 @@
+'\" t
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)nl.1	1.10 (gritter) 8/14/05
+.TH NL 1 "8/14/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+nl \- line numbering filter
+.SH SYNOPSIS
+.HP
+.ad l
+\fBnl\fR
+[\fB\-h\fItype\fR]
+[\fB\-b\fItype\fR]
+[\fB\-f\fItype\fR]
+[\fB\-v\fIstart#\fR]
+[\fB\-i\fIincr\fR]
+[\fB\-p\fR]
+[\fB\-l\fInum\fR]
+[\fB\-w\fIwidth\fR]
+[\fB\-n\fIformat\fR]
+[\fB\-d\fIdelim\fR]
+[\fIfile\fR]
+.br
+.ad b
+.SH DESCRIPTION
+The
+.B nl
+command
+prints a
+.IR file ,
+or, when no
+.I file
+argument is given,
+standard input,
+preceding lines with line numbers on the left.
+.PP
+Lines with special content are taken as page delimiters.
+Three parts of pages are distinguished:
+header, body and footer.
+Each part is started when a line consisting only of the
+following characters appears in input:
+.RS
+.sp
+.TS
+l l
+lfB l.
+Line contents	Start of
+\e:\e:\e:	header
+\e:\e:	body
+\e:	footer
+.TE
+.sp
+.RE
+Line numbers are reset each time a header begins.
+The start of the file is considered a body part
+until a line marking another part appears.
+.PP
+The following options alter the behavior of
+.BR nl :
+.TP
+.BI \-b type
+Specifies which lines in a body part are numbered, where
+.I type
+is one of the following:
+.RS
+.TP
+.B a
+Number all lines,
+unless otherwise specified by the
+.B \-l
+option.
+.TP
+.B t
+Number all non-empty lines.
+.TP
+.B n
+Number no lines.
+.TP
+.BI p string
+Number all lines that match the regular expression
+.IR string .
+Regular expressions are as in
+.IR ed (1);
+.B /usr/5bin/nl
+uses simple regular expressions,
+.BR /usr/5bin/posix/nl ,
+.BR /usr/5bin/posix2001/nl ,
+and
+.B /usr/5bin/s42/nl
+use basic regular expressions.
+.RE
+.IP
+The default is
+.BR t .
+.TP
+.BI \-d delim
+Change the special characters that delimit parts of a page
+to the two characters in
+.IR delim .
+If
+.I delim
+consists of only one character,
+the second character remains the default, `\fB:\fR'.
+.TP
+.BI \-f type
+Specifies which lines in a footer part are numbered,
+where
+.I type
+has the format described for
+.BR \-b .
+The default is
+.BR n .
+.TP
+.BI \-h type
+Specifies which lines in a header part are numbered,
+where
+.I type
+has the format described for
+.BR \-b .
+The default is
+.BR n .
+.TP
+.BI \-i incr
+Line numbers are increased by
+.IR incr ,
+which defaults to 1.
+.TP
+.BI \-l num
+For the
+.BR \-ba ,
+.BR \-fa ,
+and
+.B \-ha
+options,
+specifies which line of adjacent blank lines is printed.
+The default is 1 (print all blank lines).
+.TP
+.BI \-n format
+Sets the format of line numbers, where
+.I format
+is one of:
+.RS
+.TP
+.B ln
+left-justified, preceded by blanks
+.TP
+.B rn
+right-justified, preceded by blanks
+.TP
+.B rz
+right-justified, preceded by zeros
+.RE
+.IP
+The default is
+.BR rn .
+.TP
+.B \-p
+Line numbers are not reset at the start of each header
+when this option is present.
+.TP
+.BI \-s sep
+Sets the string that separates line number and line content in output,
+default is a tabulator.
+.TP
+.BI \-v start#
+Each page is numbered starting at
+.IR start# ,
+which defaults to 1.
+.TP
+.BI \-w width
+Sets the width of line numbers.
+If a number has fewer digits than
+.IR width ,
+it is padded as described for the
+.B \-n
+option;
+if it has more digits,
+only the last
+.I width
+digits are printed.
+The default
+.I width
+is 6.
+.PP
+The
+.I file
+argument can appear between options.
+For
+.B /usr/5bin/nl
+and
+.BR /usr/5bin/s42/nl ,
+option and option argument must not be separated;
+if an option is not immediately followed by its argument,
+the default value is used.
+.B /usr/5bin/posix/nl
+and
+.B /usr/5bin/posix2001/nl
+require an option argument
+and accept it regardless of space between option and argument.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols in basic
+regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters.
+.SH EXAMPLES
+.PP
+To number all lines in a file,
+effectively disabling header and footer recognition
+since no line can contain a second newline character
+and thus the condition is never met:
+.RS
+.sp
+.nf
+nl \-ba \-d\'
+\&\' file
+.fi
+.sp
+.RE
+Note that there is no white space
+other than the newline character
+between \' \'.
+.PP
+To number all lines that are not empty
+and contain at least one non-blank character:
+.RS
+.sp
+.nf
+nl \-bp\'[^      ]\' file
+.fi
+.sp
+.RE
+The characters between [ ] are:
+.\" -- not really, don't mess up troff --
+a circumflex, a space, and a tabulator.
+.SH "SEE ALSO"
+ed(1),
+pr(1),
+locale(7)
+.SH NOTES
+Since the default width causes line numbers
+to be truncated if they consist of more than six digits, the
+.B \-w
+option should be used to increase this value
+if higher numbers are to be expected.

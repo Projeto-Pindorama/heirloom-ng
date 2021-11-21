@@ -1,0 +1,132 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)su.1	1.10 (gritter) 4/17/03
+.TH SU 1 "4/17/03" "Heirloom Toolchest" "User Commands"
+.SH NAME
+su \- become super-user or another user
+.SH SYNOPSIS
+\fBsu\fR [\fB\-\fR] [\fIusername\fR [\fIarg ...\fR]]
+.SH DESCRIPTION
+The
+.B su
+command allows one user to get the credentials of another
+without logging on and off.
+The default
+.I username
+is
+.B root
+(that is, the
+.IR super-user ).
+.PP
+Unless the caller is the super-user,
+the user's password must be entered
+(the exact authentication mechanism may depend on
+.SM PAM
+settings for
+.BR su ,
+see
+.IR pam (8)).
+If access is granted, the
+.B su
+command will execute the user's shell from the system's password file
+with the appropriate user id, group id and supplementary group ids.
+Any additional arguments will be passed to this shell.
+.PP
+If the first argument is
+.BR \- ,
+a login shell is executed in the user's home directory
+using default environment variables;
+only the settings of the
+.SM DISPLAY
+and
+.SM TERM
+variables are retained.
+In any case, the
+.SM PATH
+environment variable is adjusted.
+.PP
+The
+.B su
+command reads the configuration file
+.B /etc/default/su
+on startup. Lines containing the following strings are interpreted:
+.TP
+.BI CONSOLE= filename
+All attempts are logged to the specified file, usually
+.BR /dev/console .
+If no such line is present, console logging is not done.
+.TP
+.BI PATH= path
+The default path for non-super-user accounts. If unset,
+.I /usr/local/bin:/bin:/usr/bin:
+is assumed.
+.TP
+.BI SLEEPTIME= seconds
+If authentication fails,
+.B su
+will wait the specified number of seconds
+before printing an error message and exiting.
+Default is 4, minimum is 0, maximum is 5 seconds.
+.TP
+.BI SULOG= filename
+All attempts are logged to the specified file, if present.
+.TP
+.BI SUPATH= path
+.ad l
+The default path for super-user accounts. If unset,
+.I /usr/local/sbin:/usr/local/bin:/sbin:/usr/sbin:/bin:/usr/bin
+is assumed.
+.ad b
+.TP
+.BI SYSLOG= value
+Log attempts to the
+.IR syslog (3)
+.I LOG_AUTH
+facility. If
+.I value is
+.IR YES ,
+all attempts are logged;
+if
+.IR FAIL ,
+only the ones that failed.
+.I LOG_CRIT
+messages are generated for failed
+.B su
+attempts,
+.I LOG_NOTICE
+messages for successful attempts to become super-user, and
+.I LOG_INFO
+messages otherwise.
+.SH FILES
+.TP
+.B /etc/default/su
+Configuration file.
+.TP
+.B /etc/passwd
+User database.
+.SH "SEE ALSO"
+env(1),
+login(1),
+sh(1),
+syslog(3),
+passwd(5),
+pam(8)

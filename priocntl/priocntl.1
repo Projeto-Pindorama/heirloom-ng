@@ -1,0 +1,227 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)priocntl.1	1.12 (gritter) 9/25/04
+.TH PRIOCNTL 1 "9/25/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+priocntl \- process scheduler control
+.SH SYNOPSIS
+\fBpriocntl\fR \fB\-l\fR
+.br
+\fBpriocntl\fR \fB\-d\fR [\fB\-i\fI idtype\fR] [\fIidlist\fR]
+.br
+\fBpriocntl\fR \fB\-s\fR [\fB\-c\fI class\fR] [\fIc.s.o.\fR] \
+[\fB\-i\fI idtype\fR] [\fIidlist\fR]
+.br
+\fBpriocntl\fR \fB\-e\fR [\fB\-c\fI class\fR] [\fIc.s.o.\fR] \
+\fIcommand\fR [\fIargument(s)\fR]
+.SH DESCRIPTION
+The
+.B priocntl
+command sets or displays scheduling parameters
+for a set of processes.
+Every running process is member of a scheduling class.
+Standard scheduling classes are:
+.IP
+The time-sharing class (\fBTS\fR),
+which is usually the default.
+Processes in this class
+are scheduled according to a dynamic priority
+based on the adjustable base priority
+and fair usage principles.
+The base priority used with the
+.I priocntl
+command is the negative of the
+.I nice
+value (see
+.IR nice (1));
+higher base priorities
+mean a higher chance that the process is run.
+Base priorities range between \-19 and 20.
+.IP
+The batch class (\fBB\fR),
+whose members are given longer timeslices
+but can be preempted by any time-sharing process.
+.IP
+The isochronous class (\fBISO\fR),
+whose members retain their dynamic priority
+even if they make heavy use of computing resources.
+.IP
+The real time round-robin (fixed priority) scheduling class
+(\fBRT\fR or \fBFP\fR).
+Processes that belong to this class
+have always a fixed higher priority
+than processes in the time-sharing class
+and are scheduled according to a priority value (1 to 99).
+Each process can run for a maximum time quantum
+and is placed at the end of the associated priority list
+if the time quantum is exceeded.
+.IP
+The real time first in-first out scheduling class (\fBFF\fR),
+which is similar to the round-robin scheduling class
+except that no maximum time quantum is applied.
+.PP
+The process usually requires privilegue
+to get into one of the real time scheduling classes.
+If a process tries this but lacks the privilegue,
+it will be put into the isochronous class instead.
+.PP
+See
+.IR sched_setscheduler (2)
+for further detail on scheduling classes.
+.PP
+With the
+.B \-l
+option,
+a list of all available scheduling classes
+is printed along with the associated parameters for each class.
+.PP
+The
+.B \-d
+option causes
+the current scheduling parameters for a set of processes
+to be printed.
+.PP
+The
+.B \-s
+option allows to alter the scheduling parameters
+for a set of processes.
+To change the parameters of the
+.I init
+process (process ID 1),
+the \fI\-i pid\fR option must be specified
+with 1 appearing in
+.IR idlist .
+.PP
+If the
+.B \-e
+option is used,
+.I command
+is executed with the given scheduling parameters.
+.PP
+The
+.I idlist
+arguments
+specify the set of processes to be selected for the
+.B \-d
+and
+.B \-s
+options.
+They are normally interpreted as process IDs;
+the
+.B \-i
+option can be used to alter their meaning,
+according to the following arguments:
+.RS
+.TP 8
+.B pid
+.I idlist
+is a set of process IDs (the default).
+.TP 8
+.B ppid
+Causes all processes whose parent process has
+a process ID present in
+.I idlist
+to be selected.
+.TP 8
+.B pgid
+Selects all processes that belong to a process group id
+present in
+.IR idlist .
+.TP 8
+.B sid
+Selects all processes that belong to a session
+whose session id is present in
+.IR idlist .
+.TP 8
+.B class
+.I idlist
+is interpreted as a set of scheduling classes;
+all processes that belong to a given class are selected.
+.TP 8
+.B uid
+Selects all processes whose (numeric) effective user ID appears in
+.I idlist .
+.TP 8
+.B gid
+Selects all processes whose (numeric) effective group ID appears in
+.I idlist .
+.TP 8
+.B all
+Selects all processes currently running.
+The
+.I idlist
+arguments are ignored.
+.RE
+.PP
+If an
+.B \-i
+option is present but no
+.I idlist
+is specified,
+the process ID, parent process ID etc.
+of the
+.I priocntl
+command itself is used.
+.PP
+The
+.B \-c
+option allows to select a scheduling class
+for processes with the
+.B \-s
+and
+.B \-e
+options
+(see above for the explanation of valid classes).
+.PP
+The class-specific option is currently
+\fB\-p\fI priority\fR
+for all scheduling classes;
+it allows to set the base or scheduling priority
+for the process, as described above.
+.SH "SEE ALSO"
+nice(1),
+renice(1),
+sched_setscheduler(2),
+setpriority(2)
+.SH NOTES
+Due to the lack of a
+.IR priocntl ()
+system call on Linux and FreeBSD,
+selection of processes is performed in user space,
+and there is a time gap between selection
+and the operation of parameter setting
+with the
+.B \-s
+option.
+For an
+.I idlist
+of other than a single process id,
+it is thus possible that the
+.I priocntl
+command misses processes that are created
+at the time it is running,
+without being able to inform the user if this has happened.
+.PP
+The batch class and the isochronous class
+are not available on FreeBSD
+and are currently not part of the mainline Linux kernel;
+Con Kolivas' patch set adds support for them.

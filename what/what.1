@@ -1,0 +1,85 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2002, Sun Microsystems, Inc. All Rights Reserved.
+.\" Copyright 1989 AT&T
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)what.1	1.5 (gritter) 2/3/07
+.\"
+.\" from OpenSolaris what 1 "30 Sep 2002" "SunOS 5.11" "User Commands"
+.TH WHAT 1 "2/3/07" "Heirloom Toolchest" "User Commands"
+.SH NAME
+what \- extract SCCS version information from a file
+.SH SYNOPSIS
+\fBwhat\fR \fIfilename\fR...
+.SH DESCRIPTION
+.LP
+The \fIwhat\fR utility searches each \fIfilename\fR for occurrences of the pattern \fB@(#)\fR that the \s-1SCCS\s+1 \fIget\fR command (see 
+\fIget\fR(1)) substitutes for the \fB@(#)\fR ID keyword, and prints what follows up to a \fB"\fR, \fB>\fR, \fBNEWLINE\fR, \fB\e\fR, or \fBNULL\fR character.
+For example, if a C program in file \fBprogram.c\fR contains
+.sp
+.RS
+.nf
+char sccsid[\|] = "\|@(#)identification information\|";
+.fi
+.RE
+.sp
+and \fBprogram.c\fR is compiled to yield \fBprogram.o\fR and \fBa.out\fR, the command:
+.sp
+.RS
+.nf
+$ \fBwhat program.c program.o a.out\fR
+.fi
+.RE
+.sp
+produces:
+.RS
+.TP 10
+\fBprogram.c\fR:\fR
+identification information
+.TP
+\fBprogram.o\fR:\fR
+identification information
+.TP
+\fBa.out\fR:\fR
+identification information
+.RE
+.PP
+The following option is accepted:
+.TP
+\fB\-s\fR
+Stops after the first occurrence of the pattern.
+.PP
+The following exit values are returned:
+.TP
+\fB0\fR \fR
+Any matches were found.
+.TP
+\fB1\fR \fR
+No matches found.
+.SH SEE ALSO
+get(1), 
+help(1)
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fIhelp\fR(1)).
+.SH NOTES
+There is a remote possibility that a spurious occurrence of the `\fB@(#)\fR' pattern could be found by \fIwhat\fR.

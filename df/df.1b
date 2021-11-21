@@ -1,0 +1,104 @@
+.\"
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)df.1	1.23 (gritter) 2/5/03
+.TH DF 1B "12/9/04" "Heirloom Toolchest" "BSD System Compatibility
+.SH NAME
+df \- (BSD) disk free
+.SH SYNOPSIS
+\fB/usr/ucb/df\fR [\fB\-aihkP\fR] [\fB\-M\fI mtab\fR]
+[\fB\-t\fI fstype\fR | \fIfile\fR ...]
+.SH DESCRIPTION
+Df prints file system statistics.
+A file system is selected
+by a file it contains,
+or by its device file,
+as specified by the
+.I file
+argument.
+If no
+.I file
+argument is given,
+statistics are printed for all mounted file systems.
+.PP
+The
+.B df
+command accepts the following options:
+.TP
+.B \-a
+Print statistics for all mounted file systems.
+Normally, file systems with zero block count are omitted.
+.TP
+.B \-i
+Print i-node statistics.
+.TP
+.BI \-t \ fstype
+Restrict output to filesystems of type
+.I fstype.
+.PP
+The following options have been introduced by POSIX.2:
+.TP
+.B \-P
+Select the portable 
+.SM (POSIX)
+output format.
+Changes the default size unit
+to a block consisting of 512 bytes.
+.TP
+.B \-k
+If combined with the \-P option,
+the size unit is changed from blocks to kbytes.
+.PP
+The following options are extensions:
+.TP
+.B \-h
+Prints the sizes in human-readable powers of 1024,
+i.\|e. `K' for kilobyte,
+`M' for megabyte,
+`G' for gigabyte,
+`T' for terabyte,
+`P' for petabyte,
+and `E' for exabyte.
+.TP
+.BI \-M \ mtab
+Use the specified
+.I mtab
+file to get a list of mounted filesystems.
+.SH FILES
+.TP
+.B /etc/mtab
+default mount table
+.SH "SEE ALSO"
+find(1),
+statvfs(2),
+mtab(5),
+mount(8)
+.SH NOTES
+.PP
+This
+.I df
+implementation cannot handle unmounted file systems.
+.PP
+Some advanced file system designs allocate i-nodes dynamically.
+.I Df
+then tries to estimate free and total counts of available files.
+This is currently done for the
+.I reiserfs
+file system.

@@ -1,0 +1,128 @@
+.\"
+.\" Sccsid @(#)renice.1	1.8 (gritter) 12/6/04
+.\"
+.\"	from renice.8	6.2 (Berkeley) 5/19/86
+.\" Copyright (c) 1980 Regents of the University of California.
+.\" All rights reserved.  The Berkeley software License Agreement
+.\" specifies the terms and conditions for redistribution.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\" 	This product includes software developed by the University of
+.\" 	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.TH RENICE 1 "12/6/04" "Heirloom Toolchest" "User Commands"
+.SH NAME
+renice \- alter priority of running processes
+.SH SYNOPSIS
+\fBrenice\fR \fIpriority\fR
+[[\fB\-p\fR] \fIpids\fR]
+[[\fB\-g\fR] \fIpgrps\fR]
+[[\fB\-u\fR] \fIusers\fR]
+.sp
+\fBrenice\fR [\fB\-n\fI increment\fR] [\fB\-g\fR|\fB\-p\fR|\fB\-u\fR] \fIID\fR
+.SH DESCRIPTION
+The
+.B renice
+command alters the scheduling priority
+of one or more running processes.
+The
+.I ID
+parameters are interpreted
+as process IDs, process group IDs, or user names.
+Renicing a process group causes all processes in the process group
+to have their scheduling priority altered.
+Renicing a user causes all processes owned by the user
+to have their scheduling priority altered.
+By default, the processes to be affected
+are specified by their process IDs.
+.PP
+Users without appropriate privileges
+may only alter the priority of processes they own,
+and can only monotonically increase
+their ``nice value'' within the range 0 to 19.
+(This prevents overriding administrative fiats.)
+Users with appropriate privileges
+may alter the priority of any process
+and set the priority to any value
+in the range \-20 to 19.
+Useful priorities are:
+19 (the affected processes will run only
+when nothing else in the system wants to),
+0 (the ``base'' scheduling priority),
+anything negative (to make things go very fast).
+.PP
+The
+.B renice
+command accepts the following options:
+.TP
+.B \-g
+The following arguments will be interpreted
+as process group IDs.
+.TP
+\fB\-n\fI increment\fR
+Specifies the
+.I increment
+to add to the current priority
+of the process with the highest priority
+(lowest numerical value)
+of the selection.
+Without this option,
+10 is used as increment.
+.TP
+.B \-p
+The following arguments will be interpreted
+as process IDs.
+.TP
+.B \-u
+The following arguments will be interpreted
+as user names or numerical user IDs.
+.PP
+In the first synopsis form,
+.I priority
+specifies the absolute value to set.
+The default is 10.
+If more than one of
+.BR \-g ,
+.B \-p
+or
+.B \-u
+are given,
+each option applies to the following arguments
+until the next option is detected.
+.PP
+In the second synopsis form,
+which was introduced by POSIX.2,
+only one of
+.BR \-g ,
+.B \-p
+or
+.B \-u
+may be given.
+.SH "SEE ALSO"
+nice(1),
+priocntl(1),
+getpriority(2),
+setpriority(2)

@@ -1,0 +1,397 @@
+'\" t
+.\" Sccsid @(#)ls.1	1.33 (gritter) 2/24/05
+.\" Parts taken from ls(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH LS 1 "2/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+ls, lc \- list contents of directory
+.SH SYNOPSIS
+\fBls\fR
+[\fB\-abcCdfFgHilLmnopqrRstux1hSUX\fR]
+[\fIfile\fR ...]
+.br
+\fBlc\fR
+[\fB\-abcCdfFgHilLmnopqrRstux1hSUX\fR]
+[\fIfile\fR ...]
+.SH DESCRIPTION
+For each directory argument,
+.I ls
+lists the contents of the directory;
+for each file argument,
+.I ls
+repeats its name and any other information requested.
+The output is sorted alphabetically by default.
+When no argument is given, the current directory is listed.
+When several arguments are given,
+the arguments are first sorted appropriately,
+but file arguments appear
+before directories and their contents.
+There are several options:
+.TP
+.B  \-a
+List all entries; usually
+files that begin with a
+.RB ` . '
+are suppressed.
+.TP
+.B \-b
+Non-printable characters are printed as octal numbers
+`\fB\e\fIddd\fR'.
+.TP
+.B \-c
+Use time of last modification to inode (mode, etc.)
+instead of last modification to file for sorting
+.RB ( \-t )
+or printing
+.RB ( \-l ).
+.TP
+.B \-C
+Output is printed in multiple columns,
+sorted down the columns.
+This format is selected by default
+if standard output refers to a terminal,
+or if the command is invoked as
+.BR lc .
+.TP
+.B  \-d
+If argument is a directory, list only its name, not
+its contents (mostly used with
+.B \-l
+to get status
+on directory).
+.TP
+.B  \-f
+Force each argument to be interpreted as a directory
+and list the name found in each slot.
+This option turns off
+.B "\-l, \-t, \-s,"
+and
+.B \-r,
+and
+turns on
+.B \-a;
+the order is the order in which entries
+appear in the directory.
+.TP
+.B \-F
+Indicates the file type as a letter appended to each pathname:
+.RS
+.sp
+.TS
+lfB l.
+/	directory
+*	executable file
+@	symbolic link
+|	named pipe
+\&=	socket
+>	Solaris door
+.TE
+.RE
+.IP
+Symbolic links specified as arguments are not followed with this option in
+.B /usr/5bin/posix2001/ls
+unless the
+.I \-H
+or
+.I \-L
+option is also present.
+.TP
+.B  \-g
+Give group ID, but omit owner ID in long listing
+(see
+.BR \-l ).
+.TP
+.B  \-i
+Print i-number in first column
+of the report for each file listed.
+.TP
+.B  \-l
+List in long format, giving mode, number of links, owner, group,
+size in bytes, and time of last modification
+for each file.
+(See below.)
+If the file is a special file the size field will instead contain
+the major and minor device numbers.
+Symbolic links specified as arguments are not followed with this option
+unless the
+.I \-H
+or
+.I \-L
+option is also present.
+.TP
+.B \-L
+Follow symbolic links in arguments,
+and,
+with the
+.I \-R
+option, symbolic links encountered during directory traversal.
+.TP
+.B \-m
+Files are listed across the page, separated by commas.
+.TP
+.B \-n
+Long format listing as described for
+.BR \-l ,
+but prints numeric owner and group ID instead of names.
+May be combined with
+.B \-g
+or
+.B \-o
+to omit either ID.
+.TP
+.B \-o
+Give owner ID, but omit group ID in long listing
+(see
+.BR \-l ).
+.TP
+.B \-p
+Print a slash `\fB/\fR' after each directory name.
+.TP
+.B \-q
+Non-printable characters are printed as question marks `\fB?\fR'.
+This is the default
+if standard output refers to a terminal.
+.TP
+.B  \-r
+Reverse the order of sort to get reverse alphabetic
+or oldest first as appropriate.
+.TP
+.B \-R
+Lists subdirectories recursively.
+.TP
+.B  \-s
+Give size in blocks,
+including indirect blocks, for each entry.
+.TP
+.B  \-t
+Sort by time modified (latest first) instead of
+by name, as is normal.
+.TP
+.B  \-u
+Use time of last access instead of last
+modification for sorting
+.RB ( \-t )
+or printing
+.RB ( \-l ).
+.TP
+.B \-x
+Prints filenames in multiple columns sorted across the page.
+.TP
+.B \-1
+Print one filename per output line.
+This is the default
+if standard output does not refer to a terminal.
+.PP
+The following option was introduced with POSIX.1-2001:
+.TP
+.B \-H
+Follow symbolic links given as arguments.
+.PP
+The following options are available as extensions:
+.TP
+.B \-h
+Print file sizes in human-readable powers of 1024,
+i.\|e. `K' for kilobyte,
+`M' for megabyte,
+`G' for gigabyte,
+`T' for terabyte,
+`P' for petabyte,
+and `E' for exabyte.
+.TP
+.B \-S
+Sort by file size.
+.TP
+.B \-U
+Do not sort at all.
+.TP
+.B \-X
+Sort by file name extension,
+i.\|e. by the component of the file name following the last dot.
+.PP
+The mode printed under the
+.BR \-l ,
+.BR \-g ,
+and
+.B \-o
+options contains 10 characters
+which are interpreted
+as follows:
+the first character is
+.sp
+.TS
+lfB l.
+d	if the entry is a directory;
+b	if the entry is a block-type special file;
+c	if the entry is a character-type special file;
+p	if the entry is a named pipe;
+l	if the entry is a symbolic link;
+S	if the entry is a socket;
+s	if the entry is a \s-1XENIX\s0 semaphore;
+m	if the entry is a \s-1XENIX\s0 shared data (memory) file;
+D	if the entry is a Solaris door;
+n	if the entry is a HP-UX network special file;
+\-	if the entry is a plain file.
+.TE
+.PP
+The next 9 characters are interpreted
+as three sets of three bits each.
+The first set refers to owner permissions;
+the next to permissions to others in the same user-group;
+and the last to all others.
+Within each set the three characters indicate
+permission respectively to read, to write, or to
+execute the file as a program.
+For a directory, `execute' permission is interpreted
+to mean permission to search the directory
+for a specified file.
+The permissions are indicated as follows:
+.sp
+.TS
+lfB l.
+r	if the file is readable;
+w	if the file is writable;
+x	if the file is executable;
+\-	if the indicated permission is not granted.
+.TE
+.PP
+The group-execute permission character is given as
+.sp
+.TS
+lfB lw(45n).
+s	if the file has set-group-ID mode;
+l	T{
+if mandatory locking is enabled for the file
+(with \fB/usr/5bin/ls\fR and \fB/usr/5bin/s42/ls\fR);
+T}
+L	T{
+if mandatory locking is enabled for the file
+(with \fB/usr/5bin/posix/ls\fR and \fB/usr/5bin/posix2001/ls\fR).
+T}
+.TE
+.PP
+Likewise the user-execute permission character is given as
+.sp
+.TS
+lfB lw(45n).
+s	if the file has set-user-ID mode;
+S	T{
+if the set-user-ID bit is set on the file but it is not executable.
+T}
+.TE
+.PP
+The last character of the mode (normally `x' or `\-') is 
+.sp
+.TS
+lfB lw(45n).
+t	if the sticky bit of the mode is on;
+T	if the sticky bit is on but the file is not executable.
+.TE
+.sp
+See
+.IR  chmod (1)
+for the meaning of this mode.
+.PP
+When the sizes of the files in a directory
+are listed, a total count of blocks,
+including indirect blocks is printed.
+.PP
+If
+.I ls
+writes its output to a terminal that
+supports colors or boldface,
+file names printed are colorized
+according to their types:
+.sp
+.TS
+lfB lw(45n).
+blue/bold	if the file is a directory;
+yellow/bold	if the file is a special file;
+yellow	if the file is a named pipe;
+cyan	if the file is a symbolic link;
+magenta/bold	if the file is a socket or a Solaris door;
+magenta	T{
+if the file is a XENIX special file
+or a HP-UX network special file;
+T}
+green/bold	if the file is executable.
+.TE
+.sp
+For
+.IR lc ,
+colors are enabled even if the output is not written to a terminal.
+This is mainly useful if the output is filtered through a pager
+which handles colors, such as
+.IR pg (1).
+.SH FILES
+.TP
+.B /etc/passwd
+to get user IDs.
+.TP
+.B /etc/group
+to get group IDs.
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B COLUMNS
+Overrides the auto-detected terminal width.
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the order of printed items when sorting by name.
+.TP
+.B LC_CTYPE
+Determines whether a character is printable.
+.TP
+.B LC_TIME
+Sets the format of time strings printed with the
+.BR \-g ,
+.BR \-l ,
+and
+.B \-o
+options.
+.TP
+.B SYSV3
+Changes the default output format for a terminal from
+.B \-C
+to
+.B \-1
+if the command is invoked as
+.IR ls .
+.TP
+.B TERM
+Used to determine the terminal type.
+.SH "SEE ALSO"
+chmod(1),
+locale(7)

@@ -1,0 +1,1033 @@
+'\" t
+.\" Sccsid @(#)ed.1	1.48 (gritter) 6/22/05
+.\" Parts taken from ed(1), Unix 7th edition:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"   Redistributions of source code and documentation must retain the
+.\"    above copyright notice, this list of conditions and the following
+.\"    disclaimer.
+.\"   Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"   All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"      This product includes software developed or owned by Caldera
+.\"      International, Inc.
+.\"   Neither the name of Caldera International, Inc. nor the names of
+.\"    other contributors may be used to endorse or promote products
+.\"    derived from this software without specific prior written permission.
+.\"
+.\" USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
+.\" INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
+.\" LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
+.\" CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+.\" SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+.\" BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+.\" WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+.\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+.\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.TH ED 1 "6/22/05" "Heirloom Toolchest" "User Commands"
+.if t .ds q \(aa
+.if n .ds q '
+.SH NAME
+ed \- text editor
+.SH SYNOPSIS
+\fBed\fR [\fB\-\fR\ |\ \fB\-s\fR] [\fB\-p\fI\ prompt\fR] [\fIname\fR]
+.SH DESCRIPTION
+.I Ed
+is the standard text editor.
+.PP
+If a
+.I name
+argument is given,
+.I ed
+simulates an
+.I e
+command (see below)\| on the named file; that is to say,
+the file is read into
+.IR ed 's
+buffer so that it can be edited.
+The optional
+.B \-
+or
+.B \-s
+suppresses the printing
+of character counts by
+.IR e ,
+.IR r ,
+and
+.I w
+commands,
+and of the `!' after completion of a shell command.
+.PP
+With the
+.B \-p
+option,
+the given
+.I prompt
+string is printed before each command is read.
+.PP
+.I Ed
+operates on a copy of any file it is editing; changes made
+in the copy have no effect on the file until a
+.IR w ""
+(write)\|
+command is given.
+The copy of the text being edited resides
+in a temporary file called the 
+.IR buffer .
+.PP
+The editor supports format specifications as defined in
+.IR fspec (5).
+If the terminal is configured to expand tabulators
+(as enabled with
+.I stty tab3
+or
+.IR "stty \-tabs"),
+and the first line of the file being edited
+contains a format specification,
+the
+.I t
+and
+.I s
+are interpreted,
+that is, tabulators are expanded and lines are truncated
+when printing to the terminal. For example,
+.RS
+<:t\-f s72:>
+.sp
+.RE
+selects FORTRAN format and truncates lines at 72 characters.
+No expansion or truncation is performed by
+.I ed
+when input is typed to the terminal.
+.PP
+Commands to
+.I ed
+have a simple and regular structure: zero or
+more
+.I addresses
+followed by a single character
+.I command,
+possibly
+followed by parameters to the command.
+These addresses specify one or more lines in the buffer.
+Missing addresses are supplied by default.
+.PP
+In general, only one command may appear on a line.
+Certain commands allow the 
+addition of text to the buffer.
+While
+.I ed
+is accepting text, it is said
+to be in
+.I  "input mode."
+In this mode, no commands are recognized;
+all input is merely collected.
+Input mode is left by typing a period `\fB.\fR' alone at the
+beginning of a line.
+.PP
+.I Ed
+supports a limited form of
+.I "regular expression"
+notation.
+A regular expression specifies
+a set of strings of characters.
+A member of this set of strings is said to be
+.I matched
+by the regular expression.
+In the following specification for regular expressions
+the word `character' means any character but newline.
+.B /usr/5bin/ed
+uses simple regular expressions,
+whereas
+.BR /usr/5bin/s42/ed ,
+.BR /usr/5bin/posix/ed ,
+and
+.B /usr/5bin/posix2001/ed
+use basic regular expressions.
+.SS "Simple Regular Expressions"
+.IP 1.
+Any character except a special character
+matches itself.
+Special characters are
+the regular expression delimiter plus
+.RB \e\|[\| .
+and sometimes ^\|*\|$.
+.IP 2.
+A
+.B .\&
+matches any character.
+.IP 3.
+A \fB\e\fR followed by any character except a digit
+or (\|) {\|} <\|> matches that character.
+.IP 4.
+A nonempty string
+.I s
+bracketed
+\fB[\fI\|s\|\fB]\fR
+(or
+\fB[^\fIs\|\fB]\fR)
+forms a \fIbracket expression\fR that
+matches any character in (or not in)
+.I s.
+In 
+.I s,
+\e has no special meaning, and ] may only appear as
+the first letter.
+A substring 
+\fIa\fB\-\fIb\fR,
+with
+.I a
+and
+.I b
+in ascending ASCII order, stands for the inclusive
+range of ASCII characters.
+.IP 5.
+A regular expression of form 1-4 followed by \fB*\fR matches a sequence of
+0 or more matches of the regular expression.
+.IP 6.
+A regular expression of form 1-4
+followed by \fB\e{\fIm\fB,\fIn\fB\e}\fR
+forms an \fIinterval expression\fR that
+matches a sequence of \fIm\fR through \fIn\fR matches, inclusive,
+of the regular expression.
+The values of \fIm\fR and \fIn\fR must be non-negative
+and smaller than 256.
+The form \fB\e{\fIm\fB\e}\fR matches exactly \fIm\fR occurrences,
+\fB\e{\fIm\fB,\e}\fR matches at least \fIm\fR occurrences.
+.IP 7.
+The sequence \fB\e<\fR forces the match
+to occur only at the beginning of a ``variable'' or ``word'';
+that is, either at the beginning of a line,
+or just before a letter, digit or underline
+and after a character not one of these.
+.IP 8.
+The sequence \fB\e>\fR matches the end
+of a ``variable'' or ``word'',
+i.\|e. either the end of the line
+or before character which is neither a letter,
+nor a digit, nor the underline character.
+.IP 9.
+A regular expression,
+.I x,
+of form 1-11, parenthesized
+\fB\e(\fI\|x\|\fB\e)\fR
+is called a \fIsubexpression\fR and
+matches what
+.I x
+matches.
+.IP 10.
+A \fB\e\fR followed by a digit 
+.I n
+forms a \fIbackreference\fR and
+matches a copy of the string that the
+parenthesized regular expression beginning with the
+.IR n th
+\e( matched.
+.IP 11.
+A regular expression of form 1-11,
+.I x,
+followed by a regular expression of form 1-10,
+.I y
+matches a match for
+.I x
+followed by a match for
+.I y,
+with the
+.I x
+match being as long as possible while still permitting a
+.I y
+match.
+.IP 12.
+A regular expression of form 1-11 preceded by \fB^\fR
+(or followed by \fB$\fR), is constrained to matches that
+begin at the left (or end at the right) end of a line
+(\fIanchoring\fR).
+.IP 13.
+A regular expression of form 1-12 picks out the
+longest among the leftmost matches in a line.
+.IP 14.
+An empty regular expression stands for a copy of the
+last regular expression encountered.
+.SS "Basic Regular Expressions"
+Basic Regular Expressions add the following features
+to Simple Regular Expressions:
+.IP 15.
+The special character \fB*\fR, as described in 5.,
+and the interval expressions described in 6.
+can also be applied to subexpressions
+as described in 9.
+For POSIX.1-2001 utilities such as
+.BR /usr/5bin/posix2001/ed ,
+subexpressions do not match the empty string
+if there is a possible longer match.
+.IP 16.
+In bracket expressions as described in 4.,
+the following character sequences are considered special:
+.IP
+Character class expressions of the form
+\fB[:\fIclass\fB:]\fR.
+In the C LC_CTYPE locale,
+the classes
+.sp
+.TS
+l l l l.
+[:alnum:]	[:cntrl:]	[:lower:]	[:space:]
+[:alpha:]	[:digit:]	[:print:]	[:upper:]
+[:blank:]	[:graph:]	[:punct:]	[:xdigit:]
+.TE
+.sp
+are recognized;
+further locale-specific classes may be available.
+A character class expression matches any character
+that belongs to the given class in the current LC_CTYPE locale.
+.IP
+Collating symbol expressions of the form
+\fB[.\fIc\fB.]\fR,
+where \fIc\fR is a collating symbol
+in the current LC_COLLATE locale.
+A collating symbol expression
+matches the specified collating symbol.
+.IP
+Equivalence class expressions of the form
+\fB[=\fIc\fB=]\fR,
+where \fIc\fR is a collating symbol
+in the current LC_COLLATE locale.
+An equivalence class expression
+matches any character that has the same collating weight
+as \fIc\fR.
+.PP
+Regular expressions are used in addresses to specify
+lines and in one command
+(see
+.I s
+below)\|
+to specify a portion of a line which is to be replaced.
+If it is desired to use one of
+the regular expression metacharacters as an ordinary
+character, that character may be preceded by `\e'.
+This also applies to the character bounding the regular
+expression (often `/')\| and to `\e' itself.
+.PP
+To understand addressing in
+.I ed
+it is necessary to know that at any time there is a
+.I  "current line."
+Generally speaking, the current line is
+the last line affected by a command; however,
+the exact effect on the current line
+is discussed under the description of
+the command.
+Addresses are constructed as follows.
+.TP
+1.
+The character `\fB.\fR' addresses the current line.
+.TP
+2.
+The character `\fB$\fR' addresses the last line of the buffer.
+.TP
+3.
+A decimal number
+.I n
+addresses the
+.IR n -th
+line of the buffer.
+.TP
+4.
+`\fB\(fm\fIx\fR' addresses the line marked with the name
+.IR x ,
+which must be a lower-case letter.
+Lines are marked with the
+.I k
+command described below.
+.TP
+5.
+A regular expression enclosed in slashes `\fB/\fR' addresses
+the line found by searching forward from the current line
+and stopping at the first line containing a
+string that matches the regular expression.
+If necessary the search wraps around to the beginning of the
+buffer.
+.TP
+6.
+A regular expression enclosed in queries `\fB?\fR' addresses
+the line found by searching backward from the current line
+and stopping at the first line containing
+a string that matches the regular expression.
+If necessary
+the search wraps around to the end of the buffer.
+.TP
+7.
+An address followed by a plus sign `\fB+\fR'
+or a minus sign `\fB\-\fR' followed by a decimal number
+specifies that address plus
+(resp. minus)\| the indicated number of lines.
+The plus sign may be omitted.
+.TP
+8.
+If an address begins with `\fB+\fR' or `\fB\-\fR'
+the addition or subtraction is taken with respect to the current line;
+e.g. `\-5' is understood to mean `\fB.\fR\-5'.
+.TP
+9.
+If an address ends with `\fB+\fR' or `\fB\-\fR',
+then 1 is added (resp. subtracted).
+As a consequence of this rule and rule 8,
+the address `\-' refers to the line before the current line.
+Moreover,
+trailing
+`+' and `\-' characters
+have cumulative effect, so `\-\-' refers to the current
+line less 2.
+.TP
+10.
+To maintain compatibility with earlier versions of the editor,
+the character `\fB^\fR' in addresses is 
+equivalent to `\-'.
+.PP
+Commands may require zero, one, or two addresses.
+Commands which require no addresses regard the presence
+of an address as an error.
+Commands which accept one or two addresses
+assume default addresses when insufficient are given.
+If more addresses are given than such a command requires,
+the last one or two (depending on what is accepted)\| are used.
+.PP
+Addresses are separated from each other typically by a comma
+`\fB,\fR'.
+They may also be separated by a semicolon
+`\fB;\fR'.
+In this case the current line `\fB.\fR' is set to
+the previous address before the next address is interpreted.
+This feature can be used to determine the starting
+line for forward and backward searches (`/', `?')\|.
+The second address of any two-address sequence
+must correspond to a line following the line corresponding to the first address.
+.PP
+Omission of the first address causes
+the first line to be used with `,',
+or the current line with `;', respectively;
+if the second address is also omitted,
+the last line of the buffer is used.
+Thus a single `,' specifies the entire contents of the buffer,
+and a single `;' specifies the contents
+ranging from the current line to the last one.
+.PP
+In the following list of
+.I ed
+commands, the default addresses
+are shown in parentheses.
+The parentheses are not part of
+the address, but are used to show that the given addresses are
+the default.
+.PP
+As mentioned, it is generally illegal for more than one
+command to appear on a line.
+However, most commands may be suffixed by `p', `l', or `n',
+in which case
+the current line is either
+printed, listed, or numbered respectively
+in the way discussed below.
+.TP 5
+\fR(\|\fI.\|\fR)\fB\|a\fR
+.br
+.ns
+.TP 5
+<text>
+.br
+.ns
+.TP 5
+.B .
+.br
+The append command reads the given text
+and appends it after the addressed line.
+`\fB.\fR' is left
+on the last line input, if there
+were any, otherwise at the addressed line.
+Address `0' is legal for this command; text is placed
+at the beginning of the buffer.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBc\fR
+.br
+.ns
+.TP 5
+<text>
+.br
+.ns
+.TP 5
+.B .
+.br
+The change
+command deletes the addressed lines, then accepts input
+text which replaces these lines.
+`\fB.\fR' is left at the last line input; if there were none,
+it is left at the line preceding the deleted lines.
+For
+.BR /usr/5bin/posix2001/ed ,
+a `0' as the first address is identical to `1'.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBd\fR
+The delete command deletes the addressed lines from the buffer.
+The line originally after the last line deleted becomes the current line;
+if the lines deleted were originally at the end,
+the new last line becomes the current line.
+.TP 5
+\fBe\ \fIfilename\fR
+The edit
+command causes the entire contents of the buffer to be deleted,
+and then the named file to be read in.
+`\fB.\fR' is set to the last line of the buffer.
+The number of characters read is typed.
+`\fIfilename\fR' is remembered for possible use as a default file name
+in a subsequent
+.I r
+or
+.I w
+command.
+If `\fIfilename\fR' is missing, the remembered name is used.
+A `\fIfilename\fR' starting with a `\fB!\fR'
+causes the output of the shell command following this character
+to be read in.
+.TP 5
+\fBE\ \fIfilename\fR
+This command is the same as
+.IR e ,
+except that no diagnostic results when no
+.I w
+has been given since the last buffer alteration.
+.TP 5
+\fBf\ \fIfilename\fR
+The filename command prints the currently remembered file name.
+If `\fIfilename\fR' is given,
+the currently remembered file name is changed to `\fIfilename\fR'.
+.TP 5
+\fR(\fI1\fB,\fI$\fR)\|\fBg/\fIregular expression\fB/\fIcommand list\fR
+In the global
+command, the first step is to mark every line which matches
+the given \fIregular expression\fR.
+Then for every such line, the
+given \fIcommand list\fR is executed
+with `\fB.\fR' initially set to that line.
+A single command or the first of multiple commands
+appears on the same line with the global command.
+All lines of a multi-line list except the last line must be ended with `\e'.
+.I A,
+.I i,
+and
+.I c
+commands and associated input are permitted;
+the `\fB.\fR' terminating input mode may be omitted if it would be on the
+last line of the command list.
+The commands
+.I g
+and
+.I v
+are not permitted in the command list.
+.TP 5
+\fR(\fI1\fB,\fI$\fR)\|\fBG/\fIregular expression\fB/\fR
+The interactive global command
+first marks every line matching the given \fIregular expression\fR.
+Then each line is printed
+and a command is read and executed for this line.
+A single newline character causes the line to remain unchanged,
+an isolated `\fB&\fR' repeats the command given for the previous line.
+The command can be terminated by an interrupt signal.
+.TP 5
+.B h
+This command prints a verbose description for the
+last error encountered.
+.TP
+.B H
+This command acts like the
+.I h
+command,
+but also causes verbose descriptions to be printed
+on all following error conditions.
+Another
+.I H
+turns verbose mode off.
+.TP 5
+\fR(\|\fI.\|\fR)\|\fBi\fR
+.br
+.ns
+.TP 5
+<text>
+.br
+.ns
+.TP 5
+.B .
+.br
+This command inserts the given text before the addressed line.
+`\fB.\fR' is left at the last line input, or, if there were none,
+at the line before the addressed line.
+This command differs from the
+.I a
+command only in the placement of the
+text.
+For
+.BR /usr/5bin/posix2001/ed ,
+a `0' as the first address is identical to `1'.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.+1\fR)\|\fBj\fR
+This command joins the addressed lines into a single line;
+intermediate newlines simply disappear.
+`\fB.\fR' is left at the resulting line.
+.TP 5
+\fR(\fI.\fR)\|\fBk\fIx\fR
+The mark command marks the addressed line with
+name
+.IR x ,
+which must be a lower-case letter.
+The address form `\(fm\fIx\fR' then addresses this line.
+.ne 2.5
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBl\fR
+The list command
+prints the addressed lines in an unambiguous way:
+.B /usr/5bin/ed
+prints
+non-graphic control characters in three-digit octal;
+.BR /usr/5bin/s42/ed ,
+.BR /usr/5bin/posix/ed ,
+and
+.B /usr/5bin/posix2001/ed
+print control characters as C-style escape sequences
+or in three-digit octal.
+Long lines are folded.
+The
+.I l
+command may be placed on the same line after any non-i/o
+command.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBm\fIa\fR
+The move command repositions the addressed lines after the line
+addressed by
+.IR a .
+The last of the moved lines becomes the current line.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBn\fR
+This command prints lines preceded by their line numbers.
+It otherwise acts like the
+.I p
+command described below.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBp\fR
+The print command prints the addressed lines.
+`\fB.\fR'
+is left at the last line printed.
+The
+.I p
+command
+may
+be placed on the same line after any non-i/o command.
+.TP
+.B P
+This command causes a prompt to be printed
+before following commands are read.
+The default prompt is a `*' character,
+but can be set with the
+.I \-p
+command line option (which also enables the prompt).
+Another 
+.I P
+disables the prompt.
+.TP 5
+.B q
+The quit command causes
+.I ed
+to exit.
+No automatic write
+of a file is done.
+.TP 5
+.B Q
+This command is the same as
+.I q,
+except that no diagnostic results when no
+.I w
+has been given since the last buffer alteration.
+.TP 5
+\fR(\fI$\fR)\|\fBr\ \fIfilename\fR
+The read command
+reads in the given file after the addressed line.
+If no file name is given,
+the remembered file name, if any, is used
+(see
+.I e
+and
+.I f
+commands)\|.
+The file name is remembered if there was no
+remembered file name already.
+Address `0' is legal for
+.I r
+and causes the
+file to be read at the beginning of the buffer.
+If the read is successful, the number of characters
+read is typed.
+`\fB.\fR' is left at the last line read in from the file.
+A `filename' starting with a `\fB!\fR'
+causes the output of the shell command following this character
+to be read in.
+.TP 5
+\fR(\|\fI.\fB\|,\|\fI.\fR\|)\|\fBs/\fIregular expression\fB/\fIreplacement\fB/\fR       or,
+.br
+.ns
+.TP 5
+\fR(\|\fI.\fB\|,\|\fI.\fR\|)\|\fBs/\fIregular expression\fB/\fIreplacement\fB/g\fR      or,
+.br
+.ns
+.TP 5
+\fR(\|\fI.\fB\|,\|\fI.\fR\|)\|\fBs/\fIregular expression\fB/\fIreplacement\fB/\fInumber\fR
+The substitute command searches each addressed
+line for an occurrence of the specified regular expression.
+On each line in which a match is found,
+all matched strings are replaced by the replacement specified,
+if the global replacement indicator
+.RB ` g '
+appears after the command.
+If the global indicator does not appear, only the first occurrence
+of the matched string is replaced;
+if the \fInumber\fR indicator is given,
+the numbered occurrence is replaced.
+It is an error for the substitution to fail on all addressed lines.
+Any character other than space or new-line
+may be used instead of `/' to delimit the regular expression
+and the replacement.
+`\fB.\fR' is left at the last line substituted.
+.IP
+An ampersand
+.RB ` & '
+appearing in the replacement
+is replaced by the string matching the regular expression.
+The special meaning of `&' in this context may be
+suppressed by preceding it by
+.RB ` \e '.
+The characters `\|\fB\e\fIn\fR'
+where
+.I n
+is a digit,
+are replaced by the text matched by the
+.IR n -th
+regular subexpression
+enclosed between `\e(' and `\e)'.
+When
+nested, parenthesized subexpressions
+are present,
+.I n
+is determined by counting occurrences of `\e(' starting from the left.
+.IP
+A substitution string consisting of a single
+.RB ` % '
+causes the string given on the previous substitution to be re-used.
+.IP
+Lines may be split by substituting new-line characters into them.
+The new-line in the
+replacement string
+must be escaped by preceding it by
+.RB ` \e '.
+.TP 5
+\fR(\|\fI.\|\fB,\|\fI.\|\fR)\|\fBt\|\fIa\fR
+This command acts just like the
+.I m
+command, except that a copy of the addressed lines is placed
+after address
+.I a
+(which may be 0).
+`\fB.\fR' is left on the last line of the copy.
+.TP 5
+.B u
+The undo command restores
+the contents of the buffer
+before the last command was executed.
+If the undo command is given twice,
+the current state is restored.
+.TP 5
+\fR(\fI1\fB,\fI$\fR)\|\fBv/\fIregular expression\fB/\fIcommand list\fR
+This command is the same as the global command
+.I g
+except that the command list is executed
+.I g
+with `\fB.\fR' initially set to every line
+.I except
+those
+matching the regular expression.
+.TP 5
+\fR(\fI1\fB,\fI$\fR)\|\fBV/\fIregular expression\fB/\fR
+This command is the same as the interactive global command
+.I G
+except that the commands are read
+.I g
+with `\fB.\fR' initially set to every line
+.I except
+those
+matching the regular expression.
+.TP 5
+\fR(\fI1\fB,\fI$\fR)\|\fBw\ \fIfilename\fR
+.br
+The write command writes the addressed lines onto
+the given file.
+If the file does not exist,
+it is created mode 666 (readable and writable by everyone)\|.
+The file name is remembered if there was no 
+remembered file name already.
+If no file name is given,
+the remembered file name, if any, is used
+(see
+.I e
+and
+.I f
+commands)\|.
+`\fB.\fR' is unchanged.
+If the command is successful, the number of characters written is
+printed.
+A `filename' starting with a `\fB!\fR'
+causes the string following this character
+to be executed as a shell command
+with the addressed lines as standard input.
+.TP
+\fR(\fI1\fB,\fI$\fR)\fBW\ \fIfilename\fR
+This command is the same as
+.I w,
+except that the addressed lines are appended to the file.
+.TP 5
+\fR(\fI$\fR)\|\fB=\fR
+The line number of the addressed line is typed.
+`\fB.\fR' is unchanged by this command.
+.TP 5
+\fB!\fR<shell command>
+The remainder of the line after the `!' is sent
+to
+.IR sh (1)
+to be interpreted as a command.
+.RB ` . '
+is unchanged.
+If the command starts with a
+.RB ` ! ',
+the previous command is inserted.
+A
+.RB ` % '
+causes the current file name to be inserted.
+.TP 5
+\fR(\|\fI.+1\fR)\|<newline>
+An address alone on a line causes the addressed line to be printed.
+A blank line alone is equivalent to `.+1p'; it is useful
+for stepping through text.
+.PP
+The following commands are extensions:
+.TP 5
+\fR(\|\fI.\|\fR)\fB\|b\fR[\fIcount\fR]
+Prints a screenful of lines,
+starting at the addressed one,
+and browses forward in the buffer by this amount.
+With the optional
+.I count
+argument, the screen size for this and following
+.I b
+commands is set to the given number of lines.
+.TP 5
+.B help
+Causes a summary of
+.I ed
+commands along with short descriptions
+to be printed on the terminal.
+.TP 5
+.B N
+Makes the
+.I p
+command behave like the
+.I n
+command and vice-versa.
+If given a second time,
+the original semantics are restored.
+.TP 5
+\fR(\|\fI.\|\fR)\fB\|o\fR[\fIcount\fR]
+Prints a screenful of lines centered around the addressed one.
+The current line is not changed.
+With the optional
+.I count
+argument, the amount of lines printed above and below
+for this and following
+.I o
+commands is set to the given number.
+.TP 5
+.B z
+Performs the same actions as a
+.I w
+command followed by a
+.I q
+command.
+.PP
+If an interrupt signal is sent,
+.I ed
+prints a `?' and returns to its command level.
+.PP
+An input line that consists exactly of the two characters `\e.'
+causes a period `.' to be inserted with the
+.IR a ,
+.IR c ,
+and
+.IR i
+commands
+in
+.B /usr/5bin/ed
+and
+.BR /usr/5bin/s42/ed .
+.PP
+Some size limitations:
+The maximum number of bytes in the buffer
+corresponds to the address size;
+on machines with 32-bit addressing,
+it is 2\ G bytes,
+with 64-bit addressing,
+it is 9\ E bytes.
+The limit on the number of lines depends on the amount of core:
+each line takes 2 words.
+.PP
+If a line contains a NUL character,
+regular expressions cannot match beyond this character.
+A substitute command deletes a NUL
+and all following characters on the line.
+NUL characters in command input are discarded.
+If an input file does not end with a newline,
+.I ed
+prints a message and appends one.
+.PP
+Omission of the `/' character
+following the regular expression or the replacement string
+to the global and substitute commands
+causes the affected lines to be printed.
+Thus the following commands have the same effect:
+.RS
+g/pattern	g/pattern/p
+.br
+s/pattern/repl	s/pattern/repl/p
+.br
+s/pattern/	s/pattern//p
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.BR LANG ", " LC_ALL
+See
+.IR locale (7).
+.TP
+.B LC_COLLATE
+Affects the collation order for range expressions,
+equivalence classes, and collation symbols
+in basic regular expressions.
+.TP
+.B LC_CTYPE
+Determines the mapping of bytes to characters
+in both simple and basic regular expressions,
+the availability and composition of character classes
+in basic regular expressions,
+and the set of printable characters for the
+.I l
+command.
+.TP
+.B TMPDIR
+Determines the location of the temporary file
+if it contains the name of an accessible directory.
+.SH FILES
+/var/tmp/e*
+.br
+/tmp/e*
+.br
+ed.hup: work is saved here if terminal hangs up
+.SH "SEE ALSO"
+B. W. Kernighan,
+.I
+A Tutorial Introduction to the ED Text Editor
+.br
+B. W. Kernighan,
+.I Advanced editing on UNIX
+.br
+bfs(1),
+grep(1),
+sed(1),
+sh(1)
+.SH DIAGNOSTICS
+`?name' for inaccessible file;
+`?' for
+errors in commands,
+possibly followed by a verbose description
+(see the description for the
+.I h
+and
+.I H
+commands above).
+.PP
+To protect against throwing away valuable work,
+a
+.I q
+or
+.I e
+command is considered to be in error, unless a
+.I w
+has occurred since the last buffer change.
+A second
+.I q
+or
+.I e
+will be obeyed regardless.
+.SH NOTES
+A
+.I !\&
+command cannot be subject to a
+.I g
+command.
+.PP
+The LC_COLLATE variable has currently no effect.
+Ranges in bracket expressions are ordered
+as byte values in single-byte locales
+and as wide character values in multibyte locales;
+equivalence classes match the given character only,
+and multi-character collating elements are not available.
+.PP
+For portable programs, restrict textual data
+to the US-ASCII character set,
+set the LC_CTYPE and LC_COLLATE variables to `C' or `POSIX',
+and use the constructs in the second column
+instead of the character class expressions as follows:
+.RS 
+.sp
+.TS
+l l.
+[[:alnum:]]	[0\-9A\-Za\-z]
+[[:alpha:]]	[A\-Za\-z]
+[[:blank:]]	[\fI<tab><space>\fR]
+[[:cntrl:]]	[^\fI<space>\fR\-~]
+[[:digit:]]	[0\-9]
+[[:graph:]]	[!\-~]
+[[:lower:]]	[a\-z]
+[[:print:]]	[\fI<space>\fR\-~]
+[[:punct:]]	[!\-/:\-@[\-`{\-~]
+[[:space:]]	[\fI<tab><vt><ff><cr><space>\fR]
+[[:upper:]]	[A\-Z]
+[[:xdigit:]]	[0\-9a\-fA\-F]
+.TE
+.sp
+.RE
+.IR <tab> ,
+.IR <space> ,
+.IR <vt> ,
+.IR <ff> ,
+and
+.I <cr>
+indicate inclusion of
+a literal tabulator, space, vertical tabulator, formfeed,
+or carriage return character, respectively.
+Do not put the
+.IR <vt> ,
+.IR <ff> ,
+and
+.I <cr>
+characters into the range expression for the
+.I space
+class unless you actually want to match these characters.

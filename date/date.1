@@ -1,0 +1,326 @@
+'\" t
+.\" Copyright (c) 2003 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\" Sccsid @(#)date.1	1.16 (gritter) 1/24/05
+.TH DATE 1 "1/24/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+date \- print or set the date
+.SH SYNOPSIS
+\fBdate\fR [\fB\-u\fR] [\fB+\fIformat\fR]
+.br
+\fBdate\fR [\fB\-u\fR] [\fB\-b\fR]
+\fIHHMM\fR | \fImmddHHMM\fR[[\fIcc\fR]\fIyy\fR]
+.br
+\fBdate\fR \fB\-a\fR [\fB\-\fR]\fIsss.fff\fR
+.SH DESCRIPTION
+.B
+Date
+displays the current date if invoked without arguments
+or with a
+.BI + format
+argument.
+.PP
+If the first argument does not start with
+.BR + ,
+.B date
+sets the system time to the given value,
+which may consist of
+.sp
+.RS
+.TS
+lfB l.
+mm	month of year (01\^\(en\^12)
+dd	day of month (01\^\(en\^31)
+HH	hour (00\^\(en\^23)
+MM	minute (00\^\(en\^59)
+cc	first two digits of year
+yy	second two digits of year
+.TE
+.RE
+.PP
+The following options alter the behavior of
+.BR date :
+.TP
+\fB\-a\fR [\fI\-\fR]\fIsss.fff\fR
+Adjust the system clock by
+.I sss
+seconds and
+.I fff
+milliseconds,
+speeding up or,
+with
+.IR \-,
+slowing down.
+.TP
+.B \-u
+Use
+.SM UTC
+values for printing and setting the date.
+.PP
+The following option is an extension:
+.TP
+.B \-b
+Causes
+.I date
+not to alter the `wtmp' file for the system time change.
+.PP
+An argument starting with
+.B +
+specifies a format string to print the current date.
+A percent character
+.B %
+introduces a field descriptor with one or two following characters
+which is replaced by a part of the current date,
+as shown in the table below.
+Other characters are printed literally.
+A newline character is printed at the end of the output.
+.TP
+Field descriptors:
+.TS
+l3 l.
+a	T{
+locale-specific abbreviated weekday name (System\ III)
+T}
+.\" the following line implies the minimum table width
+A	locale-specific full weekday name (SVID3, POSIX.2)
+b	T{
+locale-specific abbreviated month name (SVID3, POSIX.2)
+T}
+B	T{
+locale-specific full month name (SVID3, POSIX.2)
+T}
+c	T{
+locale-specific date and time (SVID3, POSIX.2)
+T}
+C	T{
+century \(en 19 or 20 (POSIX.2) (\fB/usr/5bin/s42/date\fR, \fB/usr/5bin/posix/date\fR, \fB/usr/5bin/posix2001/date\fR)
+.br
+default output format (\fB/usr/5bin/date\fR)
+T}
+d	T{
+day of month \(en 01 to 31 (System\ III)
+T}
+D	T{
+date as mm/dd/yy (System\ III)
+T}
+e	T{
+day of month \(en 1 to 31 (SVID3, POSIX.2)
+T}
+F	T{
+date as yyyy\-mm\-dd
+T}
+g	T{
+week-based year within century \(en 00 to 99
+T}
+G	T{
+week-based year including century \(en 0000 to 9999
+T}
+h	T{
+same as %b (System\ III)
+T}
+H	T{
+hour \(en 00 to 23 (System\ III)
+T}
+I	T{
+hour \(en 01 to 12 (SVID3, POSIX.2)
+T}
+j	T{
+day of year \(en 001 to 366 (System\ III)
+T}
+m	T{
+month of year \(en 01 to 12 (System\ III)
+T}
+M	T{
+minute \(en 00 to 59 (System\ III)
+T}
+n	T{
+newline character (System\ III)
+T}
+N	T{
+default output format
+T}
+p	T{
+locale-specific AM\^/\^PM string (SVID3, POSIX.2)
+T}
+r	T{
+locale-specific time using AM\^/\^PM notation (System\ III)
+T}
+R	T{
+same as %H:%M (SVID3)
+T}
+S	T{
+second \(en 00 to 61 (System\ III)
+T}
+t	T{
+tab character (System\ III)
+T}
+T	T{
+time as HH:MM:SS (System\ III)
+T}
+u	T{
+weekday \(en 1 (Monday) to 7 (POSIX.2)
+T}
+U	T{
+week of year (Sunday as first day of week) \(en 00 to 53 (SVID3, POSIX.2)
+T}
+V	T{
+week of year (Monday as first day of week) \(en 01 to 53 (POSIX.2)
+T}
+w	T{
+weekday \(en 0 (Sunday) to 6 (System\ III)
+T}
+W	T{
+week of year (Monday as first day of week) \(en 00 to 53 (SVID3, POSIX.2)
+T}
+x	T{
+locale-specific date (POSIX.2)
+T}
+X	T{
+locale-specific time (SVID3, POSIX.2)
+T}
+y	T{
+last two digits of year \(en 00 to 99 (System\ III)
+T}
+Y	T{
+four-digit year \(en 1970 to 2037 (SVID3, POSIX.2)
+T}
+z	T{
+numeric timezone
+T}
+Z	T{
+timezone name (SVID3, POSIX.2)
+T}
+%	T{
+percent sign (System\ III)
+T}
+Ec	T{
+alternative date and time (POSIX.2)
+T}
+EC	T{
+alternative base year (period) (POSIX.2)
+T}
+Ex	T{
+alternative date (POSIX.2)
+T}
+EX	T{
+alternative time (SUSv2)
+T}
+Ey	T{
+offset from %EC in years (POSIX.2)
+T}
+EY	T{
+full alternative year (POSIX.2)
+T}
+Od	T{
+day of month filled with leading zero using alternative numerals (POSIX.2)
+T}
+Oe	T{
+day of month filled with leading space using alternative numerals (POSIX.2)
+T}
+OH	T{
+24-hour clok using alternative numerals (POSIX.2)
+T}
+OI	T{
+12-hour clock using alternative numerals (POSIX.2)
+T}
+Om	T{
+month of year using alternative numerals (POSIX.2)
+T}
+OM	T{
+minute using alternative numerals (POSIX.2)
+T}
+OS	T{
+second using alternative numerals (POSIX.2)
+T}
+Ou	T{
+weekday (Monday = 1) using alternative numerals (POSIX.2)
+T}
+OU	T{
+week of year (cf. %U) using alternative numerals (POSIX.2)
+T}
+OV	T{
+week of year (cf. %V) using alternative numerals (POSIX.2)
+T}
+Ow	T{
+weekday (Sunday = 0) using alternative numerals (POSIX.2)
+T}
+OW	T{
+week of year (cf. %W) using alternative numerals (POSIX.2)
+T}
+Oy	T{
+year (offset from %C) using alternative numerals (POSIX.2)
+T}
+.TE
+.TP
+Compatibility references:
+.TS
+l l.
+.\" the following line implies the minimum table width
+System III	AT&T System III manual page date(1).\ \ \ \ \ \ 
+SVID3	T{
+AT&T System V Interface Definition, Third Edition, Volume II, 1992,
+date(BU_CMD). Includes all field descriptors present in System III.
+T}
+POSIX.2	T{
+ISO/IEC 9945-2:1993(E), 4.15.4.1\^\(en\^4.15.4.2, pp. 241\^\(en\^242.
+Includes all field descriptors present in System III.
+T}
+SUSv2	T{
+The Open Group,
+Single \s-1UNIX\s0
+Specification, Version 2, \(co 1997, date(XCU).
+Includes all field descriptors present in POSIX.2.
+T}
+.TE
+.PP
+When no arguments are given,
+the format defaults to
+.RS
+.sp
+%a %b %e %H:%M:%S %Z %Y
+.sp
+.RE
+in the C or POSIX locale, resulting in an output like
+.RS
+.sp
+Wed Feb 26 17:48:54 CET 2003
+.sp
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B "LANG, LC_ALL"
+See
+.IR locale (7).
+.TP
+.B LC_TIME
+Alters the strings printed when format arguments are given.
+.TP
+.B TZ
+Timezone; if unset, the system default is used.
+.SH "SEE ALSO"
+adjtime(2),
+stime(2),
+strftime(3),
+locale(7)
+.SH NOTES
+After setting the date,
+the
+.IR hwclock (8)
+utility is called to adjust the hardware clock on Linux systems.

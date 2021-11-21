@@ -1,0 +1,62 @@
+Notes for the ps utility
+========================
+
+ps needs to associate /dev device names with dev_t device numbers in order
+to print the controlling terminal devices. It does this by examining files
+in /dev with stat(2). To accelerate this process, ps normally keeps a cache
+file; the data in this file is not secret (it can be collected by any user
+by examining /dev himself), but its integrity must be protected. ps thus
+normally runs set-user-ID and creates the cache file with its effective
+user ID. ps should be run with the credentials of either root or another
+trusted user ID; it does not need privilege otherwise on Linux or Solaris
+and can be configured in /etc/default/ps to switch to the real user ID
+after creating the cache file. The location, permission mode, and group
+ownership of the cache file can also be changed in /etc/default/ps (see
+the text of that file for details).
+
+It is also possible to disable the cache file by removing -DUSE_PS_CACHE
+from Makefile.mk, and regenerating the Makefile and rebuilding ps after
+doing so. If no cache file is used, ps does not need to run set-user-ID
+on Linux and Solaris.
+
+On (native) Open UNIX, ps needs root privileges to read execution times
+of child processes, and effective user and group IDs. It will thus be
+limited in functionality unless it runs set-user-ID to root, especially
+for the SUSv2 version which uses effective user IDs for the -u option
+and prints them in the UID column. With the Open UNIX LKP, no privileges
+are necessary, just as on Linux, but some files in LKP /proc contain
+weird values, causing ps to print weird output.
+
+On FreeBSD, ps needs privileges for completely correct operation because
+some information it has to read (e. g. process flags, priority) is not
+available with /proc, but only by examining /dev/kmem with the kvm library.
+
+The System V-style ps utility and the BSD-style version are two separate
+binaries with this toolchest. Moreover, the BSD-style version does not
+accept options without a preceding '-' (original BSD implementations do,
+but not /usr/ucb/ps on System V which was the model implementation for
+this version). If you like the ps utility to switch to BSD-style mode
+if the first argument does not start with '-', as procps v2 does, use
+a shell script like the following:
+
+	case $1 in
+	-*|'')
+		PATH=/usr/5bin:$PATH
+		exec ps ${@+"$@"}
+		;;
+	[0-9]*)
+		PATH=/usr/ucb:$PATH
+		exec ps "$@"
+		;;
+	*)
+		opt=$1
+		shift
+		PATH=/usr/ucb:$PATH
+		exec ps "-$opt" ${@+"$@"}
+		;;
+	esac
+
+Of course, you will have to change the PATH assignments if you installed
+the tools in a different location.
+
+	Gunnar Ritter						4/6/04

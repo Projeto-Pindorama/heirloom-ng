@@ -1,0 +1,54 @@
+.\"
+.\" Copyright (c) 2005 Gunnar Ritter
+.\"
+.\" This software is provided 'as-is', without any express or implied
+.\" warranty. In no event will the authors be held liable for any damages
+.\" arising from the use of this software.
+.\"
+.\" Permission is granted to anyone to use this software for any purpose,
+.\" including commercial applications, and to alter it and redistribute
+.\" it freely, subject to the following restrictions:
+.\"
+.\" 1. The origin of this software must not be misrepresented; you must not
+.\"    claim that you wrote the original software. If you use this software
+.\"    in a product, an acknowledgment in the product documentation would be
+.\"    appreciated but is not required.
+.\"
+.\" 2. Altered source versions must be plainly marked as such, and must not be
+.\"    misrepresented as being the original software.
+.\"
+.\" 3. This notice may not be removed or altered from any source distribution.
+.\"
+.\" Sccsid @(#)pathchk.1	1.1 (gritter) 7/17/05
+.TH PATHCHK 1 "7/17/05" "Heirloom Toolchest" "User Commands"
+.SH NAME
+pathchk \- check pathnames
+.SH SYNOPSIS
+\fBpathchk\fR [\fB\-p\fR] \fIname\fR ...
+.SH DESCRIPTION
+The
+.I pathchk
+command verifies the validity or portability of path names.
+For each
+.I name
+given, it is checked
+that each of the intermediate directories is searchable
+or could be created,
+that none of its components is longer than NAME_MAX,
+and that the whole
+.I name
+is not longer than PATH_MAX.
+.PP
+With the
+.B \-p
+option, the checks are performed using
+_POSIX_NAME_MAX and _POSIX_PATH_MAX,
+and each character of a component of
+.I name
+must be in the portable character set
+(i.\|e. alphanumerics, dot `.', underscore `_', and minus sign `\-').
+The check for local searchability is omitted.
+.PP
+If any violation of these rules is detected,
+.I pathchk
+prints an error message and exits with failure.
