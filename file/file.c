@@ -67,7 +67,7 @@ static const char sccsid[] USED = "@(#)file.sl	1.33 (gritter) 4/14/06";
 #include <libgen.h>
 #include <inttypes.h>
 #ifndef	major
-#include <sys/mkdev.h>
+#include <sys/sysmacros.h>
 #endif
 #include "iblok.h"
 #include "asciitype.h"

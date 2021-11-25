@@ -1,21 +1,36 @@
 SHELL = /bin/sh
 
 SUBDIRS = build libwchar libcommon libuxre _install \
-	banner basename bc bdiff bfs \
+	banner basename bdiff bfs \
 	cal calendar cat chmod chown \
-	cksum cmp col comm copy cp cpio csplit cut \
-	date dc dd deroff diff diff3 dircmp dirname df du \
+	cksum cmp col comm copy cp csplit cut \
+	date dd deroff dircmp dirname df du \
 	echo ed env expand expr \
-	factor file find fmt fmtmsg fold \
+	find file factor fmt fmtmsg fold \
 	getconf getopt grep groups hd head hostname id join \
-	kill line listusers ln logins logname ls \
+	kill line listusers ls ln logins logname \
 	mail man mesg mkdir mkfifo mknod more mvdir \
-	nawk news nice nl nohup oawk od \
+	news nice nl nohup oawk od \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
 	random renice rm rmdir \
 	sdiff sed setpgrp shl sleep sort spell split stty su sum sync \
-	tabs tail tapecntl tar tcopy tee test time touch tr true tsort tty \
-	ul uname uniq units users wc what who whoami whodo xargs yes
+	tail tar tapecntl tcopy tee test time touch tr true tsort tty \
+	ul uname uniq units users wc what who whoami whodo xargs yes 
+
+
+# Unknown type 'mode_t' or sys/mkdev.h
+# cpio 
+# Multiple definition of "idk_what"
+# cpio diff diff3 tabs
+# unknown type name intptr_t
+# nawk
+# Supplied by others:
+# nawk, bc/dc, diff{,3}, tar
+# Note: we could also remove tar, since star will replace it;
+# but we will compile it and then replace with star anyway.
+
+SKIPDIR = bc cpio dc diff diff3  \
+	  nawk tabs bc dc
 
 dummy: makefiles all
 

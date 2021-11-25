@@ -46,7 +46,7 @@ static const char sccsid[] USED = "@(#)mknod.sl	1.8 (gritter) 5/29/05";
 #include	<limits.h>
 #include	<unistd.h>
 #ifndef	major
-#include	<sys/mkdev.h>
+#include	<sys/sysmacros.h>
 #endif	/* !major */
 
 #ifndef	S_IFNAM

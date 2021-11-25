@@ -505,7 +505,7 @@ main(int argc, char **argv)
 		dolog('-');
 		if (sleeptime)
 			sleep(sleeptime);
-		fprintf(stderr, "%s: Sorry\n", progname);
+		fprintf(stderr, "%s: gomenasai~\n", progname);
 		status = 1;
 	}
 #ifdef	PAM

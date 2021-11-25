@@ -96,7 +96,7 @@
 #endif	/* _AIX */
 
 #ifndef	major
-#include <sys/mkdev.h>
+#include <sys/sysmacros.h>
 #endif	/* !major */
 
 #include "cpio.h"

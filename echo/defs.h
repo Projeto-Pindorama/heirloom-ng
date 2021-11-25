@@ -31,6 +31,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #if defined (__GLIBC__) && defined (_IO_getc_unlocked)
 #undef	putchar

@@ -37,6 +37,7 @@
  *	UNIX shell
  */
 #include	"defs.h"
+#include	<sys/stat.h>
 
 #ifndef	UCB
 #define	_iBCS2

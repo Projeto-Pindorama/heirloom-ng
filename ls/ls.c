@@ -91,6 +91,7 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
+#include <sys/sysmacros.h>
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>

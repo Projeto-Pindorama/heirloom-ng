@@ -99,7 +99,7 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #endif
 
 #ifndef	major
-#include <sys/mkdev.h>
+#include <sys/sysmacros.h>
 #endif	/* !major */
 
 #include <getdir.h>
