@@ -1,9 +1,7 @@
-/*
-* chroot - change root directory for a command
-* 
-* Luiz Antônio (takusuman), Gramado/RS, Brazil, July 2022.
-* /
-
+/* chroot - change root directory for a command
+ * Copyright (C) 2022: Luiz AntÃ´nio (takusuman).
+ */
+#include <pfmt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,27 +13,33 @@
 #define MIN_ARGS 3 
 /* Define some messages. */
 #define USAGE "[usage]: %s newroot command\n"
-#define NOPERM "%s: not running as super-user.\n"
+#define NOPERM "not running as super-user.\n"
+#define ERRCHROOT "could not change root to %s.\n"
+#define ERREXEC "could not execute %s.\n"
 
 void
 main(int argc, char *argv[])
 {
+	setlabel(argv[0]);
 	if (argc < MIN_ARGS){
-		printerr(argv[0], USAGE, 1);
+		fprintf(stderr, USAGE, argv[0]);
+		exit(1);
 	}
 	if (geteuid() != ROOT_UID){
-		printerr(argv[0], NOPERM, 2);
+		pfmt(stderr, MM_ERROR, NOPERM);
+		exit(2);
 	}
 	/* Change root to argv[1], then change the directory into / and execute
 	 * argv[2].*/
-	chroot(argv[1]);
-	chdir("/");
-	execv(argv[2], &argv[2]);
-}
-
-void
-printerr(char *progname[], char *msg[], int errcode)
-{
-	printf(msg, progname);
-	exit(errcode);
+	/* I think we may need a way to in fact print errors instead of just
+	 * saying "ERROR: etc etc etc", but without dropping pfmt.h. Well,
+	 * that's a TODO! :^) */
+	if (chroot(argv[1]) < 0 || chdir("/") < 0){
+		pfmt(stderr, MM_ERROR, ERRCHROOT, argv[1]);
+		exit(3);
+	}	
+	if (execv(argv[2], &argv[2]) < 0){
+		pfmt(stderr, MM_ERROR, ERREXEC, argv[2]);
+		exit(3);
+	}
 }

@@ -4,7 +4,7 @@ chroot: chroot.o
 	$(LD) $(LDFLAGS) chroot.o $(LCOMMON) $(LIBS) -o chroot
 
 chroot.o: chroot.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO5FL) $(LARGEF) -c chroot.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) $(XO5FL) $(LARGEF) -c chroot.c
 
 install: all
 	$(UCBINST) -c chroot $(ROOT)$(DEFSBIN)/chroot
