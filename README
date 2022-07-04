@@ -15,8 +15,8 @@ How to install
 
 System environments that are known to support the Heirloom Toolchest are:
 
-Linux           Kernel 2.4 and above; glibc 2.2 and above, diet libc, uClibc;
-                gcc, Intel C
+Linux           Kernel 2.4 and above; glibc 2.2 and above, diet libc, uClibc,
+		musl libc; gcc, clang, Intel C
 Solaris         8 and above; Sun C, gcc
 Open UNIX       8.0.0; native (cc), LKP (gcc)
 HP-UX           B.11.11, B.11.22, B.11.23; HP-UX ANSI C, gcc
