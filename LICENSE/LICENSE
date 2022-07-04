@@ -1,7 +1,8 @@
 ********************************************************************************
-The license for newly written code and changes to existing code is:
+The licence below applies for newly written code and changes to existing code:
 
     Copyright (c) 2003 Gunnar Ritter
+    Copyright (c) 2021-2022 Luiz Antônio et Pindorama
 
     This software is provided 'as-is', without any express or implied
     warranty. In no event will the authors be held liable for any damages
@@ -23,10 +24,10 @@ The license for newly written code and changes to existing code is:
 
 The following tools have been rewritten from scratch:
 
-	basename	cat	chown	cmp	copy	cp
-	cpio*	csplit	cut	date	dd	df	dirname
-	du	env	expand	false 	fold	groups	hd
-	head	hostname	id	install	kill	line
+	basename	cat	chown  chroot** cmp	copy
+	cp 	cpio*	csplit	cut	date	dd	df
+	dirname du	env	expand	false 	fold	groups
+	hd	head	hostname id	install	kill	line
 	listusers	logins	logname	man	mesg	mkdir
 	mkfifo	mknod	mt	newform	news	nice	nl
 	nohup	od	paste	pathchk	pg	pgrep	printenv
@@ -37,6 +38,9 @@ The following tools have been rewritten from scratch:
 	users	wc	who	whoami	whodo	xargs	yes
 
 	* See below for the licenses on compression codes.
+	** These tools are being rewritten almost 20 years after the first
+	release of the Heirloom Toolchest, in an effort to keep the project
+	alive made by the Pindorama project.
 
 All source code and documentation has been changed intensively, thus
 the above license applies to all material distributed here, further
@@ -352,3 +356,4 @@ of this code was put in the public domain by Mark Adler.
 ********************************************************************************
 
 Gunnar Ritter								2/3/07
+Luiz Antônio								7/3/22
