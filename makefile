@@ -2,7 +2,7 @@ SHELL = /bin/sh
 
 SUBDIRS = build libwchar libcommon libuxre _install \
 	banner basename bc bdiff bfs \
-	cal calendar cat chmod chown \
+	cal calendar cat chmod chown chroot \
 	cksum cmp col comm copy cp cpio csplit cut \
 	date dc dd deroff diff diff3 dircmp dirname df du \
 	echo ed env expand expr \
