@@ -16,13 +16,13 @@ void print_error(int error) {
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		fprintf(stderr, "Usage: %s <newroot> <command>\n", argv[0]);
+		fprintf(stderr, "usage: %s <newroot> <command>\n", argv[0]);
 		exit(1);
 	}
 
-	// If it's not running as su
+	// If it's not running as root 
 	//if (geteuid() != 0) {
-//		pfmt(stderr, MM_ERROR, "not running as su.\n");
+//		pfmt(stderr, MM_ERROR, "not running as root.\n");
 		//exit(2);
 	//}
 
