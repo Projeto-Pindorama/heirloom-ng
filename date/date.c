@@ -5,17 +5,12 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
+ * Copyright (c) 2022: Luiz Antônio (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
 
-#if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
-#define	USED	__attribute__ ((used))
-#elif defined __GNUC__
-#define	USED	__attribute__ ((unused))
-#else
-#define	USED
-#endif
+#define USED
 #if defined (SUS)
 static const char sccsid[] USED = "@(#)date_sus.sl	1.26 (gritter) 1/22/06";
 #else
@@ -119,7 +114,8 @@ badtime:
 }
 
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+	defined (__DragonFly__) || defined (__APPLE__) || __GLIBC__ >= 2 && \
+	__GLIBC_MINOR__ >= 35
 static int
 stime(time_t *t)
 {
@@ -130,7 +126,7 @@ stime(time_t *t)
 
 	return settimeofday(&tv, NULL);
 }
-#endif	/* __FreeBSD__, __NetBSD__, __OpenBSD__, __DragonFly__, __APPLE__ */
+#endif	/* __FreeBSD__, __NetBSD__, __OpenBSD__, __DragonFly__, __APPLE__, GLIBC above 2.35*/
 
 static void
 settime(char *op)
