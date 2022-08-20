@@ -20,6 +20,7 @@ static const char sccsid[] USED = "@(#)logname.sl	1.3 (gritter) 5/29/05";
 
 #include <unistd.h>
 #include <stdio.h>
+#include <pfmt.h>
 
 int
 main(int argc, char **argv)
@@ -27,7 +28,7 @@ main(int argc, char **argv)
 	char	*lp;
 
 	if ((lp = getlogin()) == NULL) {
-		fputs("Cannot get login name\n", stderr);
+		pfmt(stderr, MM_ERROR, "Cannot get login name\n");
 		return 1;
 	}
 	puts(lp);
