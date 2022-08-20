@@ -1,42 +1,58 @@
 /*
  * pwd - print working directory
  *
- * Gunnar Ritter, Freiburg i. Br., Germany, June 2005.
+ * A little bit based on Ritter's implementation
  */
 /*
  * Copyright (c) 2005 Gunnar Ritter
+ * Copyright (C) 2022 Arthur Bacci
  *
  * SPDX-Licence-Identifier: Zlib
  */
 
-#if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
-#define	USED	__attribute__ ((used))
-#elif defined __GNUC__
-#define	USED	__attribute__ ((unused))
-#else
-#define	USED
-#endif
-static const char sccsid[] USED = "@(#)pwd.sl	1.1 (gritter) 6/29/05";
-
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <pfmt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-int
-main(int argc, char **argv)
-{
-	size_t	size = 0;
-	char	*buf = NULL, *cwd = NULL;
+/* The maximum size `buf` can take up, this check prevents the program from
+   crashing your computer */
+#define MAXIMUM_SIZE 65536
 
-	do {
-		if ((buf = realloc(buf, size += 256)) == NULL)
+/* TODO: move this function to <pfmt.h> since it is really useful */
+void print_error(int error) {
+	errno = 0;
+	char *str = strerror(error);
+	if (errno != 0)
+		pfmt(stderr, MM_ERROR, "errno %d\n", error);
+	else
+		pfmt(stderr, MM_ERROR, "%s\n", str);
+}
+
+int main(void) {
+	size_t size = 256;
+	char *cwd;
+	char *buf = malloc(size);
+
+	while ((cwd = getcwd(buf, size)) == NULL && errno == ERANGE) {
+		if ((size *= 2) > MAXIMUM_SIZE) {
+			errno = ENAMETOOLONG;
 			break;
-	} while ((cwd = getcwd(buf, size)) == NULL && errno == ERANGE);
+		}
+		buf = realloc(buf, size);
+		if (buf == NULL) break;
+	}
+
 	if (cwd == NULL) {
-		fputs("cannot determine current directory\n", stderr);
+		print_error(errno);
 		return 1;
 	}
+	/* ELSE */
 	puts(cwd);
+
+	/* Not needed to free the allocated buf since the program ends here */
+	
 	return 0;
 }
