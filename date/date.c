@@ -10,6 +10,7 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
+#define USED
 #if defined (SUS)
 static const char sccsid[] USED = "@(#)date_sus.sl	1.26 (gritter) 1/22/06";
 #else
