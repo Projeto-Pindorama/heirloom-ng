@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#define ROOTUID 0
 
 void print_error(int error) {
 	errno = 0;
@@ -30,11 +31,12 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	// If it's not running as root 
-	//if (geteuid() != 0) {
-//		pfmt(stderr, MM_ERROR, "not running as root.\n");
-		//exit(2);
-	//}
+	// chroot(1M) will only run if the user is root, according to the
+	// specification.
+	if (geteuid() != ROOTUID) {
+		pfmt(stderr, MM_ERROR, "not running as superuser.\n");
+		exit(2);
+	}
 
 	if (
 		chroot(argv[1]) < 0 ||
