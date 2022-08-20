@@ -10,6 +10,7 @@
 
 #include "pfmt.h"
 
+
 extern char	*pfmt_label__;
 
 /*
@@ -42,7 +43,7 @@ vpfmt(FILE *stream, long flags, const char *fmt, va_list ap)
 {
 	int	n = 0;
 	const char	*severity = NULL;
-	char	sevbuf[25];
+	char sevbuf[25];
 
 	if ((flags&MM_NOSTD) == 0) {
 		if (flags & MM_ACTION)
@@ -61,7 +62,9 @@ vpfmt(FILE *stream, long flags, const char *fmt, va_list ap)
 			severity = "ERROR";
 			break;
 		default:
-			snprintf(sevbuf, sizeof sevbuf, "SEV=%ld", flags&0377);
+			/* snprintf is not needed here since we know
+			     `flags & 0xFF` can't take more than 3 chars */
+			sprintf(sevbuf, "SEV=%ld", flags & 0xFF);
 			severity = sevbuf;
 		}
 		if (pfmt_label__)

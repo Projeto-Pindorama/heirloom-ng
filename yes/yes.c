@@ -13,12 +13,12 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-	// Defining it before looping for the comparison to be executed a single
-	// time
+	/* Defining it before looping for the comparison to be executed a single
+	   time */
 	const char *to_print = argc > 1 ? argv[1] : "y";
 
 	while (puts(to_print) != EOF);
 
-	// Always return error since it can only stop if it couldn't write
+	/* Always return error since it can only stop if it couldn't write */
 	return 1;
 }
