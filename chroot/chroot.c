@@ -1,3 +1,13 @@
+/* 
+ * chroot.c - change the root directory for a command
+ */
+/*
+* Copyright (C) 2022: Luiz Antônio (takusuman)
+* 		      Arthur Bacci (arthurbacci)
+*
+* SPDX-Licence-Identifier: Zlib
+*/
+
 #include <errno.h>
 #include <pfmt.h>
 #include <stdio.h>
