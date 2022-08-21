@@ -18,9 +18,7 @@
 #endif
 static const char sccsid[] USED = "@(#)mknod.sl	1.8 (gritter) 5/29/05";
 
-#if defined (__GLIBC__) || defined (_AIX)
 #include	<sys/sysmacros.h>
-#endif	/* __GLIBC__ || _AIX */
 #include	<sys/stat.h>
 #include	<stdio.h>
 #include	<stdlib.h>
@@ -29,9 +27,6 @@ static const char sccsid[] USED = "@(#)mknod.sl	1.8 (gritter) 5/29/05";
 #include	<string.h>
 #include	<limits.h>
 #include	<unistd.h>
-#ifndef	major
-#include	<sys/mkdev.h>
-#endif	/* !major */
 
 #ifndef	S_IFNAM
 #define	S_IFNAM		0x5000
