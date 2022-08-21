@@ -11,7 +11,7 @@
  */
 
 #include <errno.h>
-#include <pfmt.h>
+#include <prerror.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,16 +20,6 @@
 /* The maximum size `buf` can take up, this check prevents the program from
    crashing your computer */
 #define MAXIMUM_SIZE 65536
-
-/* TODO: move this function to <pfmt.h> since it is really useful */
-void print_error(int error) {
-	errno = 0;
-	char *str = strerror(error);
-	if (errno != 0)
-		pfmt(stderr, MM_ERROR, "errno %d\n", error);
-	else
-		pfmt(stderr, MM_ERROR, "%s\n", str);
-}
 
 int main(void) {
 	size_t size = 256;
@@ -46,7 +36,7 @@ int main(void) {
 	}
 
 	if (cwd == NULL) {
-		print_error(errno);
+		prerror(errno);
 		return 1;
 	}
 	/* ELSE */

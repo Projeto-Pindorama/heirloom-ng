@@ -10,20 +10,12 @@
 
 #include <errno.h>
 #include <pfmt.h>
+#include <prerror.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #define ROOTUID 0
-
-void print_error(int error) {
-	errno = 0;
-	char *str = strerror(error);
-	if (errno != 0)
-		pfmt(stderr, MM_ERROR, "errno %d\n", error);
-	else
-		pfmt(stderr, MM_ERROR, "%s\n", str);
-}
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
@@ -43,7 +35,7 @@ int main(int argc, char *argv[]) {
 		chdir("/") < 0 ||
 		execv(argv[2], &argv[2]) < 0
 	) {
-		print_error(errno);
+		prerror(errno);
 		exit(3);
 	}	
 }
