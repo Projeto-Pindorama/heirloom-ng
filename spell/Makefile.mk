@@ -12,6 +12,8 @@
 # cmd/spell/Makefile
 #
 
+MAKEFLAGS := -j1
+
 .c.o: ; $(CC) -c $(CFLAGS) $(CPPFLAGS) $(GNUFL) $(IWCHAR) $(ICOMMON) -c $<
 
 all:	host_hashmake host_spellin spell compress spellprog spellin \

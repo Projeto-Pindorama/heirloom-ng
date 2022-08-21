@@ -1,3 +1,7 @@
+# Build without paralelism, since this Makefile doesn't support paralelism so
+# well.
+MAKEFLAGS := -j1
+
 all: awk
 
 awk: awk.g.o awk.lx.o b.o main.o token.o tran.o lib.o run.o parse.o proctab.o version.o
