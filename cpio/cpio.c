@@ -75,12 +75,8 @@
 #include <sfile.h>
 #include <atoll.h>
 
-#ifdef	_AIX
-#include <sys/sysmacros.h>
-#endif	/* _AIX */
-
 #ifndef	major
-#include <sys/mkdev.h>
+#include <sys/sysmacros.h>
 #endif	/* !major */
 
 #include "cpio.h"
