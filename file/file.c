@@ -1,5 +1,5 @@
 /*
- * determine type of file
+ * file.c - determine type of file
  */
 /*
  * Changes by Gunnar Ritter, Freiburg i. Br., Germany, September 2003.
@@ -52,9 +52,7 @@ static const char sccsid[] USED = "@(#)file_sus.sl	1.33 (gritter) 4/14/06";
 static const char sccsid[] USED = "@(#)file.sl	1.33 (gritter) 4/14/06";
 #endif	/* !SUS */
 
-#ifdef	__GLIBC__
 #include <sys/sysmacros.h>
-#endif
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -66,9 +64,6 @@ static const char sccsid[] USED = "@(#)file.sl	1.33 (gritter) 4/14/06";
 #include <fcntl.h>
 #include <libgen.h>
 #include <inttypes.h>
-#ifndef	major
-#include <sys/mkdev.h>
-#endif
 #include "iblok.h"
 #include "asciitype.h"
 #ifndef	S_IFDOOR
