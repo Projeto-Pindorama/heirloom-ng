@@ -89,7 +89,6 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
 #endif
 #define nil 0
 #include <sys/types.h>
-#include <sys/sysmacros.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
@@ -119,6 +118,10 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
 #else	/* USE_TERMCAP */
 #include <termcap.h>
 #endif	/* USE_TERMCAP */
+
+#if defined(_AIX) || defined(__linux__)
+#include <sys/sysmacros.h>
+#endif
 
 #ifndef	S_IFNAM
 #define	S_IFNAM		0x5000	/* XENIX special named file */
