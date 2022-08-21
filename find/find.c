@@ -80,7 +80,9 @@ static const char sccsid[] USED = "@(#)find.sl	1.45 (gritter) 5/8/06";
 #include <sys/param.h>
 #include <sys/mount.h>
 #endif
+#ifndef	major
 #include <sys/sysmacros.h>
+#endif
 #if __NetBSD_Version__>= 300000000
 #include <sys/statvfs.h>
 #define statfs statvfs
