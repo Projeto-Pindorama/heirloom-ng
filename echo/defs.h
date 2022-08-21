@@ -14,6 +14,10 @@
 #include <wchar.h>
 #include <unistd.h>
 
+#if !defined(__GLIBC__) && defined(__linux__)
+#include <sys/stat.h>
+#endif
+
 #if defined (__GLIBC__) && defined (_IO_getc_unlocked)
 #undef	putchar
 #define	putchar(c)	_IO_putc_unlocked(c, stdout)
