@@ -94,12 +94,11 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #include <sys/st01.h>
 #endif	/* SVR4.2MP */
 
-#ifdef	_AIX
-#include <sys/sysmacros.h>
-#endif
-
 #ifndef	major
-#include <sys/mkdev.h>
+/* mkdev.h is deprecated
+* #include <sys/mkdev.h>
+*/
+#include <sys/sysmacros.h>
 #endif	/* !major */
 
 #include <getdir.h>
