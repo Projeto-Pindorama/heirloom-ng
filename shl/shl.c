@@ -70,7 +70,7 @@ extern int	sysv3;
 #include	<libgen.h>
 #include	<limits.h>
 #include	<stdarg.h>
-#if !defined (__dietlibc__) && !defined (__UCLIBC__)
+#if !defined (__linux__)
 #include	<stropts.h>
 #endif
 #include	<poll.h>
