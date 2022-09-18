@@ -18,7 +18,11 @@
 #endif
 static const char sccsid[] USED = "@(#)mknod.sl	1.8 (gritter) 5/29/05";
 
-#include	<sys/sysmacros.h>
+
+#if defined(__linux__)  || defined(_AIX)
+#include <sys/sysmacros.h>
+#endif	/* __linux__ or _AIX, since sys/sysmacros.h
+	* adds a definition of major */
 #include	<sys/stat.h>
 #include	<stdio.h>
 #include	<stdlib.h>
@@ -27,6 +31,9 @@ static const char sccsid[] USED = "@(#)mknod.sl	1.8 (gritter) 5/29/05";
 #include	<string.h>
 #include	<limits.h>
 #include	<unistd.h>
+#ifndef	major
+#include	<sys/mkdev.h>
+#endif	/* If "major" still not defined. */
 
 #ifndef	S_IFNAM
 #define	S_IFNAM		0x5000
