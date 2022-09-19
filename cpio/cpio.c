@@ -62,9 +62,9 @@
 
 #include <sys/ioctl.h>
 
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
-	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 #include <sys/mtio.h>
 #else	/* SVR4.2MP */
 #include <sys/scsi.h>
@@ -75,9 +75,14 @@
 #include <sfile.h>
 #include <atoll.h>
 
-#ifndef	major
+#if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
-#endif	/* !major */
+#endif	/* __linux__ or _AIX, since sys/sysmacros.h
+	 * adds a definition of "major". */
+
+#ifndef	major
+#include <sys/mkdev.h>
+#endif	/* If "major" still not defined. */
 
 #include "cpio.h"
 #include "blast.h"
