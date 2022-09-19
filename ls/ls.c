@@ -119,9 +119,10 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
 #include <termcap.h>
 #endif	/* USE_TERMCAP */
 
-#if defined(_AIX) || defined(__linux__)
+#if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
-#endif
+#endif  /* __linux__ or _AIX, since sys/sysmacros.h
+         * adds a definition of "major". */
 
 #ifndef	S_IFNAM
 #define	S_IFNAM		0x5000	/* XENIX special named file */
