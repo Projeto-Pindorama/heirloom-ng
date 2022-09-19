@@ -44,9 +44,9 @@
 #else
 #define	USED
 #endif
-#if defined (SU3)
+#if defined(SU3)
 static const char sccsid[] USED = "@(#)find_su3.sl	1.45 (gritter) 5/8/06";
-#elif defined (SUS)
+#elif defined(SUS)
 static const char sccsid[] USED = "@(#)find_sus.sl	1.45 (gritter) 5/8/06";
 #else
 static const char sccsid[] USED = "@(#)find.sl	1.45 (gritter) 5/8/06";
@@ -69,20 +69,26 @@ static const char sccsid[] USED = "@(#)find.sl	1.45 (gritter) 5/8/06";
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
-#if defined (SUS) || defined (SU3)
+#if defined(SUS) || defined(SU3)
 #include <fnmatch.h>
 #endif
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 #include <mntent.h>
 #endif
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__)
 #include <sys/param.h>
 #include <sys/mount.h>
 #endif
-#ifndef	major
+
+#if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
-#endif
+#endif  /* __linux__ or _AIX, since sys/sysmacros.h
+	 * adds a definition of "major". */
+#ifndef major
+#include <sys/mkdev.h>
+#endif /* If "major" still not defined. */
+
 #if __NetBSD_Version__>= 300000000
 #include <sys/statvfs.h>
 #define statfs statvfs
@@ -170,7 +176,7 @@ static int	vismax;		/* number of members in visited */
  * we had st_fstype in struct stat as SVR4 does, this would be far more
  * reliable.
  */
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 static struct fstype {
 	dev_t	fsdev;		/* device id of filesystem */
 	char	*fstype;	/* filesystem type */
@@ -236,7 +242,7 @@ static uid_t	getunum(const char *);
 static gid_t	getgnum(const char *);
 static const char	*getuser(uid_t);
 static const char	*getgroup(gid_t);
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 static void	getfscur(dev_t);
 static void	getfstypes(void);
 #endif	/* __linux__ || _AIX || __hpux */
@@ -406,7 +412,7 @@ static struct anode *e3(void) { /* parse parens and predicates */
 	else if(EQ(a, "-nouser"))
 		n.F = nouser;
 	else if(EQ(a, "-local")) {
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 		getfstypes();
 #endif	/* __linux__ || _AIX || __hpux */
 		n.F = local;
@@ -446,7 +452,7 @@ static struct anode *e3(void) { /* parse parens and predicates */
 		while (*b == '-')
 			b++;
 		n.F = perm, n.l.per = newmode(b, 0), n.r.s = s;
-#if defined (SUS) || defined (SU3)
+#if defined(SUS) || defined(SU3)
 		if (s == '-')
 			n.l.per &= 07777;
 #endif
@@ -499,7 +505,7 @@ static struct anode *e3(void) { /* parse parens and predicates */
 	else if(EQ(a, "-cnewer"))
 		mknewer(&n, b, cnewer);
 	else if(EQ(a, "-fstype")) {
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 		getfstypes();
 #endif	/* __linux__ || _AIX || __hpux */
 		n.F = fstype, n.l.fstype = b;
@@ -562,7 +568,7 @@ static int not(register struct anode *p)
 {
 	return( !((*p->l.L->F)(p->l.L)));
 }
-#if !defined (SUS) && !defined (SU3)
+#if !defined(SUS) && !defined(SU3)
 static int glob(register struct anode *p)
 {
 	extern int gmatch(const char *, const char *);
@@ -731,10 +737,10 @@ static int cnewer(register struct anode *p)
 }
 static int fstype(register struct anode *p)
 {
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 	return(EQ(fscur->fstype, p->l.fstype));
-#elif defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) \
-		|| defined (__DragonFly__) || defined (__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
+		|| defined(__DragonFly__) || defined(__APPLE__)
 	return(EQ(Statfs, p->l.fstype));
 #else
 	return(EQ(Statb.st_fstype, p->l.fstype));
@@ -742,10 +748,10 @@ static int fstype(register struct anode *p)
 }
 static int local(register struct anode *p)
 {
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 	return(strcmp(fscur->fstype, "nfs") && strcmp(fscur->fstype, "smbfs"));
-#elif defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) \
-		|| defined (__DragonFly__) || defined (__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
+		|| defined(__DragonFly__) || defined(__APPLE__)
 	return(strcmp(Statfs, "nfs") != 0);
 #else
 	return(strcmp(Statb.st_fstype, "nfs") != 0);
@@ -928,7 +934,7 @@ static const char *getgroup(gid_t gid)
 found:	return cache[i].name[0] ? cache[i].name : NULL;
 }
 
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 static void getfscur(dev_t dev)
 {
 	int	i;
@@ -1001,8 +1007,8 @@ static int descend(char *fname, struct anode *exlist, int level)
 		else if (errno == ELOOP)
 			goto nof;
 	}
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-		defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+		defined(__DragonFly__) || defined(__APPLE__)
 	if (Statfs != NULL) {
 		static struct statfs	sf;
 		if (statfs(fname, &sf) < 0) {
@@ -1022,7 +1028,7 @@ static int descend(char *fname, struct anode *exlist, int level)
 	}
 	Prune = 0;
 	if (!depth) {
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 		if (fstypes)
 			getfscur(Statb.st_dev);
 #endif	/* __linux__ || _AIX || __hpux */
@@ -1055,7 +1061,7 @@ static int descend(char *fname, struct anode *exlist, int level)
 reg:
 	if (depth) {
 		Statb = ost;
-#if defined (__linux__) || defined (_AIX) || defined (__hpux)
+#if defined(__linux__) || defined(_AIX) || defined(__hpux)
 		if (fstypes)
 			getfscur(Statb.st_dev);
 #endif	/* __linux__ || _AIX || __hpux */
