@@ -49,7 +49,7 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #include <sys/stat.h>
 #ifdef	__linux__
 #include <linux/fd.h>
-#if !defined (__UCLIBC__) && !defined (__dietlibc__)
+#if !defined(__UCLIBC__) && !defined(__dietlibc__)
 #include <linux/fs.h>
 #endif	/* !__UCLIBC__, !__dietlibc__ */
 #undef	WNOHANG
@@ -85,21 +85,22 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 
 #include <sys/ioctl.h>
 
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
-	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 #include <sys/mtio.h>
 #else	/* SVR4.2MP */
 #include <sys/scsi.h>
 #include <sys/st01.h>
 #endif	/* SVR4.2MP */
 
-#ifndef	major
-/* mkdev.h is deprecated
-* #include <sys/mkdev.h>
-*/
+#if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
-#endif	/* !major */
+#endif  /* __linux__ or _AIX, since sys/sysmacros.h
+	            * adds a definition of "major". */
+#ifndef major
+#include <sys/mkdev.h>
+#endif /* If "major" still not defined. */
 
 #include <getdir.h>
 #include <asciitype.h>
@@ -117,8 +118,8 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 #endif
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__)
 /*
  * For whatever reason, FreeBSD casts the return values of major() and
  * minor() to signed values so that normal limit comparisons will fail.
@@ -2156,9 +2157,9 @@ tseek(int n, int rew)
 {
 	int	fault;
 	if (tapeblock > 0 && rew) {
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
-	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 		struct mtop	mo;
 		mo.mt_op = n > 0 ? MTFSR : MTBSR;
 		mo.mt_count = (n > 0 ? n : -n) / tapeblock;
@@ -2586,7 +2587,7 @@ suprmsg(void)
 static void
 odirect(void)
 {
-#if defined (__linux__) && defined (O_DIRECT)
+#if defined(__linux__) && defined(O_DIRECT)
 	/*
 	 * If we are operating on a floppy disk block device and know
 	 * its track size, use direct i/o. This has the advantage that
@@ -2629,7 +2630,7 @@ domtstat(void)
 	if ((mtstat.st_mode&S_IFMT) == S_IFIFO ||
 			(mtstat.st_mode&S_IFMT) == S_IFSOCK)
 		Bflag = 1;
-#if defined (__linux__)
+#if defined(__linux__)
 	if ((mtstat.st_mode&S_IFMT) == S_IFBLK) {
 		struct floppy_struct	fs;
 		int	blkbsz;
@@ -2665,7 +2666,7 @@ domtstat(void)
 			tapeblock = ((mg.mt_dsreg&MT_ST_BLKSIZE_MASK)
 					>> MT_ST_BLKSIZE_SHIFT);
 	}
-#elif defined (__sun)
+#elif defined(__sun)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtdrivetype_request	mr;
 		static struct mtdrivetype	md;
@@ -2674,14 +2675,14 @@ domtstat(void)
 		if (ioctl(mt,  MTIOCGETDRIVETYPE, &mr) == 0)
 			tapeblock = md.bsize;
 	}
-#elif defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) \
-		|| defined (__DragonFly__) || defined (__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
+		|| defined(__DragonFly__) || defined(__APPLE__)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtget	mg;
 		if (ioctl(mt, MTIOCGET, &mg) == 0)
 			tapeblock = mg.mt_blksiz;
 	}
-#elif defined (__hpux) || defined (_AIX)
+#elif defined(__hpux) || defined(_AIX)
 #else	/* SVR4.2MP */
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct blklen	bl;
@@ -2703,9 +2704,9 @@ domtstat(void)
 		tapeblock /= TBLOCK;
 		if (tapeblock > NBLOCK)
 			NBLOCK = tapeblock;
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__NetBSD__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__)
 		if (bflag == 0 && cflag && twice == 0) {
 			if (nblock == 1) {
 				if ((nblock = tapeblock) > NBLOCK)
