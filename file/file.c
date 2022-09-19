@@ -63,9 +63,15 @@ static const char sccsid[] USED = "@(#)file.sl	1.33 (gritter) 4/14/06";
 #include <fcntl.h>
 #include <libgen.h>
 #include <inttypes.h>
-#ifndef major
+
+#if defined(__linux__)
 #include <sys/sysmacros.h>
-#endif
+#endif  /* __linux__, since sys/sysmacros.h
+	* adds a definition of "major". */
+#ifndef major
+#include <sys/mkdev.h>
+#endif /* If "major" still not defined. */
+
 #include "iblok.h"
 #include "asciitype.h"
 #ifndef	S_IFDOOR
