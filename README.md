@@ -225,27 +225,22 @@ such as those for wide-character support, utmpx access, simplified
 signal management (sigset() etc.), emulation code is already present
 in the libcommon and libwchar directories; enable it if necessary.
 
-Reporting bugs
-==============
+### Reporting bugs
 
 Before you report behavior that you suspect to be a bug, check at least
 the following to be sure not to report a feature:
 
-- Does it leave a core dump? If yes, it's certainly a bug (unless you
-  sent a signal, of course).
-
-- Read the manual page and the source for the utility carefully. Did
-  you use the utility properly?
-
-- If the utility is used within a shell script or with another user's
-  environment, try how it behaves if used standalone.
-
-- If the behavior disturbs you just because your vendor's utilities do
+* Does it leave a core dump? If yes, it's certainly a bug (unless you
+  sent a signal, of course);
+* Read the manual page and the source for the utility carefully. Did
+  you use the utility properly?;
+* If the utility is used within a shell script or with another user's
+  environment, try how it behaves if used standalone;
+* If the behavior disturbs you just because your vendor's utilities do
   something different, that alone is no reason to report it. The Heirloom
   Toolchest is oriented on System V behavior. Verify that real System V
-  derivatives behave differently before reporting.
-
-- If you are using one of the POSIX personalities and the specification
+  derivatives behave differently before reporting;
+* If you are using one of the POSIX personalities and the specification
   says something different, it is likely to be a bug. But be careful to
   read the respective specification itself; some incompatibilities to
   the wording of the specification may even exist in certified systems,
