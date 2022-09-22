@@ -19,38 +19,25 @@ conditions that the original Heirloom Toolchest did before.
 
 System environments that Heirloom NG is known to work:  
 
-Operating system | Version | Standard C library and C compiler
-|
-|------------------|---------|---------------------------------------------------------------------------------------|
-| Linux            | 5.15.0  | musl C library 1.2.1 and GNU C Library 2.35. GNU
-Compiler Collection (version 10.3.1) |
+| Operating system | Version | Standard C library and C compiler |  
+|------------------|---------|---------------------------------------------------------------------------------------|  
+| Linux            | 5.15.0  | musl C library 1.2.1 and GNU C Library 2.35. GNU Compiler Collection (version 10.3.1) |  
 
 System environments that the Heirloom Toolchest was known to work (and that we
 cannot verify if it stills working):
 
-| Operating system | Version                      | Standard C library and C
-compiler                                                    |
-|------------------|------------------------------|--------------------------------------------------------------------------------------|
-| Linux            | Kernel 2.4 and above         | GNU C Library 2.2 and above,
-diet libc, uClibc. GNU Compiler Collection and Intel C. |
-| Solaris          | 8 and above                  | Sun C and the GNU Compiler
-Collection.                                               |
-| Open UNIX        | 8.0.0                        | The native C compiler (cc)
-and the GNU Compiler Collection (via L.K.P.).             |
-| HP-UX            | B.11.11, B.11.22 and B.11.23 | HP-UX's ANSI C compiler and
-GNU Compiler Collection.                                 |
-| AIX              | 5.1                          | VisualAge C compiler and GNU
-Compiler Collection.                                    |
-| FreeBSD          | 4.9, 5.2.1 and 6.1           | Not informed in the original
-README.                                                 |
-| NetBSD           | 1.6, 2.0 and 3.0             | Not informed in the original
-README.                                                 |
-| OpenBSD          | 3.4 and 3.8                  | Not informed in the original
-README.                                                 |
-| DragonFlyBSD     | 1.3.7-DEVELOPMENT            | Not informed in the original
-README.                                                 |
-| Mac OS X         | 10.4.3 and above             | Not informed in the original
-README.                                                 |
+| Operating system | Version                      | Standard C library and C compiler                                                    |  
+|------------------|------------------------------|--------------------------------------------------------------------------------------|  
+| Linux            | Kernel 2.4 and above         | GNU C Library 2.2 and above, diet libc, uClibc. GNU Compiler Collection and Intel C. |  
+| Solaris          | 8 and above                  | Sun C and the GNU Compiler Collection.                                               |  
+| Open UNIX        | 8.0.0                        | The native C compiler (cc) and the GNU Compiler Collection (via L.K.P.).             |  
+| HP-UX            | B.11.11, B.11.22 and B.11.23 | HP-UX's ANSI C compiler and GNU Compiler Collection.                                 |  
+| AIX              | 5.1                          | VisualAge C compiler and GNU Compiler Collection.                                    |  
+| FreeBSD          | 4.9, 5.2.1 and 6.1           | Not informed in the original README.                                                 |  
+| NetBSD           | 1.6, 2.0 and 3.0             | Not informed in the original README.                                                 |  
+| OpenBSD          | 3.4 and 3.8                  | Not informed in the original README.                                                 |  
+| DragonFlyBSD     | 1.3.7-DEVELOPMENT            | Not informed in the original README.                                                 |  
+| Mac OS X         | 10.4.3 and above             | Not informed in the original README.                                                 |  
 
 The following prerequisites are necessary:
 
