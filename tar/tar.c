@@ -2741,8 +2741,12 @@ checkzip(const char *bp, int rd)
 			return redirect("bzip2", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\235')
 			return redirect("zcat", NULL, rd);
+		else if (bp[0] == 'L' && bp[1] == 'Z' && bp[2] == 'I' && bp[3] == 'P')
+			return redirect("lzip", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\213')
 			return redirect("gzip", "-cd", rd);
+		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z');
+			return redirect("xz", "-cd", rd);
 	}
 	maybezip = 0;
 	return -1;
