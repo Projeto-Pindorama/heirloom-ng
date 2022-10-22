@@ -74,16 +74,19 @@ libbz2          <http://sources.redhat.com/bzip2>. It is needed if
                 cpio/pax should be able to read or create bzip2
                 compressed entries in zip files.
 
-Since the RPM "build recipe" was not updated since 2007, you will have
-to build this manually. The first thing to understand is the build system.  
-This is actually quite simple: Every directory contains a file named Makefile.mk
-that includes the directory-specific make instructions. To generate the real
-Makefile, configuration settings are prepended to the directory-specific file.
-You have to edit these configuration settings before you start compiling; they
-are located in the file build/mk.config which is also in make syntax.  
+Heirloom is built manually --- in other words, you will need to know how to
+build a package manually using make, and also a little bit about the build
+system being used.  
+The first thing to understand is the build system. This is actually quite
+simple: Every directory contains a file named ``Makefile.mk`` that includes
+directory-specific make instructions. To generate the real ``Makefile``,
+configuration settings are prepended to the directory-specific file.  
+You have to edit these configuration settings before you start compiling;
+they are located in the file build/mk.config which is also in make syntax.  
 
 Follow the descriptions in this file and select appropriate values for
-your system.
+your system. Read everything carefully and you will pretty much get it
+in some minutes.
 
 Be very careful at this step! If you overwrite your system utilities
 or put the Heirloom Toolchest at an early place in your system's PATH,
@@ -91,13 +94,12 @@ some of your shell scripts or of those of your vendor may cease to
 work. This is because utilities from the Heirloom Toolchest may behave
 differently than the ones supplied by your vendor. You may wish to
 correct this later, but the first build is definitively not the right
-time. - If you want to stay with the default /usr/5bin path on Solaris,
-be sure to remove the existing symbolic link to /usr/bin.
+time. - If you want to stay with the default ``/usr/5bin`` path on Solaris,
+be sure to remove the existing symbolic link to ``/usr/bin``.
 
-If you don't know what path names to select, get a competent person to
-assist you. I won't assist at this point and do, as described in the
-license terms, not warrant for any problems caused by anyone. You have
-been warned.
+If you don't know what path names to select, you can ask us at the GitHub
+Issues. Just keep in mind that, as per the licence terms, we do not offer
+warrant for any problems caused by anyone.
 
 After finishing the configuration, type 'gmake' and 'gmake install',
 then use the tools found at the location you selected before.
@@ -141,28 +143,26 @@ cases; the main reason for their existence is the desire to read
 lines of arbitrary length without the slow-down caused by ``getc()``.
 
 2. A modified version of Caldera's 'UNIX(R) Regular Expression Library'
-   in the libuxre directory. This is used for (mostly) POSIX.2-compatible
-   regular expression matching. It provides a syntax without too much
-   extension fuss, and good performance, since it includes both a DFA
-   and a NFA style matcher and uses either of them depending on the
-   expression and the need for subexpression locations.
+in the libuxre directory.
+This is used for (mostly) POSIX.2-compatible regular expression matching.
+It provides a syntax without too much extension fuss, and good
+performance, since it includes both a DFA and a NFA style matcher and
+uses either of them depending on the expression and the need for
+subexpression locations.
 
-3. The widechar portability library in the libwchar directory. This is
-   only used for system environments that do not provide appropriate
-   wide character functionality in their own libc. It currently just
-   does simple copying between bytes and wide characters and thus does
-   not handle anything than plain ASCII well. If other wide character
-   functions than those currently present are used in new code, it will
-   be necessary to add those function to libwchar as well.
-
-I make no premises about keeping the interfaces of these libraries
-compatible in upcoming releases, so if you want to use them in other
-projects, just fork off your own version and don't rely on mine.
+3. The widechar portability library in the libwchar directory.
+This is only used for system environments that do not provide appropriate
+wide character functionality in their own libc. It currently just
+does simple copying between bytes and wide characters and thus does
+not handle anything than plain ASCII well. If other wide character
+functions than those currently present are used in new code, it will
+be necessary to add those function to libwchar as well.
 
 To go on, you now only need to know about the sources in the directory
 of the utility you want to hack. This should make it not too difficult,
-even though I've generally stayed with good old Unix programming style
-(few comments, short variable names - but not too much to read either).
+even though Gunnar had generally stayed with good old Unix programming
+style (few comments, short variable names - but not too much to read
+either).
 
 ### Extending the Heirloom Toolchest
 
@@ -170,13 +170,13 @@ If you want to add an extension to a utility, just go on and do it - as
 you've read in the section above, accessibility for hacking is intended
 to be easy. For my version, though, the concept is to have not too many
 extensions. I sometimes include extensions because the functionality is
-really expected these days (such as diff -u), adds a real advantage for
-interactive use (such as colored output for ls), or is widely used for
-convenience and does not add much overhead (such as grep -r). I am not
-much interested in extensions that change the behavior of tools for use
-in scripts, though. Such extensions lead to subtly incompatible shell
-scripts, and these should be avoided by all means. It is much better to
-make a fresh start by creating a new utility with a different name for
+really expected these days (such as ``diff -u``), adds a real advantage
+for interactive use (such as colored output for ``ls``), or is widely
+used for convenience and does not add much overhead (such as ``grep -r``).
+I am not much interested in extensions that change the behavior of tools
+for use in scripts, though. Such extensions lead to subtly incompatible
+shell scripts, and these should be avoided by all means. It is much better
+to make a fresh start by creating a new utility with a different name for
 such cases. Such utilities are then beyond the scope of this collection.
 In general, chances are rather low that I will accept your extension for
 my version. But that doesn't mean that you should not do it for yourself.
@@ -187,13 +187,13 @@ If you want to port the Heirloom Toolchest to a new environment,
 check that the following conditions are satisfied:
 
 * The environment is a Unix-like system, e.g. the file system is
-  case-sensitive, there is a unique dev_t and ino_t combination for
-  each file i-node, there are at least POSIX.1 calls etc. The code
+  case-sensitive, there is a unique ``dev_t`` and ``ino_t`` combination
+  for each file i-node, there are at least POSIX.1 calls etc. The code
   heavily relies on this, and I'm not interested in changes for
-  non-Unix environments for a variety of reasons.
-* The compiler supports 'long long' and distinguished 8-bit, 16-bit,
+  non-Unix environments for a variety of reasons;
+* The compiler supports '``long long``' and distinguished 8-bit, 16-bit,
   32-bit, and 64-bit data types. The system stdio library supports
-  printf("%lld").
+  ``printf("%lld")``.
 * The compiler does not insert padding between two structure fields of
   type '``char``' or array of '``char``'.
 * You know how to read directory contents without ``opendir()`` and friends,
@@ -204,12 +204,12 @@ check that the following conditions are satisfied:
   documented; search for it in ``/usr/include`` if in doubt. If ``getdents()``
   or ``getdirentries()`` exist, you can probably adjust the existing code
   in '``libcommon/getdir.c``'.
-* You know how to obtain a process listing in C. This may be as easy as
-  reading ``/proc`` (you can probably re-use existing code then), but might
-  also require that you know how to read structures from ``/dev/kmem`` in
-  the worst case. Documentation for this is usually sparse; look around
-  in ``/usr/include`` or search the web for existing open source code that
-  performs such lookups (e.g. '``lsof``', '``libgtop``').
+* You know how to obtain a process listing in C.
+  This may be as easy as reading ``/proc`` (you can probably re-use existing code then),
+  but might also require that you know how to read structures from ``/dev/kmem`` in the
+  worst case. Documentation for this is usually sparse; look around in ``/usr/include``
+  or search the web for existing open source code that performs such lookups (e.g.
+  '``lsof``', '``libgtop``').
 * You know how to code tape device control (``<sys/mtio.h>`` or the like).
   This is usually documented, so if in doubt, just read the manual
   pages and header files.
@@ -222,8 +222,9 @@ Specification', Version 3, 2001, Base Definitions and Headers, and
 System Interfaces, in mind. If the system is Unix-like, missing
 functionality can usually be emulated. For a number of functions,
 such as those for wide-character support, utmpx access, simplified
-signal management (sigset() etc.), emulation code is already present
-in the libcommon and libwchar directories; enable it if necessary.
+signal management (``sigset()`` etc.), emulation code is already
+present in the libcommon and libwchar directories; enable it if
+necessary.
 
 ### Reporting bugs
 
