@@ -2101,7 +2101,7 @@ again:	if (recno >= nblock || first == 0) {
 			done(3);
 		}
 		if (maybezip && checkzip(tbuf[0].dummy, i) == 1)
-			goto again;
+			done(1);
 		if (first == 0 || i == 0) {
 			if ((i % TBLOCK) != 0 || i == 0) {
 			tbe:	fprintf(stderr, "%s: tape blocksize error\n",
@@ -2743,10 +2743,17 @@ checkzip(const char *bp, int rd)
 			return redirect("zcat", NULL, rd);
 		else if (bp[0] == 'L' && bp[1] == 'Z' && bp[2] == 'I' && bp[3] == 'P')
 			return redirect("lzip", "-cd", rd);
+		else if (bp[0] == '\211' && bp[1] == 'L' && bp[2] == 'Z' && bp[3] == 'M' && bp[4] == 'A')
+			return redirect("lzma", "-cd", rd);
+		else if (bp[0] == '\211' && bp[1] == 'L' && bp[2] == 'Z' && bp[3] == 'O')
+			return redirect("lzop", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\213')
 			return redirect("gzip", "-cd", rd);
-		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z');
+		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z')
 			return redirect("xz", "-cd", rd);
+		else if (bp[0] == '\x28' && bp[1] == '\xB5' && bp[2] == '\x2F' && bp[3] == '\xFD')
+			return redirect("zstd", "-cd", rd);
+
 	}
 	maybezip = 0;
 	return -1;
