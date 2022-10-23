@@ -843,7 +843,7 @@ tgetdir(register struct stat *sp)
 			tgetval(dblock.dbuf.mtime, sizeof dblock.dbuf.mtime);
 	sscanf(dblock.dbuf.chksum, "%o", &chksum);
 	if (chksum != checksum(0) && chksum != checksum(1)) {
-		fprintf(stderr, "%s: directory checksum error\n", progname);
+		fprintf(stderr, "%s: cannot read archive\n", progname);
 		if (iflag == 0)
 			done(2);
 	}
