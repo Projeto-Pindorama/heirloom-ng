@@ -842,11 +842,7 @@ tgetdir(register struct stat *sp)
 		sp->st_mtime =
 			tgetval(dblock.dbuf.mtime, sizeof dblock.dbuf.mtime);
 	sscanf(dblock.dbuf.chksum, "%o", &chksum);
-	if (chksum != checksum(0) && chksum != checksum(1)) {
-		fprintf(stderr, "%s: cannot read archive\n", progname);
-		if (iflag == 0)
-			done(2);
-	}
+	
 	if ((paxrec & PR_SUN_DEVMAJOR) == 0)
 		sscanf(dblock.dbuf.devmajor, "%llo", &lval1);
 	if ((paxrec & PR_SUN_DEVMINOR) == 0)
@@ -2753,7 +2749,9 @@ checkzip(const char *bp, int rd)
 			return redirect("xz", "-cd", rd);
 		else if (bp[0] == '\x28' && bp[1] == '\xB5' && bp[2] == '\x2F' && bp[3] == '\xFD')
 			return redirect("zstd", "-cd", rd);
-
+		else;
+                        fprintf(stderr, "%s: file damaged or not tar archive", progname);
+                        done(2);
 	}
 	maybezip = 0;
 	return -1;
