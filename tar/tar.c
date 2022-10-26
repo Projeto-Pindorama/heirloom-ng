@@ -2745,9 +2745,14 @@ checkzip(const char *bp, int rd)
 			return redirect("lzip", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\213')
 			return redirect("gzip", "-cd", rd);
-		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z');
+		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z')
 			return redirect("xz", "-cd", rd);
-	}
+		else if (bp[0] == '\x28' && bp[1] == '\xB5' && bp[2] == '\x2F' && bp[3] == '\xFD');
+			return redirect("zstd", "-cd", rd);
+		// else;
+		//	fprintf(stderr, "%s: file damaged or not tar archive\n", progname);
+		//	done(-1);
+		}
 	maybezip = 0;
 	return -1;
 }
