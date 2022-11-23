@@ -80,14 +80,8 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
  */
 
 #define ifmt(mode)	ifmt_c[((mode) >> 12) & 0xF]
-
-#ifndef	USE_TERMCAP
-#ifdef	sun
-#include <curses.h>
-#include <term.h>
-#endif
-#endif
 #define nil 0
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -110,6 +104,7 @@ static char ifmt_c[] = "-pc-d-b--nl-SD--";
 #include <wchar.h>
 #include <wctype.h>
 #include "config.h"
+
 #ifndef	USE_TERMCAP
 #ifndef	sun
 #include <curses.h>
