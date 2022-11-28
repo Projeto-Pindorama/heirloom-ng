@@ -7,9 +7,9 @@
 
 #include <stdio.h>
 
-#if defined (__FreeBSD__) || defined (__dietlibc__) || defined (__NetBSD__) || \
-	defined (__UCLIBC__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__FreeBSD__) || defined(__dietlibc__) || defined(__NetBSD__) || \
+	defined(__UCLIBC__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__) || !defined(__GLIBC__) 
 #include <sys/types.h>
 #include <sys/time.h>
 #include <utmp.h>
@@ -231,4 +231,4 @@ updwtmpx(const char *name, const struct utmpx *up)
 }
 
 #endif	/* __FreeBSD__ || __dietlibc__ || __NetBSD__ || __UCLIBC__ ||
-	 	__OpenBSD__ || __DragonFly__ || __APPLE__ */
+	 	__OpenBSD__ || __DragonFly__ || __APPLE__ || !(__GLIBC__) */
