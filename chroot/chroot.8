@@ -2,16 +2,29 @@
 .\" chroot.8 (takusuman) 7/2/22
 .\" Derived from the chroot(8) present in Solaris 2.5, but rewritten from
 .\" scratch.
-.\" Copyright(C) 2021-2022 Pindorama. All rights reserved.
+.\" Copyright (C) 2021-2022 Pindorama. All rights reserved.
+.\" Copyright (C) 2022 Molly A. McCollum (hex7c).
 .\"
 .\" SPDX-Licence-Identifier: Zlib
-.TH CHMOD 8 "7/2/22" "Heirloom Toolchest" "User Commands"
+.TH CHMOD 8 "12/16/22" "Heirloom Toolchest" "User Commands"
 .SH NAME
-chroot \- change the root directory for a command
+chroot \- run a command with a different system root
 .SH SYNOPSIS
-\fBchroot\fR \fInew root\fR \fIcommand\fR
+\fBchroot\fR \fINEWROOT\fR [\fICOMMAND\fR]
 .SH DESCRIPTION
-
+.PP
+\fBchroot(8)\fR runs the system call \fBchroot(2)\fR to run \fICOMMAND\fR with the root (/) set to \fINEWROOT\fR.
+.PP
+.TP 6
+.B  NEWROOT
+The directory to switch the command's system root to.
+.PP
+.TP 6
+.B  COMMAND
+The command to execute, relative to \fINEWROOT\fR.
+.\" Below is for if/when default command is added.
+.\" See (one of) the TODO section(s) in chroot.c.
+.\" If no command is specified, \fBchroot\fR(8) will run ``/bin/sh -i''.
 .SH "SEE ALSO"
 cd(1),
 chroot(2)

@@ -29,6 +29,7 @@
 %{
 #include "awk.h"
 #include <unistd.h>
+#include <stdint.h>
 #include <inttypes.h>
 #include <pfmt.h>
 int yywrap(void) { return(1); }

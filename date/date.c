@@ -115,7 +115,7 @@ badtime:
 
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
 	defined (__DragonFly__) || defined (__APPLE__) || __GLIBC__ >= 2 && \
-	__GLIBC_MINOR__ >= 35
+	__GLIBC_MINOR__ >= 31
 static int
 stime(time_t *t)
 {
