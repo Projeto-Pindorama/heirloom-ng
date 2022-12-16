@@ -28,6 +28,7 @@
 
 %{
 #include "awk.h"
+#include <stdint.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <inttypes.h>
