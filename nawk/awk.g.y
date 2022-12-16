@@ -29,9 +29,9 @@
 %{
 #include "awk.h"
 #include <unistd.h>
+#include <stdint.h>
 #include <inttypes.h>
 #include <pfmt.h>
-#include <stdint.h>
 int yywrap(void) { return(1); }
 #ifndef	DEBUG
 #	define	PUTS(x)
