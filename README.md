@@ -21,7 +21,7 @@ System environments that Heirloom NG is known to work:
 
 | Operating system | Version | Standard C library and C compiler |  
 |------------------|---------|---------------------------------------------------------------------------------------|  
-| Linux            | 5.15.0  | musl C library 1.2.1 and GNU C Library 2.35. GNU Compiler Collection (version 10.3.1) |  
+| Linux            | 5.15.0  | musl C library (1.2.1 and above) and GNU C Library (2.31 and above). GNU Compiler Collection (version 10.2.1 and above) |  
 
 System environments that the Heirloom Toolchest was known to work (and that we
 cannot verify if it stills working):
