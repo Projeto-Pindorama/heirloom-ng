@@ -16,6 +16,6 @@ PATH=@SV3BIN@:@DEFBIN@:$PATH export PATH
 tmp=/var/tmp/spellhist
 
 trap "rm -f $tmp;exit" 0 1 2 3 15
-echo "COMPRESSED $(date)" > $tmp
+echo "COMPRESSED `date`" > $tmp
 grep -v ' ' @SPELLHIST@ | sort -fud >> $tmp
 cp -f $tmp @SPELLHIST@

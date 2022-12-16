@@ -41,7 +41,7 @@ $awk '
 		printf("%s\t%s(%s)\t%s\n", comd, page, sect, desc)
 	} else
 		printf("%s(%s)\t%s\n", page, sect, desc) >"'$T'"
-}' "$(ls "*/*.[0-9]*" | sed '/^attic/ d')" | sort -u
+}' `ls */*.[0-9]* | sed '/^attic/ d'` | sort -u
 
 cat <<\!
 .TE

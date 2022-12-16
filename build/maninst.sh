@@ -7,7 +7,7 @@ usage() {
 	exit 2
 }
 
-owner='' mode='' group=''
+owner= mode= group=
 
 while getopts cg:m:o: arg
 do
@@ -16,11 +16,11 @@ do
 	g)	group=$OPTARG ;;
 	o)	owner=$OPTARG ;;
 	m)	mode=$OPTARG ;;
-	*)	usage "$0" ;;
+	*)	usage $0 ;;
 	esac
 done
 
-test $OPTIND -gt 1 && shift "$((OPTIND - 1))"
+test $OPTIND -gt 1 && shift `expr $OPTIND - 1`
 test $# != 3 || usage $0
 
 <"$1" >"$2" sed '

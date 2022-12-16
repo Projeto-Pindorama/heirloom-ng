@@ -12,7 +12,7 @@
 #     Sccsid @(#)dircmp.sh	1.6 (gritter) 7/1/05
 tmpdir=/var/tmp
 PATH=@SV3BIN@:@DEFBIN@:$PATH export PATH
-progname=$(basename $0)
+progname=`basename $0`
 USAGE="$progname: usage: $progname -s -d -wn directory directory"
 trap "rm -f $tmpdir/dc$$*;exit" 1 2 3 15
 exitstat=0
@@ -29,36 +29,36 @@ width=72
 # function to generate consistent "diff" output whether or not files are intact
 #
 dodiffs() {
-	type=$(LC_ALL=C file "$D1/$a")
+	type=`LC_ALL=C file "$D1/$a"`
 	case "$type" in
 		*text)  ;;
 		*script) ;;
-		*empty*) echo "$D1"/"$(basename "$a")" is an empty file |
+		*empty*) echo $D1/`basename "$a"` is an empty file |
 			  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
-        	*cannot*) echo "$D1"/"$(basename "$a")" does not exist |
+        	*cannot*) echo $D1/`basename "$a"` does not exist |
 			  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
-        	*)	echo "$D1"/"$(basename "$a")" is an object file |
+        	*)	echo $D1/`basename "$a"` is an object file |
 		   	  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
 	esac
-	type=$(LC_ALL=C file "$D2/$a")
+	type=`LC_ALL=C file "$D2/$a"`
 	case "$type" in
         	*text)  ;;
         	*script) ;;
-        	*empty*) echo "$D2"/"$(basename "$a")" is an empty file |
+        	*empty*) echo $D2/`basename "$a"` is an empty file |
 			  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
-        	*cannot*) echo "$D2"/"$(basename "$a")" does not exist |
+        	*cannot*) echo $D2/`basename "$a"` does not exist |
 			  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
-        	*)	echo "$D2"/"$(basename "$a")" is an object file |
+        	*)	echo $D2/`basename "$a"` is an object file |
 			  pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
 			continue
         	;;
@@ -67,14 +67,14 @@ dodiffs() {
 	# If either is a "large file" use bdiff (LF aware),
 	# else use diff.
 	#
-	if [ "$fsize1" -lt $LFBOUND ] && [ "$fsize2" -lt $LFBOUND ]
+	if test $fsize1 -lt $LFBOUND -a $fsize2 -lt $LFBOUND
 	then cmd="diff"
 	else cmd="bdiff"
 	fi
 	($cmd "$D1/$a" "$D2/$a"; echo $? > $tmpdir/dc$$status) | \
 	    pr -h "diff of $a in $D1 and $D2" >> $tmpdir/dc$$g
-	if [ "$(cat $tmpdir/dc$$status)" -ne 0 ]
-	then exitstat="$diffstat"
+	if test `cat $tmpdir/dc$$status` -ne 0
+	then exitstat=$diffstat
 	fi
 }
 #
@@ -85,29 +85,29 @@ do
 	case $i in
 	d)	Dflag=1;; 
 	s)	Sflag=1;; 
-	w)	width=$(($OPTARG + 0))
+	w)	width=`expr $OPTARG + 0 2>/dev/null`
 		if [ $? = 2 ]
 		then echo "$progname: numeric argument required"
 			exit 2
 		fi
 		;;
-	*)	echo "$USAGE"
+	*)	echo $USAGE
 		exit 2;;
 	esac
 done
-shift "$((OPTIND - 1))"
+shift `expr $OPTIND - 1`
 #
-D0=$(pwd)
+D0=`pwd`
 D1=$1
 D2=$2
 if [ $# -lt 2 ]
-then echo "$USAGE"
+then echo $USAGE
      exit 1
 elif [ ! -d "$D1" ]
-then echo "$D1" not a directory !
+then echo $D1 not a directory !
      exit 2
 elif [ ! -d "$D2" ]
-then echo "$D2" not a directory !
+then echo $D2 not a directory !
      exit 2
 fi
 #
@@ -153,7 +153,8 @@ cd "$D1"
 
 cat $tmpdir/dc$$f | xargs ls -lLgnd | \
 sed -e '/^[bc]/ s/, *//' -e '/^l/ s/ -> .*//' > $tmpdir/dc$$h 2>/dev/null
-cd "$D0" > "$tmpdir/dc$$g"
+cd "$D0"
+> $tmpdir/dc$$g
 #
 # Process the results of the 'ls -lLgnd' to obtain file size info
 # and identify a large file's existence.
@@ -168,18 +169,18 @@ while read <&3 tmp tmp tmp fsize1 tmp tmp tmp a &&
 	# and 'b', then get the file pointers in sync before continuing, and display
 	# "different" message as customary.
 	#
-	if [ "x$a" != "x$b" ]; then
-	while [ "$a" -lt "$b" ]; do
-		if [ $Sflag -ne 1 ]; then
-			echo "different	$a"
-			dodiffs
+	if test "x$a" != "x$b"; then
+	while test "$a" -lt "$b"; do
+		if test $Sflag -ne 1
+		then echo "different	$a"
+		dodiffs
 		fi
 		read <&3 tmp tmp tmp fsize1 tmp tmp tmp a
 	done
-	while [ "$a" -gt "$b" ]; do
-		if [ $Sflag -ne 1 ]; then
-			echo "different	$b"
-			dodiffs
+	while test "$a" -gt "$b"; do
+		if test $Sflag -ne 1
+		then echo "different	$b"
+		dodiffs
 		fi
 		read <&4 tmp tmp tmp fsize2 tmp tmp tmp b
 	done
@@ -187,9 +188,9 @@ while read <&3 tmp tmp tmp fsize1 tmp tmp tmp a &&
 	cmpdiff=0
 	sizediff=0
 	if [ -d "$D1/$a" ]
-	then if [ $Sflag -ne 1 ]; then
-		echo "directory	$a"
-	fi
+	then if test $Sflag -ne 1
+	     then echo "directory	$a"
+	     fi
 	elif [ -f "$D1/$a" ]
 	then 
 	     #
@@ -197,28 +198,29 @@ while read <&3 tmp tmp tmp fsize1 tmp tmp tmp a &&
 	     # of "cmp" which is only used to determine 'same' or 'different'.
 	     # If the file sizes are the same, we still need to run "cmp"
 	     #
-	     if [ "$fsize1" -ne "$fsize2" ]; then
-			sizediff=1
+	     if test $fsize1 -ne $fsize2
+	     then
+		sizediff=1
 	     else
 		cmp -s -- "$D1/$a" "$D2/$a"
 		cmpdiff=$?
 	     fi
-	     if [ $sizediff -eq 0 ] && [ $cmpdiff -eq 0 ];
-		 then if [ $Sflag -ne 1 ]
-
+	     if test $sizediff -eq 0 -a $cmpdiff -eq 0
+	     then if test $Sflag -ne 1
 		  then echo "same     	$a"
 		  fi
 	     else echo "different	$a"
-		  if [ $Dflag -eq 1 ]; then
+		  if test $Dflag -eq 1
+		  then
 			dodiffs
 		  fi
 	     fi
-	elif [ $Sflag -ne 1 ]; then
-		echo "special  	$a"
+	elif test $Sflag -ne 1
+	then echo "special  	$a"
 	fi
 done 3<$tmpdir/dc$$h 4<$tmpdir/dc$$i | pr -r -h "Comparison of $D1 $D2"
-if [ $Dflag -eq 1 ]; then
-	cat $tmpdir/dc$$g
+if test $Dflag -eq 1
+then cat $tmpdir/dc$$g
 fi
 rm -f $tmpdir/dc$$*
 exit $exitstat

@@ -48,7 +48,7 @@
 #    disclaimer.
 #   Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or o"ther materials provided with the distribution.
+#    documentation and/or other materials provided with the distribution.
 #   All advertising materials mentioning features or use of this software
 #    must display the following acknowledgement:
 #      This product includes software developed or owned by Caldera
@@ -86,7 +86,7 @@ if test $# = 3 && test -r "$1" && test -r "$2" && test -r "$3"
 then
 	:
 else
-	echo "usage: $(basename "$0") file1 file2 file3" 1>&2
+	echo "usage: `basename $0` file1 file2 file3" 1>&2
 	exit 2
 fi
 trap "rm -f /tmp/d3[abcdef]$$" 0 1 2 13 15

@@ -14,7 +14,7 @@ doit() {
 	exec @LNS@ -- "$1" "$2" || exit
 }
 
-test $# != 2 -a $# != 3 && usage "$0"
+test $# != 2 -a $# != 3 && usage $0
 
 case $3 in
 '')	;;
@@ -26,8 +26,8 @@ esac
 case $2 in
 /*)	;;
 ..|../*)	echo "cannot resolve ../*" >&2; exit 1 ;;
-.)	set -- "$1" "$(pwd)" ${3+"$3"};;
-*)	set -- "$1" "$(pwd)/$2" ${3+"$3"};;
+.)	set -- "$1" "`pwd`" ${3+"$3"};;
+*)	set -- "$1" "`pwd`/$2" ${3+"$3"};;
 esac
 
 case $1 in
@@ -36,9 +36,9 @@ case $1 in
 	;;
 esac
 
-test -d "$2" && test ! -d "$1" && set -- "$1" "$2/$(basename "$1")" ${3+"$3"}
+test -d "$2" && test ! -d "$1" && set -- "$1" "$2/`basename $1`" ${3+"$3"}
 
-tgt=$(awk </dev/null 'BEGIN {
+tgt=`awk </dev/null 'BEGIN {
 	s1="'"$1"'"
 	s2="'"$2"'"
 	for (;;) {
@@ -61,6 +61,6 @@ tgt=$(awk </dev/null 'BEGIN {
 	while (n-- > 0)
 		s1 = ("../" s1)
 	print s1
-}')
+}'`
 
 doit "$tgt" "$2"

@@ -16,14 +16,14 @@ DBL_MANT_DIG
 #endif
 !
 
-mant_dig=$($cc -E $tmp | sed '/^#/ d; s/^[ 	]*//; /^$/ d; /^[^0-9]/ d')
+mant_dig=`$cc -E $tmp | sed '/^#/ d; s/^[ 	]*//; /^$/ d; /^[^0-9]/ d'`
 
-num=$(echo "2 ^ $mant_dig" | bc)
-flt=$(awk </dev/null "BEGIN {
+num=`echo "2 ^ $mant_dig" | bc`
+flt=`awk </dev/null "BEGIN {
 	printf(\"%.2g\n\", $num)
-}")
-exp=$(echo $flt | sed 's/\.0//; s/e.*//')
-mnt=$(echo $flt | sed 's/.*e+//')
+}"`
+exp=`echo $flt | sed 's/\.0//; s/e.*//'`
+mnt=`echo $flt | sed 's/.*e+//'`
 
 sed "
 	s/@@MANT_DIG@@/$mant_dig/g
