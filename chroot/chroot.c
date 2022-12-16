@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	// chroot(1M) will only run if the user is root, according to the
+	// chroot(8) will only run if the user is root, according to the
 	// specification.
 	if (geteuid() != ROOTUID) {
 		pfmt(stderr, MM_ERROR, "not running as superuser.\n");
