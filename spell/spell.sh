@@ -56,22 +56,22 @@ do
 		x)	B_SPELL="$B_SPELL -x" ;;
 		l)	L_SPELL="cat" ;;
 		i)	I_SPELL="-i" ;;
-		*)	echo "usage: `basename $0` [-v] [-b] [-x] [-l] [-i] [+local_file] [ files ]" >&2
+		*)	echo "usage: $(basename $0) [-v] [-b] [-x] [-l] [-i] [+local_file] [ files ]" >&2
 			exit 2 ;;
 		esac
 	done
-	test $OPTIND -gt 1 && shift `expr $OPTIND - 1`
+	test $OPTIND -gt 1 && shift $((OPTIND - 1))
 	OPTIND=1
 	case $1 in
 	+*)
-		LOCAL=`expr x"$1" : 'x+\(.*\)'`
+		LOCAL=$(expr x"$1" : 'x+\(.*\)')
 		if test -z "$LOCAL"
 		then
-			echo "`basename $0` cannot identify local spell file" >&2
+			echo "$(basename $0) cannot identify local spell file" >&2
 			exit 1
 		elif test ! -r "$LOCAL"
 		then
-			echo "`basename $0` cannot read $LOCAL" >&2
+			echo "$(basename $0) cannot read $LOCAL" >&2
 			exit 1
 		fi
 		shift
@@ -81,16 +81,16 @@ do
 	esac
 done
 
-(cat ${@+"$@"}; echo) | eval $L_SPELL |\
- deroff $I_SPELL |\
+(cat ${@+"$@"}; echo) | eval "$L_SPELL" |\
+ $DEROFF |\
  LC_ALL=C tr -cs "[A-Z][a-z][0-9]\'\&\.\,\;\?\:" "[\012*]" |\
  sed '1,$s/^[^A-Za-z0-9]*//' | sed '1,$s/[^A-Za-z0-9]*$//' |\
  sed -n "/[A-Za-z]/p" | sort -u +0 |\
- spellprog ${S_SPELL:-@DEFLIB@/spell/hstop} 1 |\
- spellprog $B_SPELL ${D_SPELL:-@DEFLIB@/spell/hlista} $V_SPELL |\
- comm -23 - ${LOCAL:-/dev/null} |\
- tee -a $H_SPELL
-who am i >>$H_SPELL 2>/dev/null
+ spellprog "${S_SPELL:-@DEFLIB@/spell/hstop}" 1 |\
+ spellprog "$B_SPELL" "${D_SPELL:-@DEFLIB@/spell/hlista}" $V_SPELL |\
+ comm -23 - "${LOCAL:-/dev/null}" |\
+ tee -a "$H_SPELL"
+who am i >>"$H_SPELL" 2>/dev/null
 case $V_SPELL in
 /dev/null)
 	exit

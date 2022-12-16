@@ -41,9 +41,9 @@ case $# in
 0)
 	if test -r calendar
 	then
-		egrep -e "`$calprog`" calendar
+		grep -E -e "$($calprog)" calendar
 	else
-		echo "`basename $0`: `pwd`/calendar not found" >&2
+		echo "$(basename "$0"): $(pwd)/calendar not found" >&2
 		exit 1
 	fi
 	;;
@@ -52,10 +52,10 @@ case $# in
 	trap "rm -f $tmp; trap '' 0; exit" 0 1 2 3 13 15
 	logins -uxo | while IFS=: read user uid group gid gecos dir shell rest
 	do
-		if test -f $dir/calendar -a -r $dir/calendar
+		if test -f "$dir"/calendar -a -r "$dir"/calendar
 		then
-			egrep -e "`$calprog`" $dir/calendar >$tmp 2>/dev/null
-			test -s $tmp && mail $user <$tmp
+			grep -Ee "$($calprog)" "$dir"/calendar >$tmp 2>/dev/null
+			test -s $tmp && mail "$user" <$tmp
 		fi
 	done
 esac

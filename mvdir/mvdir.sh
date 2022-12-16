@@ -19,21 +19,21 @@
 PATH=@SV3BIN@:@DEFBIN@:$PATH export PATH
 if [ $# != 2 ]
 then
-  echo "Usage: `basename $0` fromdir newname" >&2
+  echo "Usage: $(basename "$0") fromdir newname" >&2
   exit 2
 fi
 if [ "$1" = . ]
 then
-	echo "`basename $0`: cannot move '.'" >&2
+	echo "$(basename "$0"): cannot move '.'" >&2
 	exit 2
 fi
-f=`basename "$1"`
+f=$(basename "$1")
 t="$2"
 if [ -d "$t" ]
 then
 	t="$t"/"$f"
 fi
-if [ -f "$t"  -o -d "$t" ]
+if [ -f "$t" ] || [ -d "$t" ]
 then
   echo "$t" exists >&2
   exit 1
