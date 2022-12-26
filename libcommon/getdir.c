@@ -20,6 +20,23 @@
 #include	<errno.h>
 #include	<string.h>
 
+/*
+ * TODO: Write a boilerplate for getdirentries() that uses opendir() and
+ * readdir(). Needed for OpenBSD releases greater than 5.4 --- maybe other
+ * systems nowadays --- since getdirentries() got deprecated there.
+ * The sketch below shall work as a guide for writing it.
+ * 
+#if  defined(__OpenBSD__)
+#include <sys/param.h>
+#if OpenBSD >= 201311
+int
+getdirentries(int fd, char buf[], int nbytes, long basep[]) {
+
+}
+#endif
+#endif
+*/
+
 #if defined (__UCLIBC__)
 #include <linux/types.h>
 #include <linux/dirent.h>
