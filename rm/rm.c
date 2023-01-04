@@ -383,7 +383,7 @@ main(int argc, char **argv)
 			 argv[optind-1][2] != '\0'))
 		optind++;
 #endif
-	if (optind >= argc)
+	if (optind >= argc && !fflag)
 		usage();
 	ontty = isatty(0);
 	if (rflag && (startfd = open(".", O_RDONLY)) < 0) {
