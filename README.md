@@ -39,40 +39,45 @@ cannot verify if it stills working):
 | DragonFlyBSD     | 1.3.7-DEVELOPMENT            | Not informed in the original README.                                                 |  
 | Mac OS X         | 10.4.3 and above             | Not informed in the original README.                                                 |  
 
+
+### Prerequisites 
+
 The following prerequisites are necessary:
 
-yacc and lex    Several of the included yacc and lex programs need to
-                access internals of the yacc and lex implementations
-                beyond the respective POSIX specifications. This has
-                been made to work with Unix yacc and lex as well as
-                with many versions of Berkeley yacc, bison, and flex.
-                However, recent changes in these programs may result
-                in incompatibilities. If this happens, install the
-                "Heirloom Development Tools" package first and use
-                the yacc and lex versions provided with it. You could
-                also fix the problem on your own, but now that portable
-                Open Source versions of Unix yacc and lex are available,
-                such changes can no longer be considered important, and
-                will not be made as part of the regular maintenance of
-                this project.
+<dl>
+<dt><tt>yacc</tt> and <tt>lex</tt></dt>
+<dd>Several of the included <tt>yacc</tt> and <tt>lex</tt> programs need to access internals of the <tt>yacc</tt> and <tt>lex</tt> implementations beyond the respective POSIX specifications.<br>
+This has been made to work with Unix <tt>yacc</tt> and <tt>lex</tt> as well as with many versions of Berkeley <tt>yacc</tt>, <tt>bison</tt>, and <tt>flex</tt>. However, recent changes in these programs may result in incompatibilities.<br>
+If this happens, install the “Heirloom Development Tools” package first and use the <tt>yacc</tt> and <tt>lex</tt> versions provided with it. You could also fix the problem on your own; if you’ve found a bug and are willing to fix it, take a look at the “Chip in!” section.</dd>
+</dl>
 
 The following prerequisites are optional:
 
-Bourne shell    It is recommended that the Heirloom Bourne shell from
-                <http://heirloom.sourceforge.net/sh.html> is installed
-                first. The tools will work with any shell, but use of the
-                Bourne shell ensures maximum compatibility with traditional
-                Unix behavior.
-gzip            <http://www.gzip.org/>. Invoked by cpio/pax, file, and
-                tar when a gzip compressed file is encountered.
-bzip2           <http://sources.redhat.com/bzip2>. Invoked by cpio/pax,
-                file, and tar when a bzip2 compressed file is encountered.
-libz            <http://www.gzip.org/zlib>. It is needed if cpio/pax
-                should be able to create deflate compressed entries
-                in zip files; reading of such entries works without it.
-libbz2          <http://sources.redhat.com/bzip2>. It is needed if
-                cpio/pax should be able to read or create bzip2
-                compressed entries in zip files.
+<dl>
+<dt>Heirloom Bourne shell</dt>
+<dd>It is recommended that the <a href="http://heirloom.sourceforge.net/sh.html">Heirloom Bourne shell</a> is installed first.<br>
+Although the tools itself work with any shell, the original Bourne shell theorically ensures maximum compatibility with the traditional Unix behavior.<br>
+In any case, a default POSIX Shell implementation is good to go.</dd>
+<dt>Gzip</dt>
+<dd>It is invoked by <code>cpio</code>/<code>pax</code>, <code>file</code> and <code>tar</code> when a Gzip-compressed file is encountered.<br>
+In the modern World (also known as “nowadays”), computers can execute<br>
+multiple jobs at the same time, so pigz would be preferred over the traditional Gzip.<br>
+You can get pigz at <a href="https://zlib.net/pigz/">https://zlib.net/pigz/</a></dd>
+<dt>bzip2</dt>
+<dd>It is also invoked by <code>cpio</code>/<code>pax</code>, <code>file</code> and <code>tar</code>, but<br>
+when a bzip2 compressed file is encountered.<br>
+You can get bzip2 at <a href="https://sourceware.org/bzip2/">https://sourceware.org/bzip2/</a></dd>
+<dt>libz</dt>
+<dd>It is needed for enabling <code>cpio</code>/<code>pax</code> capacibilities to create deflate-compressed entries in zip files; reading of such entries works without it, through.<br>
+There are many implementations of libz out there.<br>
+Heirloom NG is currently tested being linked against Sortix libz<br>
+on Copacabana Linux, and you can get it here: <a href="https://sortix.org/libz/">https://sortix.org/libz/</a></dd>
+<dt>libbz2</dt>
+<dd>It is needed enabling <code>cpio</code>/<code>pax</code> capacibilities to read or create bzip2-compressed entries in zip files.<br>
+You can get it in the same package that comes bzip2.</dd>
+</dl>
+
+### Building Heirloom NG
 
 Heirloom is built manually --- in other words, you will need to know how to
 build a package manually using make, and also a little bit about the build
@@ -82,16 +87,18 @@ simple: Every directory contains a file named ``Makefile.mk`` that includes
 directory-specific make instructions. To generate the real ``Makefile``,
 configuration settings are prepended to the directory-specific file.  
 You have to edit these configuration settings before you start compiling;
-they are located in the file build/mk.config which is also in make syntax.  
+they are located in the file ``build/mk.config`` which is also in make
+syntax.  
 
 Follow the descriptions in this file and select appropriate values for
 your system. Read everything carefully and you will pretty much get it
 in some minutes.
 
 Be very careful at this step! If you overwrite your system utilities
-or put the Heirloom Toolchest at an early place in your system's PATH,
+or put the Heirloom Toolchest at an early place in your system's ``PATH``,
 some of your shell scripts or of those of your vendor may cease to
-work. This is because utilities from the Heirloom Toolchest may behave
+work.  
+This is because utilities from the Heirloom Toolchest may behave
 differently than the ones supplied by your vendor. You may wish to
 correct this later, but the first build is definitively not the right
 time. - If you want to stay with the default ``/usr/5bin`` path on Solaris,
@@ -101,7 +108,7 @@ If you don't know what path names to select, you can ask us at the GitHub
 Issues. Just keep in mind that, as per the licence terms, we do not offer
 warrant for any problems caused by anyone.
 
-After finishing the configuration, type 'gmake' and 'gmake install',
+After finishing the configuration, type ``make`` and '``make install``',
 then use the tools found at the location you selected before.
 
 ## Chip in!
@@ -113,8 +120,8 @@ is accessibility for other developers. Each utility was made largely
 independent from other ones, to the extent of duplicate functionality
 at some places. There are just three libraries you have to know about:
 
-1. The 'common' library, found in libcommon, provides the following
-   functionality:
+1. The 'common' library, found in ``libcommon/``, provides the
+following functionality:
 
 * Traditional ('simple') regular expressions, available as full
 source to ``#include`` in the old-style ed-hack ``regexp.h`` and
@@ -143,14 +150,14 @@ cases; the main reason for their existence is the desire to read
 lines of arbitrary length without the slow-down caused by ``getc()``.
 
 2. A modified version of Caldera's 'UNIX(R) Regular Expression Library'
-in the libuxre directory.
+in the ``libuxre/`` directory.
 This is used for (mostly) POSIX.2-compatible regular expression matching.
 It provides a syntax without too much extension fuss, and good
 performance, since it includes both a DFA and a NFA style matcher and
 uses either of them depending on the expression and the need for
 subexpression locations.
 
-3. The widechar portability library in the libwchar directory.
+3. The widechar portability library in the ``libwchar/`` directory.
 This is only used for system environments that do not provide appropriate
 wide character functionality in their own libc. It currently just
 does simple copying between bytes and wide characters and thus does
@@ -234,7 +241,7 @@ the following to be sure not to report a feature:
 * Does it leave a core dump? If yes, it's certainly a bug (unless you
   sent a signal, of course);
 * Read the manual page and the source for the utility carefully. Did
-  you use the utility properly?;
+  you use the utility properly?
 * If the utility is used within a shell script or with another user's
   environment, try how it behaves if used standalone;
 * If the behavior disturbs you just because your vendor's utilities do
