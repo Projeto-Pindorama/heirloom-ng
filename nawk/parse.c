@@ -7,7 +7,7 @@
 
    Copyright (C) 2001 Caldera International, Inc.
    
-   SPDX-Licence-Identifier: GPL-2.0 
+   SPDX-Licence-Identifier: GPL-2.0+ 
 */
 /*		copyright	"%c%" 	*/
 
