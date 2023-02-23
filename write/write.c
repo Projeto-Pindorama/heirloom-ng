@@ -1,5 +1,5 @@
 /*
- * write to another user
+ * write - write to another user
  */
 
 #include <stdio.h>
@@ -7,6 +7,20 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <utmp.h>
+
+/* Include stdlib.h and string.h only if the
+ * cited functions aren't defined yet.
+ * Although this seems stupid, the idea is to
+ * do not break compatibility with older systems
+ * that doesn't organize this functions in the right
+ * place. */
+#if !defined(exit)
+#include <stdlib.h>
+#endif
+
+#if !defined(strcmp)
+#include <string.h>
+#endif
 
 char	*strcat();
 char	*strcpy();
@@ -19,14 +33,14 @@ char	histty[32];
 char	*histtya;
 char	*ttyname();
 char	*rindex(), *index();
+int	main();
 int	logcnt;
 int	eof();
 int	timout();
+void	sigs();
 FILE	*tf;
 
-main(argc, argv)
-char *argv[];
-{
+main(int argc, char *argv[]) {
 	struct stat stbuf;
 	register i;
 	register FILE *uf;
@@ -36,23 +50,30 @@ char *argv[];
 		printf("usage: write user [ttyname]\n");
 		exit(1);
 	}
+
 	him = argv[1];
+
 	if(argc > 2)
 		histtya = argv[2];
 	if ((uf = fopen("/etc/utmp", "r")) == NULL) {
 		printf("cannot open /etc/utmp\n");
 		goto cont;
 	}
+
 	mytty = ttyname(2);
+
 	if (mytty == NULL) {
 		printf("Can't find your tty\n");
 		exit(1);
 	}
+
 	mytty = index(mytty+1, '/') + 1;
+
 	if (histtya) {
 		strcpy(histty, "/dev/");
 		strcat(histty, histtya);
 	}
+
 	while (fread((char *)&ubuf, sizeof(ubuf), 1, uf) == 1) {
 		if (strcmp(ubuf.ut_line, mytty)==0) {
 			for(i=0; i<8; i++) {
@@ -137,23 +158,17 @@ perm:
 	exit(1);
 }
 
-timout()
-{
-
+timout(void) {
 	printf("Timeout opening his tty\n");
 	exit(1);
 }
 
-eof()
-{
-
+eof(void) {
 	fprintf(tf, "EOF\n");
 	exit(0);
 }
 
-ex(bp)
-char *bp;
-{
+ex(char bp[]) {
 	register i;
 
 	sigs(SIG_IGN);
@@ -174,9 +189,7 @@ out:
 	sigs(eof);
 }
 
-sigs(sig)
-int (*sig)();
-{
+sigs(int (*sig)()) {
 	register i;
 
 	for(i=0;signum[i];i++)
