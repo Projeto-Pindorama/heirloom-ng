@@ -12,7 +12,7 @@ SUBDIRS = build libwchar libcommon libuxre _install \
 	mail man mesg mkdir mkfifo mknod more mvdir \
 	nawk news nice nl nohup oawk od \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
-	random renice rm rmdir \
+	random readlink renice rm rmdir \
 	sdiff sed setpgrp shl sleep sort spell split stty su sum sync \
 	tabs tail tapecntl tar tcopy tee test time touch tr true tsort tty \
 	ul uname uniq units users wc what who whoami whodo xargs yes
