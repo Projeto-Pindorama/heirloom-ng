@@ -1,0 +1,56 @@
+.\"
+.\" Copyright (c) 2023 Luiz Antônio Rangel
+.\"
+.\" SPDX-Licence-Identifier: Zlib
+.\"
+.TH READLINK 1B "02/23/03" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+readlink \- displays the target of a symbolic link
+.SH SYNOPSIS
+\fBreadlink\fR [\fB\-fn\fR] \fIfile\fR ...
+.SH DESCRIPTION
+.B The readlink
+utility, when called with the path of a symbolic link
+as its argument, displays the real path/target of it
+at the standard output.
+
+.PP
+It accepts the following options:
+.TP
+.B \-f
+Follows the symbolic link until it reaches the original
+target, recursively.
+.TP
+.B \-n
+Does not print a newline character at the end of the
+output string.
+.PP
+If
+.B readlink
+is invoked without the
+.B \-f
+option and with other argument than the path of a symbolic
+link, it will exit with a non-zero exit code without anything
+being printed.
+.SH EXAMPLES
+The readlink utility may be used at shell scripts
+for displaying/modifying the real file behind a symbolic
+link.
+For instance, it can be used to find the real program behind
+a process on the
+.B /proc
+directory.
+.IP \& 2
+.BI "readlink \-f /proc/$$/exe"
+.LP
+.SH "SEE ALSO"
+ln(1),
+ls(1),
+file(1),
+readlink(2),
+realpath(3),
+.SH HISTORY
+The
+.B readlink
+utility first appeared
+in OpenBSD 2.1, NetBSD 1.6 and FreeBSD 4.10.
