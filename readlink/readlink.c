@@ -1,14 +1,16 @@
 /*
  * readlink.c - displays the target of a symbolic link 
  */
-/* Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
+/* 
+ * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  *
- * Heavly based (almost 1:1) to OpenBSD's readlink(1) implementation, originally
- * copyright 1997 by Kenneth Stailey and the OpenBSD project, but rewritten from
- * scratch to look more like a traditional UNIX(R) utility, with SVID4-style
- * error reporting.
+ * Heavly based (almost 1:1, although there's not so much to change) on OpenBSD's
+ * readlink(1) implementation, but rewritten from scratch to work more like a
+ * traditional UNIX(R) utility, with SVID4-style error reporting.
+ * As per the copyright reader of OpenBSD's "usr.bin/readlink/readlink.c":
+ * Copyright (c) 1997 Kenneth Stailey (hereinafter referred to as the author)
  */
 
 #include <limits.h>
@@ -70,8 +72,13 @@ int main(int argc, char *argv[]) {
 		if ( realpath(argv[0], buffer) == NULL ) {
 			exit(1);
 		}
-	} else if ( (name_size = readlink(argv[0], buffer, sizeof(buffer - 1))) < 0 ) {
-		exit(1);
+	} else
+		if ( (name_size = readlink(argv[0], buffer, sizeof(buffer - 1))) < 0 ) {
+			exit(1);
+		}
+		/* Finish buffer string, since readlink(2) apparently doesn't
+		 * do it as realpath(3).
+		 */
 		buffer[name_size] = '\0';
 	}
 	
