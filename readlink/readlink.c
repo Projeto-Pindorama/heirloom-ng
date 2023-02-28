@@ -68,11 +68,11 @@ int main(int argc, char *argv[]) {
 	 * printing anything and will exit with non-zero status unless we're
 	 * using the -f flag (flags.follow_link = 1).
 	 */
-	if (flags.follow_link){
+	if (flags.follow_link) {
 		if ( realpath(argv[0], buffer) == NULL ) {
 			exit(1);
 		}
-	} else
+	} else {
 		if ( (name_size = readlink(argv[0], buffer, sizeof(buffer - 1))) < 0 ) {
 			exit(1);
 		}
