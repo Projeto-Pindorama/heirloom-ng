@@ -2030,6 +2030,16 @@ static struct sctab {
 	_SC_V6_LPBIG_OFFBIG,	"POSIX_V6_LPBIG_OFFBIG",  SYSCONF,	NOFLAGS
 },
 #endif	/* _SC_V6_LPBIG_OFFBIG */
+#if !defined(SU3) /* Extensions for the default getconf command. */
+/* _NPROCESSORS_ONLN and _NPROCESSORS_CONF, which gives an integer that
+ * correspond to the total number of processors on the machine. */
+{
+	_SC_NPROCESSORS_ONLN,	"_NPROCESSORS_ONLN",	SYSCONF,	NOFLAGS
+},
+{
+	_SC_NPROCESSORS_CONF,	"_NPROCESSORS_CONF",	SYSCONF,	NOFLAGS
+},
+#endif /* Not SUSv3 */
 
 	/* local values */
 {
