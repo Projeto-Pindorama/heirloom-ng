@@ -1,3 +1,35 @@
+Release 230305
+* getconf: Now _NPROCESSORS_ONLN and _NPROCESSORS_CONF are implemented.
+* Removed the remaining licence headers, now every licence is referenced by its SPDX identifier.
+
+Release 230228
+* [NEW] readlink: New implementation, extensively based on OpenBSD's.
+* readlink: It's installed at /usr/ucb per default and symbolic/hard linked to /usr/5bin. 
+
+Release 230120
+* Notes for the library directories if linking against the GNU C library.
+* rm: Consistency within standards: the SUS program shouldn't have the POSIX 1003.1(2008) fix, just the main program.
+* Made $(ROOT) not hardcoded anymore.
+* Cleaned up more licence headers (if my estimations are correct, we've got rid of 3.255 lines!).
+* Small update on README.md --- although it's now less readable on plain-text readers such as more or pg.
+
+Release 230107
+* rm: Added support for the POSIX 1003.1(2008).
+* chroot: Added manual page.
+* awk: Added stdint.h to awk.g.y.
+* Now it has a bigger range of compatibility with GNU C library versions.
+
+Release 221025
+* Made notes clearer about building Heirloom on modern versions of the GNU C library.
+* tar: Support for zstd and xz.
+
+Release 220821
+* [NEW] chroot: New implementation of chroot, based on Solaris 2.5 payloads.
+* true, false: Rewritten in C.
+* yes: Rewritten and adapted to ANSI C.
+* "libcommon/vpfmt.c": Adapted to ANSI C.
+* Now many of the utilities can be built in the musl C library and GNU C library (dynamically).
+
 Release 070715
 * cpio: A "-P" option has been introduced that allows to specify attributes
   like the file owner when creating an archive. With it, unprivileged users
