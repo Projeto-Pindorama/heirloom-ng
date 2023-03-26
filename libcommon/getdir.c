@@ -21,21 +21,26 @@
 #include	<string.h>
 
 /*
- * TODO: Write a boilerplate for getdirentries() that uses opendir() and
- * readdir(). Needed for OpenBSD releases greater than 5.4 --- maybe other
- * systems nowadays --- since getdirentries() got deprecated there.
- * The sketch below shall work as a guide for writing it.
- * 
+ * boilerplate for getdirentries(). Needed for OpenBSD releases greater than 5.4.
+ */
 #if  defined(__OpenBSD__)
 #include <sys/param.h>
+#include <dirent.h>
 #if OpenBSD >= 201311
 int
 getdirentries(int fd, char buf[], int nbytes, long basep[]) {
-
+	/* See: 
+	 * 		https://man7.org/linux/man-pages/man3/getdirentries.3.html
+	 *		https://git.suckless.org/9base/file/lib9/dirread.c.html
+	 *		https://man.openbsd.org/getdents.2
+	 *		Above are docs for solutions chosen.
+	 */
+	
+	return getdents(fd, (void*)buf, nbytes);
 }
 #endif
 #endif
-*/
+
 
 #if defined (__UCLIBC__)
 #include <linux/types.h>
