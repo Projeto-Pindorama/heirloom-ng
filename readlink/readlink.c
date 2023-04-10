@@ -37,9 +37,9 @@ struct Flag flags;
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-	int name_size, option;
 	
 	extern int optind;
+	int name_size, option;
 	while ( (option = getopt(argc, argv, "fn")) != -1 ){
 		switch (option) {
 			case 'f':
@@ -54,23 +54,38 @@ int main(int argc, char *argv[]) {
 	}
 	argc -= optind;
 	argv += optind;
-	name_size = strlen(argv[0]);
 
+#if !defined(UCB)
+	if ( argc < 1 ) {
+#else
 	if ( argc != 1 ) {
+#endif
 		usage();
 	}
 
-	if ( name_size > (PATH_MAX - 1) ) {
-		pfmt(stderr, MM_ERROR, "%s: file name exceeds PATH_MAX - 1 (%d).",
-				progname, (PATH_MAX - 1));
-		exit(2);
-	}
-	
+#if !defined(UCB)
+	int file;
+	for ( file=0; file < argc; file++ ){
+		name_size = strlen(argv[file]);
+#else
+	name_size = strlen(argv[0]);
+#endif
+		if ( name_size > (PATH_MAX - 1) ) {
+			pfmt(stderr, MM_ERROR, "%s: file name exceeds PATH_MAX - 1 (%d).",
+					progname, (PATH_MAX - 1));
+			exit(2);
+		}
+#if !defined(UCB)
+	printf("%s", resolve(argv[file], name_size));
+#else
 	printf("%s", resolve(argv[0], name_size));
-	if ( !flags.no_newline ) {
-		printf("%c", '\n');
+#endif
+		if ( !flags.no_newline ) {
+			printf("%c", '\n');
+		}
+#if !defined(UCB)
 	}
-	
+#endif	
 	exit(0);
 }
 
