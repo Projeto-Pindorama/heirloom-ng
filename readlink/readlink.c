@@ -23,7 +23,6 @@
 
 char *progname;
 char buffer[PATH_MAX];
-int name_size, option;
 void usage(void);
 int main(int argc, char *argv[]);
 char* resolve(char* path, int name_size);
@@ -38,7 +37,8 @@ struct Flag flags;
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-
+	int name_size, option;
+	
 	extern int optind;
 	while ( (option = getopt(argc, argv, "fn")) != -1 ){
 		switch (option) {
