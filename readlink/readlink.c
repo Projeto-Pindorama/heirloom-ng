@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
 #if !defined(UCB)
 	if ( argc < 1 ) {
-#else
+#else /* BSD variant */
 	if ( argc != 1 ) {
 #endif
 		usage();
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 	int file;
 	for ( file=0; file < argc; file++ ){
 		name_size = strlen(argv[file]);
-#else
+#else /* BSD variant */
 	name_size = strlen(argv[0]);
 #endif
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 		/* GNU readlink says: 'ignoring --no-newline with multiple arguments',
 		 * so it will print with new lines anyway. */
 		if ( !flags.no_newline || ( argc > 1 ) )  {
-#else
+#else /* BSD variant */
 	printf("%s", resolve(argv[0], name_size));
 
 	if ( !flags.no_newline ) {
