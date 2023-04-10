@@ -70,22 +70,31 @@ int main(int argc, char *argv[]) {
 #else
 	name_size = strlen(argv[0]);
 #endif
-		if ( name_size > (PATH_MAX - 1) ) {
-			pfmt(stderr, MM_ERROR, "%s: file name exceeds PATH_MAX - 1 (%d).",
-					progname, (PATH_MAX - 1));
-			exit(2);
-		}
+
+	if ( name_size > (PATH_MAX - 1) ) {
+		pfmt(stderr, MM_ERROR, "%s: file name exceeds PATH_MAX - 1 (%d).",
+				progname, (PATH_MAX - 1));
+		exit(2);
+	}
+
 #if !defined(UCB)
-	printf("%s", resolve(argv[file], name_size));
+		printf("%s", resolve(argv[file], name_size));
+		
+		/* GNU readlink says: 'ignoring --no-newline with multiple arguments',
+		 * so it will print with new lines anyway. */
+		if ( !flags.no_newline || ( argc > 1 ) )  {
 #else
 	printf("%s", resolve(argv[0], name_size));
-#endif
-		if ( !flags.no_newline ) {
-			printf("%c", '\n');
-		}
-#if !defined(UCB)
-	}
+
+	if ( !flags.no_newline ) {
 #endif	
+		printf("%c", '\n');
+	}
+
+# if !defined(UCB) 
+	} /* End for() */
+#endif
+
 	exit(0);
 }
 
