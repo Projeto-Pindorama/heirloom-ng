@@ -29,7 +29,7 @@ directories:
 	test -d $(ROOT)$(DFLDIR) || mkdir -p $(ROOT)$(DFLDIR)
 
 links:
-	for i in install readlink ; \
+	for i in install ; \
 	do \
 		rm -f $(ROOT)$(DEFBIN)/$$i; \
 		sh build/crossln $(ROOT)$(UCBBIN)/$$i $(ROOT)$(DEFBIN)/$$i $(ROOT); \
