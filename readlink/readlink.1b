@@ -3,11 +3,11 @@
 .\"
 .\" SPDX-Licence-Identifier: Zlib
 .\"
-.TH READLINK 1B "02/23/03" "Heirloom Toolchest" "BSD System Compatibility"
+.TH READLINK 1B "02/23/23" "Heirloom Toolchest" "BSD System Compatibility"
 .SH NAME
-readlink \- displays the target of a symbolic link
+readlink \- (BSD) displays the target of a symbolic link
 .SH SYNOPSIS
-\fBreadlink\fR [\fB\-fn\fR] \fIfile\fR ...
+\fBreadlink\fR [\fB\-fn\fR] \fIfile\fR
 .SH DESCRIPTION
 .B The readlink
 utility, when called with the path of a symbolic link
@@ -48,7 +48,7 @@ ln(1),
 ls(1),
 file(1),
 readlink(2),
-realpath(3),
+realpath(3)
 .SH HISTORY
 The
 .B readlink
