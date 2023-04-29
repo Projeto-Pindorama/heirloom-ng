@@ -25,9 +25,6 @@ The directory to switch the command's system root to.
 .TP 6
 .B  COMMAND
 The command to execute, relative to \fINEWROOT\fR.
-.\" Below is for if/when default command is added.
-.\" See (one of) the TODO section(s) in chroot.c.
-.\" If no command is specified, \fBchroot\fR(8) will run ``/bin/sh -i''.
 .SH "NOTES"
 Please, take note that redirecting the output of \fIcommand\fR to a
 file will create it relative to the original root, not in the new one.
