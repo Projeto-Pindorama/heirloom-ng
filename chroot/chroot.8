@@ -6,14 +6,17 @@
 .\" Copyright (C) 2022 Molly A. McCollum (hex7c).
 .\"
 .\" SPDX-Licence-Identifier: Zlib
-.TH CHMOD 8 "12/16/22" "Heirloom Toolchest" "User Commands"
+.TH CHROOT 8 "12/16/22" "Heirloom Toolchest" "Maintenance Commands"
 .SH NAME
-chroot \- run a command with a different system root
+chroot \- change system's root directory and execute a command there
 .SH SYNOPSIS
-\fBchroot\fR \fINEWROOT\fR [\fICOMMAND\fR]
+\fBchroot\fR \fInewroot\fR [\fIcommand\fR]
 .SH DESCRIPTION
-.PP
-\fBchroot(8)\fR runs the system call \fBchroot(2)\fR to run \fICOMMAND\fR with the root (/) set to \fINEWROOT\fR.
+The
+.B chroot
+command calls \fBchroot(2)\fR to change the system's root (\fB/\fR)
+directory to \fInewroot\fR and \fBexec(3)\fR to execute \fIcommand\fR
+\(em and any of its child processes \(em there.
 .PP
 .TP 6
 .B  NEWROOT
@@ -25,6 +28,26 @@ The command to execute, relative to \fINEWROOT\fR.
 .\" Below is for if/when default command is added.
 .\" See (one of) the TODO section(s) in chroot.c.
 .\" If no command is specified, \fBchroot\fR(8) will run ``/bin/sh -i''.
+.SH "NOTES"
+Please, take note that redirecting the output of \fIcommand\fR to a
+file will create it relative to the original root, not in the new one.
+.PP
+For instance, let's redirect \fIcommand\fR's standard output to a file
+called "\fIx\fR" at the \fI/tmp\fR directory:
+.IP \& 2
+.BI "# chroot newroot command >/tmp/x"
+.LP
+This will create \fIx\fR relative to the original root directory, not
+in \fInewroot\fR.
+.PP
+If you need to redirect the output inside the \fInewroot\fR, you
+will need to quote the actual \fIcommand\fR and prefix it with
+.B sh(1)
+followed by the "\fI-c\fR" option, like this:
+.IP \& 2
+.BI "# chroot newroot /bin/sh -c 'command >/tmp/x'"
+.LP
 .SH "SEE ALSO"
 cd(1),
-chroot(2)
+chroot(2),
+exec(3)
