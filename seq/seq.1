@@ -49,11 +49,18 @@ common GNU implementation when counting
 small (less than 10^4) numbers. This was
 tested on a AMD Ryzen 5 3500U.
 .br
+If you need to count from a negative number
+to a positive one, you will need to do this
+maneuver below, at least for now:
+.IP \& 2
+.BI "example% seq -s' ' -- -5 10" 
+.LP
+.br
 It does not implement the \-w option
 neither \-f found in Plan 9 from Bell
 Labs' implementation.
 .SH BUGS
-Yes.
+Maybe?
 .SH HISTORY
 A
 .B seq
