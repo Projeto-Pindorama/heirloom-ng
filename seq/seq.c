@@ -39,16 +39,13 @@ int main(int argc, char *argv[]){
 	}
 
 	// FIXME: For some reason, the pointer to "separator" is now 4 when
-	// it is empty with steps as argv[1] and 3 when stop as argv[1], so
-	// I will be irresponsibly relying on this factor to check if the
-	// user has actually set a separator or not.
-	separator = ( *separator == 4 || *separator == 3 ) ? "\n" : separator; 
+	// it is empty with steps as argv[1], 3 when stop as argv[1] and 2
+	// when stop as argv[0], so I will be irresponsibly relying on this
+	// factor to check if the user has actually set a separator or not.
+	separator = ( *separator == 4 || *separator == 3 || *separator == 2 ) ? "\n" : separator; 
 
-	stop = ( argc < 1 ) ? atoi(argv[0]) : ( argc == 3 ) ? atoi(argv[2]) : atoi(argv[1]);
-	// FIXME: According to gdb(1), the program goes segmentation fault
-	// when "stop" is the only argument and start isn't directly defined.
-	// Why?
-	start = ( argc < 1 ) ? 1 : atoi(argv[0]);
+	stop = ( argc == 1 ) ? atoi(argv[0]) : ( argc == 3 ) ? atoi(argv[2]) : atoi(argv[1]);
+	start = ( argc == 1 ) ? 1 : atoi(argv[0]);
 	step = ( argc < 3 ) ? 1 : atoi(argv[1]);
 
 	for ( count = start; count <= stop; count += step ) {
@@ -62,7 +59,7 @@ void usage(void) {
 	// FIXME: For some funny reason, pfmt() causes this program to go
 	// segmentation fault on the point that we set separator using the
 	// ternary relying on the pointer numeric value, so I'll be using
-	// fprintf() until this ca be get around.
+	// fprintf() until this can be get around.
 	fprintf(stderr, "usage: %s: [-s separator] [start] stop [step]\n", progname);
 	exit(1);
 }
