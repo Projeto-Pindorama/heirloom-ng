@@ -1,0 +1,74 @@
+.\"
+.\" Copyright (c) 2023 Luiz Antônio Rangel
+.\"
+.\" SPDX-Licence-Identifier: Zlib
+.\"
+.TH SEQ 1 "06/03/23" "Heirloom Toolchest" "User Commands"
+.SH NAME
+seq \- print a sequence of numbers
+.SH SYNOPSIS
+\fBseq\fR [\fB\-s separator\fR] [\fBstart\fR [\fBstep\fR]] stop
+.SH DESCRIPTION
+The
+.B seq
+utility prints a sequence of numbers, one per line
+or separated per a character defined by the user, from
+the \fBstart\fR (which is defaulted to 1) as near as
+possible to \fBstop\fR, in steps of \fBstep\fR.
+.br
+It works in a similar spirit than a
+.B for()
+loop, present in the C programming language, Google Go
+and
+.B ksh93(1)
+, and 
+.B range()
+in Python.
+.PP
+It accepts the following options:
+.TP
+.B \-s
+Defines a character to be the separator between the
+numbers being printed. The default is a line break ("\\n").
+.SH EXAMPLES
+The
+.B seq
+utility may be used as one of the ways to calculate a
+termial (\fIn\?\fR) in a quick way using
+.Xr bc 1
+in a
+.Xr sh 1
+pipeline.
+.IP \& 2
+.BI "example% seq -s'+' 4 | bc"
+.LP
+.SH NOTES
+No, it does not support floating points,
+altough it's fairly faster than the most
+common GNU implementation when counting
+small (less than 10^4) numbers. This was
+tested on a AMD Ryzen 5 3500U.
+.br
+It does not implement the \-w option
+neither \-f found in Plan 9 from Bell
+Labs' implementation.
+.br
+For some reason, using only
+.B argv[0]
+as the stop number causes a segmentation
+fault for now, but this is meant to be
+fixed as soon as possible.
+.br
+.SH BUGS
+Yes.
+.SH HISTORY
+A
+.B seq
+command first appeared in AT&T
+Research Unix 8th edition.
+.br
+This version has its payloads
+based off Plan 9 from Bell Labs,
+1th Ed. implementation and
+GNU shell utilities 1.13, but only
+part of the standard was implemented.
