@@ -37,10 +37,6 @@ int main(int argc, char *argv[]){
 	if ( argc < 1 ) {
 		usage();
 	}
-	
-	for ( int i = 0; i < argc; i++ ) {
-		printf("argv[%d]: %s\n", i, argv[i]);
-	}
 
 	// FIXME: For some reason, the pointer to "separator" is now 4 when
 	// it is empty with steps as argv[1] and 3 when stop as argv[1], so
