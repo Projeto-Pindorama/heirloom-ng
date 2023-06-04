@@ -7,6 +7,7 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
+
 //#include <pfmt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +38,7 @@ int main(int argc, char *argv[]){
 	if ( argc < 1 ) {
 		usage();
 	}
+
 
 	// FIXME: For some reason, the pointer to "separator" is now 4 when
 	// it is empty with steps as argv[1], 3 when stop as argv[1] and 2

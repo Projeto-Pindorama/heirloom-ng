@@ -21,6 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 
+
 char *progname;
 char buffer[PATH_MAX];
 void usage(void);
@@ -34,6 +35,12 @@ struct Flag {
 	int no_newline;
 };
 struct Flag flags;
+
+#if !defined(UCB)
+    char personality[] = "file ...";
+#else /* BSD variant */
+    char personality[] = "file";
+#endif
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
@@ -121,6 +128,6 @@ char* resolve(char* path, int name_size) {
 }
 
 void usage(void) {
-	pfmt(stderr, MM_NOSTD, "usage: %s [-fn] [file]\n", progname);
+	pfmt(stderr, MM_NOSTD, "usage: %s [-fn] [%s]\n", progname, personality);
 	exit(1);
 }
