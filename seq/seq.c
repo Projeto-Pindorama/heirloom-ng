@@ -7,7 +7,8 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
-#include <pfmt.h>
+
+//#include <pfmt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -38,13 +39,16 @@ int main(int argc, char *argv[]){
 		usage();
 	}
 
-	// For some reason, the pointer to "separator" is 3 when it is empty, so
-	// I will be relying on this factor to check if the user has actually
-	// setted a separator or not.
-	separator = ( *separator == 3 ) ? "\n" : separator; 
-	stop = ( argc < 1 )  ? atoi(argv[0]) : atoi(argv[1]);
-	start = ( argc < 1 ) ? 1 : atoi(argv[0]);
-	step = ( argc < 3 ) ? 1 : atoi(argv[2]);
+
+	// FIXME: For some reason, the pointer to "separator" is now 4 when
+	// it is empty with steps as argv[1], 3 when stop as argv[1] and 2
+	// when stop as argv[0], so I will be irresponsibly relying on this
+	// factor to check if the user has actually set a separator or not.
+	separator = ( *separator == 4 || *separator == 3 || *separator == 2 ) ? "\n" : separator; 
+
+	stop = ( argc == 1 ) ? atoi(argv[0]) : ( argc == 3 ) ? atoi(argv[2]) : atoi(argv[1]);
+	start = ( argc == 1 ) ? 1 : atoi(argv[0]);
+	step = ( argc < 3 ) ? 1 : atoi(argv[1]);
 
 	for ( count = start; count <= stop; count += step ) {
 		separator = (count == stop) ? "\n" : separator;
@@ -53,6 +57,11 @@ int main(int argc, char *argv[]){
 }
 
 void usage(void) {
-	pfmt(stderr, MM_NOSTD, "usage: %s: [-s separator] [start] stop [step]\n", progname);
+//	pfmt(stderr, MM_NOSTD, "usage: %s: [-s separator] [start] stop [step]\n", progname);
+	// FIXME: For some funny reason, pfmt() causes this program to go
+	// segmentation fault on the point that we set separator using the
+	// ternary relying on the pointer numeric value, so I'll be using
+	// fprintf() until this can be get around.
+	fprintf(stderr, "usage: %s: [-s separator] [start] stop [step]\n", progname);
 	exit(1);
 }
