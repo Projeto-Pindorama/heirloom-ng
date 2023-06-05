@@ -7,8 +7,7 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
-// Read lines 64 to 67.
-// #include <pfmt.h>
+#include <pfmt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,11 +59,6 @@ int main(int argc, char *argv[]){
 }
 
 void usage(void) {
-//	pfmt(stderr, MM_NOSTD, "usage: %s: [-s separator] [start] stop [step]\n", progname);
-	// FIXME: For some funny reason, pfmt()/libcommon in general cause
-	// "separator" to be printed as some funky "AWL=G+"/"AWL=+"/"AWL=)"/
-	// "AWL&" strings. I don't know the reason yet, but I'll be sticking
-	// with fprintf() until this can be get around.
-	fprintf(stderr, "usage: %s: [-s separator] [start] stop [step]\n", progname);
+	pfmt(stderr, MM_NOSTD, "usage: %s: [-s separator] [start] stop [step]\n", progname);
 	exit(1);
 }
