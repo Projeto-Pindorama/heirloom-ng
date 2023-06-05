@@ -18,10 +18,9 @@ possible to \fBstop\fR, in steps of \fBstep\fR.
 .br
 It works in a similar spirit than a
 .B for()
-loop, present in the C programming language, Google Go
-and
+loop, present in the C, Go and
 .B ksh93(1)
-, and 
+programming languages, and also
 .B range()
 in Python.
 .PP
@@ -43,12 +42,14 @@ pipeline.
 .BI "example% seq -s'+' 4 | bc"
 .LP
 .SH NOTES
+.PP
 No, it does not support floating points,
 altough it's fairly faster than the most
 common GNU implementation when counting
 small (less than 10^4) numbers. This was
 tested on a AMD Ryzen 5 3500U.
 .br
+.PP
 If you need to count from a negative number
 to a positive one, you will need to do this
 maneuver below, at least for now:
@@ -56,6 +57,7 @@ maneuver below, at least for now:
 .BI "example% seq -s' ' -- -5 10" 
 .LP
 .br
+.PP
 It does not implement the \-w option
 neither \-f found in Plan 9 from Bell
 Labs' implementation.
