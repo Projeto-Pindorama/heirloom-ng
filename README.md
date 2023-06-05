@@ -125,7 +125,7 @@ following functionality:
 
 * Traditional ('simple') regular expressions, available as full
 source to ``#include`` in the old-style ed-hack ``regexp.h`` and
-as normal library functions in `regexpr.h``. You should
+as normal library functions in ``regexpr.h``. You should
 definitively use the latter if you want to use simple REs in new
 applications;
 * Traditional file name matching; manually include the prototype
