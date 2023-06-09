@@ -5,7 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- *
+ * Copyright (C) 2023 Luiz Antônio Rangel
  * SPDX-Licence-Identifier: Zlib
  */
 
