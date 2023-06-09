@@ -133,7 +133,7 @@ void
 init(void)
 {
 	st_select();
-	options = "bchilnrRsvwyz";
+	options = "bcHhilnrRsvwyz";
 }
 
 void
@@ -163,5 +163,5 @@ rc_select(void)
 {
 }
 
-char *usagemsg = "Usage: %s -hblcnsvi pattern file . . .\n";
+char *usagemsg = "Usage: %s -Hhblcnsvi pattern file . . .\n";
 char		*stdinmsg = "<stdin>";

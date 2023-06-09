@@ -12,7 +12,7 @@ grep \- search a file for a pattern
 .HP
 .ad l
 .nh
-\fB/usr/5bin/grep\fR [\fB\-bchilnrRsvwz\fR]
+\fB/usr/5bin/grep\fR [\fB\-bcHhilnrRsvwz\fR]
 \fIpattern\fR [\fIfile\fR\ ...]
 .HP
 .PD 0
@@ -93,6 +93,15 @@ Block numbers start with 0.
 .TP
 .B \-c
 Only a count of matching lines is printed.
+.TP
+.B \-H
+Prints the name of a input file before a match even if it's
+just one.
+.br
+Useful when finding for matches in a directory tree with 
+.B find(1)
+.B -exec
+option switch.
 .TP
 .B \-h
 Normally, the name of each input file is printed before a match
