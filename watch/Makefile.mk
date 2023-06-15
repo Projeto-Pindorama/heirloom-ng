@@ -1,13 +1,10 @@
-all: warning watch
+all: watch
 
 watch: watch.o
 	$(LD) $(LDFLAGS) watch.o $(LCURS) $(LCOMMON) $(LIBS) -o watch
 
 watch.o: watch.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -c watch.c
-
-warning:
-	@echo "Be careful, broken program ahead!"
 
 install: all
 	$(UCBINST) -c watch $(ROOT)$(DEFBIN)/watch

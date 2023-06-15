@@ -1,34 +1,44 @@
-/* 
- * watch.c - Keep an eye on a command output
- */
-/*
- * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
- *
- * SPDX-Licence-Identifier: Zlib
- *
- */
-
 #include <curses.h>
+#include <perror.h>
 #include <pfmt.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/utsname.h>
+#include <time.h>
 #include <unistd.h>
+#include <wait.h>
 
-char *progname;
+static char *progname;
 int main(int argc, char *argv[]);
-int _exec(char program[]);
-int _system(char program[]);
 void usage(void);
 
 struct Flag {
 	int Beep_on_error, No_title, Use_exec;
-}; struct Flag flag;
+}; static struct Flag flag;
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-	int option, interval;
+	// Initialize every integer as 0, to avoid warnings when compiling
+	// with -Wconditional-uninitialized.
+	int option = 0,
+	    interval = 0,
+	    ec = 0,
+	    term_x = 0,
+	    term_y = 0;
+	pid_t exec_pid;
 	
-	while ( (option = getopt(argc, argv, "n:hbtx")) != -1 ) {
+	// Variables for the information header.
+	// Defining nodename from now, since it shouldn't change while we're
+	// watching the command.
+	time_t now;
+	struct utsname u;
+	if ( uname(&u) == -1 ) {
+		perror(errno);
+		exit(-1);
+	}
+
+	while ( (option = getopt(argc, argv, "n:hbt")) != -1 ) {
 			switch (option) {
 				case 'n':
 					interval = atoi(optarg);
@@ -39,14 +49,6 @@ int main(int argc, char *argv[]) {
 				case 't':
 					flag.No_title = 1;
 					break;
-				case 'x':
-					// Uses exec() instead of system()
-					flag.Use_exec = 1;
-					break;
-				case '?':
-					pfmt(stderr, MM_ERROR,
-						"unknown option: %c\n", optopt);
-					usage();
 				case 'h':
 				default:
 					usage();
@@ -58,36 +60,52 @@ int main(int argc, char *argv[]) {
 	if ( argc < 1 ){
 		usage();
 	}
+	
 
-	// Init curses screen
-	initscr();
-
-	// Function pointer, so we won't need to be checking if we're using
-	// exec() or system() everytime.
-	int (*execute)(char[]);
-	if ( flag.Use_exec ) {
-		execute = &_exec;
-	} else {
-		execute = &_system;
-	}
+	// Initialize curses terminal with colours to be used.
+	// Get terminal size too, we're going to need it.
+	newterm(getenv("TERM"), stdout, stdin);
+	start_color();
+	init_pair(1, COLOR_BLACK, COLOR_WHITE);
+	getmaxyx(stdscr, term_y, term_x);
 
 	for (;;) {
-		printf("Intervalo é: %d\n", interval);
-		execute(argv[0]);
-		sleep( (uint)(interval) );
-		clear();
+		// Get current time to be passed as a string with ctime(3).
+		time(&now);
+		if ( ! flag.No_title ){
+			attron(COLOR_PAIR(1) | A_BOLD);
+			// Use a factor of terminal width (term_x) divided by 5,
+			// since it seems to work the best to keep the header at
+			// a "confortable" size.
+			printw("Every %d second(s): %-*s %s: %s\n",
+				interval, (term_x/5), argv[0], u.nodename, ctime(&now));
+			attroff(COLOR_PAIR(1) | A_BOLD);
+		}
+
+		// Not using endwin(3x), since it breaks with multiline
+		// also-curses programs, such as ls(1) with the "-l" option.
+		reset_shell_mode();
 		refresh();
+
+		if ( (exec_pid = fork()) == 0 ) {
+			if ( (execvp(argv[0], argv)) == -1 ) {
+				perror(errno);
+				exit(-1);
+			}
+		}
+		waitpid(exec_pid, &ec, 0);
+	
+		// execvp'd command hasn't exit with success and we have
+		// flag.Beep_on_error activated.
+		if ( ec != 0 && flag.Beep_on_error ) {
+			beep();
+		}
+		
+		sleep( (uint)(interval) );
+
+		// Clear terminal for the next cycle.
+		clear();
 	}
-	exit(0);
-}
-
-// Just because we doesn't want to be checking every cicle
-int _exec(char program[]){
-	execvp(program, &program);
-}
-
-int _system(char program[]){
-	system(program);
 }
 
 void usage(void) {
