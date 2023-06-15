@@ -1,6 +1,23 @@
+Release 230503 
+* chroot: "docs: Update date at chroot.8 manual page."
+* chroot: "chore: Remove comment, will move to GitHub"
+* chroot: "docs: Rewrote chroot(8) manual page"
+* chroot: "chore: Add ``usage()`` function at chroot.c"
+* tabs: "fix: [t,g]roff formatting at tabs/fspec.5."
+* readlink: "docs: Created new manual page for the non-UCB variant. (#24)"
+* Makefile.mk: "fix: Don't symbolic/hard link readlink from UCBDIR to DEFDIR anymore"
+* readlink: "docs: Add comments clarifying the C preprocessor directives."
+* readlink: "fix: Ignore ``-n`` option when operating multiple files."
+* readlink: "feat: Create non-UCB/GNU-alike variant."
+* readlink: "fix: Made ``name_size`` private again, so ``pfmt()`` won't go segmentation fault."
+* readlink: "feat: First step, start modularizing the code."
+* libcommon: "fix: getdirentries replacement for OBSD >5.4"
+
+* fix-me: For new releases, finish porting for OpenBSD and implement watch(1) and timeout(1).
+
 Release 230305
-* getconf: Now _NPROCESSORS_ONLN and _NPROCESSORS_CONF are implemented.
-* Removed the remaining licence headers, now every licence is referenced by its SPDX identifier.
+* getconf: "Now _NPROCESSORS_ONLN and _NPROCESSORS_CONF are implemented."
+* (*): "Removed the remaining licence headers, now every licence is referenced by its SPDX identifier."
 
 Release 230228
 * [NEW] readlink: New implementation, extensively based on OpenBSD's.
