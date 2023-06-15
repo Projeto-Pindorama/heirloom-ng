@@ -6,12 +6,19 @@
  *
  * SPDX-Licence-Identifier: Zlib
  *
+ * Support for calling commands with arguments without having to escape them
+ * with double-dash thoroughly based of IIJ's iwatch(1).
+ * As per the copyright header of IIJ's iwatch.c:
+ * Copyright (c) 2000, 2001 Internet Initiative Japan Inc. 
+ *
+ * SPDX-Licence-Identifier: BSD-2-Clause
  */
 
 #include <curses.h>
 #include <errno.h>
 #include <pfmt.h>
 #include <prerror.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,9 +41,11 @@ int main(int argc, char *argv[]) {
 	// with -Wconditional-uninitialized.
 	int option = 0,
 	    interval = 0,
+	    c = 0,
 	    ec = 0,
 	    term_x = 0,
 	    term_y = 0;
+	char **commandv;
 	pid_t exec_pid;
 	
 	// Variables for the information header.
@@ -72,7 +81,20 @@ int main(int argc, char *argv[]) {
 	if ( argc < 1 ){
 		usage();
 	}
+
+	// Now we just have to copy the "rest" of argv[] to a new character
+	// array allocating some space in memory with calloc(3) and then
+	// copying using a for loop.
 	
+	if ( (commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL ) {
+		prerror(errno);
+		exit(-1);
+	}
+	
+	for ( c = 0; c < argc; c++ ) {
+		commandv[c] = argv[c];
+	}
+
 	// Initialize curses terminal with colours to be used.
 	// Get terminal size too, we're going to need it.
 	newterm(getenv("TERM"), stdout, stdin);
@@ -99,7 +121,7 @@ int main(int argc, char *argv[]) {
 		refresh();
 
 		if ( (exec_pid = fork()) == 0 ) {
-			if ( (execvp(argv[0], argv)) == -1 ) {
+			if ( (execvp(commandv[0], commandv)) == -1 ) {
 				prerror(errno);
 				exit(-1);
 			}
