@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 	) {
 		// Boilerplate for using pfmt() with errno
 		prerror(errno);
-		exit(3);
+		exit(-1);
 	}
 }
 
