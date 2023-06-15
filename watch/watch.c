@@ -25,7 +25,7 @@ int main(int argc, char *argv[]);
 void usage(void);
 
 struct Flag {
-	int Beep_on_error, No_title, Use_exec;
+	int Beep_on_error, No_title;
 }; static struct Flag flag;
 
 int main(int argc, char *argv[]) {
@@ -121,6 +121,6 @@ int main(int argc, char *argv[]) {
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
-		"usage: %s -n [seconds] [-btx] [command [args...]]\n", progname);
+		"usage: %s -n [seconds] [-bt] [command [args...]]\n", progname);
 	exit(1);
 }
