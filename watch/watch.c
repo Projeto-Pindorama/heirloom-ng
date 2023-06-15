@@ -1,3 +1,13 @@
+/* 
+ * watch.c - Keep an eye on a command output
+ */
+/*
+ * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ *
+ */
+
 #include <curses.h>
 #include <perror.h>
 #include <pfmt.h>
