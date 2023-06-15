@@ -1,0 +1,73 @@
+.\"
+.\" Copyright (c) 2023 Luiz Antônio Rangel
+.\"
+.\" SPDX-Licence-Identifier: Zlib
+.\"
+.TH WATCH 1 "06/14/23" "Heirloom Toolchest" "User Commands"
+.SH NAME
+watch \- Keep an eye on a command output.
+.SH SYNOPSIS
+\fBwatch\fR \fB\-n\fR [\fIseconds\fR] [\fB\-bt\fR] [\fBcommand\fR [\fIargs\fR...]]
+.SH DESCRIPTION
+The
+.B watch 
+utility executes a command repeatedly every "user-defined" seconds.
+This allows you to watch a program output change over the time.
+.PP
+It accepts the following options:
+.TP
+.B \-n
+Specifies the interval to refresh the output.
+.TP
+.B \-b
+Beeps if the program being run returns a non-zero exit status.
+.TP
+.B \-t
+Turns off the information header, letting just the verbatim program
+output being refreshed every time on the screen.
+.br
+Not recommended, unless you're using \fItmux\fR(1) or another terminal multiplexer
+that shows you information that would originally be shown by this header.
+.SH EXAMPLES
+It can be very useful when backuping some disc and needing to see how many files
+were already copied.
+.br
+Let's suppose you're copying a disc from a terminal and, in another, you want to
+keep an eye on \fIdu(1)\fR output to see if the file size matches.
+.IP \& 2
+.BI "% watch -n 1 -b -- du -sh /dsk/1"
+.LP
+.SH NOTES
+If you want to use parameters in the program being repeated, you shall
+use \fI\-\-\fR after \fIwatch\fR(1) parameters and before the program name,
+otherwise, at least for now, \fIwatch\fR(1) would treat the program parameters
+as its parameters.
+.IP \& 2
+.BI "% watch -n 1 -- ls -c --color /dsk/1"
+.LP
+This shall be fixed soon.
+.SH "SEE ALSO"
+execvp(3),
+curses(3X)
+.SH HISTORY
+The
+.B watch(1)
+utility has a hazy history.
+Nobody seems to be actually sure of where it has appeared
+first.
+.br
+According to procps 010114's watch C source code, where it
+first appeared in that package, was written from scratch by
+Tony Rems in 1991 and had many modifications and corrections
+by Francois Pinard.
+.br
+However, according to Internet Initiative Japan Inc. iwatch
+manual page, the watch utility came first from BSDI Inc. BSD/OS 3.1
+and their code is slightly derived from it; he/she \(em who wrote the
+manual page and comments at the original source code \(em also
+speculated that it's existence was earlier than BSD/OS 3.1, from some
+another free distribution, but there's no further information that
+supports this.
+.PP
+This implementation mimicks some of the basic behavior of procps-ng's
+watch, just the necessary to have a useful, simple and stable program.
