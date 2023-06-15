@@ -35,17 +35,8 @@ were already copied.
 Let's suppose you're copying a disc from a terminal and, in another, you want to
 keep an eye on \fIdu(1)\fR output to see if the file size matches.
 .IP \& 2
-.BI "% watch -n 1 -b -- du -sh /dsk/1"
+.BI "% watch -n 1 -b du -sh /dsk/1"
 .LP
-.SH NOTES
-If you want to use parameters in the program being repeated, you shall
-use \fI\-\-\fR after \fIwatch\fR(1) parameters and before the program name,
-otherwise, at least for now, \fIwatch\fR(1) would treat the program parameters
-as its parameters.
-.IP \& 2
-.BI "% watch -n 1 -- ls -c --color /dsk/1"
-.LP
-This shall be fixed soon.
 .SH "SEE ALSO"
 execvp(3),
 curses(3X)
