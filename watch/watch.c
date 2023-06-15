@@ -67,12 +67,12 @@ int main(int argc, char *argv[]) {
 	}
 	argc -= optind;
 	argv += optind;
+	
 	// Missing operand
 	if ( argc < 1 ){
 		usage();
 	}
 	
-
 	// Initialize curses terminal with colours to be used.
 	// Get terminal size too, we're going to need it.
 	newterm(getenv("TERM"), stdout, stdin);
