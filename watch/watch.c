@@ -9,8 +9,9 @@
  */
 
 #include <curses.h>
-#include <perror.h>
+#include <errno.h>
 #include <pfmt.h>
+#include <prerror.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 	time_t now;
 	struct utsname u;
 	if ( uname(&u) == -1 ) {
-		perror(errno);
+		prerror(errno);
 		exit(-1);
 	}
 
@@ -99,7 +100,7 @@ int main(int argc, char *argv[]) {
 
 		if ( (exec_pid = fork()) == 0 ) {
 			if ( (execvp(argv[0], argv)) == -1 ) {
-				perror(errno);
+				prerror(errno);
 				exit(-1);
 			}
 		}
