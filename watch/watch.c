@@ -16,7 +16,6 @@
 
 #include <curses.h>
 #include <errno.h>
-#include <limits.h>
 #include <pfmt.h>
 #include <prerror.h>
 #include <stddef.h>
@@ -43,12 +42,10 @@ int main(int argc, char *argv[]) {
 	int option = 0,
 	    interval = 0,
 	    c = 0,
-	    command_size = 0,
 	    ec = 0,
 	    term_x = 0,
 	    term_y = 0;
-	char *str, **commandv,
-	     *command = "";
+	char **commandv;
 	pid_t exec_pid;
 	
 	// Variables for the information header.
@@ -87,38 +84,16 @@ int main(int argc, char *argv[]) {
 
 	// Now we just have to copy the "rest" of argv[] to a new character
 	// array allocating some space in memory with calloc(3) and then
-	// copyring using strncat(3).
+	// copying using a for loop.
 	
-	if ( (commandv = calloc((argc + 1), sizeof(char*))) == NULL ) {
+	if ( (commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL ) {
 		prerror(errno);
 		exit(-1);
 	}
-
+	
 	for ( c = 0; c < argc; c++ ) {
 		commandv[c] = argv[c];
-		// Why (strlen(command) + strlen(argv[c]) + 3)? +3 seems to be
-		// like an "alchemistic" choice based on hits and misses made by
-		// IIJ's foks. Any way, it works fairly well for now.
-		while ( (strlen(command) + strlen(argv[c]) + 3) > command_size ) {
-			// If command_size hasn't been changed since it was
-			// initialized.
-			if ( command_size == 0 ) {
-				command_size = CHAR_MAX;
-				str = calloc(command_size, sizeof(char));
-			} else {
-				command_size = command_size * 2;
-				str = realloc(command, command_size);
-			}
-			command = str;
-		}
-		if ( c != 0 ) {
-			strncat(command, " ", command_size);
-		}
-		strncat(command, argv[c], command_size);
 	}
-	// Not using str anymore after it was incremented to command.
-	free(str);
-
 
 	// Initialize curses terminal with colours to be used.
 	// Get terminal size too, we're going to need it.
