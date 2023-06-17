@@ -145,6 +145,6 @@ int main(int argc, char *argv[]) {
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
-		"usage: %s [-n seconds] [-bt] [command [args...]]\n", progname);
+		"usage: %s [-n seconds] [-bt] command [args...]\n", progname);
 	exit(1);
 }
