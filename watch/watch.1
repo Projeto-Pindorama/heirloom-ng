@@ -33,12 +33,18 @@ It can be very useful when backuping some disc and needing to see how many files
 were already copied.
 .br
 Let's suppose you're copying a disc from a terminal and, in another, you want to
-keep an eye on \fIdu(1)\fR output to see if the file size matches.
+keep an eye on \fIdu\fR(1) output to see every minute if the file size matches
+with what you're expecting.
 .IP \& 2
-.BI "% watch -n 1 -b du -sh /dsk/1"
+.BI "% watch -n 60 -b du -sh /dsk/1"
 .LP
+.SH NOTES
+This implementation does not support floating point numbers as the time
+interval, neither it has support to the "\fIWATCH_INTERVAL\fR" environment
+variable.
 .SH "SEE ALSO"
 execvp(3),
+sleep(3),
 curses(3X)
 .SH HISTORY
 The
@@ -47,10 +53,10 @@ utility has a hazy history.
 Nobody seems to be actually sure of where it has appeared
 first.
 .br
-According to procps 010114's watch C source code, where it
-first appeared in that package, was written from scratch by
-Tony Rems in 1991 and had many modifications and corrections
-by Francois Pinard.
+According to procps 010114 watch C source code, where it first
+appeared in that package, it was written from scratch by Tony Rems
+in 1991, and later recieved many modifications and corrections by
+Francois Pinard.
 .br
 However, according to Internet Initiative Japan Inc. iwatch
 manual page, the watch utility came first from BSDI Inc. BSD/OS 3.1

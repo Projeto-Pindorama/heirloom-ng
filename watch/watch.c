@@ -37,10 +37,12 @@ struct Flag {
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-	// Initialize every integer as 0, to avoid warnings when compiling
+	// Initialize every integer, to avoid warnings when compiling
 	// with -Wconditional-uninitialized.
+	// Default interval of 2 seconds, as other major implementations
+	// usually do.
 	int option = 0,
-	    interval = 0,
+	    interval = 2,
 	    c = 0,
 	    ec = 0,
 	    term_x = 0,
@@ -143,6 +145,6 @@ int main(int argc, char *argv[]) {
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
-		"usage: %s -n [seconds] [-bt] [command [args...]]\n", progname);
+		"usage: %s [-n seconds] [-bt] command [args...]\n", progname);
 	exit(1);
 }
