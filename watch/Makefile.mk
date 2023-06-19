@@ -9,7 +9,7 @@ watch.o: watch.c
 install: all
 	$(UCBINST) -c watch $(ROOT)$(DEFBIN)/watch
 	$(STRIP) $(ROOT)$(DEFBIN)/watch
-#	$(MANINST) -c -m 644 watch.1 $(ROOT)$(MANDIR)/man1/watch.1
+	$(MANINST) -c -m 644 watch.1 $(ROOT)$(MANDIR)/man1/watch.1
 
 clean:
 	rm -f watch watch.o core log *~
