@@ -1,4 +1,5 @@
-LDFLAGS += -z muldefs
+CFLAGS += $(C_SEMANTICS_LIKE_ITS_89)
+LDFLAGS += $(L_SEMANTICS_LIKE_ITS_89)
 
 all: cpio pax pax_su3
 

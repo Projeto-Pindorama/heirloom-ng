@@ -1,7 +1,10 @@
+CFLAGS += $(C_SEMANTICS_LIKE_ITS_89)
+LDFLAGS += $(L_SEMANTICS_LIKE_ITS_89)
+
 all: diff diffh
 
 diff: diff.o diffdir.o diffreg.o diffver.o
-	$(LD) -z muldefs $(LDFLAGS) diff.o diffdir.o diffreg.o diffver.o $(LCOMMON) $(LWCHAR) $(LIBS) -o diff
+	$(LD) $(LDFLAGS) diff.o diffdir.o diffreg.o diffver.o $(LCOMMON) $(LWCHAR) $(LIBS) -o diff
 
 diff.o: diff.c
 	$(CC) $(CFLAGS2) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -DDIFFH='"$(DEFLIB)/diffh"' -c diff.c
