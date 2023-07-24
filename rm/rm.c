@@ -388,7 +388,12 @@ main(int argc, char **argv)
 	if (optind >= argc)
 #endif
 		usage();
-		ontty = isatty(0);
+	/* Test if file descriptor number 0 is a teletype terminal.
+	 * See isatty(3).
+	 * Just commenting out to make sure "ontty = isatty(0)" is re-scoped to
+	 * not being called when checking if optind >= argc, only when running
+	 * the program code itself. */
+	ontty = isatty(0);
 	if (rflag && (startfd = open(".", O_RDONLY)) < 0) {
 		fprintf(stderr, "%s: cannot open current directory\n",
 				progname);
