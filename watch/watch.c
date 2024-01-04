@@ -150,9 +150,10 @@ int main(int argc, char *argv[]) {
 			}
 
 			attroff(COLOR_PAIR(1) | A_BOLD);
+
+			printw("\n");
 		}
 
-		printw("\n");
 
 		// Not using endwin(3x), since it breaks with multiline
 		// also-curses programs, such as ls(1) with the "-l" option.
