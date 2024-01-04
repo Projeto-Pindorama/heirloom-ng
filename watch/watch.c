@@ -46,13 +46,15 @@ void usage(void) {
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
-	/* Default interval of 2 seconds, as other major implementations
-	usually do */
-	int interval = 2;
+	struct timespec interval = {0};
 	int c = 0, ec = 0, term_x = 0, term_y = 0;
 	char **commandv;
 	pid_t exec_pid;
 	
+	/* Default interval of 2 seconds, as other major implementations
+	usually do */
+	interval.tv_sec = 2;
+
 	// Variables for the information header.
 	// Defining nodename from now, since it shouldn't change while we're
 	// watching the command.
@@ -67,7 +69,43 @@ int main(int argc, char *argv[]) {
 	while ((option = getopt(argc, argv, "n:hbt")) != -1) {
 		switch (option) {
 		case 'n':
-			interval = atoi(optarg);
+			if (!optarg) break;
+
+			char arg[128];
+			char *afterpoint = NULL;
+			strncpy(arg, optarg, 128);
+			arg[127] = '\0';
+
+			size_t point = 0;
+			for (; arg[point]; point++) {
+				if (arg[point] == '.' || arg[point] == ',') {
+					arg[point] = '\0';
+					afterpoint = &arg[point + 1];
+					break;
+				}
+			}
+			
+			if (strlen(arg) == 0) interval.tv_sec = 0;
+			else interval.tv_sec = atoi(arg);
+
+			size_t afterpointlen = afterpoint ? strlen(afterpoint) : 0;
+			if (afterpointlen > 0) {
+				long integer = atoi(afterpoint);
+
+				if (afterpointlen > 9) {
+					afterpoint[9] = '\0';
+					afterpointlen = 9;
+				}
+
+				for (size_t i = 0; i < 9 - afterpointlen; i++)
+					integer *= 10;
+				
+				interval.tv_nsec = integer;
+			}
+
+			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000)
+				interval.tv_nsec = 100000000;
+
 			break;
 		case 'b':
 			flag.Beep_on_error = 1;
@@ -122,8 +160,9 @@ int main(int argc, char *argv[]) {
 			attron(COLOR_PAIR(1) | A_BOLD);
 			
 			left_len = snprintf(
-				left, 256, "Every %d second%s: %s",
-				interval, interval == 1 ? "" : "s", argv[0]
+				left, 256, "Every %d.%d second(s): %s",
+				(int)interval.tv_sec, (int)interval.tv_nsec,
+				argv[0]
 			);
 			
 			// This is done because ctime returns a string with \n
@@ -172,7 +211,7 @@ int main(int argc, char *argv[]) {
 			beep();
 		}
 		
-		sleep((uint)(interval));
+		nanosleep(&interval, NULL);
 	}
 }
 
