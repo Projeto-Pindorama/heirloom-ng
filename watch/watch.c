@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 		time(&now);
 		timeinfo = localtime(&now);
 
-		if (!flag.No_title){
+		if (!flag.No_title) {
 			char left[256], right[256], time[256];
 			int left_len = 0, right_len = 0;
 
@@ -138,20 +138,18 @@ int main(int argc, char *argv[]) {
 				perror("please try to execute without the bar\n");
 				exit(EXIT_FAILURE);
 			}
-
-			if (left_len + right_len >= term_x) {
-				if (left_len > term_x || right_len > term_x) {
-					// TODO:
+			
+			if (left_len <= term_x && right_len <= term_x) {
+				if (left_len + right_len >= term_x) {
+					printw("%-*s", term_x, left);
+					printw("%*s",  term_x, right);
+				} else {
+					printw("%s%*s", left, term_x - left_len, right);
 				}
-				printw("%-*s", term_x, left);
-				printw("%*s",  term_x, right);
-			} else {
-				printw("%s%*s", left, term_x - left_len, right);
+				printw("\n");
 			}
 
 			attroff(COLOR_PAIR(1) | A_BOLD);
-
-			printw("\n");
 		}
 
 
@@ -170,11 +168,11 @@ int main(int argc, char *argv[]) {
 	
 		// execvp'd command hasn't exit with success and we have
 		// flag.Beep_on_error activated.
-		if ( ec != 0 && flag.Beep_on_error ) {
+		if (ec != 0 && flag.Beep_on_error) {
 			beep();
 		}
 		
-		sleep( (uint)(interval) );
+		sleep((uint)(interval));
 	}
 }
 
