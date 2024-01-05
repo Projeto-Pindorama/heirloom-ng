@@ -29,19 +29,12 @@
 #include <wait.h>
 
 static char *progname;
+int main(int argc, char *argv[]);
+void usage(void);
 
 struct Flag {
 	int Beep_on_error, No_title;
 }; static struct Flag flag;
-
-void usage(void) {
-	pfmt(
-		stderr, MM_NOSTD,
-		"usage: %s [-n seconds] [-bt] command [args...]\n",
-		progname
-	);
-	exit(1);
-}
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
@@ -69,7 +62,9 @@ int main(int argc, char *argv[]) {
 	while ((option = getopt(argc, argv, "n:hbt")) != -1) {
 		switch (option) {
 		case 'n':
-			if (!optarg) break;
+			if (!optarg) {
+			       	break;
+			}
 
 			char arg[128];
 			char *afterpoint = NULL;
@@ -85,8 +80,11 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			
-			if (strlen(arg) == 0) interval.tv_sec = 0;
-			else interval.tv_sec = atoi(arg);
+			if (strlen(arg) == 0) {
+			       	interval.tv_sec = 0;
+			} else {
+			       	interval.tv_sec = atoi(arg);
+			}
 
 			size_t afterpointlen = afterpoint ? strlen(afterpoint) : 0;
 			if (afterpointlen > 0) {
@@ -119,24 +117,28 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	// FIXME: not good practise
+	// FIXME: Not a good practice.
 	argc -= optind;
 	argv += optind;
 	
 	// Missing operand
-	if (argc < 1) usage();
+	if (argc < 1) {
+		usage();
+	}
 
 	// Now we just have to copy the "rest" of argv[] to a new character
 	// array allocating some space in memory with calloc(3) and then
 	// copying using a for loop.
 	
 	if ((commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL) {
-		// Should i use prerror?
+		// Should I use prerror?
 		perror("couldn't callocate");
 		exit(-1);
 	}
 	
-	for (c = 0; c < argc; c++) commandv[c] = argv[c];
+	for (c = 0; c < argc; c++) {
+		commandv[c] = argv[c];
+	}
 
 	// Initialize curses terminal with colours to be used.
 	// Get terminal size too, we're going to need it.
@@ -215,3 +217,11 @@ int main(int argc, char *argv[]) {
 	}
 }
 
+void usage(void) {
+	pfmt(
+		stderr, MM_NOSTD,
+		"usage: %s [-n seconds] [-bt] command [args...]\n",
+		progname
+	);
+	exit(1);
+}
