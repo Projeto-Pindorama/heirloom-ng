@@ -1,19 +1,19 @@
-/* 
- * watch.c - Keep an eye on a command output
- */
-/*
- * Copyright (C) 2023: Luiz Antônio Rangel	(takusuman)
- * 		       Arthur Bacci		(arthurbacci)
- *
- * SPDX-Licence-Identifier: Zlib
- *
- * Support for calling commands with arguments without having to escape them
- * with double-dash thoroughly based of IIJ's iwatch(1).
- * As per the copyright header of IIJ's iwatch.c:
- * Copyright (c) 2000, 2001 Internet Initiative Japan Inc. 
- *
- * SPDX-Licence-Identifier: BSD-2-Clause
- */
+// 
+// watch.c - Keep an eye on a command output
+//
+//
+// Copyright (C) 2023: Luiz Antônio Rangel	(takusuman)
+// 		       Arthur Bacci		(arthurbacci)
+//
+// SPDX-Licence-Identifier: Zlib
+//
+// Support for calling commands with arguments without having to escape them
+// with double-dash thoroughly based of IIJ's iwatch(1).
+// As per the copyright header of IIJ's iwatch.c:
+// Copyright (c) 2000, 2001 Internet Initiative Japan Inc. 
+//
+// SPDX-Licence-Identifier: BSD-2-Clause
+//
 
 #include <curses.h>
 #include <errno.h>
@@ -44,13 +44,13 @@ int main(int argc, char *argv[]) {
 	char **commandv;
 	pid_t exec_pid;
 	
-	/* Default interval of 2 seconds, as other major implementations
-	usually do */
+	// Default interval of 2 seconds, as other major
+	// implementations usually do.
 	interval.tv_sec = 2;
 
 	// Variables for the information header.
-	// Defining nodename from now, since it shouldn't change while we're
-	// watching the command.
+	// Defining nodename from now, since it shouldn't change
+	// while we're watching the command.
 	time_t now;
 	struct tm *timeinfo;
 	struct utsname u;
@@ -101,8 +101,9 @@ int main(int argc, char *argv[]) {
 				interval.tv_nsec = integer;
 			}
 
-			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000)
+			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000) {
 				interval.tv_nsec = 100000000;
+			}
 
 			break;
 		case 'b':
@@ -121,7 +122,7 @@ int main(int argc, char *argv[]) {
 	argc -= optind;
 	argv += optind;
 	
-	// Missing operand
+	// Missing operand.
 	if (argc < 1) {
 		usage();
 	}
@@ -129,7 +130,6 @@ int main(int argc, char *argv[]) {
 	// Now we just have to copy the "rest" of argv[] to a new character
 	// array allocating some space in memory with calloc(3) and then
 	// copying using a for loop.
-	
 	if ((commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL) {
 		// Should I use prerror?
 		perror("couldn't callocate");
@@ -160,14 +160,22 @@ int main(int argc, char *argv[]) {
 			int left_len = 0, right_len = 0;
 
 			attron(COLOR_PAIR(1) | A_BOLD);
-			
+		
+			// FIXME: When ones use "-n 0.1", it actually prints 
+			// "0.100000000" instead of 0.1 or even 0.10.
+			// That could be fixed --- although not being a real
+			// problem --- aiming for less visual pollution on the
+			// status bar.
+			// Maybe this could be fixed by multiplying the interval
+			// by a nanosecond ratio on nanosleep()?
 			left_len = snprintf(
 				left, 256, "Every %d.%d second(s): %s",
 				(int)interval.tv_sec, (int)interval.tv_nsec,
 				argv[0]
 			);
 			
-			// This is done because ctime returns a string with \n
+			// This is done because ctime returns
+			// a string with '\n'.
 			strftime(time, 256, "%c", timeinfo);
 
 			right_len = snprintf(
@@ -175,12 +183,24 @@ int main(int argc, char *argv[]) {
 				u.nodename, time
 			);
 
+			// I think that a case involving left_len and right_len,
+			// which contain the "Every (int).(int) second(s): (string)"
+			// and "hostname: date". respectively, is improbable, so
+			// this is just a pure formality in case of one's curses
+			// implementation having a faulty snprintf().
+			// EXIT_FAILURE could be a more "frightening" code that
+			// gives a clue about the seriousness of this error on
+			// his/her system curses implementation.
 			if (left_len <= 0 || right_len <= 0) {
 				perror("please try to execute without the bar\n");
 				exit(EXIT_FAILURE);
 			}
-			
+		
 			if (left_len <= term_x && right_len <= term_x) {
+				// If the sum of the text on left and right
+				// sections of the bar is larger than the
+				// terminal x axis, it shall be justified.
+				// Else, keep it as normal.
 				if (left_len + right_len >= term_x) {
 					printw("%-*s", term_x, left);
 					printw("%*s",  term_x, right);
