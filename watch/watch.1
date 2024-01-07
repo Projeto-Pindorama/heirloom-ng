@@ -17,34 +17,35 @@ This allows you to watch a program output change over the time.
 It accepts the following options:
 .TP
 .B \-n
-Specifies the interval to refresh the output.
+Specifies the interval to refresh the output. Per default, the
+interval is of 2 seconds.
 .TP
 .B \-b
 Beeps if the program being run returns a non-zero exit status.
 .TP
 .B \-t
 Turns off the information header, letting just the verbatim program
-output being refreshed every time on the screen.
+output being refreshed every time on the screen \(em equivalent to a \fIksh\fR(1)
+\fIfor ((;;))\fR accompanied by \fIsleep\fR(1).
 .br
 Not recommended, unless you're using \fItmux\fR(1) or another terminal multiplexer
-that shows you information that would originally be shown by this header.
+that shows you information that would originally be shown by that header.
 .SH EXAMPLES
 It can be very useful when backuping some disc and needing to see how many files
 were already copied.
 .br
-Let's suppose you're copying a disc from a terminal and, in another, you want to
-keep an eye on \fIdu\fR(1) output to see every minute if the file size matches
+Lets suppose you're copying a disc from a terminal and, in another, you want to
+keep an eye at \fIdu\fR(1) output to see every minute if the file size matches
 with what you're expecting.
 .IP \& 2
 .BI "% watch -n 60 -b du -sh /dsk/1"
 .LP
 .SH NOTES
-This implementation does not support floating point numbers as the time
-interval, neither it has support to the "\fIWATCH_INTERVAL\fR" environment
+This implementation does not support the "\fIWATCH_INTERVAL\fR" environment
 variable.
 .SH "SEE ALSO"
 execvp(3),
-sleep(3),
+nanosleep(2),
 curses(3X)
 .SH HISTORY
 The
@@ -53,16 +54,16 @@ utility has a hazy history.
 Nobody seems to be actually sure of where it has appeared
 first.
 .br
-According to procps 010114 watch C source code, where it first
+According to procps 010114's watch C source code, where it first
 appeared in that package, it was written from scratch by Tony Rems
 in 1991, and later recieved many modifications and corrections by
 Francois Pinard.
 .br
-However, according to Internet Initiative Japan Inc. iwatch
+However, according to Internet Initiative Japan Inc.'s iwatch
 manual page, the watch utility came first from BSDI Inc. BSD/OS 3.1
 and their code is slightly derived from it; he/she \(em who wrote the
 manual page and comments at the original source code \(em also
-speculated that it's existence was earlier than BSD/OS 3.1, from some
+speculated that its existence was earlier than BSD/OS 3.1, from some
 another free distribution, but there's no further information that
 supports this.
 .PP
