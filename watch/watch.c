@@ -158,9 +158,12 @@ int main(int argc, char *argv[]) {
 	 * Declaring the left side of the information header, which contains
 	 * "Every χ second(s): ...", outside the loop because it's immutable
 	 * after we got the program we're going to run and the amount of time.
+	 * Also initialize 'char left[]' with a null character for preventing
+	 * it being considered an "incomplete type" by the compiler.
 	 */
 	int left_len = 0;
 	char left[256];
+	left[0] = '\0';
 	if (!fNo_title) {
 		/*
 		 * FIXME: When one uses "-n 0.1", it actually prints 
