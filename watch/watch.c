@@ -185,15 +185,12 @@ int main(int argc, char *argv[]) {
 
 			// I think that a case involving left_len and right_len,
 			// which contain the "Every (int).(int) second(s): (string)"
-			// and "hostname: date". respectively, is improbable, so
-			// this is just a pure formality in case of one's curses
-			// implementation having a faulty snprintf().
-			// EXIT_FAILURE could be a more "frightening" code that
-			// gives a clue about the seriousness of this error on
-			// his/her system curses implementation.
+			// and "hostname: date", respectively, is improbable, so
+			// this is just a pure formality in case of one's
+			// C library implementation having a faulty snprintf().
 			if (left_len <= 0 || right_len <= 0) {
-				perror("please try to execute without the bar\n");
-				exit(EXIT_FAILURE);
+				perror("please try to execute it without the information header.\n");
+				exit(255);
 			}
 		
 			if (left_len <= term_x && right_len <= term_x) {
