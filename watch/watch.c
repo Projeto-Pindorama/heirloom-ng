@@ -42,13 +42,14 @@ int main(int argc, char *argv[]) {
 	    term_x = 0;
 	char **commandv;
 	pid_t exec_pid;
-	struct timespec interval = {0};
+	struct timespec interval;
 	
 	/*
 	 * Default interval of 2 seconds, as other major
 	 * implementations usually do.
 	 */
 	interval.tv_sec = 2;
+	interval.tv_nsec = 0;
 
 	/*
 	 * Variables for the information header.
