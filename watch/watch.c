@@ -158,8 +158,8 @@ int main(int argc, char *argv[]) {
 	 * "Every χ second(s): ...", outside the loop because it's immutable
 	 * after we got the program we're going to run and the amount of time.
 	 */
-	static int left_len = 0;
-	static char left[256];
+	int left_len = 0;
+	char left[256];
 	if (!fNo_title) {
 		/*
 		 * FIXME: When one uses "-n 0.1", it actually prints 
