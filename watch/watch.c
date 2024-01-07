@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 		exit(-1);
 	}
 
-	while ((option = getopt(argc, argv, "n:hbt")) != -1) {
+	while ((option = getopt(argc, argv, "n:bth")) != -1) {
 		switch (option) {
 		case 'n':
 			if (!optarg) {
