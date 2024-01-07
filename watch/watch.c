@@ -1,19 +1,20 @@
-/* 
+/*
  * watch.c - Keep an eye on a command output
  *
  */
-/* Copyright (C) 2023: Luiz Antônio Rangel	(takusuman)
- * 		       Arthur Bacci		(arthurbacci)
+/*
+ * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
+ * 			     Arthur Bacci	 (arthurbacci)
  *
  * SPDX-Licence-Identifier: Zlib
  *
  * Support for calling commands with arguments without having to escape them
  * with double-dash thoroughly based of IIJ's iwatch(1).
  * As per the copyright header of IIJ's iwatch.c:
- * Copyright (c) 2000, 2001 Internet Initiative Japan Inc. 
+ * Copyright (c) 2000, 2001 Internet Initiative Japan Inc.
  *
  * SPDX-Licence-Identifier: BSD-2-Clause
-*/
+ */
 
 #include <curses.h>
 #include <errno.h>
@@ -32,25 +33,24 @@ static char *progname;
 int main(int argc, char *argv[]);
 void usage(void);
 
-struct Flag {
-	int Beep_on_error, No_title;
-}; static struct Flag flag;
-
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
-	struct timespec interval = {0};
-	int c = 0, ec = 0, term_x = 0, term_y = 0;
+	int fBeep_on_error = 0,
+	    fNo_title = 0,
+	    c = 0, ec = 0,
+	    term_x = 0;
 	char **commandv;
 	pid_t exec_pid;
+	struct timespec interval = {0};
 	
-	/* 
+	/*
 	 * Default interval of 2 seconds, as other major
 	 * implementations usually do.
 	 */
 	interval.tv_sec = 2;
 
-	/* 
+	/*
 	 * Variables for the information header.
 	 * Defining nodename from now, since it shouldn't change
 	 * while we're watching the command.
@@ -69,7 +69,6 @@ int main(int argc, char *argv[]) {
 			if (!optarg) {
 			       	break;
 			}
-
 			char arg[128];
 			char *afterpoint = NULL;
 			strncpy(arg, optarg, 128);
@@ -111,10 +110,10 @@ int main(int argc, char *argv[]) {
 
 			break;
 		case 'b':
-			flag.Beep_on_error = 1;
+			fBeep_on_error = 1;
 			break;
 		case 't':
-			flag.No_title = 1;
+			fNo_title = 1;
 			break;
 		case 'h':
 		default:
@@ -131,7 +130,7 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
-	/* 
+	/*
 	 * Now we just have to copy the "rest" of argv[] to a new character
 	 * array allocating some space in memory with calloc(3) and then
 	 * copying using a for loop.
@@ -146,7 +145,7 @@ int main(int argc, char *argv[]) {
 		commandv[c] = argv[c];
 	}
 
-	/* 
+	/*
 	 * Initialize curses terminal with colours to be used.
 	 * Get terminal size too, we're going to need it.
 	 */
@@ -154,37 +153,43 @@ int main(int argc, char *argv[]) {
 	start_color();
 	init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
+	/*
+	 * Declaring the left side of the information header, which contains
+	 * "Every χ second(s): ...", outside the loop because it's immutable
+	 * after we got the program we're going to run and the amount of time.
+	 */
+	static int left_len = 0;
+	static char left[256];
+	if (!fNo_title) {
+		/*
+		 * FIXME: When one uses "-n 0.1", it actually prints 
+		 * "0.100000000" instead of 0.1 or even 0.10.
+		 */
+		left_len = snprintf(
+			left, 256, "Every %d.%d second(s): %s",
+			(int)interval.tv_sec, (int)interval.tv_nsec,
+			argv[0]
+		);
+	}
+	
 	for (;;) {
 		/* Clear terminal for the next cycle. */
 		clear();
 
-		getmaxyx(stdscr, term_y, term_x);
+		/* Get the terminal maximum x-axis size. */
+		term_x = getmaxx(stdscr);
+
 		/* Get current time to be passed as a string with ctime(3). */
 		time(&now);
 		timeinfo = localtime(&now);
 
-		if (!flag.No_title) {
-			char left[256], right[256], time[256];
-			int left_len = 0, right_len = 0;
+		if (!fNo_title) {
+			int right_len = 0; /* "left_len = 0" declared above. */
+			char right[256], time[256]; /* "left[256]" declared above. */
 
 			attron(COLOR_PAIR(1) | A_BOLD);
 		
 			/*
-			 * FIXME: When ones use "-n 0.1", it actually prints 
-			 * "0.100000000" instead of 0.1 or even 0.10.
-			 * That could be fixed --- although not being a real
-			 * problem --- aiming for less visual pollution on the
-			 * information header.
-			 * Maybe this could be fixed by multiplying the interval
-			 * by a nanosecond ratio on nanosleep()?
-			 */
-			left_len = snprintf(
-				left, 256, "Every %d.%d second(s): %s",
-				(int)interval.tv_sec, (int)interval.tv_nsec,
-				argv[0]
-			);
-			
-			/* 
 			 * This is done because ctime returns
 			 * a string with '\n'.
 			 */
@@ -195,7 +200,7 @@ int main(int argc, char *argv[]) {
 				u.nodename, time
 			);
 
-			/* 
+			/*
 			 * I think that a case involving left_len and right_len,
 			 * which contain the "Every (int).(int) second(s): (string)"
 			 * and "hostname: date", respectively, is improbable, so
@@ -208,7 +213,7 @@ int main(int argc, char *argv[]) {
 			}
 		
 			if (left_len <= term_x && right_len <= term_x) {
-				/* 
+				/*
 				 * If the sum of the text on left and right
 				 * sections of the bar is larger than the
 				 * terminal x axis, it shall be justified.
@@ -218,7 +223,7 @@ int main(int argc, char *argv[]) {
 					printw("%-*s", term_x, left);
 					printw("%*s",  term_x, right);
 				} else {
-					printw("%s%*s", left, term_x - left_len, right);
+					printw("%s%*s", left, (term_x - left_len), right);
 				}
 				printw("\n");
 			}
@@ -244,9 +249,9 @@ int main(int argc, char *argv[]) {
 	
 		/*
 		 * execvp'd command hasn't exit with success and we have
-		 * flag.Beep_on_error activated.
+		 * fBeep_on_error activated.
 		 */
-		if (ec != 0 && flag.Beep_on_error) {
+		if (ec != 0 && fBeep_on_error) {
 			beep();
 		}
 		
