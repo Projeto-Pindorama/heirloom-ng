@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <pfmt.h>
 
+char *getenv(const char *);
+
 static char *progname;
 
 int main(int argc, char *argv[]);
@@ -25,7 +27,7 @@ void usage(void);
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-	
+
 	/* Program options and flags. */
 	int option = 0,
 	    Fforeground = 0,
@@ -41,7 +43,18 @@ int main(int argc, char *argv[]) {
 	     *kill_signal;
 	pid_t pid;
 
+	FILE *doutput;
+	
+	if (getenv("HEIRLOOM_DEBUG")) {
+		if ((doutput = fopen("debug.txt", "w")) == NULL) {
+			pfmt(stderr, MM_ERROR, "failed to open debug.txt.\n");
+		}
+	} else {
+		doutput = fopen("/dev/null", "w");
+	}
+
 	while ( (option = getopt(argc, argv, "fps:k:h")) != -1 ){
+		fprintf(doutput, "%s: getopt: Chose option '%c'.\n", progname, option);
 		switch (option) {
 			case 'f':
 				/* According to GNU's timeout(1) usage()
@@ -90,23 +103,22 @@ int main(int argc, char *argv[]) {
 		);
 		exit(-1);
 	}
-	
+
+	/* And then copy argv[] to commandv[]. */
 	for (c = 0; c < argc; c++) {
 		commandv[c] = argv[c];
-		fprintf(stderr, "assign argv[%d] to commandv[%d]: %s\n", c, c, commandv[c]);
+		fprintf(doutput, "%s: assign argv[%d] to commandv[%d]: '%s'\n",
+				progname, c, c, commandv[c]);
 	}
 
-	
-	/* Some testing with validate_duration() */
 	first_interval = validate_duration(commandv[0]);
-
-	printf("first_interval defined, %f\n", first_interval);
 	
-	/* Is it initialized? */
-	if ( second_interval > 0 ) {
-		printf("second_interval defined, %f\n", second_interval);
-	}
+	fprintf(doutput, "%s: First interval: %f\n%s: Second interval: %f\n",
+			progname, first_interval, progname, second_interval);
 
+	/* Close debug file. */
+	fclose(doutput); 
+	
 	return 0;
 }
 
@@ -128,13 +140,13 @@ float validate_duration(char *timestr) {
 		case 's':	
 			break;
 		case 'm':
-			time = time * 60;
+			time = (time * 60);
 			break;
 		case 'h':
-			time = time * (60 * 60);
+			time = (time * (60 * 60));
 			break;
 		case 'd':
-			time = time * ((60 * 60) * 24);
+			time = (time * ((60 * 60) * 24));
 			break;
 		default:
 			pfmt(stderr, MM_ERROR, "%s: invalid time unit suffix.\n", progname);

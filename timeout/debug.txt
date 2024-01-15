@@ -1,0 +1,7 @@
+./timeout: getopt: Chose option 'k'.
+./timeout: assign argv[0] to commandv[0]: '1'
+./timeout: assign argv[1] to commandv[1]: 'sh'
+./timeout: assign argv[2] to commandv[2]: '-c'
+./timeout: assign argv[3] to commandv[3]: 'printf 'GET %s HTTP/1.0' copacabana.pindorama.dob.jp | netcat copacabana.pindorama.dob.jp 80'
+./timeout: First interval: 1.000000
+./timeout: Second interval: 4.000000
