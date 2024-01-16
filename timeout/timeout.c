@@ -4,8 +4,10 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <pfmt.h>
+#include <wait.h>
 
 char *getenv(const char *);
 
@@ -41,10 +43,11 @@ int main(int argc, char *argv[]) {
 	      second_interval = 0;
 	char **commandv,
 	     *kill_signal;
-	pid_t pid;
+	pid_t exec_pid;
 
+	/* Debug block. */
 	FILE *doutput;
-	
+
 	if (getenv("HEIRLOOM_DEBUG")) {
 		if ((doutput = fopen("debug.txt", "w")) == NULL) {
 			pfmt(stderr, MM_ERROR, "failed to open debug.txt.\n");
@@ -110,11 +113,59 @@ int main(int argc, char *argv[]) {
 		fprintf(doutput, "%s: assign argv[%d] to commandv[%d]: '%s'\n",
 				progname, c, c, commandv[c]);
 	}
-
+	
 	first_interval = validate_duration(commandv[0]);
+
+	/* 
+	 * Shift the commandv[] array in one element, so we will have
+	 * a pure string to pass into execvp().
+	 */
+	fprintf(doutput, "%s: Shifting commandv[].\n", progname);
+	for (c = 1; c < argc; c++) {
+		fprintf(doutput, "%s: Shifted commandv[] %d to %d:\n%d: %s\n%d: %s\n",
+				progname, c, (c-1), (c-1), commandv[(c - 1)], c, commandv[c]);
+		commandv[(c - 1)] = commandv[c];
+	}
+	/* 
+	 * And then "close" the last two elements on the string.
+	 * It would be better if we could shrink the allocation
+	 * by removing two elements.
+	 */
+	commandv[(c-1)]='\0';
+	commandv[c]='\0';
 	
 	fprintf(doutput, "%s: First interval: %f\n%s: Second interval: %f\n",
 			progname, first_interval, progname, second_interval);
+	
+	exec_pid = fork();
+
+	fprintf(doutput, "%s: fork()'d to %d\n", progname, (int)exec_pid);
+	
+	/* Get the bad news first. */
+	if (exec_pid == -1) {
+		/* debug.txt */
+        	pfmt(doutput, MM_ERROR, "%s: failed to fork: %s.\n",
+            		progname, strerror(errno));
+
+		/* /dev/stderr */
+	        pfmt(stderr, MM_ERROR, "%s: failed to fork: %s.\n",
+        	    progname, strerror(errno));
+	} else if (exec_pid == 0) {
+		/* Here we will be executing the child process. */
+		if ( (execvp(commandv[0], commandv)) == -1 ) {
+			/* debug.txt */
+			pfmt(doutput, MM_ERROR, "%s: failed to exec(): %s.\n",
+					progname, strerror(errno));
+			/* /dev/stderr */
+			pfmt(stderr, MM_ERROR, "%s: failed to exec(): %s.\n",
+					progname, strerror(errno));
+		}
+	}
+
+	/* I believe the string will not be necessary after exec(). */
+	free(commandv);
+
+	waitpid(exec_pid, &err, 0); 
 
 	/* Close debug file. */
 	fclose(doutput); 
