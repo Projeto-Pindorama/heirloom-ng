@@ -36,7 +36,8 @@ int main(int argc, char *argv[]) {
 	    Fpreserve_status = 0;
 	
 	int c = 0,
-	    err = 0,
+	    err = 0, /* Command error code. */
+	    ec = 0, /* Command exit code. */
 	    timesout = 0;
 	
 	float first_interval = 0,
@@ -113,7 +114,7 @@ int main(int argc, char *argv[]) {
 		fprintf(doutput, "%s: assign argv[%d] to commandv[%d]: '%s'\n",
 				progname, c, c, commandv[c]);
 	}
-	
+
 	first_interval = validate_duration(commandv[0]);
 
 	/* 
@@ -130,10 +131,10 @@ int main(int argc, char *argv[]) {
 	 * And then "close" the last two elements on the string.
 	 * It would be better if we could shrink the allocation
 	 * by removing two elements.
-	 */
+	*/
 	commandv[(c-1)]='\0';
 	commandv[c]='\0';
-	
+
 	fprintf(doutput, "%s: First interval: %f\n%s: Second interval: %f\n",
 			progname, first_interval, progname, second_interval);
 	
@@ -159,13 +160,25 @@ int main(int argc, char *argv[]) {
 			/* /dev/stderr */
 			pfmt(stderr, MM_ERROR, "%s: failed to exec(): %s.\n",
 					progname, strerror(errno));
+
 		}
+		/*
+		 * According to GNU's timeout(1) manual page:
+		 *
+		 *  126    if COMMAND is found but cannot be invoked
+		 *  127    if COMMAND cannot be found
+		 * 
+		 *  ENOENT stands for "error no entity/entry", so it
+		 *  means, in this context, no such file or directory.
+		 */
+		err = (errno == ENOENT) ? 127 : 126;
+		_exit(err);
 	}
 
 	/* I believe the string will not be necessary after exec(). */
 	free(commandv);
 
-	waitpid(exec_pid, &err, 0); 
+	waitpid(exec_pid, &ec, 0); 
 
 	/* Close debug file. */
 	fclose(doutput); 
