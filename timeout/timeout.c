@@ -178,7 +178,9 @@ int main(int argc, char *argv[]) {
 	/* I believe the string will not be necessary after exec(). */
 	free(commandv);
 
-	waitpid(exec_pid, &ec, 0); 
+	// waitpid(exec_pid, &ec, 0); 
+	sleep((int)first_interval);
+	kill(exec_pid, SIGTERM);
 
 	/* Close debug file. */
 	fclose(doutput); 
@@ -219,6 +221,12 @@ float validate_duration(char *timestr) {
 
 	return time;
 }
+
+/* 
+ * void parse_duration(time_t *sec, long int *nsec) {
+ *
+ * }
+ */
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
