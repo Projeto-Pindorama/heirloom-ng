@@ -1,3 +1,18 @@
+/* 
+ * timeout.c - execute a command with a time limit 
+ */
+/*
+ * Copyright (C) 2023, 2024: Luiz Antônio (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ *
+ * The 'validate_duration' function contains code from
+ * Heirloom-NG's watch(1) implementation that parses a
+ * float for BSD's timespec structs. This code was written
+ * by Arthur Bacci and it's covered per the same terms as
+ * this program.
+ */
+
 #include <errno.h>
 #include <float.h>
 #include <unistd.h>
@@ -14,10 +29,18 @@ char *getenv(const char *);
 static char *progname;
 
 int main(int argc, char *argv[]);
-float validate_duration(char *duration);
+//float validate_duration(char *duration);
 //int validate_signal(char *signal_name); 
 //void handle_signal(int signal_number);
 void usage(void);
+
+struct TClock {
+	time_t sec;
+	long int nsec;
+};
+
+float conv_duration(char *timestr);
+struct TClock validate_duration(char *duration);
 
 /*
  * Rodar o comando e bifurcar para o fundo
@@ -40,8 +63,8 @@ int main(int argc, char *argv[]) {
 	    ec = 0, /* Command exit code. */
 	    timesout = 0;
 	
-	float first_interval = 0,
-	      second_interval = 0;
+	struct TClock first_interval = {0},
+	      second_interval = {0};
 	char **commandv,
 	     *kill_signal;
 	pid_t exec_pid;
@@ -135,33 +158,50 @@ int main(int argc, char *argv[]) {
 	commandv[(c-1)]='\0';
 	commandv[c]='\0';
 
-	fprintf(doutput, "%s: First interval: %f\n%s: Second interval: %f\n",
-			progname, first_interval, progname, second_interval);
+	fprintf(doutput, "%s: First interval: (sec: %d, nsec: %ld)\n%s: Second interval: (sec: %d, nsec: %ld)",
+			progname, first_interval.sec, first_interval.nsec, progname, second_interval.sec, second_interval.nsec);
+
+//	fprintf(doutput, "%s: First interval: %f\n%s: Second interval: %f\n",
+//			progname, first_interval, progname, second_interval);
 	
+/*
 	exec_pid = fork();
 
 	fprintf(doutput, "%s: fork()'d to %d\n", progname, (int)exec_pid);
-	
+*/	
 	/* Get the bad news first. */
+/*
 	if (exec_pid == -1) {
+*/
 		/* debug.txt */
-        	pfmt(doutput, MM_ERROR, "%s: failed to fork: %s.\n",
+     
+		/*
+		pfmt(doutput, MM_ERROR, "%s: failed to fork: %s.\n",
             		progname, strerror(errno));
+		*/
 
 		/* /dev/stderr */
-	        pfmt(stderr, MM_ERROR, "%s: failed to fork: %s.\n",
+/*
+		pfmt(stderr, MM_ERROR, "%s: failed to fork: %s.\n",
         	    progname, strerror(errno));
 	} else if (exec_pid == 0) {
+*/
 		/* Here we will be executing the child process. */
+/*
 		if ( (execvp(commandv[0], commandv)) == -1 ) {
+*/
 			/* debug.txt */
-			pfmt(doutput, MM_ERROR, "%s: failed to exec(): %s.\n",
+/*
+		pfmt(doutput, MM_ERROR, "%s: failed to exec(): %s.\n",
 					progname, strerror(errno));
-			/* /dev/stderr */
+*/
+		/* /dev/stderr */
+/*
 			pfmt(stderr, MM_ERROR, "%s: failed to exec(): %s.\n",
 					progname, strerror(errno));
 
 		}
+*/
 		/*
 		 * According to GNU's timeout(1) manual page:
 		 *
@@ -171,28 +211,88 @@ int main(int argc, char *argv[]) {
 		 *  ENOENT stands for "error no entity/entry", so it
 		 *  means, in this context, no such file or directory.
 		 */
+/*
 		err = (errno == ENOENT) ? 127 : 126;
 		_exit(err);
 	}
-
-	/* I believe the string will not be necessary after exec(). */
+*/
+	/* I believe the string will not be necessary after exec(). /
 	free(commandv);
 
 	// waitpid(exec_pid, &ec, 0); 
+	
+	*	
 	sleep((int)first_interval);
 	kill(exec_pid, SIGTERM);
-
+	*/
+	
 	/* Close debug file. */
 	fclose(doutput); 
 	
 	return 0;
 }
 
-float validate_duration(char *timestr) {
+
+struct TClock validate_duration(char *timestr) {
+		float time;
+
+		/* Allocate a buffer for the time string, so we can separate it
+		 * easier betwixt seconds and nanoseconds. */
+		char timebuf[128];
+		char *aftersep = NULL;
+
+		/* Struct that will be returned later containing seconds and
+		 * microseconds. */
+		struct TClock duration;
+
+		time = conv_duration(timestr);
+		snprintf(timebuf, sizeof(timebuf), "%.*e",
+				(FLT_DECIMAL_DIG - 1), time);	
+
+		size_t decsep = 0;
+		for (; timebuf[decsep]; decsep++) {
+			/* Support both commas and points as decimal separators */
+			if (timebuf[decsep] == ',' || timebuf[decsep] == '.') {
+				timebuf[decsep] = '\0';
+				aftersep = &timebuf[decsep + 1];
+				break;
+			}
+		}
+
+		if (strlen(timebuf) == 0) {
+			duration.sec = 0;
+		} else {
+		       	duration.sec = atoi(timebuf);
+		}
+
+		size_t afterseplen = aftersep ? strlen(aftersep) : 0;
+		if (afterseplen > 0) {
+			long int integer = atoi(aftersep);
+
+			if (afterseplen > 9) {
+				aftersep[9] = '\0';
+				afterseplen = 9;
+			}
+
+			for (size_t i = 0; i < 9 - afterseplen; i++) {
+				integer *= 10;
+
+				duration.nsec = integer;
+			}
+
+			if (duration.sec == 0 && duration.nsec < 100000000) {
+				duration.nsec = 100000000;
+			}
+		}
+		
+		return duration;
+}
+
+float conv_duration(char *timestr) {
 	float time;
 	char *timeunit;
 
-	if ( (time = strtod(timestr, &timeunit)) == 0
+	if ( (time = strtof(timestr, &timeunit)) == 0
 			&& timestr == timeunit ) {
 		pfmt(stderr, MM_ERROR, "%s: time is not a number.\n", progname);
 		exit(1);

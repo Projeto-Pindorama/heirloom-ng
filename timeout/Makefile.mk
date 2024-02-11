@@ -4,7 +4,7 @@ timeout: timeout.o
 	$(LD) $(LDFLAGS) timeout.o $(LCOMMON) $(LWCHAR) $(LIBS) -o timeout
 
 timeout.o: timeout.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO5FL) $(IWCHAR) $(ICOMMON) -g -c timeout.c
+	$(CC) $(CPPFLAGS) $(XO5FL) $(IWCHAR) $(ICOMMON) -g -c timeout.c
 
 install: all
 	$(UCBINST) -c timeout $(ROOT)$(DEFBIN)/timeout
