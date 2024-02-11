@@ -251,8 +251,14 @@ struct TClock validate_duration(char *timestr) {
 
 		size_t decsep = 0;
 		for (; timebuf[decsep]; decsep++) {
-			/* Support both commas and points as decimal separators */
-			if (timebuf[decsep] == ',' || timebuf[decsep] == '.') {
+			/* 
+			 * '.' is being used as a franc decimal separator, since
+			 * it is expected by strtof() and it is also the decimal
+			 * separator on English-speaking countries, but this
+			 * program still being localized --- see conv_duration()
+			 * for more details.
+			 */
+			if (timebuf[decsep] == '.') {
 				timebuf[decsep] = '\0';
 				aftersep = &timebuf[decsep + 1];
 				break;
@@ -291,6 +297,12 @@ struct TClock validate_duration(char *timestr) {
 float conv_duration(char *timestr) {
 	float time;
 	char *timeunit;
+	char *decsep;
+	
+	/* Support both commas and points as decimal separators */
+	if (decsep = strchr(timestr, ',')) {
+		*decsep = '.';
+	}
 
 	if ( (time = strtof(timestr, &timeunit)) == 0
 			&& timestr == timeunit ) {
@@ -321,12 +333,6 @@ float conv_duration(char *timestr) {
 
 	return time;
 }
-
-/* 
- * void parse_duration(time_t *sec, long int *nsec) {
- *
- * }
- */
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
