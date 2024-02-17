@@ -21,19 +21,19 @@
  * SPDX-Licence-Identifier: BSD-2-Clause
  */
 
+#include <ctype.h>
 #include <errno.h>
 #include <float.h>
-#include <unistd.h>
+#include <pfmt.h>
 #include <signal.h>
 #include <sigtable.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <pfmt.h>
-#include <wait.h>
 #include <time.h>
-#include <ctype.h>
+#include <unistd.h>
+#include <unistd.h>
+#include <wait.h>
 
 char *getenv(const char *);
 
@@ -478,6 +478,7 @@ int validate_signal(char *str) {
 		signum = sig_strs[s].signum;
 	} else {
 		int i = 0;
+
 		i = atoi(str);	
 		if (i < 1 || i > SIGRTMAX) {
 			pfmt(stderr, MM_ERROR,
