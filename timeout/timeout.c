@@ -35,8 +35,6 @@
 #include <unistd.h>
 #include <wait.h>
 
-char *getenv(const char *);
-
 static char *progname;
 
 int main(int argc, char *argv[]);
@@ -96,20 +94,7 @@ int main(int argc, char *argv[]) {
 	      second_interval = {0};
 	struct sigaction sa = {0};
 
-	/* Debug block. */
-	FILE *doutput;
-
-	if (getenv("HEIRLOOM_DEBUG")) {
-		if ((doutput = fopen("debug.txt", "w")) == NULL) {
-			pfmt(stderr, MM_ERROR, "failed to open debug.txt.\n");
-		}
-		exit(1);
-	} else {
-		doutput = fopen("/dev/null", "w");
-	}
-
 	while ( (option = getopt(argc, argv, "fps:k:h")) != -1 ){
-		fprintf(doutput, "%s: getopt: Chose option '%c'.\n", progname, option);
 		switch (option) {
 			case 'f':
 				/* According to GNU's timeout(1) usage()
@@ -163,8 +148,6 @@ int main(int argc, char *argv[]) {
 	/* And then copy argv[] to commandv[]. */
 	for (c = 0; c < argc; c++) {
 		commandv[c] = argv[c];
-		fprintf(doutput, "%s: assign argv[%d] to commandv[%d]: '%s'\n",
-				progname, c, c, commandv[c]);
 	}
 
 	first_interval = validate_duration(commandv[0]);
@@ -173,12 +156,10 @@ int main(int argc, char *argv[]) {
 	 * Shift the commandv[] array in one element, so we will have
 	 * a pure string to pass into execvp().
 	 */
-	fprintf(doutput, "%s: Shifting commandv[].\n", progname);
 	for (c = 1; c < argc; c++) {
-		fprintf(doutput, "%s: Shifted commandv[] %d to %d:\n%d: %s\n%d: %s\n",
-				progname, c, (c-1), (c-1), commandv[(c - 1)], c, commandv[c]);
 		commandv[(c - 1)] = commandv[c];
 	}
+
 	/* 
 	 * And then "close" the last two elements on the string.
 	 * It would be better if we could shrink the allocation
@@ -186,10 +167,6 @@ int main(int argc, char *argv[]) {
 	*/
 	commandv[(c-1)]='\0';
 	commandv[c]='\0';
-
-	fprintf(doutput, "%s: First interval: (sec: %ld, nsec: %ld)\n%s: Second interval: (sec: %ld, nsec: %ld)\n",
-			progname, first_interval.sec, first_interval.nsec,
-			progname, second_interval.sec, second_interval.nsec);
 
 	if (! fForeground) {
 		/* 
@@ -200,11 +177,6 @@ int main(int argc, char *argv[]) {
 		 * we do not want to foreground the process.
 		 */
 		if ((pgid = setpgid(0, 0)) != 0) {
-			/* debug.txt */
-			pfmt(doutput, MM_ERROR,
-			"%s: failed to set process group via setpgid(0, 0): %s.\n",
-			progname, strerror(errno));
-			/* /dev/stderr */
 			pfmt(stderr, MM_ERROR,
 			"%s: failed to set process group via setpgid(0, 0): %s.\n",
 			progname, strerror(errno));
@@ -256,12 +228,6 @@ int main(int argc, char *argv[]) {
 	for (s = 0; s < (int)(sizeof(sigsused)/sizeof(sigsused[0])); s++) {
 		if (sigsused[s] != -1 && sigsused[s] != 0
 		&& sigaction(sigsused[s], &sa, NULL) != 0) {
-			/* debug.txt */
-			pfmt(doutput, MM_ERROR,
-				"%s: failed to change action for %s: %s.\n",
-            			progname, strsignal(sigsused[s]),
-					strerror(errno));
-			/* /dev/stderr */
 			pfmt(stderr, MM_ERROR,
 				"%s: failed to change action for %s: %s.\n",
             			progname, strsignal(sigsused[s]),
@@ -279,13 +245,8 @@ int main(int argc, char *argv[]) {
 
 	exec_pid = fork();
 
-	fprintf(doutput, "%s: fork()'d to %d\n", progname, (int)exec_pid);
 	/* Get the bad news first. */
 	if (exec_pid == -1) {
-		/* debug.txt */
-		pfmt(doutput, MM_ERROR, "%s: failed to fork: %s.\n",
-            		progname, strerror(errno));
-		/* /dev/stderr */
 		pfmt(stderr, MM_ERROR, "%s: failed to fork: %s.\n",
         	    progname, strerror(errno));
 	} else if (exec_pid == 0) {
@@ -299,10 +260,6 @@ int main(int argc, char *argv[]) {
 
 		/* Here we will be executing the child process. */
 		if ( (execvp(commandv[0], commandv)) == -1 ) {
-			/* debug.txt */
-			pfmt(doutput, MM_ERROR, "%s: failed to exec(): %s.\n",
-					progname, strerror(errno));
-			/* /dev/stderr */
 			pfmt(stderr, MM_ERROR, "%s: failed to exec(): %s.\n",
 					progname, strerror(errno));
 
@@ -329,10 +286,6 @@ int main(int argc, char *argv[]) {
 	 * blocking it after the execution of the commmand.
 	 */
 	if (sigprocmask(SIG_BLOCK, &sa.sa_mask, NULL) != 0) {
-		/* debug.txt */
-		pfmt(doutput, MM_ERROR, "%s: failed to sigprocmask(): %s.\n",
-				progname, strerror(errno));
-		/* /dev/stderr */
 		pfmt(stderr, MM_ERROR, "%s: failed to sigprocmask(): %s.\n",
 				progname, strerror(errno));
 		exit(1);
@@ -390,10 +343,6 @@ int main(int argc, char *argv[]) {
 
 	for (; (cmdpid != exec_pid && wait(&eprog) == -1); ) {
 		if (errno != EINTR) {
-			/* debug.txt */
-			pfmt(doutput, MM_ERROR, "%s: failed to wait(): %s.\n",
-			progname, strerror(errno));
-			/* /dev/stderr */
 			pfmt(stderr, MM_ERROR, "%s: failed to wait(): %s.\n",
 			progname, strerror(errno));
 
@@ -411,9 +360,6 @@ int main(int argc, char *argv[]) {
 		eprog = 124;
 	}
 
-	/* Close debug file. */
-	fclose(doutput); 
-	
 	return eprog;
 }
 
