@@ -58,7 +58,7 @@ struct LSignal {
 	sig_atomic_t sig_term;
 	sig_atomic_t sig_ign;
 };
-struct LSignal siglist;
+static struct LSignal siglist;
 
 /*
  * Rodar o comando e bifurcar para o fundo
@@ -70,16 +70,12 @@ struct LSignal siglist;
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-
-	/* Program options and flags. */
+	register int c = 0,
+	    s = 0;
 	int option = 0,
 	    fForeground = 0,
 	    fOnemoretime = 0,
-	    fPreserve_status = 0;
-
-	int err = 0,
-   	    c = 0,
-	    s = 0,
+	    fPreserve_status = 0,
 	    killer_sig = SIGTERM, /* Default killer signal is SIGTERM. */
 			/* 
 			 * -1 can be replaced by another signal
@@ -91,13 +87,14 @@ int main(int argc, char *argv[]) {
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0, /* Program exit code. */
 	    timesout = 0;
+	char **commandv;
+	pid_t cmdpid = 0,
+	      exec_pid = 0,
+	      pgid = 0;
 	
 	struct TClock first_interval = {0},
 	      second_interval = {0};
 	struct sigaction sa = {0};
-	char **commandv,
-	     *kill_signal;
-	pid_t cmdpid, exec_pid, pgid;
 
 	/* Debug block. */
 	FILE *doutput;
@@ -190,7 +187,7 @@ int main(int argc, char *argv[]) {
 	commandv[(c-1)]='\0';
 	commandv[c]='\0';
 
-	fprintf(doutput, "%s: First interval: (sec: %d, nsec: %ld)\n%s: Second interval: (sec: %d, nsec: %ld)\n",
+	fprintf(doutput, "%s: First interval: (sec: %ld, nsec: %ld)\n%s: Second interval: (sec: %ld, nsec: %ld)\n",
 			progname, first_interval.sec, first_interval.nsec,
 			progname, second_interval.sec, second_interval.nsec);
 
@@ -234,7 +231,7 @@ int main(int argc, char *argv[]) {
 	 * Iterate over the sigsused[] integer array and start adding
 	 * each one to the sa_mask set again.
 	 */
-	for (s = 0; s < (sizeof(sigsused)/sizeof(sigsused[0])); s++) {
+	for (s = 0; s < (int)(sizeof(sigsused)/sizeof(sigsused[0])); s++) {
 		sigaddset(&sa.sa_mask, sigsused[s]);
 	}
 
@@ -256,7 +253,7 @@ int main(int argc, char *argv[]) {
 	 * it --- are sent, so, when any of these signals are sent, it actually
 	 * calls handle_signal().
 	 */
-	for (s = 0; s < (sizeof(sigsused)/sizeof(sigsused[0])); s++) {
+	for (s = 0; s < (int)(sizeof(sigsused)/sizeof(sigsused[0])); s++) {
 		if (sigsused[s] != -1 && sigsused[s] != 0
 		&& sigaction(sigsused[s], &sa, NULL) != 0) {
 			/* debug.txt */
@@ -508,7 +505,7 @@ struct TClock validate_duration(char *timestr) {
 
 		time = conv_duration(timestr);
 		snprintf(timebuf, sizeof(timebuf), "%.*e",
-				(FLT_DECIMAL_DIG - 1), time);	
+				(DECIMAL_DIG - 1), time);	
 
 		size_t decsep = 0;
 		for (; timebuf[decsep]; decsep++) {
@@ -561,7 +558,8 @@ float conv_duration(char *timestr) {
 	
 	/* Support both commas and points as decimal separators */
 	char *decsep;
-	if (decsep = strchr(timestr, ',')) {
+	decsep = strchr(timestr, ',');
+	if (decsep) {
 		*decsep = '.';
 	}
 
@@ -570,7 +568,7 @@ float conv_duration(char *timestr) {
 		pfmt(stderr, MM_ERROR, "%s: time is not a number.\n", progname);
 		exit(1);
 	} else if ( time < 0 || time >= FLT_MAX ) {
-		pfmt(stderr, MM_ERROR, "%s: time exceeds FLT_MAX (%f).\n", progname, FLT_MAX);
+		pfmt(stderr, MM_ERROR, "%s: time exceeds FLT_MAX (%d).\n", progname, FLT_MAX);
 		exit(1);
 	}
 

@@ -10,9 +10,9 @@
  * SPDX-Licence-Identifier: CDDL-1.0
  */
 
-static const struct sig_strlist {
+struct sig_strlist {
 	const int	signum;
 	const char	*signame;
 };
 
-extern struct sig_strlist *sig_strs;
+static const struct sig_strlist *sig_strs;
