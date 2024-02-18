@@ -28,6 +28,7 @@
 #include <pfmt.h>
 #include <signal.h>
 #include <sigtable.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +36,6 @@
 #include <unistd.h>
 #include <unistd.h>
 #include <wait.h>
-#include <stdbool.h>
 
 static char *progname;
 
@@ -63,7 +63,7 @@ static struct LSignal siglist;
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	register int c = 0,
-	    s = 0;
+		 s = 0;
 	int option = 0,
 	    fForeground = 0,
 	    fOnemoretime = 0,
@@ -78,17 +78,18 @@ int main(int argc, char *argv[]) {
 	    execerr = 0, /* Command execution error code. */
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0; /* Program exit code. */
-	/* atr note: it might be better to have other ints replaced by bool
-	 *           since it makes it a lot easier to tell what is being
-	 *           acomplished.
-	 */
-	bool timesout = false;
+	
 	char **commandv,
 	     *fst_commandv;
+	/* 
+	 * atr note: it might be better to have other integers
+	 * replaced by booleans, since it makes it a lot easier
+	 * to tell what is being acomplished.
+	 */
+	bool timesout = 0;
 	pid_t cmdpid = 0,
 	      exec_pid = 0,
 	      pgid = 0;
-	
 	struct TClock first_interval = {0},
 	      second_interval = {0};
 	struct sigaction sa = {0};
@@ -135,7 +136,8 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
-	/* atr note: if one wants to use malloc he must be sure that the last
+	/* 
+	 * atr note: if one wants to use malloc he must be sure that the last
 	 * element of commandv is set to NULL
 	 */
 	/* Allocate commandv[], where argv[] will be copied to. */
@@ -258,7 +260,6 @@ int main(int argc, char *argv[]) {
 		if ( (execvp(commandv[0], commandv)) == -1 ) {
 			pfmt(stderr, MM_ERROR, "%s: failed to exec(): %s.\n",
 					progname, strerror(errno));
-
 		}
 
 		/*
@@ -275,9 +276,10 @@ int main(int argc, char *argv[]) {
 	}
 	
 	/* The command string will not be necessary after exec(). */
-	for (int i = 0; commandv[i]; i++)
+	for (int i = 0; commandv[i]; i++) {
 		/* atr: frees the strduped strings */
 		free(commandv[i]);
+	}
 	free(commandv);
 
 	/* 
@@ -292,7 +294,7 @@ int main(int argc, char *argv[]) {
 
 	settimeout(&first_interval);
 
-	while (true) {
+	for (;;) {
 		/* 
 		 * The sa_mask will be empty again, but we will
 		 * also be using sigsuspend() to prevent the
@@ -305,7 +307,7 @@ int main(int argc, char *argv[]) {
 		if (siglist.sig_chld) {
 			siglist.sig_chld = 0;
 
-			while ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR);
+			for (; ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR););
 
 			if (cmdpid == exec_pid) {
 				eprog = ecmd;
@@ -314,7 +316,7 @@ int main(int argc, char *argv[]) {
 		} else if (siglist.sig_alrm || siglist.sig_term) {
 			if (siglist.sig_alrm) {
 				siglist.sig_alrm = 0;
-				timesout = true;
+				timesout = 1;
 			}
 
 			if (! fForeground) {
@@ -334,10 +336,9 @@ int main(int argc, char *argv[]) {
 				killer_sig = SIGKILL;
 			}
 		}
-
 	}
 
-	while (cmdpid != exec_pid && wait(&eprog) == -1) {
+	for (; (cmdpid != exec_pid && wait(&eprog) == -1);) {
 		if (errno != EINTR) {
 			pfmt(stderr, MM_ERROR, "%s: failed to wait(): %s.\n",
 			progname, strerror(errno));
@@ -345,23 +346,24 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 	}
-	
-	if (timesout && !fPreserve_status)
-		return 124;
-	if (WEXITSTATUS(eprog))
-		return WEXITSTATUS(eprog);
-	if (WIFSIGNALED(eprog))
-		return 128 + WTERMSIG(eprog);
-	
+
+	if (timesout && !fPreserve_status) {
+		eprog = 124;
+	} else if (WEXITSTATUS(eprog)) {
+		eprog = WEXITSTATUS(eprog);
+	} else if (WIFSIGNALED(eprog)) {
+		eprog = (128 + WTERMSIG(eprog));
+	}
+
 	return eprog;
 }
-
 
 void settimeout(struct TClock *duration) {
 	timer_t tid;
 	struct itimerspec its;
 
-	/* Since the second value, sevp on the prototype of
+	/* 
+	 * Since the second value, sevp on the prototype of
 	 * timer_create(2), is defined as NULL, every
 	 * expiration of this timer will sent an SIGALRM.
 	 * Just as expected.
@@ -391,15 +393,9 @@ void settimeout(struct TClock *duration) {
 int validate_signal(char *str) {
 	int signum = 0; /* EXIT if not defined. */
 
-	/* 
-	 * Check if the first character
-	 * of the input string is a
-	 * letter, so it can be parsed into
-	 * a signal name.
-	 */
 	if (isalpha(str[0])) {
 		register int s = 0;
-		
+
 		/* Starts with "SIG". */
 		char *ssuffix = "SIG";
 		if (strncmp(str, ssuffix, 3) == 0) {
@@ -433,14 +429,15 @@ int validate_signal(char *str) {
 
 /* Boilerplate for parse_interval(). */
 struct TClock validate_duration(char *timestr) {
-	struct TClock mitoclock;
-	
-	if (-1 == parse_interval(timestr, &mitoclock)) {
-		pfmt(stderr, MM_ERROR, "the given interval couldn't be parsed");
+	struct TClock mclock;
+
+	if (parse_interval(timestr, &mclock) == -1) {
+		pfmt(stderr, MM_ERROR,
+			"the given interval couldn't be parsed.\n");
 		exit(1);
 	}
 
-	return mitoclock;
+	return mclock;
 }
 
 /*
@@ -471,16 +468,20 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	interval->sec = strlen(s) ? atoi(s) : 0;
 	interval->nsec = afterpoint ? atoi(afterpoint) : 0;
 
-	if (afterpoint == NULL) return 0;
+	if (afterpoint == NULL) {
+	       	return 0;
+	}
 
 	afterpoint_len = strlen(afterpoint);
-	if (afterpoint_len > 9) return -1;
-	for (i = afterpoint_len; i < 9; i++)
+	if (afterpoint_len > 9) {
+	       	return -1;
+	}
+	for (i = afterpoint_len; i < 9; i++) {
 		interval->nsec *= 10;
+	}
 
 	return 0;
 }
-
 
 /* 
  * This is just a function that sets variables --- which
