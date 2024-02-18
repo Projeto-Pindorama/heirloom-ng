@@ -2,15 +2,15 @@
  * timeout.c - execute a command with a time limit 
  */
 /*
- * Copyright (C) 2023, 2024: Luiz Antônio (takusuman)
+ * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
  *                           Arthur Bacci (arthurbacci)(atr)
  *
  * SPDX-Licence-Identifier: Zlib
  *
- * The 'validate_duration' function contains code fro Heirloom-NG's
- * watch(1) implementation that parses a float for timespec structs.
- * This code was written by Arthur Bacci and it's covered per the
- * same terms as this program.
+ * The 'parse_interval' function was adapted from suspicious-tools'
+ * watch(1) (available at
+ * https://github.com/arthurbacci/suspicious-tools.git) and licensed
+ * under the public domain.
  *
  * The part that makes the called command, in fact, sleep was
  * throloughly based on OpenBSD's implementation of timeout.
@@ -431,6 +431,7 @@ int validate_signal(char *str) {
 	return signum;
 }
 
+/* Boilerplate for parse_interval(). */
 struct TClock validate_duration(char *timestr) {
 	struct TClock mitoclock;
 	
@@ -442,12 +443,9 @@ struct TClock validate_duration(char *timestr) {
 	return mitoclock;
 }
 
-/* Adapted from suspicious-tools' watch (available at
- * https://github.com/arthurbacci/suspicious-tools) and licensed under the
- * public domain
- */
-/* Returns -1 if the given string is invalid, otherwise 0 is returned and the
- * interval struct is set.
+/*
+ * Returns -1 if the given string is invalid, otherwise
+ * 0 is returned and the interval struct is set.
  */
 int parse_interval(const char *ss, struct TClock *interval) {
 	char s[32];
