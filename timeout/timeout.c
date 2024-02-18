@@ -389,46 +389,35 @@ void settimeout(struct TClock *duration) {
 }
 
 int validate_signal(char *str) {
-	int signum = 0; /* EXIT if not defined. */
-
 	/* 
-	 * Check if the first character
-	 * of the input string is a
-	 * letter, so it can be parsed into
-	 * a signal name.
+	 * Check if the first character of the input string is a letter, so it
+	 * can be parsed into a signal name.
 	 */
 	if (isalpha(str[0])) {
-		register int s = 0;
+		int i;
 		
-		/* Starts with "SIG". */
-		char *ssuffix = "SIG";
-		if (strncmp(str, ssuffix, 3) == 0) {
-			/* 
-			 * Re-define string 'str'
-			 * from its first three
-			 * initial characters ("SIG").
-			 */
+		/* If it starts with "SIG" */
+		if (strncmp(str, "SIG", 3) == 0) {
+			/* Skip 3 bytes (SIG) */
 			str = &str[3];
 		}
 
-		for (; (strcmp(str, sig_strs[s].signame) != 0);) {
-			s += 1;
+		for (i = 0; sig_strs[i].signame; ++i) {
+			if (0 == strcmp(str, sig_strs[i].signame))
+				return sig_strs[i].signum;
 		}
-		signum = sig_strs[s].signum;
 	} else {
-		int i = 0;
+		int i = atoi(str);	
 
-		i = atoi(str);	
-		if (i < 1 || i > SIGRTMAX) {
-			pfmt(stderr, MM_ERROR,
-				"%s: invalid signal %d.\n",
-				progname, i);
+		if (i < 0 || i > SIGRTMAX) {
+			pfmt(stderr, MM_ERROR, "%s: invalid signal %d.\n",
+			                        progname,          i);
 			exit(1);
 		}
-		signum = i;
+		return i;
 	}
 
-	return signum;
+	return 0;
 }
 
 /* Boilerplate for parse_interval(). */
@@ -444,8 +433,8 @@ struct TClock validate_duration(char *timestr) {
 }
 
 /*
- * Returns -1 if the given string is invalid, otherwise
- * 0 is returned and the interval struct is set.
+ * Returns -1 if the given string is invalid, otherwise 0 is returned and the
+ * interval struct is set.
  */
 int parse_interval(const char *ss, struct TClock *interval) {
 	char s[32];
