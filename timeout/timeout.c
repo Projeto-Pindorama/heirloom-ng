@@ -406,6 +406,10 @@ int validate_signal(char *str) {
 			if (0 == strcmp(str, sig_strs[i].signame))
 				return sig_strs[i].signum;
 		}
+
+		pfmt(stderr, MM_ERROR, "%s: invalid signal %s.\n",
+					progname,          str);
+		exit(1);
 	} else {
 		int i = atoi(str);	
 
@@ -416,8 +420,6 @@ int validate_signal(char *str) {
 		}
 		return i;
 	}
-
-	return 0;
 }
 
 /* Boilerplate for parse_interval(). */
