@@ -3,6 +3,7 @@
  */
 /*
  * Copyright (C) 2023, 2024: Luiz Antônio (takusuman)
+ *                           Arthur Bacci (arthurbacci)(atr)
  *
  * SPDX-Licence-Identifier: Zlib
  *
@@ -40,8 +41,8 @@ static char *progname;
 
 int main(int argc, char *argv[]);
 int validate_signal(char *signal_name);
-float conv_duration(char *timestr);
 struct TClock validate_duration(char *duration);
+int parse_interval(const char *ss, struct TClock *interval);
 void settimeout(struct TClock *duration);
 void handle_signal(int signo);
 void usage(void);
@@ -320,20 +321,8 @@ int main(int argc, char *argv[]) {
 
 		if (siglist.sig_chld) {
 			siglist.sig_chld = 0;
-			cmdpid = wait(&ecmd);
 
-			/*
-			for (; (cmdpid < 0 && errno == EINTR); ) {
-				continue;
-			}
-			*/
-			/* atr: This was the previous code, it seems like an
-			 * infinite loop but i'm not sure what it should do
-			 * exactly. I'm assuming it should continue the outer
-			 * loop and therefore i'm using this if case instead.
-			 */
-			if (cmdpid < 0 && errno == EINTR)
-				continue;
+			while ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR);
 
 			if (cmdpid == exec_pid) {
 				eprog = ecmd;
@@ -462,114 +451,57 @@ int validate_signal(char *str) {
 }
 
 struct TClock validate_duration(char *timestr) {
-		float time;
-
-		/* Allocate a buffer for the time string, so we can separate it
-		 * easier betwixt seconds and nanoseconds. */
-		char timebuf[128];
-		char *aftersep = NULL;
-
-		/* Struct that will be returned later containing seconds and
-		 * microseconds. */
-		struct TClock duration;
-
-		time = conv_duration(timestr);
-		snprintf(timebuf, sizeof(timebuf), "%.*e",
-				(DECIMAL_DIG - 1), time);	
-
-		size_t decsep = 0;
-		for (; timebuf[decsep]; decsep++) {
-			/* 
-			 * '.' is being used as a franc decimal separator, since
-			 * it is expected by strtof() and it is also the decimal
-			 * separator on English-speaking countries, but this
-			 * program still being localized --- see conv_duration()
-			 * for more details.
-			 */
-			if (timebuf[decsep] == '.') {
-				timebuf[decsep] = '\0';
-				aftersep = &timebuf[decsep + 1];
-				break;
-			}
-		}
-
-		if (strlen(timebuf) == 0) {
-			duration.sec = 0;
-		} else {
-		       	duration.sec = atoi(timebuf);
-		}
-
-		size_t afterseplen = aftersep ? strlen(aftersep) : 0;
-		if (afterseplen > 0) {
-			long int integer = atoi(aftersep);
-
-			if (afterseplen > 9) {
-				aftersep[9] = '\0';
-				afterseplen = 9;
-			}
-
-			for (size_t i = 0; i < 9 - afterseplen; i++) {
-				integer *= 10;
-
-				duration.nsec = integer;
-			}
-
-			if (duration.sec == 0 && duration.nsec < 100000000) {
-				duration.nsec = 100000000;
-			}
-		}
-		
-		return duration;
-}
-
-/* atr: decimal-to-float-to-int implies loss of precision and potentially
- *      incorrect behaviour. It may or may not be interesting to just copy code
- *      from suspicious-tools (licensed under the public domain) or do
- *      something similar instead of what's currently being done. It would also
- *      make the code a lot cleaner considering how many complex and unsafe
- *      manipulations are being done.
- */
-float conv_duration(char *timestr) {
-	float time;
-	char *timeunit;
+	struct TClock mitoclock;
 	
-	/* Support both commas and points as decimal separators */
-	/* atr: it might be interesting to try something locale-dependent */
-	char *decsep;
-	decsep = strchr(timestr, ',');
-	if (decsep) {
-		*decsep = '.';
-	}
-
-	if ( (time = strtof(timestr, &timeunit)) == 0
-			&& timestr == timeunit ) {
-		pfmt(stderr, MM_ERROR, "%s: time is not a number.\n", progname);
-		exit(1);
-	} else if ( time < 0 || time >= FLT_MAX ) {
-		pfmt(stderr, MM_ERROR, "%s: time exceeds FLT_MAX (%d).\n", progname, FLT_MAX);
+	if (-1 == parse_interval(timestr, &mitoclock)) {
+		pfmt(stderr, MM_ERROR, "the given interval couldn't be parsed");
 		exit(1);
 	}
 
-	switch (*timeunit) {
-		case '\0':
-		case 's':	
-			break;
-		case 'm':
-			time = time * 60;
-			break;
-		case 'h':
-			time = time * (60 * 60);
-			break;
-		case 'd':
-			time = time * ((60 * 60) * 24);
-			break;
-		default:
-			pfmt(stderr, MM_ERROR, "%s: invalid time unit suffix.\n", progname);
-			exit(1);
-	}
-
-	return time;
+	return mitoclock;
 }
+
+/* Adapted from suspicious-tools' watch (available at
+ * https://github.com/arthurbacci/suspicious-tools) and licensed under the
+ * public domain
+ */
+/* Returns -1 if the given string is invalid, otherwise 0 is returned and the
+ * interval struct is set.
+ */
+int parse_interval(const char *ss, struct TClock *interval) {
+	char s[32];
+	char *afterpoint = NULL;
+	size_t i, afterpoint_len;
+
+	strncpy(s, ss, 32);
+	s[31] = '\0';
+
+	for (i = 0; s[i]; i++) {
+		if (s[i] == '.') {
+			if (afterpoint == NULL) {
+				afterpoint = &s[i + 1];
+				s[i] = '\0';
+			} else {
+				return -1;
+			}
+		} else if (!isdigit(s[i])) {
+			return -1;
+		}
+	}
+
+	interval->sec = strlen(s) ? atoi(s) : 0;
+	interval->nsec = afterpoint ? atoi(afterpoint) : 0;
+
+	if (afterpoint == NULL) return 0;
+
+	afterpoint_len = strlen(afterpoint);
+	if (afterpoint_len > 9) return -1;
+	for (i = afterpoint_len; i < 9; i++)
+		interval->nsec *= 10;
+
+	return 0;
+}
+
 
 // This is just a function that sets variables --- which
 // indicates which signals where enabled or not ---, so it
