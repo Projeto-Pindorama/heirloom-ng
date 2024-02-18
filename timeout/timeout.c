@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 	 * replaced by booleans, since it makes it a lot easier
 	 * to tell what is being acomplished.
 	 */
-	bool timesout;
+	bool timesout = false;
 	pid_t cmdpid = 0,
 	      exec_pid = 0,
 	      pgid = 0;
