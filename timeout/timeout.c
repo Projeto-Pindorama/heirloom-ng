@@ -60,22 +60,6 @@ struct LSignal {
 };
 static struct LSignal siglist;
 
-/*
- * Rodar o comando e bifurcar para o fundo
- * "Matar" o comando depois de X tempo com SIGTERM
- * Se ainda estiver rodando, matar em definitivo com
- * o sinal informado pelo usuário --- esperar por mais
- * tempo? Opção '-k'.
- *
- * Translation by atr:
- * Runs the command and fork to the background
- * "Kill" the command after X amount of time with
- * SIGTERM
- * If it's still running, definitely kill with the
- * signal given by the user --- want it to wait for
- * more time? Use the option '-k'.
- */
-
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	register int c = 0,
@@ -179,7 +163,6 @@ int main(int argc, char *argv[]) {
 	fst_commandv = strdup(argv[0]);
 	first_interval = validate_duration(fst_commandv);
 	free(fst_commandv);
-
 
 	if (! fForeground) {
 		/* 
@@ -350,7 +333,6 @@ int main(int argc, char *argv[]) {
 				siglist.sig_ign = killer_sig;
 				killer_sig = SIGKILL;
 			}
-
 		}
 
 	}
@@ -371,7 +353,6 @@ int main(int argc, char *argv[]) {
 	if (WIFSIGNALED(eprog))
 		return 128 + WTERMSIG(eprog);
 	
-
 	return eprog;
 }
 
@@ -503,11 +484,13 @@ int parse_interval(const char *ss, struct TClock *interval) {
 }
 
 
-// This is just a function that sets variables --- which
-// indicates which signals where enabled or not ---, so it
-// does not return anything. I wish these could be returned
-// on something like a struct, like it was done for the
-// interval, but the UNIX ABI does not give this opportunity.
+/* 
+ * This is just a function that sets variables --- which
+ * indicates which signals where enabled or not ---, so it
+ * does not return anything. I wish these could be returned
+ * on something like a struct, like it was done for the
+ * interval, but the UNIX ABI does not give this opportunity.
+ */
 void handle_signal(int signo) {
 	if (siglist.sig_ign != 0 && signo == siglist.sig_ign) {
 		// Ignore this signal.
