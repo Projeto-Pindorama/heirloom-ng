@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include <unistd.h>
 #include <wait.h>
+#include <stdbool.h>
 
 static char *progname;
 
@@ -64,6 +65,14 @@ static struct LSignal siglist;
  * Se ainda estiver rodando, matar em definitivo com
  * o sinal informado pelo usuário --- esperar por mais
  * tempo? Opção '-k'.
+ *
+ * Translation by atr:
+ * Runs the command and fork to the background
+ * "Kill" the command after X amount of time with
+ * SIGTERM
+ * If it's still running, definitely kill with the
+ * signal given by the user --- want it to wait for
+ * more time? Use the option '-k'.
  */
 
 int main(int argc, char *argv[]) {
@@ -83,9 +92,14 @@ int main(int argc, char *argv[]) {
 		    		SIGTERM, SIGCHLD, SIGALRM },
 	    execerr = 0, /* Command execution error code. */
 	    ecmd = 0, /* Command exit code. */
-	    eprog = 0, /* Program exit code. */
-	    timesout = 0;
-	char **commandv;
+	    eprog = 0; /* Program exit code. */
+	/* atr note: it might be better to have other ints replaced by bool
+	 *           since it makes it a lot easier to tell what is being
+	 *           acomplished.
+	 */
+	bool timesout = false;
+	char **commandv,
+	     *fst_commandv;
 	pid_t cmdpid = 0,
 	      exec_pid = 0,
 	      pgid = 0;
@@ -136,37 +150,35 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
+	/* atr note: if one wants to use malloc he must be sure that the last
+	 * element of commandv is set to NULL
+	 */
 	/* Allocate commandv[], where argv[] will be copied to. */
-	if ( (commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL ) { 
-		pfmt(stderr, MM_ERROR,
-				"%s: could not allocate an array of %lu elements, each one being %lu bytes large.\n",
-				progname, (unsigned long)(argc + 1), (sizeof(char *))
+	if ( (commandv = calloc((size_t)argc, sizeof(char *))) == NULL ) { 
+		pfmt(stderr, MM_ERROR, "%s: could not allocate an array of "
+		                       "%d elements, each one being %lu "
+				       "bytes large.\n", progname,
+				       argc, sizeof(char *)
 		);
 		exit(1);
 	}
 
 	/* And then copy argv[] to commandv[]. */
-	for (c = 0; c < argc; c++) {
-		commandv[c] = argv[c];
-	}
-
-	first_interval = validate_duration(commandv[0]);
-
-	/* 
-	 * Shift the commandv[] array in one element, so we will have
-	 * a pure string to pass into execvp().
+	/* atr: note that the previous code was only copying the reference, I
+	 * believe it's a mistake and replaced it by strdup.
+	 */
+	/* atr: it's shifted, the first element of commandv is the second of
+	 * argv and so on.
 	 */
 	for (c = 1; c < argc; c++) {
-		commandv[(c - 1)] = commandv[c];
+		commandv[c - 1] = strdup(argv[c]);
 	}
 
-	/* 
-	 * And then "close" the last two elements on the string.
-	 * It would be better if we could shrink the allocation
-	 * by removing two elements.
-	*/
-	commandv[(c-1)]='\0';
-	commandv[c]='\0';
+	/* atr: dummy string for funny mutations */
+	fst_commandv = strdup(argv[0]);
+	first_interval = validate_duration(fst_commandv);
+	free(fst_commandv);
+
 
 	if (! fForeground) {
 		/* 
@@ -178,8 +190,8 @@ int main(int argc, char *argv[]) {
 		 */
 		if ((pgid = setpgid(0, 0)) != 0) {
 			pfmt(stderr, MM_ERROR,
-			"%s: failed to set process group via setpgid(0, 0): %s.\n",
-			progname, strerror(errno));
+			     "%s: failed to set process group via setpgid"
+			     "(0, 0): %s.\n", progname, strerror(errno));
 		}
 	}
 
@@ -279,6 +291,9 @@ int main(int argc, char *argv[]) {
 	}
 	
 	/* The command string will not be necessary after exec(). */
+	for (int i = 0; commandv[i]; i++)
+		/* atr: frees the strduped strings */
+		free(commandv[i]);
 	free(commandv);
 
 	/* 
@@ -293,7 +308,7 @@ int main(int argc, char *argv[]) {
 
 	settimeout(&first_interval);
 
-	for (;;) {
+	while (true) {
 		/* 
 		 * The sa_mask will be empty again, but we will
 		 * also be using sigsuspend() to prevent the
@@ -306,9 +321,19 @@ int main(int argc, char *argv[]) {
 		if (siglist.sig_chld) {
 			siglist.sig_chld = 0;
 			cmdpid = wait(&ecmd);
+
+			/*
 			for (; (cmdpid < 0 && errno == EINTR); ) {
 				continue;
 			}
+			*/
+			/* atr: This was the previous code, it seems like an
+			 * infinite loop but i'm not sure what it should do
+			 * exactly. I'm assuming it should continue the outer
+			 * loop and therefore i'm using this if case instead.
+			 */
+			if (cmdpid < 0 && errno == EINTR)
+				continue;
 
 			if (cmdpid == exec_pid) {
 				eprog = ecmd;
@@ -317,15 +342,15 @@ int main(int argc, char *argv[]) {
 		} else if (siglist.sig_alrm || siglist.sig_term) {
 			if (siglist.sig_alrm) {
 				siglist.sig_alrm = 0;
-				timesout = 1;
+				timesout = true;
 			}
 
 			if (! fForeground) {
 				killpg(pgid, killer_sig);
 			} else {
-				kill(exec_pid, (siglist.sig_term
+				kill(exec_pid, siglist.sig_term
 						? (int)siglist.sig_term
-						: killer_sig));
+						: killer_sig);
 			}
 
 			if (! fOnemoretime) {
@@ -341,7 +366,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	for (; (cmdpid != exec_pid && wait(&eprog) == -1); ) {
+	while (cmdpid != exec_pid && wait(&eprog) == -1) {
 		if (errno != EINTR) {
 			pfmt(stderr, MM_ERROR, "%s: failed to wait(): %s.\n",
 			progname, strerror(errno));
@@ -350,15 +375,13 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	if (WEXITSTATUS(eprog)) {
-		eprog = WEXITSTATUS(eprog);
-	} else if (WIFSIGNALED(eprog)) {
-		eprog = 128 + WTERMSIG(eprog);
-	}
+	if (timesout && !fPreserve_status)
+		return 124;
+	if (WEXITSTATUS(eprog))
+		return WEXITSTATUS(eprog);
+	if (WIFSIGNALED(eprog))
+		return 128 + WTERMSIG(eprog);
 	
-	if (timesout && !fPreserve_status) {
-		eprog = 124;
-	}
 
 	return eprog;
 }
@@ -499,11 +522,19 @@ struct TClock validate_duration(char *timestr) {
 		return duration;
 }
 
+/* atr: decimal-to-float-to-int implies loss of precision and potentially
+ *      incorrect behaviour. It may or may not be interesting to just copy code
+ *      from suspicious-tools (licensed under the public domain) or do
+ *      something similar instead of what's currently being done. It would also
+ *      make the code a lot cleaner considering how many complex and unsafe
+ *      manipulations are being done.
+ */
 float conv_duration(char *timestr) {
 	float time;
 	char *timeunit;
 	
 	/* Support both commas and points as decimal separators */
+	/* atr: it might be interesting to try something locale-dependent */
 	char *decsep;
 	decsep = strchr(timestr, ',');
 	if (decsep) {
@@ -569,8 +600,8 @@ void handle_signal(int signo) {
 }
 
 void usage(void) {
-	pfmt(stderr, MM_NOSTD,
-		"usage: %s: [-fp] [-s signal] [-k time] time [command [args ...]]\n",
-		progname);
+	pfmt(stderr, MM_NOSTD, "usage: %s: [-fp] [-s signal] [-k time] "
+	                       "time [command [args ...]]\n", progname);
 	exit(1);
 }
+
