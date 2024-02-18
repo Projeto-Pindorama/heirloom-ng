@@ -347,14 +347,16 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if (timesout && !fPreserve_status) {
-		eprog = 124;
-	} else if (WEXITSTATUS(eprog)) {
+	if (WEXITSTATUS(eprog)) {
 		eprog = WEXITSTATUS(eprog);
 	} else if (WIFSIGNALED(eprog)) {
 		eprog = (128 + WTERMSIG(eprog));
 	}
 
+	if (timesout && !fPreserve_status) {
+		eprog = 124;
+	}
+	
 	return eprog;
 }
 
