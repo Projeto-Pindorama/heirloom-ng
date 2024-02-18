@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 	 * replaced by booleans, since it makes it a lot easier
 	 * to tell what is being acomplished.
 	 */
-	bool timesout = 0;
+	bool timesout;
 	pid_t cmdpid = 0,
 	      exec_pid = 0,
 	      pgid = 0;
@@ -316,7 +316,7 @@ int main(int argc, char *argv[]) {
 		} else if (siglist.sig_alrm || siglist.sig_term) {
 			if (siglist.sig_alrm) {
 				siglist.sig_alrm = 0;
-				timesout = 1;
+				timesout = true;
 			}
 
 			if (! fForeground) {
