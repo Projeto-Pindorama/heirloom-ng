@@ -1,8 +1,9 @@
 #!/bin/sh
 # takefive.sh: test script for timeout(1), takes
-# minutes as argument.
-# Better if compiled with shcomp(1), since it
-# gives us an independent P.ID.
+# seconds as argument.
+# Copyright (c) 2023, 2024 Luiz Antônio Rangel.
+#
+# This script is public domain, no more, no less.
 
 main() {
 	for SIG in ABRT ALRM HUP INT TERM; do
@@ -19,8 +20,9 @@ main() {
 	return 3 
 }
 
-handle_signal() {
-	printf 'Caught %s\n' $1
+handle_signal() { # function input: string signal
+	s=$1
+	printf 'Caught %s\n' "$1"
 }
 
 main $1
