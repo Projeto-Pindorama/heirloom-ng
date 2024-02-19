@@ -24,18 +24,16 @@
 
 #include <ctype.h>
 #include <errno.h>
-#include <float.h>
 #include <pfmt.h>
 #include <signal.h>
 #include <sigtable.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <unistd.h>
-#include <wait.h>
 
 static char *progname;
 
@@ -400,13 +398,12 @@ void settimeout(struct TClock *duration) {
 }
 
 int validate_signal(char *str) {
+	int i;
 	/* 
 	 * Check if the first character of the input string is a letter, so it
 	 * can be parsed into a signal name.
 	 */
 	if (isalpha(str[0])) {
-		int i;
-		
 		/* If it starts with "SIG" */
 		if (strncmp(str, "SIG", 3) == 0) {
 			/* Skip 3 bytes (SIG) */
@@ -414,7 +411,7 @@ int validate_signal(char *str) {
 		}
 
 		for (i = 0; sig_strs[i].signame; ++i) {
-			if (0 == strcmp(str, sig_strs[i].signame))
+			if (strcmp(str, sig_strs[i].signame) == 0)
 				return sig_strs[i].signum;
 		}
 
@@ -422,7 +419,7 @@ int validate_signal(char *str) {
 					progname,          str);
 		exit(1);
 	} else {
-		int i = atoi(str);	
+		i = atoi(str);	
 
 		if (i < 0 || i > SIGRTMAX) {
 			pfmt(stderr, MM_ERROR, "%s: invalid signal %d.\n",
