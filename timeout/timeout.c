@@ -380,9 +380,16 @@ void settimeout(struct TClock *duration) {
 	/* Timer expiration. */	
 	its.it_value.tv_sec = duration->sec;
 	its.it_value.tv_nsec = duration->nsec;
-	/* Timer period. */
-	its.it_interval.tv_sec = its.it_value.tv_sec;
-	its.it_interval.tv_nsec = its.it_value.tv_nsec;
+	/* 
+	 * Timer period betwixt expirations.
+	 * taks note: This must be all zeroed,
+	 * ergo option '-k' can work properly.
+	 * itimerspec(3type) is incomplete
+	 * on Linux and reads vague on NetBSD,
+	 * so I'm doing pure Computer Alchemy here.
+	 */
+	its.it_interval.tv_sec = 0;
+	its.it_interval.tv_nsec = 0;
 
 	if (timer_settime(tid, 0, &its, NULL) != 0) {
 		pfmt(stderr, MM_ERROR,
