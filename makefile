@@ -14,8 +14,9 @@ SUBDIRS = build libwchar libcommon libuxre _install \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
 	random readlink renice rm rmdir \
 	sdiff sed seq setpgrp shl sleep sort spell split stty su sum sync \
-	tabs tail tapecntl tar tcopy tee test time touch tr true tsort tty \
-	ul uname uniq units users watch wc what who whoami whodo xargs yes
+	tabs tail tapecntl tar tcopy tee test time timeout touch tr true \
+  tsort tty ul uname uniq units users watch wc what who whoami whodo \
+  xargs yes
 
 dummy: makefiles all
 

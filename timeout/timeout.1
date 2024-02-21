@@ -1,0 +1,158 @@
+.\"
+.\" Copyright(C) 2024 Luiz Antônio Rangel. All rights reserved.
+.\"
+.\" SPDX-Licence-Identifier: Zlib 
+.\"
+.TH TIMEOUT 1 "2/20/24" "Heirloom Toolchest" "User Commands"
+.SH NAME
+timeout \- execute a command with a time limit 
+.SH SYNOPSIS
+\fBtimeout\fR [\fB\-k\fR \fItime\fR]
+[\fB\-s\fR \fIsignal\fR] [\-fp]
+\fItime\fR \fIcommand\fR [\fIargument\fR ...]
+.SH DESCRIPTION
+.I Timeout
+executes a specified \fIcommand\fR and
+attempts to terminate it after an
+also specified \fItime\fR.
+Per default, it sends signal 15
+(terminate, alias SIGTERM), but the
+signal can be redefined (see option
+'\fI\-s\fR').
+If the duration is a zero value, the
+timer is disabled (see timer_settime(2)),
+ergo there will not be any signal sent
+to the specified \fIcommand\fR's process.
+.PP
+It accepts the following options:
+.TP
+.B \-k \fItime\fR
+Sets a complementary time for tolerance
+before sending a final signal 9 (SIGKILL)
+to \fIcommand\fR if it's still executing.
+.TP
+.B \-s \fIsignal\fR
+Sets a signal to be sent instead of
+signal 15 (terminate). It's defined
+per a decimal number or its symbolic
+name (see kill(1) '\-l' option).
+.br
+If it's defined as 9 (SIGKILL), it
+has an immediate effect and annuls
+the '\-k' option. 
+.TP
+.B \-f
+Permits that \fIcommand\fR runs as
+foreground and recieves signals
+from the terminal; per using this
+option, the children processes that
+\fIcommand\fR may create will not be
+terminated with it even in case of
+the timer timing out.
+.TP
+.B \-p
+Keep \fIcommand\fR's exit status
+instead of using this program's
+default.
+.SH "DURATION FORMATTING"
+\fItime\fR can be specified as a
+fractional number by using a full
+stop or a comma as the decimal
+separator.
+The default value are seconds
+unless a time unit is specified per
+its single-letter identifier; in
+ascend order, the supported units
+are:
+.TP
+.I s
+seconds
+.TP
+.I m
+minutes
+.TP
+.I h 
+hours
+.TP
+.I d
+days
+.SH DIAGNOSTICS 
+Exit status is 124 if the timer expired
+and the \-p option was not set, 126 if
+the command could be found, but could not
+be executed and 127 if the command could
+not be found.
+.SH EXAMPLES
+This program has different possible
+applications in one's routine, here are some:
+.br
+Lets suppose you need to check if your system
+is connected to the Internet and that it can
+successfully connect to a server in less than
+5 seconds, you can use timeout along with nc(1):
+.LP
+.RS
+.sp
+.nf
+% timeout -p 5 nc -vz pindorama.dob.jp 80
+% echo $?
+0
+.fi
+.sp
+.RE
+In another example, you have a project and
+start experiencing hangings at some part after
+a contributor sent a patch, but you do not know
+the part nor the file that was broken; since
+you know that it should not take more than
+half a minute to pass that part, you can use
+timeout and visualize precisely where it hangs
+per enabling debug at the shell interpreter:
+.IP \& 2
+.BI "% timeout 0,5m /bin/ksh -x ./build.ksh"
+.LP
+.SH NOTES
+Although this implementation being \fIsœur\fR
+with BSDs' implementations since it shares some
+parts of code with it, it does not support long
+options as GNU (and BSDs') does, so some shell
+scripts may not work unchanged with this
+implementation.
+.br
+An abideable approach for solving this problem
+could be an small check/wrapper for the
+timeout command in case of utilizing the \-f or
+the \-p options in its long format.
+.RS
+.sp
+.nf
+if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220
+then
+     timeout \-p \-k\fItime\fR \fItime\fR \fIcommand\fR
+else
+     timeout \-\-preserve\-duration \-\-kill\-after \fItime\fR \fItime\fR \fIcommand\fR
+fi
+.fi
+.sp
+.RE
+.PP
+This implementation supports intervals using
+both European or Anglo decimal separators,
+GNU doesn't.
+.PP
+In contrast to OpenBSD's \(em and any other
+implementation thoroughly based and/or ported
+from FreeBSD 10.3R \(em, this implementation
+supports nanoseconds as the interval instead
+of microseconds. This can change in the future
+depending on your platform, though.
+.SH "SEE ALSO"
+exec(3), fork(2), kill(1), signal(2),
+timer_settime(2), itimerspec(3type),
+wait(2)
+.SH HISTORY
+The timeout utility first appeared as a proposal
+in BusyBox mailing lists in February 3, 2006,
+but this version have payloads closer to the
+timeout found at GNU Coreutils 7.0,
+released in 05 October, 2008.
