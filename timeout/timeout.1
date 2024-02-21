@@ -3,7 +3,7 @@
 .\"
 .\" SPDX-Licence-Identifier: Zlib 
 .\"
-.TH TIMEOUT 1 "2/18/24" "Heirloom Toolchest" "User Commands"
+.TH TIMEOUT 1 "2/20/24" "Heirloom Toolchest" "User Commands"
 .SH NAME
 timeout \- execute a command with a time limit 
 .SH SYNOPSIS
@@ -87,14 +87,16 @@ Lets suppose you need to check if your system
 is connected to the Internet and that it can
 successfully connect to a server in less than
 5 seconds, you can use timeout along with nc(1):
-.IP \& 2
-.BI "% timeout -p 5 nc -vz pindorama.dob.jp 80"
-.br
-.BI "% echo $?"
-.br
-.BI "0"
-.br
 .LP
+.RS
+.sp
+.nf
+% timeout -p 5 nc -vz pindorama.dob.jp 80
+% echo $?
+0
+.fi
+.sp
+.RE
 In another example, you have a project and
 start experiencing hangings at some part after
 a contributor sent a patch, but you do not know
@@ -113,7 +115,30 @@ parts of code with it, it does not support long
 options as GNU (and BSDs') does, so some shell
 scripts may not work unchanged with this
 implementation.
+.br
+An abideable approach for solving this problem
+could be an small check/wrapper for the
+timeout command in case of utilizing the \-f or
+the \-p options in its long format.
+.RS
+.sp
+.nf
+if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220
+then
+     timeout \-p \-k\fItime\fR \fItime\fR \fIcommand\fR
+else
+     timeout \-\-preserve\-duration \-\-kill\-after \fItime\fR \fItime\fR \fIcommand\fR
+fi
+.fi
+.sp
+.RE
 .SH "SEE ALSO"
 exec(3), fork(2), kill(1), signal(2),
 timer_settime(2), itimerspec(3type),
 wait(2)
+.SH HISTORY
+The timeout utility first appeared as a proposal
+in BusyBox mailing lists in February 3, 2006,
+but this version have payloads closer to the
+timeout found at GNU Coreutils 7.0,
+released in 05 October, 2008.
