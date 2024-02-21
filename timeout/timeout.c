@@ -459,7 +459,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
 
 	/* 
 	 * Support both Anglo and European decimal separators.
-	 * taks note: In varietate concordia. 🇧🇷 🤝🇪🇺 
+	 * taks note: In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧
 	 */
 	decsep = strchr(ss, ',');
 	if (decsep) {
@@ -467,17 +467,19 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	}
 
 	ftime = strtod(ss, &tunit);
-
-	switch  (*tunit) {
+	switch (*tunit) {
 		case '\0':
-			break;
 		case 's':
-			sprintf(ss, "%g", ftime);
 			break;
 		case 'm':
+			ftime = (ftime * 60);
 		case 'h':
+			ftime = (ftime * (60*60));
 		case 'd':
+			ftime = (ftime * ((60*60) * 24));
 	}
+	/* Copy the converted time back to 'ss'. */
+	sprintf(ss, "%g", ftime);
 
 	strncpy(s, ss, 32);
 	s[31] = '\0';
