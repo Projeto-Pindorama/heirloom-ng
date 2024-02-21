@@ -472,11 +472,11 @@ int parse_interval(const char *ss, struct TClock *interval) {
 		case 's':
 			break;
 		case 'm':
-			ftime = (ftime * 60);
+			ftime *= 60;
 		case 'h':
-			ftime = (ftime * (60*60));
+			ftime *= (60 * 60);
 		case 'd':
-			ftime = (ftime * ((60*60) * 24));
+			ftime *= ((60*60) * 24);
 	}
 	/* Copy the converted time back to 'ss'. */
 	sprintf(ss, "%g", ftime);
