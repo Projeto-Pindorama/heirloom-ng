@@ -135,9 +135,17 @@ fi
 .fi
 .sp
 .RE
+.PP
 This implementation supports intervals using
 both European or Anglo decimal separators,
 GNU doesn't.
+.PP
+In contrast to OpenBSD's \(em and any other
+implementation thoroughly based and/or ported
+from FreeBSD 10.3R \(em, this implementation
+supports nanoseconds as the interval instead
+of microseconds. This can change in the future
+depending on your platform, though.
 .SH "SEE ALSO"
 exec(3), fork(2), kill(1), signal(2),
 timer_settime(2), itimerspec(3type),
