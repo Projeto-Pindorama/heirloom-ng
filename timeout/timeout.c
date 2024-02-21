@@ -450,8 +450,34 @@ struct TClock validate_duration(char *timestr) {
  */
 int parse_interval(const char *ss, struct TClock *interval) {
 	char s[32];
-	char *afterpoint = NULL;
+	char *afterpoint = NULL,
+	     *decsep = NULL,
+	     *tunit = NULL;
+	/* 'double' for the converted time per unit. */ 
+	double ftime = 0;
 	size_t i, afterpoint_len;
+
+	/* 
+	 * Support both Anglo and European decimal separators.
+	 * taks note: In varietate concordia. 🇧🇷 🤝🇪🇺 
+	 */
+	decsep = strchr(ss, ',');
+	if (decsep) {
+		*decsep = '.';
+	}
+
+	ftime = strtod(ss, &tunit);
+
+	switch  (*tunit) {
+		case '\0':
+			break;
+		case 's':
+			sprintf(ss, "%g", ftime);
+			break;
+		case 'm':
+		case 'h':
+		case 'd':
+	}
 
 	strncpy(s, ss, 32);
 	s[31] = '\0';
