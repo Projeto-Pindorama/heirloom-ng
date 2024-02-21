@@ -467,18 +467,26 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	}
 
 	ftime = strtod(ss, &tunit);
-	switch (*tunit) {
+	switch (tunit[0]) {
 		case '\0':
 		case 's':
 			break;
 		case 'm':
 			ftime *= 60;
+			break;
 		case 'h':
 			ftime *= (60 * 60);
+			break;
 		case 'd':
 			ftime *= ((60*60) * 24);
+			break;
+		default:
+			pfmt(stderr, MM_ERROR,
+				"%s: invalid time unit suffix '%c'.\n",
+					progname, tunit);
+			exit(1);
 	}
-	/* Copy the converted time back to 'ss'. */
+	/* Copy the time value back to 'ss'. */
 	sprintf(ss, "%g", ftime);
 
 	strncpy(s, ss, 32);
