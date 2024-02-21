@@ -39,7 +39,9 @@ link.
 For instance, it can be used to find the real program behind
 a process on the
 .B /proc
-directory.
+directory \(em via the
+.B proc(5)
+file system.
 .IP \& 2
 .BI "readlink \-f /proc/$$/exe"
 .LP

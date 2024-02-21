@@ -5,7 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- *
+ * Copyright (C) 2023 Luiz Antônio Rangel
  * SPDX-Licence-Identifier: Zlib
  */
 
@@ -42,6 +42,7 @@ int		Fflag;			/* use fixed strings */
 int		bflag;			/* print buffer count */
 int		cflag;			/* print count only */
 int		fflag;			/* had pattern file argument */
+int		Hflag;			/* print filenames along with the match */
 int		hflag;			/* do not print filenames */
 int		iflag;			/* ignore case */
 int		lflag;			/* print filenames only */
@@ -245,8 +246,8 @@ redirect(struct iblok *ip, const char *arg0, const char *arg1)
 void
 report(const char *line, size_t llen, off_t bcnt, int addnl)
 {
-	if (filename && !hflag)
-		printf("%s:", filename);
+	if (filename && (!hflag || Hflag))
+		printf("%s:\040", filename);
 #ifdef	LONGLONG
 	if (bflag)
 		printf("%llu:", (long long)bcnt);
@@ -614,6 +615,9 @@ main(int argc, char **argv)
 			fflag++;
 			patfile(optarg);
 			hadpat++;
+			break;
+		case 'H':
+			Hflag = 1;
 			break;
 		case 'h':
 			hflag = 1;

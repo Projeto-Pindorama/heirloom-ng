@@ -1,4 +1,4 @@
-all: warning watch
+all: watch
 
 watch: watch.o
 	$(LD) $(LDFLAGS) watch.o $(LCURS) $(LCOMMON) $(LIBS) -o watch
@@ -6,13 +6,10 @@ watch: watch.o
 watch.o: watch.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -c watch.c
 
-warning:
-	@echo "Be careful, broken program ahead!"
-
 install: all
 	$(UCBINST) -c watch $(ROOT)$(DEFBIN)/watch
 	$(STRIP) $(ROOT)$(DEFBIN)/watch
-#	$(MANINST) -c -m 644 watch.1 $(ROOT)$(MANDIR)/man1/watch.1
+	$(MANINST) -c -m 644 watch.1 $(ROOT)$(MANDIR)/man1/watch.1
 
 clean:
 	rm -f watch watch.o core log *~
