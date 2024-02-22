@@ -486,12 +486,10 @@ int parse_interval(const char *ss, struct TClock *interval) {
 					progname, tunit);
 			exit(1);
 	}
-	/* Copy the time value back to 'ss'. */
-	sprintf(ss, "%g", ftime);
-
-	strncpy(s, ss, 32);
-	s[31] = '\0';
-
+	
+	/* Copy the time value to 's'. */
+	snprintf(s, 32, "%g", ftime);
+	
 	for (i = 0; s[i]; i++) {
 		if (s[i] == '.') {
 			if (afterpoint == NULL) {
