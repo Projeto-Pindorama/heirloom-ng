@@ -1,9 +1,3 @@
-Release 240220
-* [NEW] seq: Stone-simple implementation; needs some improvement yet.
-* [NEW] watch: Complete, simple and stable implementation.
-* [NEW] timeout: Complete implementation with extended payloads.
-* readlink: Different help messages for both UCB and default variants. 
-
 Release 230503 
 * chroot: "docs: Update date at chroot.8 manual page."
 * chroot: "chore: Remove comment, will move to GitHub"
