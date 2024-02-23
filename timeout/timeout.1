@@ -95,6 +95,7 @@ successfully connect to a server in less than
 .sp
 .nf
 % timeout -p 5 nc -vz pindorama.dob.jp 80
+Connection to pindorama.dob.jp (168.138.140.147) 80 port [tcp/http] succeeded!
 % echo $?
 0
 .fi
@@ -126,8 +127,7 @@ the \-p options in its long format.
 .RS
 .sp
 .nf
-if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220
-then
+if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220; then
      timeout \-p \-k\fItime\fR \fItime\fR \fIcommand\fR
 else
      timeout \-\-preserve\-duration \-\-kill\-after \fItime\fR \fItime\fR \fIcommand\fR
