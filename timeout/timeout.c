@@ -77,8 +77,8 @@ int main(int argc, char *argv[]) {
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0; /* Program exit code. */
 	
-	char **commandv,
-	     *fst_commandv;
+	char **commandv = {NULL},
+	     *fst_commandv = NULL;
 	/* 
 	 * atr note: it might be better to have other integers
 	 * replaced by booleans, since it makes it a lot easier
@@ -95,22 +95,9 @@ int main(int argc, char *argv[]) {
 	while ( (option = getopt(argc, argv, "fps:k:h")) != -1 ){
 		switch (option) {
 			case 'f':
-				/* According to GNU's timeout(1) usage()
-				 * function:
-				 * "when not running timeout directly from a
-				 * shell prompt, allow COMMAND to read from
-				 * the TTY and get TTY signals; in this mode,
-				 * children of COMMAND will not be timed out.
-				 */
 				fForeground = 1;
 				break;
 			case 'p':
-				/* Simplest option overall, it catches process'
-				 * exit code and returns it instead of returning
-				 * timeout's default "timed out" exit code (124).
-				 * This is only valid for processes that did not
-				 * exit as zero.
-				 */
 				fPreserve_status = 1;
 				break;
 			case 's':
@@ -399,6 +386,7 @@ void settimeout(struct TClock *duration) {
 
 int validate_signal(char *str) {
 	int i;
+
 	/* 
 	 * Check if the first character of the input string is a letter, so it
 	 * can be parsed into a signal name.
@@ -530,7 +518,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
  */
 void handle_signal(int signo) {
 	if (siglist.sig_ign != 0 && signo == siglist.sig_ign) {
-		// Ignore this signal.
+		/* Ignore this signal. */
 		siglist.sig_ign = 0;
 		return;
 	}
@@ -553,7 +541,7 @@ void handle_signal(int signo) {
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD, "usage: %s: [-fp] [-s signal] [-k time] "
-	                       "time [command [args ...]]\n", progname);
+	                       "time command [args ...]\n", progname);
 	exit(1);
 }
 
