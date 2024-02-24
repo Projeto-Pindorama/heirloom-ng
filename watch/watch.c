@@ -18,16 +18,16 @@
 
 #include <curses.h>
 #include <errno.h>
+#include <perror.h>
 #include <pfmt.h>
-#include <prerror.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/utsname.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <wait.h>
 
 static char *progname;
 int main(int argc, char *argv[]);
