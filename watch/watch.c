@@ -77,6 +77,7 @@ int main(int argc, char *argv[]) {
 
 			size_t point = 0;
 			for (; arg[point]; point++) {
+				/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
 				if (arg[point] == '.' || arg[point] == ',') {
 					arg[point] = '\0';
 					afterpoint = &arg[point + 1];
