@@ -33,7 +33,7 @@ numbers being printed. The default is a line break ("\\n").
 The
 .B seq
 utility may be used as one of the ways to calculate a
-termial (\fIn\?\fR) in a quick way using
+termial (\fIn?\fR) in a quick way using
 .Xr bc 1
 in a
 .Xr sh 1
@@ -42,13 +42,6 @@ pipeline.
 .BI "example% seq -s'+' 4 | bc"
 .LP
 .SH NOTES
-.PP
-No, it does not support floating points,
-altough it's fairly faster than the most
-common GNU implementation when counting
-small (less than 10^4) numbers. This was
-tested on a AMD Ryzen 5 3500U.
-.br
 .PP
 If you need to count from a negative number
 to a positive one, you will need to do this
