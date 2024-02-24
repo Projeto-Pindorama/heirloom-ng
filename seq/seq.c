@@ -23,8 +23,9 @@ void main(int argc, char *argv[]){
 	progname = argv[0];
 	extern int optind;
 	int option = 0,
+	    fracprec = 0,
 	    fPicture = 0,
-	    fracprec = 0;
+	    fWadding = 0;
 	register float count = 0,
 		 start = 0,
 		 stop = 0,
@@ -41,6 +42,9 @@ void main(int argc, char *argv[]){
 				break;
 			case 's':
 				separator = optarg;
+				break;
+			case 'w':
+				fWadding = 1;
 				break;
 			default:
 				usage();
