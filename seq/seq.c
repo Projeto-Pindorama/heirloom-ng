@@ -14,8 +14,19 @@
 #include <string.h>
 #include <unistd.h>
 
-char *progname;
+static char *progname;
+/* 
+ * Make flags public since it will
+ * be used by buildfmt().
+ */
+static int fPicture = 0,
+	   fWadding = 0;
+static char *picstr = "",
+	    fmtbuf[16] = {NULL};
+static float seqbuf[] = {0};
+
 void main(int argc, char *argv[]);
+char *buildfmt();
 int afterdecsep(char *s);
 void usage(void);
 
@@ -23,16 +34,15 @@ void main(int argc, char *argv[]){
 	progname = argv[0];
 	extern int optind;
 	int option = 0,
-	    fracprec = 0,
-	    fPicture = 0,
-	    fWadding = 0;
+	    fracprec = 0;
+	register int c = 0,
+		 nbuf = 0;
 	register float count = 0,
 		 start = 0,
 		 stop = 0,
 		 step = 0;
-	char format[32];
-	char *picstr = "",
-	     *separator = "";
+	char *format = NULL,
+		*separator = "";
 	
 	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ){
 		switch (option) {
@@ -56,31 +66,6 @@ void main(int argc, char *argv[]){
 	if ( argc < 1 ) {
 		usage();
 	}
-
-	/* Check if a picture was defined. */
-	if (!fPicture) {
-		snprintf(format, sizeof(format), "%s", "%g%s");
-	} else { 
-		int precision = 0;
-		/* 
-		 * Get how many digits after the
-		 * decimal separator the picture
-		 * have.
-		 */
-		precision = afterdecsep(picstr);
-		if ( precision == -1) {
-			pfmt(stderr, MM_ERROR,
-				"%s: picture '%s' is not a number.\n",
-				progname, picstr);
-			exit(1);
-		}
-		snprintf(format, sizeof(format), "%%.%df%%s", precision);
-	}
-
-	/* If there's no separator set, defaults to a line break (\n). */
-	separator = ( strncmp(separator, "", sizeof(char *)) == 0 )
-			? "\n" 
-			: separator;
 
 	/* 
 	 * If argc equals 1, stop will be defined as the first command line argument
@@ -110,14 +95,87 @@ void main(int argc, char *argv[]){
 	}
 
 	for ( count = start; count <= stop; count += step ) {
+		seqbuf[nbuf] = count;
+		nbuf += 1;
+	}
+
+	
+	format = buildfmt();
+
+	/* If there's no separator set, defaults to a line break (\n). */
+	separator = ( strncmp(separator, "", sizeof(char *)) == 0 )
+			? "\n" 
+			: separator;
+
+	for (c = 0; c < nbuf; c ++) {
 		/* 
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
 		 */
 		separator = (count == stop || (count + step) > stop)
 				? "\n" : separator;
-		printf(format, count, separator);
+		printf(format, seqbuf[c], separator);
 	}
+}
+
+char *buildfmt() {
+	int precision = 0;
+	char *picture = NULL;
+
+	/* Default. */
+	if (!fPicture && !fWadding) {
+		snprintf(fmtbuf, sizeof(fmtbuf), "%s", "%g%s");
+		return fmtbuf;
+	} 
+	
+	if (fPicture || fWadding) { 
+		/* 
+		 * Get how many digits after the
+		 * decimal separator the picture
+		 * have.
+		 * If wadding is enabled alone, we
+		 * shall check for the longest
+		 * number on the buffer, if not,
+		 * just the picture number.
+		 */
+		picture = (!fPicture && fWadding)
+			? printf("%g", seqbuf[getlgstr()])
+			: picstr;
+	
+		precision = afterdecsep(picture);
+		if ( precision == -1) {
+			pfmt(stderr, MM_ERROR,
+				"%s: picture '%s' is not a number.\n",
+				progname, picstr);
+			exit(1);
+		}
+
+		snprintf(fmtbuf, sizeof(fmtbuf), "%%.%df%%s", precision);
+		return fmtbuf;
+	}
+}
+
+int getlgstr() {
+	int c = 0,
+	    /* 
+	     * Save the position of
+	     * the longest on the
+	     * array.
+	     */
+	    ilongest = 0;
+	char strflt[32] = {NULL};
+	size_t longlength, curlength = 0;
+	
+	for (c=0; c < (sizeof(seqbuf)/sizeof(seqbuf[0])); c++) {
+		sprintf(strflt, "%g", seqbuf[c]);
+		curlength = strlen(strflt);
+		if (curlength > longlength) {
+			longlength = curlength;
+			ilongest = c;
+		}
+	}
+
+	return ilongest;
 }
 
 int afterdecsep(char *s) {
@@ -151,7 +209,7 @@ int afterdecsep(char *s) {
 
 void usage(void) {
 	pfmt(stderr, MM_NOSTD,
-		"usage: %s: [-ppicture] [-sseparator] [start [step]] stop\n",
+		"usage: %s: [-w] [-ppicture] [-sseparator] [start [step]] stop\n",
 		progname);
 	exit(1);
 }
