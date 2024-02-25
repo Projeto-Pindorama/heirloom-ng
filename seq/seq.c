@@ -27,8 +27,8 @@ static float start = 0,
 	     step = 0;
 
 void main(int argc, char *argv[]);
-char *buildfmt();
-char *getlgstr();
+char *buildfmt(void);
+char *getlgstr(void);
 int afterdecsep(char *s);
 void usage(void);
 
@@ -114,7 +114,7 @@ void main(int argc, char *argv[]){
 	exit(0);
 }
 
-char *buildfmt() {
+char *buildfmt(void) {
 	int precision = 0;
 	char *picture = NULL,
 	     *fmtbuf = NULL; 
@@ -146,9 +146,12 @@ char *buildfmt() {
 		picture = (!fPicture && fWadding)
 			? getlgstr()
 			: picstr;
-	
 		precision = afterdecsep(picture);
-		free(picture);
+
+		/* free() only if picture comes from getlgstr(). */
+		if (fWadding) {
+			free(picture);
+		}
 
 		if ( precision == -1) {
 			pfmt(stderr, MM_ERROR,
@@ -162,7 +165,7 @@ char *buildfmt() {
 	}
 }
 
-char *getlgstr() {
+char *getlgstr(void) {
 	register float c = 0;
 	char strflt[32] = {(char)0},
 	     *lgstnum;
