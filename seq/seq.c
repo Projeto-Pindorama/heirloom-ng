@@ -35,10 +35,7 @@ void usage(void);
 void main(int argc, char *argv[]){
 	progname = argv[0];
 	extern int optind;
-	int option = 0,
-	    fracprec = 0;
-	register int c = 0,
-		 nbuf = 0;
+	int option = 0;
 	register float count = 0;
 	char *format = NULL,
 		*separator = "";
@@ -119,7 +116,7 @@ char *buildfmt(void) {
 	char *picture = NULL,
 	     *fmtbuf = NULL; 
 	
-	if ((fmtbuf = calloc(16, sizeof(char *))) == NULL){
+	if ((fmtbuf = calloc(16, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
 			"array of %d elements, each one "
 			"being %lu bytes large.\n",
@@ -163,6 +160,8 @@ char *buildfmt(void) {
 		snprintf(fmtbuf, sizeof(fmtbuf), "%%.%df%%s", precision);
 		return fmtbuf;
 	}
+
+	return NULL;
 }
 
 char *getlgstr(void) {
