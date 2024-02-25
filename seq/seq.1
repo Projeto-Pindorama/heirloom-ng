@@ -45,9 +45,9 @@ The
 .B seq
 utility may be used as one of the ways to calculate a
 termial (\fIn?\fR) in a quick way using
-.Xr bc 1
+.B bc(1)
 in a
-.Xr sh 1
+.B sh(1)
 pipeline.
 .IP \& 2
 .BI "example% seq -s'+' 4 | bc"
@@ -62,10 +62,9 @@ maneuver below, at least for now:
 .LP
 .br
 .PP
-It does not implement the \-w option
-neither \-f found in Plan 9 from Bell
-Labs' implementation, although \-p can
-replace \-f in some cases.
+It does not implement the \-f option found
+in Plan 9 from Bell Labs' implementation,
+although \-p can replace \-f in many cases.
 .SH BUGS
 Maybe?
 .SH "SEE ALSO"
@@ -77,7 +76,11 @@ command first appeared in AT&T
 Research Unix 8th edition.
 .br
 This version has its payloads
-based off Plan 9 from Bell Labs,
-1th Ed. and GNU shell utilities 1.13
-implementation, but only part of the
-standard was implemented.
+based off Research Unix 8th edition
+with some extensions that appeared in
+Plan 9 from Bell Labs, 1st Ed. \(em
+in case, the algorithm for the \-w
+option, which is not so grand nor fast,
+but it works \(em and
+GNU shell utilities 1.13 for the \-s
+option.
