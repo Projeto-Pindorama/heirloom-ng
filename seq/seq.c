@@ -21,12 +21,14 @@ static char *progname;
  */
 static int fPicture = 0,
 	   fWadding = 0;
-static char *picstr = "",
-	    fmtbuf[16] = {NULL};
-static float seqbuf[] = {0};
+static char *picstr = "";
+static float start = 0,
+	     stop = 0,
+	     step = 0;
 
 void main(int argc, char *argv[]);
 char *buildfmt();
+char *getlgstr();
 int afterdecsep(char *s);
 void usage(void);
 
@@ -37,10 +39,7 @@ void main(int argc, char *argv[]){
 	    fracprec = 0;
 	register int c = 0,
 		 nbuf = 0;
-	register float count = 0,
-		 start = 0,
-		 stop = 0,
-		 step = 0;
+	register float count = 0;
 	char *format = NULL,
 		*separator = "";
 	
@@ -94,12 +93,6 @@ void main(int argc, char *argv[]){
 		exit(1);
 	}
 
-	for ( count = start; count <= stop; count += step ) {
-		seqbuf[nbuf] = count;
-		nbuf += 1;
-	}
-
-	
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
@@ -107,20 +100,29 @@ void main(int argc, char *argv[]){
 			? "\n" 
 			: separator;
 
-	for (c = 0; c < nbuf; c ++) {
+	for ( count = start; count <= stop; count += step ) {
 		/* 
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
 		 */
 		separator = (count == stop || (count + step) > stop)
 				? "\n" : separator;
-		printf(format, seqbuf[c], separator);
+		printf(format, count, separator);
 	}
 }
 
 char *buildfmt() {
 	int precision = 0;
-	char *picture = NULL;
+	char *picture = NULL,
+	     *fmtbuf = NULL; 
+	
+	if ((fmtbuf = calloc(16, sizeof(char *))) == NULL){
+		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
+			"array of %d elements, each one "
+			"being %lu bytes large.\n",
+			progname, 16, (sizeof(char *)));
+		exit(1);
+	}
 
 	/* Default. */
 	if (!fPicture && !fWadding) {
@@ -139,7 +141,7 @@ char *buildfmt() {
 		 * just the picture number.
 		 */
 		picture = (!fPicture && fWadding)
-			? printf("%g", seqbuf[getlgstr()])
+			? getlgstr()
 			: picstr;
 	
 		precision = afterdecsep(picture);
@@ -155,27 +157,31 @@ char *buildfmt() {
 	}
 }
 
-int getlgstr() {
-	int c = 0,
-	    /* 
-	     * Save the position of
-	     * the longest on the
-	     * array.
-	     */
-	    ilongest = 0;
-	char strflt[32] = {NULL};
-	size_t longlength, curlength = 0;
-	
-	for (c=0; c < (sizeof(seqbuf)/sizeof(seqbuf[0])); c++) {
-		sprintf(strflt, "%g", seqbuf[c]);
+char *getlgstr() {
+	float c = 0;
+	char strflt[32] = {NULL},
+	     *lgstnum;
+	size_t longlength = 0,
+	       curlength = 0;
+
+	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL){
+		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
+			"array of %d elements, each one "
+			"being %lu bytes large.\n",
+			progname, sizeof(strflt), (sizeof(char *)));
+		exit(1);
+	}
+
+	for (c=start; c <= stop; c += step) {
+		sprintf(strflt, "%g", c);
 		curlength = strlen(strflt);
 		if (curlength > longlength) {
 			longlength = curlength;
-			ilongest = c;
+			lgstnum = strdup(strflt);
 		}
 	}
 
-	return ilongest;
+	return lgstnum;
 }
 
 int afterdecsep(char *s) {
