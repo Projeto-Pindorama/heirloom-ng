@@ -166,11 +166,8 @@ char *buildfmt(void) {
 }
 
 char *getlgstr(void) {
-	register float c = 0;
 	char strflt[32] = {(char)0},
 	     *lgstnum;
-	size_t longlength = 0,
-	       curlength = 0;
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL){
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -180,15 +177,16 @@ char *getlgstr(void) {
 		exit(1);
 	}
 
-	for (c=start; c <= stop; c += step) {
-		sprintf(strflt, "%g", c);
-		curlength = strlen(strflt);
-		if (curlength > longlength) {
-			longlength = curlength;
-			lgstnum = strdup(strflt);
-		}
-	}
-
+	/* 
+	 * This method, although not being precise
+	 * as the last, will get the most irregular
+	 * number in the count per subtracting 'step'
+	 * from the last number ('stop'), which means
+	 * getting the most of decimal numbers.
+	 */
+	sprintf(strflt, "%g", (stop - step));
+	lgstnum = strdup(strflt);
+		
 	return lgstnum;
 }
 
