@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0; /* Program exit code. */
 	
-	char **commandv = {NULL},
+	char **commandv = { (char)0 },
 	     *fst_commandv = NULL;
 	/* 
 	 * atr note: it might be better to have other integers
