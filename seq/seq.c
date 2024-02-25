@@ -109,6 +109,9 @@ void main(int argc, char *argv[]){
 				? "\n" : separator;
 		printf(format, count, separator);
 	}
+	free(format);
+
+	exit(0);
 }
 
 char *buildfmt() {
@@ -145,6 +148,8 @@ char *buildfmt() {
 			: picstr;
 	
 		precision = afterdecsep(picture);
+		free(picture);
+
 		if ( precision == -1) {
 			pfmt(stderr, MM_ERROR,
 				"%s: picture '%s' is not a number.\n",
@@ -158,8 +163,8 @@ char *buildfmt() {
 }
 
 char *getlgstr() {
-	float c = 0;
-	char strflt[32] = {NULL},
+	register float c = 0;
+	char strflt[32] = {(char)0},
 	     *lgstnum;
 	size_t longlength = 0,
 	       curlength = 0;
