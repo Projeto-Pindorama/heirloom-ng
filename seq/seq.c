@@ -156,7 +156,7 @@ char *buildfmt(void) {
 		if ( precision == -1) {
 			pfmt(stderr, MM_ERROR,
 				"%s: picture '%s' is not a number.\n",
-				progname, picstr);
+				progname, picture);
 			exit(1);
 		}
 
