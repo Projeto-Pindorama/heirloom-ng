@@ -149,7 +149,7 @@ char *buildfmt(void) {
 		precision = afterdecsep(picture);
 
 		/* free() only if picture comes from getlgstr(). */
-		if (fWadding) {
+		if (!fPicture && fWadding) {
 			free(picture);
 		}
 
