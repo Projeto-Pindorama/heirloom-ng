@@ -61,7 +61,8 @@ static struct LSignal siglist;
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	register int c = 0,
-		 s = 0;
+		i = 0,
+		s = 0;
 	int option = 0,
 	    fForeground = 0,
 	    fOnemoretime = 0,
@@ -92,7 +93,7 @@ int main(int argc, char *argv[]) {
 	      second_interval = {0};
 	struct sigaction sa = {0};
 
-	while ( (option = getopt(argc, argv, "fps:k:h")) != -1 ){
+	while ( (option = getopt(argc, argv, "fps:k:h")) != -1 ) {
 		switch (option) {
 			case 'f':
 				fForeground = 1;
@@ -261,7 +262,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	/* The command string will not be necessary after exec(). */
-	for (int i = 0; commandv[i]; i++) {
+	for (i = 0; commandv[i]; i++) {
 		/* atr: frees the strduped strings */
 		free(commandv[i]);
 	}
@@ -385,7 +386,7 @@ void settimeout(struct TClock *duration) {
 }
 
 int validate_signal(char *str) {
-	int i;
+	register int i;
 
 	/* 
 	 * Check if the first character of the input string is a letter, so it
@@ -398,7 +399,7 @@ int validate_signal(char *str) {
 			str = &str[3];
 		}
 
-		for (i = 0; sig_strs[i].signame; ++i) {
+		for (i = 0; sig_strs[i].signame; i++) {
 			if (strcmp(str, sig_strs[i].signame) == 0)
 				return sig_strs[i].signum;
 		}
@@ -443,7 +444,8 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	     *tunit = NULL;
 	/* 'double' for the converted time per unit. */ 
 	double ftime = 0;
-	size_t i, afterpoint_len;
+	register size_t i;
+	size_t afterpoint_len;
 
 	/* 
 	 * Support both Anglo and European decimal separators.
