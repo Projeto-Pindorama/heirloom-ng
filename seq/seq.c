@@ -168,7 +168,7 @@ char *getlgstr(void) {
 	char strflt[32] = {(char)0},
 	     *lgstnum;
 
-	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL){
+	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
 			"array of %d elements, each one "
 			"being %lu bytes large.\n",
@@ -180,10 +180,15 @@ char *getlgstr(void) {
 	 * This method, although not being precise
 	 * as the last, will get the most irregular
 	 * number in the count per subtracting 'step'
-	 * from the last number ('stop'), which means
+	 * from the first number ('start'), which means
 	 * getting the most of decimal numbers.
+	 * It is better to subtract from the first
+	 * number instead of the last because of numbers
+	 * big enough to be converted by
+	 * 'printf("%g", ...)' into scientific notation,
+	 * which can not be parsed by afterdecsep().
 	 */
-	sprintf(strflt, "%g", (stop - step));
+	sprintf(strflt, "%g", (start - step));
 	lgstnum = strdup(strflt);
 		
 	return lgstnum;
