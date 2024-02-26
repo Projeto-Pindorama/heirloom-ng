@@ -14,6 +14,14 @@
 #include <string.h>
 #include <unistd.h>
 
+
+/* That's is for custom format at printf(3) via -p and -w. */
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+/* False positive for char *argv[]. */
+#pragma clang diagnostic ignored "-Wunsafe-buffer-usage"
+/* main() exit()s, does not return(). */
+#pragma clang diagnostic ignored "-Wmain-return-type"
+
 static char *progname;
 /* 
  * Make flags public since it will
@@ -32,7 +40,7 @@ char *getlgstr(void);
 int afterdecsep(char *s);
 void usage(void);
 
-void main(int argc, char *argv[]){
+void main(int argc, char *argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
@@ -40,7 +48,7 @@ void main(int argc, char *argv[]){
 	char *format = NULL,
 		*separator = "";
 	
-	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ){
+	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
 		switch (option) {
 			case 'p':
 				fPicture = 1;
@@ -93,11 +101,11 @@ void main(int argc, char *argv[]){
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
-	separator = ( strncmp(separator, "", sizeof(char *)) == 0 )
+	separator = (strncmp(separator, "", sizeof(char *)) == 0)
 			? "\n" 
 			: separator;
 
-	for ( count = start; count <= stop; count += step ) {
+	for (count = start; count <= stop; count += step) {
 		/* 
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
@@ -130,8 +138,9 @@ char *buildfmt(void) {
 	} 
 	
 	if (fPicture || fWadding) { 
-		int precision = 0,
-		    natural = 0;
+		int precision = 0;
+		unsigned long int natural = 0;
+			      
 		char strnum[32] = {(char)0},
 			/* 
 			 * Unlike the default,
@@ -193,12 +202,12 @@ char *buildfmt(void) {
 		 * printed.
 		 */	
 		if (precision > 0) {
-			natural += precision;
+			natural += (unsigned)precision;
 			natural += 1;
 		}
 
 		/* Write to 'buf', then copy to fmtbuf. */
-		snprintf(buf, sizeof(buf), "%%%d%d.%df%%s",
+		snprintf(buf, sizeof(buf), "%%%d%ld.%df%%s",
 					0, natural, precision);
 		fmtbuf = strdup(buf);
 		
@@ -210,7 +219,7 @@ char *buildfmt(void) {
 
 char *getlgstr(void) {
 	char strflt[32] = {(char)0},
-	     *lgstnum;
+	     *lgstnum = NULL;
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -240,7 +249,7 @@ char *getlgstr(void) {
 
 int afterdecsep(char *s) {
 	register int c = 0;
-	int fraclen = 0;
+	unsigned long fraclen = 0;
 	char *fracpart = NULL;
 
 	if (isalpha(s[0])) {
@@ -264,7 +273,7 @@ int afterdecsep(char *s) {
 		fraclen = strlen(fracpart);
 	}
 
-	return fraclen;
+	return (int)fraclen;
 }
 
 void usage(void) {
