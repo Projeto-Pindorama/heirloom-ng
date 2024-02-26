@@ -168,9 +168,9 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			sprintf(strnum, "%.0f", stop);
+			snprintf(strnum, sizeof(strnum), "%.0f", stop);
 		} else {
-			sprintf(strnum, "%.0f", picture);
+			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
 		natural = strlen(strnum);
 
@@ -232,7 +232,7 @@ char *getlgstr(void) {
 	 * 'printf("%g", ...)' into scientific notation,
 	 * which can not be parsed by afterdecsep().
 	 */
-	sprintf(strflt, "%g", (start - step));
+	snprintf(strflt, sizeof(strflt), "%g", (start - step));
 	lgstnum = strdup(strflt);
 		
 	return lgstnum;
