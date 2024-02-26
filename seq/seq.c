@@ -137,7 +137,7 @@ char *buildfmt(void) {
 			 * Unlike the default,
 			 * creating a buffer will
 			 * be needed for avoiding
-			 * truncating fmtbuf.
+			 * truncating 'fmtbuf'.
 			 */
 		     buf[32] = {(char)0};
 
@@ -174,20 +174,34 @@ char *buildfmt(void) {
 		}
 		natural = strlen(strnum);
 
-		/* free() only if picture comes from getlgstr(). */
+		/* 
+		 * free() only if picture comes
+		 * from getlgstr(), since it had
+		 * been allocated in memory, in
+		 * contrast to picstr which is a
+		 * vulgar string.
+		 */
 		if (!fPicture && fWadding) {
 			free(picture);
 		}
-		
+	
+		/* 
+		 * If there are decimal values, add it to
+		 * "natural" plus one, since "natural" in
+		 * printf(3) context means the total
+		 * number of characters that will be
+		 * printed.
+		 */	
 		if (precision > 0) {
 			natural += precision;
 			natural += 1;
 		}
 
-		snprintf(buf, sizeof(buf), "%%%d%d.%df%%s", 0, natural, precision);
-//		snprintf(fmtbuf, sizeof(fmtbuf), "%%.%df%%s", precision);
-
+		/* Write to 'buf', then copy to fmtbuf. */
+		snprintf(buf, sizeof(buf), "%%%d%d.%df%%s",
+					0, natural, precision);
 		fmtbuf = strdup(buf);
+		
 		return fmtbuf;
 	}
 
