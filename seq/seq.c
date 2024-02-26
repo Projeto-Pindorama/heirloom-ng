@@ -112,15 +112,14 @@ void main(int argc, char *argv[]){
 }
 
 char *buildfmt(void) {
-	int precision = 0;
 	char *picture = NULL,
 	     *fmtbuf = NULL; 
 	
-	if ((fmtbuf = calloc(16, sizeof(char *))) == NULL) {
+	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
 			"array of %d elements, each one "
 			"being %lu bytes large.\n",
-			progname, 16, (sizeof(char *)));
+			progname, 32, (sizeof(char *)));
 		exit(1);
 	}
 
@@ -131,6 +130,17 @@ char *buildfmt(void) {
 	} 
 	
 	if (fPicture || fWadding) { 
+		int precision = 0,
+		    natural = 0;
+		char strnum[32] = {(char)0},
+			/* 
+			 * Unlike the default,
+			 * creating a buffer will
+			 * be needed for avoiding
+			 * truncating fmtbuf.
+			 */
+		     buf[32] = {(char)0};
+
 		/* 
 		 * Get how many digits after the
 		 * decimal separator the picture
@@ -145,19 +155,39 @@ char *buildfmt(void) {
 			: picstr;
 		precision = afterdecsep(picture);
 
-		/* free() only if picture comes from getlgstr(). */
-		if (!fPicture && fWadding) {
-			free(picture);
-		}
-
-		if ( precision == -1) {
+		if (precision == -1) {
 			pfmt(stderr, MM_ERROR,
 				"%s: picture '%s' is not a number.\n",
 				progname, picture);
 			exit(1);
 		}
 
-		snprintf(fmtbuf, sizeof(fmtbuf), "%%.%df%%s", precision);
+		/* 
+		 * Basically the procedement
+		 * that afterdecsep() does,
+		 * but as a one-liner.
+		 */
+		if (fWadding) {
+			sprintf(strnum, "%.0f", stop);
+		} else {
+			sprintf(strnum, "%.0f", picture);
+		}
+		natural = strlen(strnum);
+
+		/* free() only if picture comes from getlgstr(). */
+		if (!fPicture && fWadding) {
+			free(picture);
+		}
+		
+		if (precision > 0) {
+			natural += precision;
+			natural += 1;
+		}
+
+		snprintf(buf, sizeof(buf), "%%%d%d.%df%%s", 0, natural, precision);
+//		snprintf(fmtbuf, sizeof(fmtbuf), "%%.%df%%s", precision);
+
+		fmtbuf = strdup(buf);
 		return fmtbuf;
 	}
 
