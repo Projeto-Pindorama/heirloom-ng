@@ -1,7 +1,3 @@
-# Build without paralelism, since this Makefile doesn't support paralelism so
-# well.
-MAKEFLAGS := -j1
-
 all: awk awk_sus awk_su3
 
 OBJ = awk.lx.o b.o lib.o main.o parse.o proctab.o run.o tran.o
