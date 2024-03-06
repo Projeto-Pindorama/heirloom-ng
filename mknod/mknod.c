@@ -18,7 +18,8 @@
 #endif
 static const char sccsid[] USED = "@(#)mknod.sl	1.9 (gritter) 12/16/07";
 
-#if defined (__GLIBC__) || defined (_AIX)
+#if defined (__GLIBC__) || defined (_AIX) \
+	|| defined (__linux__)
 #include	<sys/sysmacros.h>
 #endif	/* __GLIBC__ || _AIX */
 #include	<sys/types.h>
