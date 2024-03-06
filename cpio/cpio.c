@@ -10,7 +10,7 @@
  */
 
 /*
- * Sccsid @(#)cpio.c	1.303 (gritter) 4/14/07
+ * Sccsid @(#)cpio.c	1.307 (gritter) 10/9/10
  */
 
 #include <sys/types.h>
@@ -62,10 +62,12 @@
 
 #include <sys/ioctl.h>
 
-#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
-	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
-	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
+	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
+	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#ifndef __G__
 #include <sys/mtio.h>
+#endif
 #else	/* SVR4.2MP */
 #include <sys/scsi.h>
 #include <sys/st01.h>
@@ -80,7 +82,7 @@
 #endif	/* __linux__ or _AIX, since sys/sysmacros.h
 	 * adds a definition of "major". */
 
-#ifndef	major
+#if !defined (major) && !defined (__G__)
 #include <sys/mkdev.h>
 #endif	/* If "major" still not defined. */
 
@@ -95,6 +97,10 @@
 #define	putchar(c)	_IO_putc_unlocked(c, stdout)
 #endif	/* _IO_putc_unlocked */
 #endif	/* __GLIBC__ */
+
+#ifndef _POSIX_PATH_MAX
+#define	_POSIX_PATH_MAX	255
+#endif
 
 /*
  * The cpio code assumes that all following S_IFMT bits are the same as
@@ -3056,13 +3062,29 @@ linkunlink(const char *path1, const char *path2)
 
 	do {
 		if (link(path1, path2) == 0) {
-			if (vflag && pax == PAX_TYPE_CPIO)
+		good:	if (vflag && pax == PAX_TYPE_CPIO)
 				printf("%s linked to %s\n", path1, path2);
 			return 0;
 		}
-		if (errno == EEXIST && unlink(path2) < 0)
-			emsg(3, sysv3 ? "cannot unlink <%s>" :
+		if (errno == EEXIST) {
+			struct stat	st1, st2;
+			if (lstat(path1, &st1) == 0 &&
+					lstat(path2, &st2) == 0 &&
+					st1.st_dev == st2.st_dev &&
+					st1.st_ino == st2.st_ino)
+				/*
+				 * An attempt to hardlink a file to itself.
+				 * This happens if a file with more than one
+				 * link has been stored in the archive more
+				 * than once under the same name. This is odd
+				 * but the best we can do is nothing at all
+				 * in such a case.
+				 */
+				goto good;
+			if (unlink(path2) < 0)
+				emsg(3, sysv3 ? "cannot unlink <%s>" :
 					"Error cannot unlink \"%s\"", path2);
+		}
 	} while (twice++ == 0);
 	emsg(023, sysv3 ? "Cannot link <%s> & <%s>" :
 			"Cannot link \"%s\" and \"%s\"", path1, path2);
@@ -4473,8 +4495,9 @@ skipdata(struct file *f, int (*copydata)(struct file *, const char *, int))
 static int
 tseek(off_t n)
 {
-	int	fault;
+	int	fault = 0;
 
+#ifndef __G__
 	if (tapeblock > 0) {
 		int	i = (n - poffs) / tapeblock;
 #if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
@@ -4491,6 +4514,7 @@ tseek(off_t n)
 		fault = ioctl(mt, t, a);
 #endif	/* SVR4.2MP */
 	} else
+#endif	/* __G__ */
 		fault = lseek(mt, n - poffs, SEEK_CUR) == (off_t)-1 ? -1 : 0;
 	if (fault == 0)
 		poffs = n;
@@ -4720,12 +4744,15 @@ mstat(void)
 		done(1);
 	}
 #if defined (__linux__)
+#ifndef __G__
 	if ((mtst.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtget	mg;
 		if (ioctl(mt, MTIOCGET, &mg) == 0)
 			tapeblock = (mg.mt_dsreg&MT_ST_BLKSIZE_MASK) >>
 					MT_ST_BLKSIZE_SHIFT;
-	} else if ((mtst.st_mode&S_IFMT) == S_IFBLK) {
+	} else
+#endif	/* __G__ */
+		if ((mtst.st_mode&S_IFMT) == S_IFBLK) {
 		/*
 		 * If using a block device, write blocks of the floppy
 		 * disk sector with direct i/o. This enables signals
@@ -5702,6 +5729,8 @@ ziprxtra(struct file *f, struct zip_header *z)
 		x = smalloc(len);
 		if (bread((char *)x, len) != len)
 			return -1;
+		if (len < 4)
+			return len;
 		xp = x;
 		while (len > 0) {
 			if (len < 4)
@@ -6050,7 +6079,7 @@ zipwtemp(int fd, const char *fn, struct stat *st, union bincpio *bp, size_t sz,
 		uint32_t dev, uint32_t ino, uint32_t *crc, long long *csize)
 {
 	static int	tf = -1;
-	static char	tlate[] = "/var/tmp/cpioXXXXXX";
+	static char	tlate[_POSIX_PATH_MAX+1];
 	char	ibuf[32768];
 #if USE_ZLIB || USE_BZLIB
 	char	obuf[32768];
@@ -6066,6 +6095,13 @@ zipwtemp(int fd, const char *fn, struct stat *st, union bincpio *bp, size_t sz,
 	*crc = 0;
 #if USE_ZLIB || USE_BZLIB
 	if (tf < 0) {
+		char *tmpdir;
+		if ((tmpdir = getenv("TMPDIR")) == NULL)
+			tmpdir = "/var/tmp";
+		if (snprintf(tlate, sizeof tlate, "%s/cpioXXXXXX", tmpdir) >=
+				sizeof tlate)
+			snprintf(tlate, sizeof tlate, "%s/cpioXXXXXX",
+					"/var/tmp");
 		if ((tf = mkstemp(tlate)) >= 0)
 			unlink(tlate);
 	} else if (lseek(tf, 0, SEEK_SET) != 0) {

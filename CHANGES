@@ -1,3 +1,28 @@
+Release ...
+* cpio: Skip over zip extra headers with fewer than four bytes (the minimum
+  length for them to contain any information) instead of reporting a bad
+  header and terminating.
+* pg: Handle cases where standard output is a terminal but not open for
+  reading (bug reported by Keith Doyle).
+* cpio, tar: If an archive contains a file that is a hardlink to itself on
+  extraction, do nothing at all instead of discarding its data. This mainly
+  happens if a file with more than one link is included under the same name
+  in an archive twice. Since special situations on extraction such as bind
+  mounts on Linux may lead to this scenario even in cases where both link
+  names are different, this is now treated like a successful link() step
+  (bugreport by Thomas Graf).
+* Made the getopt() substitute work with the getopt$UNIX2003() function
+  redirection mechanism on Mac OS X Leopard.
+* mknod, pgrep, ps: Mac OS X Leopard compilation fixes.
+* w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
+  avoid a harmless error message (bug reported by Pierre Gentile).
+* ptime: Works on recent Linux kernels again.
+* col: The behavior of the -x flag has been inverted to actually match
+  the documentation, i.e. to suppress conversion of spaces to tabs (patch
+  by Markus Schnalke).
+* cut: With "-s", print the last field of a line that was also the last
+  field specified with "-f" (bugreport by Pierre Gentile).
+
 Release 240220
 * [NEW] seq: Stone-simple implementation; needs some improvement yet.
 * [NEW] watch: Complete, simple and stable implementation.
@@ -18,7 +43,6 @@ Release 230503
 * readlink: "fix: Made ``name_size`` private again, so ``pfmt()`` won't go segmentation fault."
 * readlink: "feat: First step, start modularizing the code."
 * libcommon: "fix: getdirentries replacement for OBSD >5.4"
-
 * fix-me: For new releases, finish porting for OpenBSD and implement watch(1) and timeout(1).
 
 Release 230305
