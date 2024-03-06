@@ -1,23 +1,7 @@
 /*
  * Copyright (c) 2003 Gunnar Ritter
  *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute
- * it freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source distribution.
+ * SPDX-Licence-Identifier: Zlib
  */
 /*	Sccsid @(#)vpfmt.c	1.2 (gritter) 9/21/03	*/
 
@@ -25,6 +9,7 @@
 #include <stdarg.h>
 
 #include "pfmt.h"
+
 
 extern char	*pfmt_label__;
 
@@ -58,7 +43,7 @@ vpfmt(FILE *stream, long flags, const char *fmt, va_list ap)
 {
 	int	n = 0;
 	const char	*severity = NULL;
-	char	sevbuf[25];
+	char sevbuf[25];
 
 	if ((flags&MM_NOSTD) == 0) {
 		if (flags & MM_ACTION)
@@ -77,7 +62,9 @@ vpfmt(FILE *stream, long flags, const char *fmt, va_list ap)
 			severity = "ERROR";
 			break;
 		default:
-			snprintf(sevbuf, sizeof sevbuf, "SEV=%ld", flags&0377);
+			/* snprintf is not needed here since we know
+			     `flags & 0xFF` can't take more than 3 chars */
+			sprintf(sevbuf, "SEV=%ld", flags & 0xFF);
 			severity = sevbuf;
 		}
 		if (pfmt_label__)

@@ -6,23 +6,7 @@
 /*
  * Copyright (c) 2003 Gunnar Ritter
  *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute
- * it freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source distribution.
+ * SPDX-Licence-Identifier: Zlib
  */
 
 #if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
@@ -393,14 +377,22 @@ main(int argc, char **argv)
 	}
 	if (illegal)
 		usage();
-#ifndef	SUS
+
+#if !defined(SUS) /* Not SUS, the default and updated binary. */
 	if (argv[optind] && argv[optind][0] == '-' && argv[optind][1] == '\0' &&
 			(argv[optind-1][0] != '-' || argv[optind-1][1] != '-' ||
 			 argv[optind-1][2] != '\0'))
 		optind++;
-#endif
+	if (optind >= argc && !fflag)
+#else /* SUS, without the POSIX 1003.1(2008) fix. */
 	if (optind >= argc)
+#endif
 		usage();
+	/* Test if file descriptor number 0 is a teletype terminal.
+	 * See isatty(3).
+	 * Just commenting out to make sure "ontty = isatty(0)" is re-scoped to
+	 * not being called when checking if optind >= argc, only when running
+	 * the program code itself. */
 	ontty = isatty(0);
 	if (rflag && (startfd = open(".", O_RDONLY)) < 0) {
 		fprintf(stderr, "%s: cannot open current directory\n",

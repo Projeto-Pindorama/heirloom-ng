@@ -1,12 +1,11 @@
 all: true false
 
-true: true.sh
-	echo '#!$(SHELL)' | cat - true.sh >true
-	chmod 755 true
-false: false.sh
-	echo '#!$(SHELL)' | cat - false.sh >false
-	chmod 755 false
+true: truther.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) truther.c -DTRUE -o true
 
+false: truther.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) truther.c -DFALSE -o false
+	
 install: all
 	$(UCBINST) -c true $(ROOT)$(DEFBIN)/true
 	$(UCBINST) -c false $(ROOT)$(DEFBIN)/false
@@ -15,4 +14,4 @@ install: all
 	$(LNS) true.1 $(ROOT)$(MANDIR)/man1/false.1
 
 clean:
-	rm -f true false core log *~
+	rm -f true false *~

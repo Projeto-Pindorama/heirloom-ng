@@ -1,0 +1,50 @@
+.\"
+.\" chroot.8 (takusuman) 7/2/22
+.\" Derived from the chroot(8) present in Solaris 2.5, but rewritten from
+.\" scratch.
+.\" Copyright (C) 2021-2022 Pindorama. All rights reserved.
+.\" Copyright (C) 2022 Molly A. McCollum (hex7c).
+.\"
+.\" SPDX-Licence-Identifier: Zlib
+.TH CHROOT 8 "04/29/23" "Heirloom Toolchest" "Maintenance Commands"
+.SH NAME
+chroot \- change system's root directory and execute a command there
+.SH SYNOPSIS
+\fBchroot\fR \fInewroot\fR [\fIcommand\fR]
+.SH DESCRIPTION
+The
+.B chroot
+command calls \fBchroot(2)\fR to change the system's root (\fB/\fR)
+directory to \fInewroot\fR and \fBexec(3)\fR to execute \fIcommand\fR
+\(em and any of its child processes \(em there.
+.PP
+.TP 6
+.B  NEWROOT
+The directory to switch the command's system root to.
+.PP
+.TP 6
+.B  COMMAND
+The command to execute, relative to \fINEWROOT\fR.
+.SH "NOTES"
+Please, take note that redirecting the output of \fIcommand\fR to a
+file will create it relative to the original root, not in the new one.
+.PP
+For instance, let's redirect \fIcommand\fR's standard output to a file
+called "\fIx\fR" at the \fI/tmp\fR directory:
+.IP \& 2
+.BI "# chroot newroot command >/tmp/x"
+.LP
+This will create \fIx\fR relative to the original root directory, not
+in \fInewroot\fR.
+.PP
+If you need to redirect the output inside the \fInewroot\fR, you
+will need to quote the actual \fIcommand\fR and prefix it with
+.B sh(1)
+followed by the "\fI-c\fR" option, like this:
+.IP \& 2
+.BI "# chroot newroot /bin/sh -c 'command >/tmp/x'"
+.LP
+.SH "SEE ALSO"
+cd(1),
+chroot(2),
+exec(3)

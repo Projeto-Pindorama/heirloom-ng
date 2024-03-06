@@ -5,33 +5,12 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
+ * Copyright (c) 2022: Luiz Antônio (takusuman)
  *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute
- * it freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source distribution.
+ * SPDX-Licence-Identifier: Zlib
  */
 
-#if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
-#define	USED	__attribute__ ((used))
-#elif defined __GNUC__
-#define	USED	__attribute__ ((unused))
-#else
-#define	USED
-#endif
+#define USED
 #if defined (SUS)
 static const char sccsid[] USED = "@(#)date_sus.sl	1.27 (gritter) 12/16/07";
 #else
@@ -135,7 +114,8 @@ badtime:
 }
 
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+	defined (__DragonFly__) || defined (__APPLE__) || __GLIBC__ >= 2 && \
+	__GLIBC_MINOR__ >= 31
 static int
 stime(time_t *t)
 {
@@ -146,7 +126,7 @@ stime(time_t *t)
 
 	return settimeofday(&tv, NULL);
 }
-#endif	/* __FreeBSD__, __NetBSD__, __OpenBSD__, __DragonFly__, __APPLE__ */
+#endif	/* __FreeBSD__, __NetBSD__, __OpenBSD__, __DragonFly__, __APPLE__, GLIBC above 2.35*/
 
 static void
 settime(char *op)

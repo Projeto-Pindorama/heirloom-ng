@@ -1,23 +1,7 @@
 /*
  * Copyright (c) 2003 Gunnar Ritter
  *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute
- * it freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source distribution.
+ * SPDX-Licence-Identifier: Zlib
  */
 /*	Sccsid @(#)getdir.c	1.20 (gritter) 5/14/06	*/
 
@@ -36,6 +20,28 @@
 #include	<errno.h>
 #include	<string.h>
 
+/*
+ * boilerplate for getdirentries(). Needed for OpenBSD releases greater than 5.4.
+ */
+#if  defined(__OpenBSD__)
+#include <sys/param.h>
+#include <dirent.h>
+#if OpenBSD >= 201311
+int
+getdirentries(int fd, char buf[], int nbytes, long basep[]) {
+	/* See: 
+	 * 		https://man7.org/linux/man-pages/man3/getdirentries.3.html
+	 *		https://git.suckless.org/9base/file/lib9/dirread.c.html
+	 *		https://man.openbsd.org/getdents.2
+	 *		Above are docs for solutions chosen.
+	 */
+	
+	return getdents(fd, (void*)buf, nbytes);
+}
+#endif
+#endif
+
+
 #if defined (__UCLIBC__)
 #include <linux/types.h>
 #include <linux/dirent.h>
@@ -52,28 +58,36 @@ extern int	getdents(int, struct dirent *, size_t);
 #undef	d_ino
 #endif	/* __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __DragonFly__
 	 || __APPLE__ */
-#elif defined	(__dietlibc__)
+				/* Linux without __GLIBC__ (musl) */
+#elif defined	(__dietlibc__) || !defined(__GLIBC__) && defined(__linux__)
 #include	<dirent.h>
 #include	<unistd.h>
 #else		/* !__GLIBC__, !__dietlibc__ */
+
 #ifdef	__hpux
 #define		_KERNEL
 #endif	/* __hpux */
+
 #include	<sys/dirent.h>
+
 #ifdef		__hpux
 #ifndef	_INO64_T
 typedef	unsigned long long	uint64_t;
 typedef	uint64_t	ino64_t;
 #endif	/* !_INO64_T */
+
 #ifdef	__LP64__
 #define	dirent		__dirent64
 #else	/* !__LP64__ */
 #define	dirent		__dirent32
 #endif	/* !__LP64__ */
+
 #define	d_reclen	__d_reclen
 #define	d_name		__d_name
 #define	d_ino		__d_ino
+
 #endif		/* __hpux */
+
 #endif		/* !__GLIBC__, !__dietlibc__ */
 
 #include	"getdir.h"

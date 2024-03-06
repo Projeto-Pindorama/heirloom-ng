@@ -1,3 +1,6 @@
+CFLAGS += $(C_SEMANTICS_LIKE_ITS_89)
+LDFLAGS += $(L_SEMANTICS_LIKE_ITS_89)
+
 all: tabs newform
 
 tabs: tabs.o tabspec.o
@@ -10,7 +13,7 @@ newform: newform.o tabspec.o
 	$(LD) $(LDFLAGS) newform.o tabspec.o $(LCOMMON) $(LWCHAR) $(LIBS) -o newform
 
 newform.o: newform.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c newform.c
+	$(CC) $(CFLAGS) $(CPPFLAGS)  $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c newform.c
 
 tabspec.o: tabspec.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c tabspec.c

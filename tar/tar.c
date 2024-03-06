@@ -5,35 +5,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *   Redistributions of source code and documentation must retain the
- *    above copyright notice, this list of conditions and the following
- *    disclaimer.
- *   Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *   All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *      This product includes software developed or owned by Caldera
- *      International, Inc.
- *   Neither the name of Caldera International, Inc. nor the names of
- *    other contributors may be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * USE OF THE SOFTWARE PROVIDED FOR UNDER THIS LICENSE BY CALDERA
- * INTERNATIONAL, INC. AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL CALDERA INTERNATIONAL, INC. BE
- * LIABLE FOR ANY DIRECT, INDIRECT INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-Licence-Identifier: Caldera
  */
 
 #if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
@@ -49,7 +21,7 @@ static const char sccsid[] USED = "@(#)tar.sl	1.180 (gritter) 10/9/10";
 #include <sys/stat.h>
 #ifdef	__linux__
 #include <linux/fd.h>
-#if !defined (__UCLIBC__) && !defined (__dietlibc__)
+#if !defined(__UCLIBC__) && !defined(__dietlibc__)
 #include <linux/fs.h>
 #endif	/* !__UCLIBC__, !__dietlibc__ */
 #undef	WNOHANG
@@ -96,13 +68,13 @@ static const char sccsid[] USED = "@(#)tar.sl	1.180 (gritter) 10/9/10";
 #include <sys/st01.h>
 #endif	/* SVR4.2MP */
 
-#ifdef	_AIX
+#if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
 #endif
 
 #if !defined (major) && !defined (__G__)
 #include <sys/mkdev.h>
-#endif	/* !major */
+#endif /* If "major" still not defined. */
 
 #include <getdir.h>
 #include <asciitype.h>
@@ -120,8 +92,8 @@ static const char sccsid[] USED = "@(#)tar.sl	1.180 (gritter) 10/9/10";
 #endif
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__)
 /*
  * For whatever reason, FreeBSD casts the return values of major() and
  * minor() to signed values so that normal limit comparisons will fail.
@@ -2178,9 +2150,9 @@ tseek(int n, int rew)
 	int	fault;
 #ifndef __G__
 	if (tapeblock > 0 && rew) {
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
-	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
+	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 		struct mtop	mo;
 		mo.mt_op = n > 0 ? MTFSR : MTBSR;
 		mo.mt_count = (n > 0 ? n : -n) / tapeblock;
@@ -2609,7 +2581,7 @@ suprmsg(void)
 static void
 odirect(void)
 {
-#if defined (__linux__) && defined (O_DIRECT)
+#if defined(__linux__) && defined(O_DIRECT)
 	/*
 	 * If we are operating on a floppy disk block device and know
 	 * its track size, use direct i/o. This has the advantage that
@@ -2652,7 +2624,7 @@ domtstat(void)
 	if ((mtstat.st_mode&S_IFMT) == S_IFIFO ||
 			(mtstat.st_mode&S_IFMT) == S_IFSOCK)
 		Bflag = 1;
-#if defined (__linux__)
+#if defined(__linux__)
 	if ((mtstat.st_mode&S_IFMT) == S_IFBLK) {
 		struct floppy_struct	fs;
 		int	blkbsz;
@@ -2690,7 +2662,7 @@ domtstat(void)
 					>> MT_ST_BLKSIZE_SHIFT);
 #endif
 	}
-#elif defined (__sun)
+#elif defined(__sun)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtdrivetype_request	mr;
 		static struct mtdrivetype	md;
@@ -2699,14 +2671,14 @@ domtstat(void)
 		if (ioctl(mt,  MTIOCGETDRIVETYPE, &mr) == 0)
 			tapeblock = md.bsize;
 	}
-#elif defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) \
-		|| defined (__DragonFly__) || defined (__APPLE__)
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
+		|| defined(__DragonFly__) || defined(__APPLE__)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtget	mg;
 		if (ioctl(mt, MTIOCGET, &mg) == 0)
 			tapeblock = mg.mt_blksiz;
 	}
-#elif defined (__hpux) || defined (_AIX)
+#elif defined(__hpux) || defined(_AIX)
 #else	/* SVR4.2MP */
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct blklen	bl;
@@ -2728,9 +2700,9 @@ domtstat(void)
 		tapeblock /= TBLOCK;
 		if (tapeblock > NBLOCK)
 			NBLOCK = tapeblock;
-#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
-	defined (__NetBSD__) || defined (__OpenBSD__) || \
-	defined (__DragonFly__) || defined (__APPLE__)
+#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
+	defined(__NetBSD__) || defined(__OpenBSD__) || \
+	defined(__DragonFly__) || defined(__APPLE__)
 		if (bflag == 0 && cflag && twice == 0) {
 			if (nblock == 1) {
 				if ((nblock = tapeblock) > NBLOCK)
@@ -2765,9 +2737,18 @@ checkzip(const char *bp, int rd)
 			return redirect("bzip2", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\235')
 			return redirect("zcat", NULL, rd);
+		else if (bp[0] == 'L' && bp[1] == 'Z' && bp[2] == 'I' && bp[3] == 'P')
+			return redirect("lzip", "-cd", rd);
 		else if (bp[0] == '\37' && bp[1] == '\213')
 			return redirect("gzip", "-cd", rd);
-	}
+		else if (bp[0] == '\xFD'&& bp[2] == '7' && bp[3] == 'z' && bp[4] == 'X' && bp[5] == 'Z')
+			return redirect("xz", "-cd", rd);
+		else if (bp[0] == '\x28' && bp[1] == '\xB5' && bp[2] == '\x2F' && bp[3] == '\xFD');
+			return redirect("zstd", "-cd", rd);
+		// else;
+		//	fprintf(stderr, "%s: file damaged or not tar archive\n", progname);
+		//	done(-1);
+		}
 	maybezip = 0;
 	return -1;
 }

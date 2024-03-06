@@ -5,24 +5,8 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute
- * it freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- * 2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- * 3. This notice may not be removed or altered from any source distribution.
+ * Copyright (C) 2023 Luiz Antônio Rangel
+ * SPDX-Licence-Identifier: Zlib
  */
 
 /*	Sccsid @(#)grep.c	1.53 (gritter) 12/27/06>	*/
@@ -58,6 +42,7 @@ int		Fflag;			/* use fixed strings */
 int		bflag;			/* print buffer count */
 int		cflag;			/* print count only */
 int		fflag;			/* had pattern file argument */
+int		Hflag;			/* print filenames along with the match */
 int		hflag;			/* do not print filenames */
 int		iflag;			/* ignore case */
 int		lflag;			/* print filenames only */
@@ -261,8 +246,8 @@ redirect(struct iblok *ip, const char *arg0, const char *arg1)
 void
 report(const char *line, size_t llen, off_t bcnt, int addnl)
 {
-	if (filename && !hflag)
-		printf("%s:", filename);
+	if (filename && (!hflag || Hflag))
+		printf("%s:\040", filename);
 #ifdef	LONGLONG
 	if (bflag)
 		printf("%llu:", (long long)bcnt);
@@ -630,6 +615,9 @@ main(int argc, char **argv)
 			fflag++;
 			patfile(optarg);
 			hadpat++;
+			break;
+		case 'H':
+			Hflag = 1;
 			break;
 		case 'h':
 			hflag = 1;
