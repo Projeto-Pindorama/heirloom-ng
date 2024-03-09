@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
 			 * false --- and check which was the other signal sent.
 			 */
 			for (; ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR);) {
-				continue
+				continue;
 			}
 
 			if (cmdpid == exec_pid) {
@@ -398,8 +398,9 @@ int validate_signal(char *str) {
 	register int i;
 
 	/* 
-	 * Check if the first character of the input string is a letter, so it
-	 * can be parsed into a signal name.
+	 * Check if the first character of the input
+	 * string is a letter, so it can be parsed
+	 * into a signal name.
 	 */
 	if (isalpha(str[0])) {
 		/* If it starts with "SIG" */
@@ -447,14 +448,14 @@ struct TClock validate_duration(char *timestr) {
  * struct is set.
  */
 int parse_interval(const char *ss, struct TClock *interval) {
-	char s[32];
-	char *afterpoint = NULL,
+	char s[32] = {(char)0},
+	     *afterpoint = NULL,
 	     *decsep = NULL,
 	     *tunit = NULL;
 	/* 'double' for the converted time per unit. */ 
 	double ftime = 0;
-	register size_t i;
-	size_t afterpoint_len;
+	register size_t i = 0;
+	size_t afterpoint_len = 0;
 
 	/* 
 	 * Support both Anglo and European decimal separators.
