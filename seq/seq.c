@@ -14,7 +14,6 @@
 #include <string.h>
 #include <unistd.h>
 
-
 /* That's is for custom format at printf(3) via -p and -w. */
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
 /* False positive for char *argv[]. */
@@ -45,7 +44,7 @@ void main(int argc, char *argv[]) {
 	extern int optind;
 	int option = 0;
 	register float count = 0;
-	char *format = NULL,
+	char *format = "",
 		*separator = "";
 	
 	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
@@ -120,8 +119,8 @@ void main(int argc, char *argv[]) {
 }
 
 char *buildfmt(void) {
-	char *picture = NULL,
-	     *fmtbuf = NULL; 
+	char *picture = "",
+	     *fmtbuf = ""; 
 	
 	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -219,7 +218,7 @@ char *buildfmt(void) {
 
 char *getlgstr(void) {
 	char strflt[32] = {(char)0},
-	     *lgstnum = NULL;
+	     *lgstnum = "";
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -250,7 +249,7 @@ char *getlgstr(void) {
 int afterdecsep(char *s) {
 	register int c = 0;
 	unsigned long fraclen = 0;
-	char *fracpart = NULL;
+	char *fracpart = "";
 
 	if (isalpha(s[0])) {
 		/* Panic. */
