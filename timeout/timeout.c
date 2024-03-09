@@ -294,11 +294,15 @@ int main(int argc, char *argv[]) {
 			siglist.sig_chld = 0;
 
 			/* 
+			 * taks note: This code looks a little confusing for
+			 * people who never worked with signals in C, so there's
+			 * my explanation:
 			 * If the signal sent was a SIGCHLD, keep an eye if the
 			 * wait(2) function returns that the child process had
-			 * been interrupt (EINTR), continue the loop with
-			 * sig_chld zeroed --- or, in a boolean context, made 
-			 * false --- and check which was the other signal sent.
+			 * been interrupt (EINTR), in that case, continue the
+			 * code, making the program exit code (eprog) equal to
+			 * the command exit code (ecmd) and getting loose from
+			 * the signal-checking loop.
 			 */
 			for (; ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR);) {
 				continue;
