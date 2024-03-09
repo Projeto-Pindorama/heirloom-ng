@@ -6,7 +6,7 @@
 # This script is public domain, no more, no less.
 
 main() {
-	for SIG in ABRT ALRM HUP INT TERM; do
+	for SIG in ABRT ALRM CHLD HUP INT TERM; do
 	eval "trap 'handle_signal $SIG' $SIG"
 	done
 	take=${1:-5}
