@@ -293,7 +293,16 @@ int main(int argc, char *argv[]) {
 		if (siglist.sig_chld) {
 			siglist.sig_chld = 0;
 
-			for (; ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR););
+			/* 
+			 * If the signal sent was a SIGCHLD, keep an eye if the
+			 * wait(2) function returns that the child process had
+			 * been interrupt (EINTR), continue the loop with
+			 * sig_chld zeroed --- or, in a boolean context, made 
+			 * false --- and check which was the other signal sent.
+			 */
+			for (; ((cmdpid = wait(&ecmd)) < 0 && errno == EINTR);) {
+				continue
+			}
 
 			if (cmdpid == exec_pid) {
 				eprog = ecmd;
