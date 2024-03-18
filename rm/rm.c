@@ -377,22 +377,14 @@ main(int argc, char **argv)
 	}
 	if (illegal)
 		usage();
-
-#if !defined(SUS) /* Not SUS, the default and updated binary. */
+#ifndef	SUS
 	if (argv[optind] && argv[optind][0] == '-' && argv[optind][1] == '\0' &&
 			(argv[optind-1][0] != '-' || argv[optind-1][1] != '-' ||
 			 argv[optind-1][2] != '\0'))
 		optind++;
-	if (optind >= argc && !fflag)
-#else /* SUS, without the POSIX 1003.1(2008) fix. */
-	if (optind >= argc)
 #endif
+	if (optind >= argc)
 		usage();
-	/* Test if file descriptor number 0 is a teletype terminal.
-	 * See isatty(3).
-	 * Just commenting out to make sure "ontty = isatty(0)" is re-scoped to
-	 * not being called when checking if optind >= argc, only when running
-	 * the program code itself. */
 	ontty = isatty(0);
 	if (rflag && (startfd = open(".", O_RDONLY)) < 0) {
 		fprintf(stderr, "%s: cannot open current directory\n",
