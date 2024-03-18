@@ -2,6 +2,7 @@
 .\" Sccsid @(#)rm.1	1.14 (gritter) 1/24/05
 .\" Parts taken from rm(1), Unix 7th edition:
 .\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\" Copyright(C) Pindorama 2022-2024.
 .\"
 .\" SPDX-Licence-Identifier: Caldera
 .TH RM 1 "1/24/05" "Heirloom Toolchest" "User Commands"
@@ -45,6 +46,15 @@ and
 .B /usr/5bin/s42/rm
 will not print an error message
 if removal of a file failed.
+.br
+For
+.B /usr/5bin/rm
+specifically,
+an error message will not printed 
+if there's not a file being informed
+as a parameter. This payload has been
+introduced by POSIX.1-2008.
+.br
 For
 .B /usr/5bin/posix/rm
 and

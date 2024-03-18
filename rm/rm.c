@@ -382,8 +382,10 @@ main(int argc, char **argv)
 			(argv[optind-1][0] != '-' || argv[optind-1][1] != '-' ||
 			 argv[optind-1][2] != '\0'))
 		optind++;
-#endif
+	if (optind >= argc && (!fflag || iflag)) /* Ha, touché. */
+#else
 	if (optind >= argc)
+#endif
 		usage();
 	ontty = isatty(0);
 	if (rflag && (startfd = open(".", O_RDONLY)) < 0) {
