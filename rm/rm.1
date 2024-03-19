@@ -9,7 +9,13 @@
 .SH NAME
 rm \- remove directory entries
 .SH SYNOPSIS
-\fBrm\fR [\fB\-f\&iRr\fR] \fIfile\fR ...
+\fB/usr/5bin/rm\fR
+[\fB\-f\&iRre\fR]
+[\fIfile\fR ...]
+.br
+\fB/usr/5bin/s42/rm\fR
+[\fB\-f\&iRr\fR]
+\fIfile\fR ...
 .SH DESCRIPTION
 Rm removes the entries
 for one or more files from a directory.
@@ -35,6 +41,13 @@ but its target will remain in the file hierarchy.
 The
 .B rm
 command accepts the following options:
+.TP
+.B \-e
+Displays a message after deleting each file.
+This option has been introduced by IBM AIX(R)
+and is an extension to the standard (see NOTES).
+This option is only present at
+.BR /usr/5bin/rm .
 .TP
 .B \-f
 No questions are asked
@@ -115,3 +128,74 @@ as with `rm \- \-file'.
 If `\-\-' is used to terminate the options list, though,
 a following `\-' will be interpreted as a file name,
 so `rm \-\- \-' will remove the file `\-'.
+.PP
+Option \-e is an extension and should not be
+cluelessly used on shell scripts. It apparently
+appeared first (and only) on IBM AIX(R) UNIX, but
+it works pretty much like as BSD/GNU's \-v option.
+.br
+If verbosing is desired, a measure to abide with
+would be to use a boilerplate function that deals
+with different
+.B rm(1)
+implementations.
+An example:
+.RS
+.sp
+.nf
+_rmv() {
+    if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-gt 20240220 \-o "x\`uname -s\`" \\= \'xAIX\'; then
+        rm \-re "$@"
+    elif (rm \-\-help 2>&1 | egrep \'\\[\\-.*v.*\\]|GNU\' 2>&1 > /dev/null); then
+        rm \-rv "$@"
+    else
+        if test \-n "$1"; then
+            for file; do
+                if test \-L "$file" \-o \-f "$file"; then
+                    rm "$file" \\
+                    && printf \'rm: removed file %s\\n\' "$file"
+                elif test \-d "$file"; then
+                    find "$file" \-type f \-print \\
+                    | (while read sfile; do
+                        rm "$sfile" \\
+                        && printf \'rm: removed file %s\\n\' \\
+                            "$sfile"
+                      done) \\
+                    && find "$file" \-type d \-print \\
+                    | (while read directory; do
+                        rmdir "$directory" \\
+                        && printf \'rm: removed directory %s\\n\' \\
+                            "$directory"
+                    done)
+                fi
+            done
+        fi
+    fi
+}
+.fi
+.sp
+.RE
+Above there is a shell function that
+works per checking which implementation
+is being used and then use the correct
+option for it. In case of the
+.B rm(1)
+program being strictly POSIX, it will
+emulate \-e/\-v payloads per using
+.B find(1)
+along with the default
+.B rm(1)
+and
+.B rmdir(1)
+commmands inside a loop. See
+.B sh(1)
+for more information about the
+shell language structure itself.
+It can be said that the strict POSIX
+fallback is fairly slower than the
+other options, but it works even in
+the cruder UNIX-compatible environments.
+.br
+This is just an example that can
+(and must) be freely used and improved;
+I will not delve much into this merit.

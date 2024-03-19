@@ -2,9 +2,11 @@
  * rm - remove directory entries
  *
  * Gunnar Ritter, Freiburg i. Br., Germany, July 2002.
- */
+ * Luiz Antônio Rangel, Brazil, March 2024.
+*/
 /*
  * Copyright (c) 2003 Gunnar Ritter
+ * Copyright (c) 2022-2024: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -52,6 +54,9 @@ static int	ontty;			/* stdin is a tty */
 static int	fflag;			/* force */
 static int	iflag;			/* ask for confirmation */
 static int	rflag;			/* recursive */
+#ifndef	SUS
+static int	eflag;			/* Displays a message after deleting each file. */
+#endif
 static char	*progname;		/* argv[0] to main() */
 static char	*path;			/* full path to current file */
 static size_t	pathsz;			/* allocated size of path */
@@ -81,7 +86,13 @@ smalloc(size_t nbytes)
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: %s [-fir] file ...\n", progname);
+	fprintf(stderr,
+#ifdef	SUS
+		"usage: %s [-fir] file ...\n",
+#else
+		"usage: %s [-fire] file ...\n",
+#endif
+		progname);
 	exit(2);
 }
 
@@ -158,6 +169,14 @@ rmfile(const char *base, const struct stat *sp)
 		errcnt |= 1;
 		return -1;
 	}
+#ifndef SUS
+	if (eflag) {
+		msg(((sp->st_mode&S_IFMT) == S_IFDIR
+			? "removing directory %s\n"
+			: "removing %s\n"),
+				path);
+	}
+#endif
 	return 0;
 }
 
@@ -346,6 +365,7 @@ int
 main(int argc, char **argv)
 {
 	int i, startfd = -1, illegal = 0;
+	char *options = "";
 
 #ifdef	__GLIBC__
 	putenv("POSIXLY_CORRECT=1");
@@ -353,7 +373,14 @@ main(int argc, char **argv)
 	progname = basename(argv[0]);
 	if (getenv("SYSV3") != NULL)
 		sysv3 = 1;
-	while ((i = getopt(argc, argv, "fiRr")) != EOF) {
+
+#ifdef SUS
+	options = "fiRr";
+#else
+	options = "fiRre";
+#endif
+
+	while ((i = getopt(argc, argv, options)) != EOF) {
 		switch (i) {
 		case 'f':
 			fflag = 1;
@@ -371,6 +398,11 @@ main(int argc, char **argv)
 		case 'r':
 			rflag = 1;
 			break;
+#ifndef	SUS
+		case 'e':
+			eflag = 1;
+			break;
+#endif
 		default:
 			illegal = 1;
 		}
