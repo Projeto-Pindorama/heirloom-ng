@@ -54,7 +54,7 @@ static int	ontty;			/* stdin is a tty */
 static int	fflag;			/* force */
 static int	iflag;			/* ask for confirmation */
 static int	rflag;			/* recursive */
-#ifndef	SUS
+#if !defined(SUS) && !defined(SYSV3)
 static int	eflag;			/* Displays a message after deleting each file. */
 #endif
 static char	*progname;		/* argv[0] to main() */
@@ -87,7 +87,7 @@ static void
 usage(void)
 {
 	fprintf(stderr,
-#ifdef	SUS
+#if defined(SUS) || defined(SYSV3)
 		"usage: %s [-fir] file ...\n",
 #else
 		"usage: %s [-fire] file ...\n",
@@ -169,7 +169,7 @@ rmfile(const char *base, const struct stat *sp)
 		errcnt |= 1;
 		return -1;
 	}
-#ifndef SUS
+#if !defined(SUS) && !defined(SYSV3)
 	if (eflag) {
 		msg(((sp->st_mode&S_IFMT) == S_IFDIR
 			? "removing directory %s\n"
@@ -374,7 +374,7 @@ main(int argc, char **argv)
 	if (getenv("SYSV3") != NULL)
 		sysv3 = 1;
 
-#ifdef SUS
+#if defined(SUS) || defined(SYSV3)
 	options = "fiRr";
 #else
 	options = "fiRre";
@@ -398,7 +398,7 @@ main(int argc, char **argv)
 		case 'r':
 			rflag = 1;
 			break;
-#ifndef	SUS
+#if !defined(SUS) && !defined(SYSV3)
 		case 'e':
 			eflag = 1;
 			break;
@@ -414,9 +414,12 @@ main(int argc, char **argv)
 			(argv[optind-1][0] != '-' || argv[optind-1][1] != '-' ||
 			 argv[optind-1][2] != '\0'))
 		optind++;
-	if (optind >= argc && (!fflag || iflag)) /* Ha, touché. */
-#else
+#endif
+
+#if defined(SUS) || defined(SYSV3)
 	if (optind >= argc)
+#else
+	if (optind >= argc && (!fflag || iflag)) /* Ha, touché. */
 #endif
 		usage();
 	ontty = isatty(0);
