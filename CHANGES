@@ -1,4 +1,6 @@
 Release ...
+* rm: Added real support for the POSIX 1003.1(2008) standard and implemented
+  IBM AIX(R)-style verbosing.
 * seq: Made its payload similar to UNIX v8's implementation, but with some
   extensions such as a fast algorithm for -w or -s --- which was already
   present before the (almost) full rewrite.
