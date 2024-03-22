@@ -15,6 +15,7 @@
 
 #if !defined (SUS) && !defined (SU3) && !defined (S42)
 #include <asm/fcntl.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #endif
@@ -113,7 +114,7 @@ main(int argc, char **argv)
 	int c;
 
 #if !defined (SUS) && !defined (SU3) && !defined (S42)
-	int iflag;
+	int iflag = 0;
 	char infnam[PATH_MAX] = {(char)0}, /* In-place filename */
 /*	     *infext = "", */
 	     *ofile = "";
@@ -210,39 +211,44 @@ main(int argc, char **argv)
 		/* eargv[0] is the filename. */
 		ofile = strdup(eargv[0]);
 
-/*		if (strncmp(infext, "", sizeof(char)) == 0) { */
-			char ftmppath[256] = {(char)0};
-			strcat(ftmppath, tmpdir);
-			strcat(ftmppath, "/");
-			strcat(ftmppath, progname);
-			strcat(ftmppath, "XXXXXX");
-			snprintf(infnam, "%s", mktemp(ftmppath));
+/*		if (strncmp(infext, "", sizeof(char)) == 0) {  */
+ 			char ftmppath[256] = {(char)0};
+ 			strcat(ftmppath, tmpdir);
+ 			strcat(ftmppath, "/");
+ 			strcat(ftmppath, progname);
+ 			strcat(ftmppath, "XXXXXX");
+ 			snprintf(infnam, "%s", mktemp(ftmppath));
+
 /*
  * 		FIXME: getopt() does not support optional 'optarg's.
  *		} else {
+ *
  *			strcat(infnam, ofile);
  *			strcat(infnam, infext);
- *		}	
  */
+		
 		if ((infile = fdopen(
-				open(infnam, O_CREAT | O_EXCL | O_RDWR, 0600),
-				"r+")) < 0) {
-		       nonfatal("Couldn't create %s\n", infnam);
+			open(infnam, O_CREAT | O_EXCL | O_RDWR, 0600), "r+")) < 0) {
+		       nonfatal("Couldn't create %s: %s", infnam, strerror(errno));
 		       return;
 		}
-	}
+
 	
-	if ((orfile = fdopen(open(ofile, O_RDONLY), "r")) < 0) {
-		nonfatal("Can't open %s", ofile);
-		return;
-	}
-	cchr = fgetc(orfile);
-	for (; cchr != EOF;) {
-		fputc(cchr, infile);
-	cchr = fgetc(orfile);
+		if ((orfile = fdopen(
+			open(ofile, O_RDONLY), "r")) < 0) {
+			nonfatal("Can't open %s: %s", ofile, strerror(errno));
+			return;
+		}
+	
+		for (; cchr != EOF; cchr = fgetc(orfile)) {
+			fputc(cchr, infile);
+		}
+
+		close(orfile);
+		close(infile);
 	}
 
-	fcode[0] = iflag ? orfile : stdout;
+	fcode[0] = iflag ? fopen(ofile, "r+") : stdout;
 #else
 	fcode[0] = stdout;
 #endif
@@ -260,9 +266,19 @@ main(int argc, char **argv)
 	if(eargc <= 0)
 		execute((char *)NULL);
 	else while(--eargc >= 0) {
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+		execute(iflag 
+			? infnam
+			: *eargv++);
+#else
 		execute(*eargv++);
+#endif
 	}
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+	fclose(fcode[0]);
+#else
 	fclose(stdout);
+#endif
 	return status;
 }
 
