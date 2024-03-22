@@ -13,6 +13,12 @@
 #include <wchar.h>
 #include "sed.h"
 
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+#include <asm/fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#endif
+
 int	ABUFSIZE;
 struct reptr	**abuf;
 int	aptr;
@@ -43,6 +49,9 @@ static const char	LTL[]	= "Label too long: %s";
 static const char	LINTL[]	= "line too long";
 static const char	AD0MES[]	= "No addresses allowed: %s";
 static const char	AD1MES[]	= "Only one address allowed: %s";
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+static const char tmpdir[] = "/tmp";
+#endif
 static FILE	**fcode;
 static FILE	*fin;
 static char	*lastre;
@@ -102,7 +111,20 @@ int
 main(int argc, char **argv)
 {
 	int c;
+
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+	int iflag;
+	char infnam[PATH_MAX] = {(char)0}, /* In-place filename */
+/*	     *infext = "", */
+	     *ofile = "";
+	register char cchr = (char)0;
+/*	const char optstr[] = "nf:e:gi:"; */
+	const char optstr[] = "nf:e:gi";
+	FILE *infile = NULL,
+	     *orfile = NULL;
+#else
 	const char optstr[] = "nf:e:g";
+#endif	/* SUS || SU3 || S42 */
 
 	sed = 1;
 	progname = basename(argv[0]);
@@ -127,7 +149,6 @@ main(int argc, char **argv)
 	pending = 0;
 	depth = 0;
 	morefiles();
-	fcode[0] = stdout;
 	nfiles = 1;
 	morefiles();
 
@@ -138,6 +159,17 @@ main(int argc, char **argv)
 		case 'n':
 			nflag++;
 			continue;
+
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+		case 'i':
+			iflag++;
+/*
+ *			infext = (optarg == (char *)0)
+ *				? ""
+ *				: strdup(optarg);
+ */
+			break;
+#endif
 
 		case 'f':
 			if((fin = fopen(optarg, "r")) == NULL)
@@ -172,6 +204,48 @@ main(int argc, char **argv)
 		fcomp();
 		eflag = 0;
 	}
+
+#if !defined (SUS) && !defined (SU3) && !defined (S42)
+	if (iflag) {
+		/* eargv[0] is the filename. */
+		ofile = strdup(eargv[0]);
+
+/*		if (strncmp(infext, "", sizeof(char)) == 0) { */
+			char ftmppath[256] = {(char)0};
+			strcat(ftmppath, tmpdir);
+			strcat(ftmppath, "/");
+			strcat(ftmppath, progname);
+			strcat(ftmppath, "XXXXXX");
+			snprintf(infnam, "%s", mktemp(ftmppath));
+/*
+ * 		FIXME: getopt() does not support optional 'optarg's.
+ *		} else {
+ *			strcat(infnam, ofile);
+ *			strcat(infnam, infext);
+ *		}	
+ */
+		if ((infile = fdopen(
+				open(infnam, O_CREAT | O_EXCL | O_RDWR, 0600),
+				"r+")) < 0) {
+		       nonfatal("Couldn't create %s\n", infnam);
+		       return;
+		}
+	}
+	
+	if ((orfile = fdopen(open(ofile, O_RDONLY), "r")) < 0) {
+		nonfatal("Can't open %s", ofile);
+		return;
+	}
+	cchr = fgetc(orfile);
+	for (; cchr != EOF;) {
+		fputc(cchr, infile);
+	cchr = fgetc(orfile);
+	}
+
+	fcode[0] = iflag ? orfile : stdout;
+#else
+	fcode[0] = stdout;
+#endif
 
 	if(depth)
 		fatal("Too many {'s");
