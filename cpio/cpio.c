@@ -157,6 +157,11 @@ myminor(long dev)
 #define	minor(a)	myminor(a)
 #endif	/* __FreeBSD__, __NetBSD__, __OpenBSD__, __DragonFly__, __APPLE__ */
 
+/* global enums moved here to prevent duplicate definitions */
+enum _pax_preserve pax_preserve;
+enum _pax pax;
+enum _fmttype fmttype;
+
 /*
  * Device and inode counts in cpio formats are too small to store the
  * information used to detect hard links on today's systems. Keep track
