@@ -100,8 +100,8 @@ void main(int argc, char *argv[]) {
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
-	separator = (strncmp(separator, "", sizeof(char *)) == 0)
-			? "\n" 
+	separator = (! *separator)
+			? "\n"
 			: separator;
 
 	for (count = start; count <= stop; count += step) {
