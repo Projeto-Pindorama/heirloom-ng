@@ -137,7 +137,7 @@ char *buildfmt(void) {
 	} 
 	
 	if (fPicture || fWadding) { 
-		int precision = 0;
+		long int precision = 0;
 		unsigned long int natural = 0;
 			      
 		char strnum[32] = {(char)0},
@@ -201,12 +201,12 @@ char *buildfmt(void) {
 		 * printed.
 		 */	
 		if (precision > 0) {
-			natural += (unsigned)precision;
+			natural += (unsigned long int)precision;
 			natural += 1;
 		}
 
 		/* Write to 'buf', then copy to fmtbuf. */
-		snprintf(buf, sizeof(buf), "%%%d%ld.%df%%s",
+		snprintf(buf, sizeof(buf), "%%%d%ld.%ldf%%s",
 					0, natural, precision);
 		fmtbuf = strdup(buf);
 		
