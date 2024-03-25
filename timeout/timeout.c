@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0; /* Program exit code. */
 	
-	char **commandv = { (char)0 },
+	char **commandv = { (char **)"" },
 	     *fst_commandv = NULL;
 	/* 
 	 * atr note: it might be better to have other integers
@@ -452,7 +452,7 @@ struct TClock validate_duration(char *timestr) {
  * struct is set.
  */
 int parse_interval(const char *ss, struct TClock *interval) {
-	char s[32] = {(char)0},
+	char s[32] = { "" },
 	     *afterpoint = NULL,
 	     *decsep = NULL,
 	     *tunit = NULL;
