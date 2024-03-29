@@ -10,7 +10,7 @@
 rm \- remove directory entries
 .SH SYNOPSIS
 \fB/usr/5bin/rm\fR
-[\fB\-f\&iRre\fR]
+[\fB\-df\&iRre\fR]
 [\fIfile\fR ...]
 .br
 \fB/usr/5bin/s42/rm\fR
@@ -41,6 +41,15 @@ but its target will remain in the file hierarchy.
 The
 .B rm
 command accepts the following options:
+.TP
+.B \-d
+Attempts to delete empty directories and
+other types of files.
+This option has been introduced by 4.4BSD
+in 1993 and is an extension to the
+standard.
+This option is only present at
+.BR /usr/5bin/rm .
 .TP
 .B \-e
 Displays a message after deleting each file.

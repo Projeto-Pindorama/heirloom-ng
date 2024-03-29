@@ -56,6 +56,7 @@ static int	iflag;			/* ask for confirmation */
 static int	rflag;			/* recursive */
 #if !defined(SUS) && !defined(SYSV3)
 static int	eflag;			/* Displays a message after deleting each file. */
+static int	dflag;			/* Attempt to remove empty directories. */
 #endif
 static char	*progname;		/* argv[0] to main() */
 static char	*path;			/* full path to current file */
@@ -90,7 +91,7 @@ usage(void)
 #if defined(SUS) || defined(SYSV3)
 		"usage: %s [-fir] file ...\n",
 #else
-		"usage: %s [-fire] file ...\n",
+		"usage: %s [-dfire] file ...\n",
 #endif
 		progname);
 	exit(2);
@@ -280,6 +281,18 @@ rm(size_t pend, const char *base, const int olddir, int ssub, int level)
 			}
 			getdb_free(db);
 			close(df);
+#if !defined(SUS) && !defined(SYSV3)
+		/* Latter priority than rflag. */
+		} else if (dflag) {
+			if (rmfile(base, &st) < 0) {
+				/* 
+				 * rmfile() will print a error
+				 * message per si if needed 
+				 */
+				errcnt |= 1;
+			}
+			return;
+#endif
 		} else {
 			fprintf(stderr, "%s: %s directory\n", progname, path);
 			errcnt |= 1;
@@ -377,7 +390,7 @@ main(int argc, char **argv)
 #if defined(SUS) || defined(SYSV3)
 	options = "fiRr";
 #else
-	options = "fiRre";
+	options = "dfiRre";
 #endif
 
 	while ((i = getopt(argc, argv, options)) != EOF) {
@@ -399,6 +412,9 @@ main(int argc, char **argv)
 			rflag = 1;
 			break;
 #if !defined(SUS) && !defined(SYSV3)
+		case 'd':
+			dflag = 1;
+			break;
 		case 'e':
 			eflag = 1;
 			break;
