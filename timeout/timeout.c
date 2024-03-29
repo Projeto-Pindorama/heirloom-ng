@@ -508,9 +508,11 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	}
 
 	interval->sec = strlen(s)
-			? atoi(s) : 0;
+			? atoi(s)
+			: 0;
 	interval->nsec = afterpoint
-			? atoi(afterpoint) : 0;
+			? atoi(afterpoint)
+			: 0;
 
 	if (afterpoint == NULL) {
 	       	return 0;
