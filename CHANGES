@@ -1,6 +1,9 @@
 Release ...
-* rm: Added real support for the POSIX 1003.1(2008) standard and implemented
-  IBM AIX(R)-style verbosing.
+* cpio, diff, tabs: Fix duplicated definitions (made/reported by crumbtoo,
+  merged by me, Luiz Antônio Rangel). Thanks! --- or better: Merci!
+* rm: Added real support for the POSIX 1003.1(2008) standard, implemented
+  IBM AIX(R)-style verbosing and 4.4BSD's '-d' option for directories ---
+  rmdir(1)-esque payload --- as extensions to the standard.
 * seq: Made its payload similar to UNIX v8's implementation, but with some
   extensions such as a fast algorithm for -w or -s --- which was already
   present before the (almost) full rewrite.
