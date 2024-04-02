@@ -1,6 +1,3 @@
-CFLAGS += $(C_SEMANTICS_LIKE_ITS_89)
-LDFLAGS += $(L_SEMANTICS_LIKE_ITS_89)
-
 all: diff diffh
 
 diff: diff.o diffdir.o diffreg.o diffver.o
