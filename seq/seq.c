@@ -140,14 +140,14 @@ char *buildfmt(void) {
 		long int precision = 0;
 		unsigned long int natural = 0;
 			      
-		char strnum[32] = {(char)0},
+		char strnum[32] = "",
 			/* 
 			 * Unlike the default,
 			 * creating a buffer will
 			 * be needed for avoiding
 			 * truncating 'fmtbuf'.
 			 */
-		     buf[32] = {(char)0};
+		     buf[32] = "";
 
 		/* 
 		 * Get how many digits after the
@@ -217,7 +217,7 @@ char *buildfmt(void) {
 }
 
 char *getlgstr(void) {
-	char strflt[32] = {(char)0},
+	char strflt[32] = "",
 	     *lgstnum = "";
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
