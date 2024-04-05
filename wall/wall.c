@@ -14,6 +14,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <utmp.h>
 #define	USERS	50
 
@@ -30,7 +31,8 @@ void main(int argc, char *argv[]) {
 	register struct utmp *p;
 	FILE *f;
 
-	if((f = fopen("/etc/utmp", "r")) == NULL) {
+/*	if((f = fopen("/etc/utmp", "r")) == NULL) { */
+	if((f = fopen("/var/run/utmp", "r")) == NULL) {
 		fprintf(stderr, "Cannot open /etc/utmp\n");
 		exit(1);
 	}
