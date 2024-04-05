@@ -1,3 +1,14 @@
+/*
+ * wall.c - write to all users
+ *
+ *	from Unix 32V /usr/src/cmd/wall.c	
+ *	December 19th, 1978.
+ *
+ * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+ *
+ * SPDX-Licence-Identifier: Caldera
+ */
+
 #include <stdio.h>
 #include <utmp.h>
 #define	USERS	50
