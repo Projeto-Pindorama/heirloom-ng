@@ -1,5 +1,5 @@
 .\"
-.\" Sccsid @(#)wall.1m	1.2 (takusuman) 4/4/24
+.\" Sccsid @(#)wall.1m	0.1 (takusuman) 4/4/24
 .\" Parts taken from wall(1m), Unix 32V:
 .\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
 .\"
@@ -9,7 +9,7 @@
 .SH NAME
 wall  \-  write to all users
 .SH SYNOPSIS
-.B /etc/wall
+.B /usr/sbin/wall
 .SH DESCRIPTION
 .I Wall
 reads its standard input until an end-of-file.
@@ -23,9 +23,9 @@ any protections the users may have invoked.
 .SH FILES
 /dev/tty?
 .br
-/etc/utmp
+/var/adm/utmp
 .SH "SEE ALSO"
-mesg(1), write(1)
+mesg(1), write(1), utmp(5)
 .SH DIAGNOSTICS
 `Cannot send to ...' when the open on
 a user's tty file fails.
