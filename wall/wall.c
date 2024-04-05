@@ -15,52 +15,52 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <utmp.h>
-#define	USERS	50
+#include <string.h>
+#include <utmpx.h>
 
 char	mesg[3000];
-int	msize,sline;
-struct	utmp utmp[USERS];
+int	msize, sline;
+struct	utmpx utmp[];
 char	*strcpy();
 char	*strcat();
 char who[9] = "???";
 
 void main(int argc, char *argv[]) {
-	register i;
+	register unsigned int i;
 	register char c;
-	register struct utmp *p;
 	FILE *f;
 
-/*	if((f = fopen("/etc/utmp", "r")) == NULL) { */
-	if((f = fopen("/var/run/utmp", "r")) == NULL) {
-		fprintf(stderr, "Cannot open /etc/utmp\n");
-		exit(1);
-	}
-	fread((char *)utmp, sizeof(struct utmp), USERS, f);
-	fclose(f);
+	memcpy(&utmp, getutxent(), sizeof(struct utmpx));
+
+	/* message text from standard input per default */
 	f = stdin;
-	if(argc >= 2) {
+	if (argc >= 2) {
 		/* take message from unix file instead of standard input */
 		if((f = fopen(argv[1], "r")) == NULL) {
-			fprintf(stderr,"Cannot open %s\n", argv[1]);
+			fprintf(stderr, "Cannot open %s\n", argv[1]);
 			exit(1);
 		}
 	}
-	while((i = getc(f)) != EOF) mesg[msize++] = i;
+	while((i = getc(f)) != EOF) {
+		mesg[msize++] = i;
+	}
 	fclose(f);
+
 	sline = ttyslot(2); /* 'utmp' slot no. of sender */
 	if (sline) {
-		for (i=0;c=utmp[sline].ut_name[i];i++)
+		for (i=0; c=utmp[sline].ut_user[i]; i++) {
 			who[i]=c;
-		who[i] = '\0'; /* sender initials */
 		}
-	for(i=0; i<USERS; i++) {
-		p = &utmp[i];
-		if(p->ut_name[0] == 0)
+		who[i] = '\0'; /* sender initials */
+	}
+
+	for(i=0; utmp[i].ut_user[0]; i++) {
+		if(utmp[i].ut_user[0] == 0)
 			continue;
 		sleep(1);
-		sendmes(p->ut_line);
+		sendmes(utmp[i].ut_line);
 	}
+
 	exit(0);
 }
 
@@ -84,8 +84,8 @@ void sendmes(char *tty) {
 		exit(1);
 	}
 	setbuf(f, buf);
-	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",who,
-		utmp[sline].ut_line);
+	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
+			who, utmp[sline].ut_line);
 	fwrite(mesg, msize, 1, f);
 	exit(0);
 }
