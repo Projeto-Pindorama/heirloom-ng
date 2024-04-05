@@ -1,6 +1,10 @@
 /*
  * wall.c - write to all users
  *
+ * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ *
  *	from Unix 32V /usr/src/cmd/wall.c	
  *	December 19th, 1978.
  *
@@ -20,9 +24,7 @@ char	*strcpy();
 char	*strcat();
 char who[9] = "???";
 
-main(argc, argv)
-char *argv[];
-{
+void main(int argc, char *argv[]) {
 	register i;
 	register char c;
 	register struct utmp *p;
@@ -60,9 +62,7 @@ char *argv[];
 	exit(0);
 }
 
-sendmes(tty)
-char *tty;
-{
+void sendmes(char *tty) {
 	register i;
 	char t[50], buf[BUFSIZ];
 	FILE *f;
