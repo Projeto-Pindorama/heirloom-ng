@@ -13,15 +13,20 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <signal.h>
-#include <utmp.h>
+#include <strings.h>
+#include <string.h>
+#include <unistd.h>
+#include <utmpx.h>
 
 char	*strcat();
 char	*strcpy();
-struct	utmp ubuf;
+struct	utmpx *ubuf;
 int	signum[] = {SIGHUP, SIGINT, SIGQUIT, 0};
 char	me[10]	= "???";
 char	*him;
@@ -31,28 +36,28 @@ char	*histtya;
 char	*ttyname();
 char	*rindex();
 int	logcnt;
-int	eof();
-int	timout();
 FILE	*tf;
 
-void main(int argc, char *argv[])
-{
+void	main(int argc, char *argv[]);
+int	eof(void);
+int	timout(void);
+int	ex(char* bp);
+void	sigs(int (*sig)());
+void	usage(void);
+
+void main(int argc, char *argv[]) {
 	struct stat stbuf;
-	register i;
-	register FILE *uf;
+	register int i;
 	int c1, c2;
 
-	if(argc < 2) {
-		printf("usage: write user [ttyname]\n");
-		exit(1);
+	if (argc < 2) {
+		usage();
 	}
 	him = argv[1];
-	if(argc > 2)
+	if (argc > 2) {
 		histtya = argv[2];
-	if ((uf = fopen("/etc/utmp", "r")) == NULL) {
-		printf("cannot open /etc/utmp\n");
-		goto cont;
 	}
+	
 	mytty = ttyname(2);
 	if (mytty == NULL) {
 		printf("Can't find your tty\n");
@@ -63,10 +68,10 @@ void main(int argc, char *argv[])
 		strcpy(histty, "/dev/");
 		strcat(histty, histtya);
 	}
-	while (fread((char *)&ubuf, sizeof(ubuf), 1, uf) == 1) {
-		if (strcmp(ubuf.ut_line, mytty)==0) {
+	while ((ubuf = getutxent()) != NULL) { 
+		if (strcmp(ubuf[0].ut_line, mytty)==0) {
 			for(i=0; i<8; i++) {
-				c1 = ubuf.ut_name[i];
+				c1 = ubuf->ut_user[i];
 				if(c1 == ' ')
 					c1 = 0;
 				me[i] = c1;
@@ -77,7 +82,7 @@ void main(int argc, char *argv[])
 		if(him[0] != '-' || him[1] != 0)
 		for(i=0; i<8; i++) {
 			c1 = him[i];
-			c2 = ubuf.ut_name[i];
+			c2 = ubuf->ut_user[i];
 			if(c1 == 0)
 				if(c2 == 0 || c2 == ' ')
 					break;
@@ -87,7 +92,7 @@ void main(int argc, char *argv[])
 		logcnt++;
 		if (histty[0]==0) {
 			strcpy(histty, "/dev/");
-			strcat(histty, ubuf.ut_line);
+			strcat(histty, ubuf->ut_line);
 		}
 	nomat:
 		;
@@ -97,7 +102,6 @@ cont:
 		printf("%s not logged in.\n", him);
 		exit(1);
 	}
-	fclose(uf);
 	if (histtya==0 && logcnt > 1) {
 		printf("%s logged more than once\nwriting to %s\n", him, histty+5);
 	}
@@ -146,23 +150,18 @@ perm:
 	exit(1);
 }
 
-void timout(void)
-{
-
+int timout(void) {
 	printf("Timeout opening his tty\n");
 	exit(1);
 }
 
-void eof(void)
-{
-
+int eof(void) {
 	fprintf(tf, "EOF\n");
 	exit(0);
 }
 
-void ex(char* bp)
-{
-	register i;
+int ex(char* bp) {
+	register int i;
 
 	sigs(SIG_IGN);
 	i = fork();
@@ -182,10 +181,14 @@ out:
 	sigs(eof);
 }
 
-void sigs(int (*sig)())
-{
-	register i;
+void sigs(int (*sig)()) {
+	register int i;
 
-	for(i=0;signum[i];i++)
-		signal(signum[i],sig);
+	for(i=0; signum[i]; i++)
+		signal(signum[i], sig);
+}
+
+void usage(void) {
+	printf("usage: write user [ttyname]\n");
+	exit(1);
 }
