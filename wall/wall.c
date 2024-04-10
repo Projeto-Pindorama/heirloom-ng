@@ -13,9 +13,12 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <utmpx.h>
 
 char	mesg[3000];
@@ -23,12 +26,15 @@ int	msize, sline;
 struct	utmpx utmp[];
 char	*strcpy();
 char	*strcat();
+pid_t   fork();
 char who[9] = "???";
 
 void main(int argc, char *argv[]) {
 	register unsigned int i;
 	register char c;
+	unsigned int utmpentr;
 	FILE *f;
+	struct utmpx *p;
 
 	memcpy(&utmp, getutxent(), sizeof(struct utmpx));
 
@@ -46,7 +52,7 @@ void main(int argc, char *argv[]) {
 	}
 	fclose(f);
 
-	sline = ttyslot(2); /* 'utmp' slot no. of sender */
+	sline = ttyslot(); /* 'utmp' slot no. of sender */
 	if (sline) {
 		for (i=0; c=utmp[sline].ut_user[i]; i++) {
 			who[i]=c;
@@ -54,38 +60,57 @@ void main(int argc, char *argv[]) {
 		who[i] = '\0'; /* sender initials */
 	}
 
-	for(i=0; utmp[i].ut_user[0]; i++) {
-		if(utmp[i].ut_user[0] == 0)
+/*	for(i=0; utmp[i].ut_line; i++) { */
+	for(i=0; utmp[i].ut_user; i++) {
+		p = &utmp[i];
+                if(p->ut_user[0] == 0)
 			continue;
 		sleep(1);
-		sendmes(utmp[i].ut_line);
+		sendmes(p->ut_line);
 	}
 
 	exit(0);
 }
 
 void sendmes(char *tty) {
-	register i;
+	register int i;
+        int fd;
 	char t[50], buf[BUFSIZ];
 	FILE *f;
 
 	i = fork();
-	if(i == -1) {
+	if (i == -1) {
 		fprintf(stderr, "Try again\n");
 		return;
 	}
-	if(i)
+	if (i)
 		return;
 	strcpy(t, "/dev/");
 	strcat(t, tty);
 
-	if((f = fopen(t, "w")) == NULL) {
-		fprintf(stderr,"cannot open %s\n", t);
+	fd = open(t, O_WRONLY|O_NOCTTY|O_NONBLOCK);
+	if (fd == -1) {
+		fprintf(stderr,"cannot open %s: %s\n",
+				t, strerror(errno));
+		exit(1);
+	} else {
+		if (!isatty(fd)) {
+			fprintf(stderr, "cannot send to %s: not a tty\n", t);
+			exit(1);
+		}
+	}
+	
+	f = fdopen(fd, "w");
+	if (f == NULL) {
+		fprintf(stderr,"cannot open file descriptor %d: %s\n",
+				fd, strerror(errno));
 		exit(1);
 	}
+
 	setbuf(f, buf);
 	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
 			who, utmp[sline].ut_line);
 	fwrite(mesg, msize, 1, f);
+	close(fd);
 	exit(0);
 }
