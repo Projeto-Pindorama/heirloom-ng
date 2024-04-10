@@ -1,5 +1,16 @@
 /*
- * write to another user
+ * write.c - write to another user
+ *
+ * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ *
+ *	from Unix 32V /usr/src/cmd/write.c	
+ *	Novemberr 6th, 1978.
+ *
+ * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+ *
+ * SPDX-Licence-Identifier: Caldera
  */
 
 #include <stdio.h>
@@ -24,8 +35,7 @@ int	eof();
 int	timout();
 FILE	*tf;
 
-main(argc, argv)
-char *argv[];
+void main(int argc, char *argv[])
 {
 	struct stat stbuf;
 	register i;
@@ -136,22 +146,21 @@ perm:
 	exit(1);
 }
 
-timout()
+void timout(void)
 {
 
 	printf("Timeout opening his tty\n");
 	exit(1);
 }
 
-eof()
+void eof(void)
 {
 
 	fprintf(tf, "EOF\n");
 	exit(0);
 }
 
-ex(bp)
-char *bp;
+void ex(char* bp)
 {
 	register i;
 
@@ -173,8 +182,7 @@ out:
 	sigs(eof);
 }
 
-sigs(sig)
-int (*sig)();
+void sigs(int (*sig)())
 {
 	register i;
 
