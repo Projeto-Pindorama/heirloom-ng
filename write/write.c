@@ -13,6 +13,7 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
+#include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -48,7 +49,7 @@ void	usage(void);
 void main(int argc, char *argv[]) {
 	struct stat stbuf;
 	register int i;
-	int c1, c2;
+	int c1, c2, tfd;
 
 	if (argc < 2) {
 		usage();
@@ -118,14 +119,19 @@ cont:
 	}
 	signal(SIGALRM, timout);
 	alarm(5);
-	if ((tf = fopen(histty, "w")) == NULL)
+/*	if ((tf = fopen(histty, "w")) == NULL) */
+	if ((tfd = open(histty, O_WRONLY)) == -1)
 		goto perm;
+	
 	alarm(0);
-	if (fstat(fileno(tf), &stbuf) < 0)
+/*	if (fstat(fileno(tf), &stbuf) < 0) */
+	if (fstat(tfd, &stbuf) < 0)
 		goto perm;
 	if ((stbuf.st_mode&02) == 0)
 		goto perm;
 	sigs(eof);
+	if ((tf = fdopen(dup2(tfd, STDOUT_FILENO), "w")) == NULL)
+		goto perm;
 	fprintf(tf, "Message from ");
 #ifdef interdata
 	fprintf(tf, "(Interdata) " );
