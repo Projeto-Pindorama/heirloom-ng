@@ -84,7 +84,7 @@ static int	vismax;			/* number of members in visited */
  * Lower-case a character string.
  */
 size_t
-loconv(register char *dst, register char *src, size_t sz)
+loconv(char *dst, char *src, size_t sz)
 {
 	char	*odst = dst;
 
@@ -335,7 +335,7 @@ static struct iblok *
 grep(struct iblok *ip)
 {
 	char *line = NULL;		/* line buffer */
-	register char *lastnl;		/* last newline in file buffer */
+	char *lastnl;		/* last newline in file buffer */
 	size_t sz = 0;			/* length of line in line buffer */
 	char *cp;
 	int hadnl;			/* lastnl points to newline char */

@@ -157,7 +157,7 @@ static FILE *infile;
 #define	COM		2		/* goto com */
 
 static int skeqn(void);
-static FILE *opn(register char *);
+static FILE *opn(char *);
 static int eof(void);
 static void getfname(void);
 static void fatal(const char *, const char *);
@@ -169,13 +169,13 @@ static void tbl(void);
 static void stbl(void);
 static void eqn(void);
 static void backsl(void);
-static char *copys(register const char *);
+static char *copys(const char *);
 static void sce(void);
 static void refer(int);
 static void inpic(void);
-static void msputmac(register char *, int);
+static void msputmac(char *, int);
 static void msputwords(int);
-static void meputmac(register char *, int);
+static void meputmac(char *, int);
 static void meputwords(int);
 static void noblock(char, char);
 static int EQ(void);
@@ -205,15 +205,15 @@ static int manpp(pacmac);
 static void defcomline(pacmac);
 static void comline(void);
 static int macsort(const void *, const void *);
-static int sizetab(register struct mactab *);
-static struct mactab *macfill(register struct mactab *, register struct mactab *);
+static int sizetab(struct mactab *);
+static struct mactab *macfill(struct mactab *, struct mactab *);
 static void buildtab(struct mactab **, int *);
 static void *srealloc(void *, size_t);
 
 int
 main(int ac, char **av)
 {
-	register int i;
+	int i;
 	int	errflg = 0;
 	int	kflag = NO;
 	char	*p;
@@ -340,7 +340,7 @@ skeqn(void)
 	return(c = ' ');
 }
 
-static FILE *opn(register char *p)
+static FILE *opn(char *p)
 {
 	FILE *fd;
 
@@ -372,12 +372,12 @@ eof(void)
 static void
 getfname(void)
 {
-	register int i;
+	int i;
 	struct chain { 
 		struct chain *nextp; 
 		char *datap; 
 	} *chainblock;
-	register struct chain *q;
+	struct chain *q;
 	static struct chain *namechain	= NULL;
 
 	while(C == ' ') ;
@@ -515,8 +515,8 @@ stbl(void)
 static void
 eqn(void)
 {
-	register int c1, c2;
-	register int dflg;
+	int c1, c2;
+	int dflg;
 	char last;
 
 	last=0;
@@ -638,9 +638,9 @@ sw:
 }
 
 static char *
-copys(register const char *s)
+copys(const char *s)
 {
-	register char *t, *t0;
+	char *t, *t0;
 
 	if( (t0 = t = calloc( (unsigned)(strlen(s)+1), sizeof(*t) ) ) == NULL)
 		fatal("Cannot allocate memory", (char *) NULL);
@@ -653,8 +653,8 @@ copys(register const char *s)
 static void
 sce(void)
 {
-	register char *ap;
-	register int n, i;
+	char *ap;
+	int n, i;
 	char a[10];
 	for(ap=a;C != '\n';ap++){
 		*ap = c;
@@ -695,7 +695,7 @@ sce(void)
 static void
 refer(int c1)
 {
-	register int c2 = 0;
+	int c2 = 0;
 	if(c1 != '\n')
 		SKIP;
 	while(1){
@@ -717,7 +717,7 @@ refer(int c1)
 static void
 inpic(void)
 {
-	register int c1, i1;
+	int c1, i1;
 	SKIP;
 	i1 = 0;
 	c = '\n';
@@ -785,8 +785,7 @@ _C(void)
  *
  *	Macro table definitions
  */
-#define	reg	register
-static int	argconcat = 0;		/* concat arguments together (-me only) */
+#define	reg	static int	argconcat = 0;		/* concat arguments together (-me only) */
 
 #define	tomac(c1, c2)		((((c1) & 0xFF) << 8) | ((c2) & 0xFF))
 #define	frommac(src, c1, c2)	(((c1)=((src)>>8)&0xFF),((c2) =(src)&0xFF))
@@ -807,10 +806,10 @@ extern struct	mactab	manmactab[];
  *	Put out a macro line, using ms and mm conventions.
  */
 static void
-msputmac(register char *s, int constant)
+msputmac(char *s, int constant)
 {
-	register char *t;
-	register int found;
+	char *t;
+	int found;
 	int last = 0;
 	found = 0;
 
@@ -853,7 +852,7 @@ msputmac(register char *s, int constant)
 static void
 msputwords(int macline /* is this is a macro line */)
 {
-	register char *p, *p1;
+	char *p, *p1;
 	int i, nlet;
 
 	for(p1 = line ; ;) {
@@ -1000,8 +999,8 @@ meputwords(int macline)
 static void
 noblock(char a1, char a2)
 {
-	register int c1,c2;
-	register int eqnf;
+	int c1,c2;
+	int eqnf;
 	int lct;
 	lct = 0;
 	eqnf = 1;

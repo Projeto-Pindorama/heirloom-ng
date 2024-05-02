@@ -105,7 +105,7 @@ freely, subject to the following restrictions:
                                     this was a 20% speed improvement!  Added
                                     an explode.c (to replace unimplod.c) that
                                     uses the huft routines here.  Removed
-                                    register union.
+                                    union.
     c2    4 Apr 92  M. Adler        fixed bug for file sizes a multiple of 32k.
     c3   10 Apr 92  M. Adler        reduced memory of code tables made by
                                     huft_build significantly (factor of two to
@@ -396,8 +396,7 @@ static const uint8_t cpdext32[] = {
 
    where NEEDBITS makes sure that b has at least j bits in it, and
    DUMPBITS removes the bits from b.  The macros use the variable k
-   for the number of bits in b.  Normally, b and k are register
-   variables for speed and are initialized at the begining of a
+   for the number of bits in b.  Normally, b and k are    variables for speed and are initialized at the begining of a
    routine that uses these macros from a global bit buffer and count.
 
    In order to not ask for more bits than there are in the compressed
@@ -463,14 +462,14 @@ inflate_codes(struct globals *Gp,
 /* inflate (decompress) the codes in a deflated (compressed) block.
    Return an error code or zero if it all goes ok. */
 {
-  register unsigned e;  /* table entry flag/number of extra bits */
+  unsigned e;  /* table entry flag/number of extra bits */
   unsigned d;           /* index for copy */
   uint32_t n;           /* length for copy (deflate64: might be 64k+2) */
   uint32_t w;           /* current window position (deflate64: up to 64k) */
   struct huft *t;       /* pointer to table entry */
   unsigned ml, md;      /* masks for bl and bd bits */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -587,8 +586,8 @@ inflate_stored(struct globals *Gp)
 {
   uint32_t w;           /* current window position (deflate64: up to 64k!) */
   unsigned n;           /* number of bytes in block */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -706,8 +705,8 @@ static int inflate_dynamic(struct globals *Gp)
   unsigned nl;          /* number of literal/length codes */
   unsigned nd;          /* number of distance codes */
   unsigned ll[MAXLITLENS+MAXDISTS]; /* lit./length and distance code lengths */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -862,8 +861,8 @@ static int inflate_block(struct globals *Gp, int *e)
 /* decompress an inflated block */
 {
   unsigned t;           /* block type */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
