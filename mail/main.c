@@ -28,7 +28,7 @@
 int
 main(int argc, char **argv)
 {
-	int i;
+	register int i;
 	char *cptr, *p;
 	static char pn[] = "main";
 	extern char **environ;

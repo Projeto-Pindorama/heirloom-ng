@@ -198,9 +198,9 @@ int getrec(unsigned char **buf, int *bufsize)
 int readrec(unsigned char **buf, int *bufsize, FILE *inf)
 	/* read one record into buf */
 {
-	int sep, c, k, m, n;
+	register int sep, c, k, m, n;
 	unsigned char *rr;
-	int nrr;
+	register int nrr;
 	wchar_t wc;
 
 	next(wc, *RS, n);
@@ -287,7 +287,7 @@ static int	refldbld(unsigned char *rec, unsigned char *fs);
 void
 fldbld(void)
 {
-	unsigned char *r, *fr;
+	register unsigned char *r, *fr;
 	Cell **p;
 	wchar_t wc, sep;
 	int i, n;
@@ -368,7 +368,7 @@ fldbld(void)
 static void cleanfld(int n1, int n2)	/* clean out fields n1..n2 inclusive */
 {
 	static unsigned char *nullstat = (unsigned char *) "";
-	Cell **p, **q;
+	register Cell **p, **q;
 
 	for (p = &fldtab[n2], q = &fldtab[n1]; p > q; p--) {
 		if (!((*p)->tval & DONTFREE))
@@ -677,7 +677,7 @@ int isclvar(unsigned char *s)	/* is s of form var=something? */
 	return *s == '=' && s > os && *(s+1) != '=' && !digitchar(*os);
 }
 
-int is2number(unsigned char *s, Cell *p)
+int is2number(register unsigned char *s, Cell *p)
 {
 	unsigned char *after;
 	Awkfloat val;

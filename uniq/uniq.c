@@ -158,7 +158,7 @@ main(int argc, char **argv)
 }
 
 static void
-pline(const char *buf, size_t len)
+pline(register const char *buf, size_t len)
 {
 
 	switch(mode) {
@@ -183,9 +183,9 @@ pline(const char *buf, size_t len)
 }
 
 static int
-equal(const char *b1, size_t l1, const char *b2, size_t l2)
+equal(register const char *b1, size_t l1, register const char *b2, size_t l2)
 {
-	char c;
+	register char c;
 
 	b1 = skip(b1, &l1);
 	b2 = skip(b2, &l2);
@@ -198,9 +198,9 @@ equal(const char *b1, size_t l1, const char *b2, size_t l2)
 }
 
 static const char *
-skip(const char *s, size_t *l)
+skip(register const char *s, size_t *l)
 {
-	int nf, nl;
+	register int nf, nl;
 	wchar_t	wc;
 	int	n;
 

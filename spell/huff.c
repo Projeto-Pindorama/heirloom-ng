@@ -100,7 +100,7 @@ struct huff huffcode;
 int32_t
 decode(int32_t y, int32_t *pk)
 {
-	int32_t l;
+	register int32_t l;
 	int32_t v;
 	if (y < cs) {
 		*pk = y >> (int32_t)(L+QW-w);
@@ -124,7 +124,7 @@ decode(int32_t y, int32_t *pk)
 int32_t
 encode(int32_t k, int32_t *py)
 {
-	int32_t l;
+	register int32_t l;
 	int32_t y;
 	if (k < c) {
 		*py = k;
@@ -169,7 +169,7 @@ qlog(double x, double y, long p, double u)	/* find smallest p so x^p<=y */
 double
 huff(float a)
 {
-	int32_t i, q;
+	register int32_t i, q;
 	int32_t d, j;
 	double r = a/(1.0 + a);
 	double rc, rq;

@@ -29,7 +29,7 @@
 void 
 copyback(void)
 {
-	int	i, n;
+	register int	i, n;
 	int		new = 0;
 	mode_t		mailmode, omask;
 	struct stat	stbuf;

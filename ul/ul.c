@@ -310,8 +310,8 @@ filtr(struct iblok *f)
 static void
 flushln(void)
 {
-	int lastmode;
-	int i;
+	register int lastmode;
+	register int i;
 	int hadmodes = 0;
 
 	lastmode = NORMAL;
@@ -353,9 +353,9 @@ flushln(void)
 static void
 overstrike(void)
 {
-	int i;
+	register int i;
 	char *lbuf;
-	char c, *cp;
+	register char c, *cp;
 	int hadbold=0;
 
 	if ((lbuf = malloc((maxcol+1) * sizeof *lbuf)) == NULL) {
@@ -404,9 +404,9 @@ overstrike(void)
 static void
 iattr(void)
 {
-	int i;
+	register int i;
 	char *lbuf;
-	char c, *cp;
+	register char c, *cp;
 
 	if ((lbuf = malloc((maxcol+1) * sizeof *lbuf)) == NULL) {
 		write(2, "no memory\n", 10);
@@ -451,7 +451,7 @@ initbuf(void)
 static void
 fwd(void)
 {
-	int oldcol, oldmax;
+	register int oldcol, oldmax;
 
 	oldcol = col;
 	oldmax = maxcol;

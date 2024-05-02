@@ -155,11 +155,11 @@ extern void more(struct blk *);
 extern void ospace(char *);
 extern void garbage(char *);
 extern void redef(struct blk *);
-extern void release(struct blk *);
+extern void release(register struct blk *);
 extern struct blk *getwd(struct blk *);
 extern void putwd(struct blk *, struct blk *);
 extern struct blk *lookwd(struct blk *);
-extern char *nalloc(char *, unsigned);
+extern char *nalloc(register char *, unsigned);
 extern void *srealloc(void *, size_t);
 
 #if defined (__GLIBC__) && defined (_IO_getc_unlocked)

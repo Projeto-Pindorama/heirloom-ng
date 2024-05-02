@@ -31,7 +31,7 @@ static int ignore;
 static int extra;
 
 static int32_t
-append(uint32_t w1, int32_t i)
+append(register uint32_t w1, register int32_t i)
 {
 	while (wp < ND - 1) {
 		table[wp] |= w1>>(B-bp);

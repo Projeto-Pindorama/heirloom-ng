@@ -39,7 +39,7 @@ jmp_buf env;
 #define	getfval(p)	(((p)->tval & (ARR|FLD|REC|NUM)) == NUM ? (p)->fval : r_getfval(p))
 #define	getsval(p)	(((p)->tval & (ARR|FLD|REC|STR)) == STR ? (p)->sval : r_getsval(p))
 
-static void tfree(Cell *a, char *s);
+static void tfree(register Cell *a, char *s);
 
 #define PA2NUM	29
 int	pairstack[PA2NUM];
@@ -90,9 +90,9 @@ int run(Node *a)
 
 Cell *r_execute(Node *u)
 {
-	Cell *(*proc)(Node **, int);
-	Cell *x;
-	Node *a;
+	register Cell *(*proc)(Node **, int);
+	register Cell *x;
+	register Node *a;
 
 	if (u == NULL)
 		return(true);
@@ -126,9 +126,9 @@ Cell *r_execute(Node *u)
 }
 
 
-Cell *program(Node **a, int n)
+Cell *program(register Node **a, int n)
 {
-	Cell *x = 0;
+	register Cell *x = 0;
 
 	if (setjmp(env) != 0)
 		goto ex;
@@ -310,7 +310,7 @@ static int in_loop = 0;	/* Flag : are we in a [while|do|for] loop ? */
 
 Cell *jump(Node **a, int n)
 {
-	Cell *y;
+	register Cell *y;
 
 	switch (n) {
 	case EXIT:
@@ -355,7 +355,7 @@ Cell *jump(Node **a, int n)
 Cell *getline(Node **a, int n)
 {
 	/* a[0] is variable, a[1] is operator, a[2] is filename */
-	Cell *r, *x;
+	register Cell *r, *x;
 	unsigned char *buf = NULL;
 	int bufsize = 0;
 	FILE *fp;
@@ -393,18 +393,18 @@ Cell *getline(Node **a, int n)
 	return r;
 }
 
-Cell *getnf(Node **a, int n)
+Cell *getnf(register Node **a, int n)
 {
 	if (donefld == 0)
 		fldbld();
 	return (Cell *) a[0];
 }
 
-Cell *array(Node **a, int n)
+Cell *array(register Node **a, int n)
 {
-	Cell *x, *y, *z;
-	unsigned char *s;
-	Node *np;
+	register Cell *x, *y, *z;
+	register unsigned char *s;
+	register Node *np;
 	unsigned char *buf = NULL;
 	int bufsz = 0, subseplen, len = 1, l;
 
@@ -471,7 +471,7 @@ Cell *delete(Node **a, int n)
 
 Cell *intest(Node **a, int n)
 {
-	Cell *x, *ap, *k;
+	register Cell *x, *ap, *k;
 	Node *p;
 	unsigned char *s;
 	unsigned char *buf = NULL;
@@ -506,9 +506,9 @@ Cell *intest(Node **a, int n)
 
 Cell *matchop(Node **a, int n)
 {
-	Cell *x, *y;
-	unsigned char *s, *t;
-	int i;
+	register Cell *x, *y;
+	register unsigned char *s, *t;
+	register int i;
 	fa *pfa;
 	int (*mf)(void *, unsigned char *) = match, mode = 0;
 
@@ -552,8 +552,8 @@ Cell *matchop(Node **a, int n)
 
 Cell *boolop(Node **a, int n)
 {
-	Cell *x, *y;
-	int i;
+	register Cell *x, *y;
+	register int i;
 
 	x = execute(a[0]);
 	i = istrue(x);
@@ -585,8 +585,8 @@ Cell *boolop(Node **a, int n)
 
 Cell *relop(Node **a, int n)
 {
-	int i;
-	Cell *x, *y;
+	register int i;
+	register Cell *x, *y;
 	Awkfloat j;
 
 	x = execute(a[0]);
@@ -619,7 +619,7 @@ Cell *relop(Node **a, int n)
 	return 0;
 }
 
-static void tfree(Cell *a, char *s)
+static void tfree(register Cell *a, char *s)
 {
 	if (dbg>1) printf("## tfree %.8s %06lo %s\n",
 		s, (long)a, a->sval ? a->sval : (unsigned char *)"");
@@ -633,7 +633,7 @@ static void tfree(Cell *a, char *s)
 
 Cell *gettemp(const char *s)
 {	int i;
-	Cell *x;
+	register Cell *x;
 
 	if (!tmps) {
 		tmps = (Cell *) calloc(100, sizeof(Cell));
@@ -652,9 +652,9 @@ Cell *gettemp(const char *s)
 
 Cell *indirect(Node **a, int n)
 {
-	Cell *x;
-	int m;
-	unsigned char *s;
+	register Cell *x;
+	register int m;
+	register unsigned char *s;
 
 	x = execute(a[0]);
 	m = getfval(x);
@@ -669,11 +669,11 @@ Cell *indirect(Node **a, int n)
 
 Cell *substr(Node **a, int nnn)
 {
-	int k, m, n;
+	register int k, m, n;
 	wchar_t wc;
-	unsigned char *s, *sp, *sq;
+	register unsigned char *s, *sp, *sq;
 	int temp;
-	Cell *x, *y, *z = 0;
+	register Cell *x, *y, *z = 0;
 
 	x = execute(a[0]);
 	y = execute(a[1]);
@@ -731,8 +731,8 @@ Cell *substr(Node **a, int nnn)
 
 Cell *sindex(Node **a, int nnn)
 {
-	Cell *x, *y, *z;
-	unsigned char *s1, *s2, *p1, *p2, *q;
+	register Cell *x, *y, *z;
+	register unsigned char *s1, *s2, *p1, *p2, *q;
 	int n, nq, n2;
 	wchar_t wc, wq, w2;
 	Awkfloat v = 0.0;
@@ -768,7 +768,7 @@ int format(unsigned char **buf, int *bufsize, const unsigned char *s, Node *a)
 	int fmtsz = 0;
 	unsigned char *p, *t;
 	const unsigned char *os;
-	Cell *x;
+	register Cell *x;
 	int flag = 0;
 
 	os = s;
@@ -892,8 +892,8 @@ int format(unsigned char **buf, int *bufsize, const unsigned char *s, Node *a)
 
 Cell *awsprintf(Node **a, int n)
 {
-	Cell *x;
-	Node *y;
+	register Cell *x;
+	register Node *y;
 	unsigned char *buf = NULL;
 	int bufsize = 0;
 
@@ -911,8 +911,8 @@ Cell *awsprintf(Node **a, int n)
 Cell *aprintf(Node **a, int n)
 {
 	FILE *fp;
-	Cell *x;
-	Node *y;
+	register Cell *x;
+	register Node *y;
 	unsigned char *buf = NULL;
 	int bufsize = 0;
 
@@ -938,7 +938,7 @@ Cell *arith(Node **a, int n)
 {
 	Awkfloat i, j = 0;
 	double v;
-	Cell *x, *y, *z;
+	register Cell *x, *y, *z;
 
 	x = execute(a[0]);
 	i = getfval(x);
@@ -1001,8 +1001,8 @@ double ipow(double x, int n)
 
 Cell *incrdecr(Node **a, int n)
 {
-	Cell *x, *z;
-	int k;
+	register Cell *x, *z;
+	register int k;
 	Awkfloat xf;
 
 	x = execute(a[0]);
@@ -1021,7 +1021,7 @@ Cell *incrdecr(Node **a, int n)
 
 Cell *assign(Node **a, int n)
 {
-	Cell *x, *y;
+	register Cell *x, *y;
 	Awkfloat xf, yf;
 	double v;
 
@@ -1082,9 +1082,9 @@ Cell *assign(Node **a, int n)
 
 Cell *cat(Node **a, int q)
 {
-	Cell *x, *y, *z;
-	int n1, n2;
-	unsigned char *s;
+	register Cell *x, *y, *z;
+	register int n1, n2;
+	register unsigned char *s;
 
 	x = execute(a[0]);
 	y = execute(a[1]);
@@ -1108,7 +1108,7 @@ Cell *cat(Node **a, int q)
 
 Cell *pastat(Node **a, int n)
 {
-	Cell *x;
+	register Cell *x;
 
 	if (a[0] == 0)
 		x = execute(a[1]);
@@ -1124,8 +1124,8 @@ Cell *pastat(Node **a, int n)
 
 Cell *dopa2(Node **a, int n)
 {
-	Cell *x;
-	int pair;
+	register Cell *x;
+	register int pair;
 
 	pair = (intptr_t) a[3];
 	if (pairstack[pair] == 0) {
@@ -1148,7 +1148,7 @@ Cell *dopa2(Node **a, int n)
 Cell *split(Node **a, int nnn)
 {
 	Cell *x = 0, *y, *ap;
-	unsigned char *s;
+	register unsigned char *s;
 	wchar_t sep, wc;
 	unsigned char *t, temp, num[25], *fs = 0;
 	int m, n, sepl;
@@ -1257,7 +1257,7 @@ Cell *split(Node **a, int nnn)
 
 Cell *condexpr(Node **a, int n)
 {
-	Cell *x;
+	register Cell *x;
 
 	x = execute(a[0]);
 	if (istrue(x)) {
@@ -1272,7 +1272,7 @@ Cell *condexpr(Node **a, int n)
 
 Cell *ifstat(Node **a, int n)
 {
-	Cell *x;
+	register Cell *x;
 
 	x = execute(a[0]);
 	if (istrue(x)) {
@@ -1287,7 +1287,7 @@ Cell *ifstat(Node **a, int n)
 
 Cell *whilestat(Node **a, int n)
 {
-	Cell *x;
+	register Cell *x;
 
 	in_loop++;
 	for (;;) {
@@ -1314,7 +1314,7 @@ Cell *whilestat(Node **a, int n)
 
 Cell *dostat(Node **a, int n)
 {
-	Cell *x;
+	register Cell *x;
 
 	in_loop++;
 	for (;;) {
@@ -1341,7 +1341,7 @@ Cell *dostat(Node **a, int n)
 Cell *forstat(Node **xa, int n)
 {
 	char	**a = (char **)xa;
-	Cell *x;
+	register Cell *x;
 
 	in_loop++;
 	x = execute(a[0]);
@@ -1373,7 +1373,7 @@ Cell *forstat(Node **xa, int n)
 
 Cell *instat(Node **a, int n)
 {
-	Cell *x, *vp, *arrayp, *cp, *ncp;
+	register Cell *x, *vp, *arrayp, *cp, *ncp;
 	Array *tp;
 	int i;
 
@@ -1411,9 +1411,9 @@ static int closefile(const char *a);
 Cell *bltin(Node **a, int n)
 {
 	static unsigned saved_srand = 1;
-	Cell *x, *y;
+	register Cell *x, *y;
 	Awkfloat u;
-	int t;
+	register int t;
 	unsigned char *p, *buf;
 	Node *nextarg;
 
@@ -1508,8 +1508,8 @@ Cell *bltin(Node **a, int n)
 
 Cell *print(Node **a, int n)
 {
-	Node *x;
-	Cell *y;
+	register Node *x;
+	register Cell *y;
 	FILE *fp;
 
 	if (a[1] == 0)
@@ -1571,8 +1571,8 @@ FILE *redirect(int a, Node *b)
 
 FILE *openfile(int a, unsigned char *s)
 {
-	int i, m;
-	FILE *fp = 0;
+	register int i, m;
+	register FILE *fp = 0;
 
 	if (*s == '\0')
 		error(MM_ERROR, ":75:Null file name in print or getline");
@@ -1666,7 +1666,7 @@ static void closeall(void)
 Cell *sub(Node **a, int nnn)
 {
 	unsigned char *sptr, *pb, *q;
-	Cell *x, *y, *result;
+	register Cell *x, *y, *result;
 	unsigned char *buf = NULL, *t;
 	int bufsize = 0;
 	fa *pfa;
@@ -1727,11 +1727,11 @@ Cell *sub(Node **a, int nnn)
 
 Cell *gsub(Node **a, int nnn)
 {
-	Cell *x, *y;
+	register Cell *x, *y;
 	unsigned char *rptr, *sptr, *t, *pb;
 	unsigned char *buf = NULL;
 	int bufsize = 0;
-	fa *pfa;
+	register fa *pfa;
 	int mflag, num;
 
 	mflag = 0;	/* if mflag == 0, can replace empty string */

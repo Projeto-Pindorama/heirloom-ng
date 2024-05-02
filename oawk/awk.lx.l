@@ -59,7 +59,7 @@ extern char	*lexprog;
 #undef	input
 int	input(void)
 {
-	int c;
+	register int c;
 	extern char	*lexprog;
 
 	if (yysptr > yysbuf)

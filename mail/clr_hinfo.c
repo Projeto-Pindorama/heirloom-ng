@@ -33,7 +33,7 @@
 void 
 clr_hinfo(void)
 {
-	int	i;
+	register	int	i;
 	static		int	firsttime = 1;
 	static char		pn[] = "clr_hinfo";
 

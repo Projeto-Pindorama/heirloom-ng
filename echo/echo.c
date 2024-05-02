@@ -29,8 +29,8 @@
 int
 echo(int argc, unsigned char **argv)
 {
-	unsigned char	*cp;
-	int	i, wd;
+	register unsigned char	*cp;
+	register int	i, wd;
 	int	nflg = 0;
 	int	j;
 	int	len;

@@ -147,7 +147,7 @@ static const struct sig_strlist {
 int 
 str_2_sig(const char *str, int *signum)
 {
-	int	i;
+	register int	i;
 	long	n;
 	char	*x;
 
@@ -167,7 +167,7 @@ str_2_sig(const char *str, int *signum)
 int 
 sig_2_str(int signum, char *str)
 {
-	int	i;
+	register int	i;
 
 	for (i = 0; sig_strs[i].sig_str; i++)
 		if (sig_strs[i].sig_num == signum)
@@ -181,7 +181,7 @@ sig_2_str(int signum, char *str)
 char *
 str_signal(int signum)
 {
-	int	i;
+	register int	i;
 
 	for (i = 0; sig_strs[i].sig_name; i++)
 		if (sig_strs[i].sig_num == signum)

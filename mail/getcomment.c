@@ -23,12 +23,12 @@
 
 int 
 getcomment (
-    char *s,
-    char *q	/* Copy comment, if found, to here */
+    register char *s,
+    register char *q	/* Copy comment, if found, to here */
 )
 {
-	char	*p, *sav_q;
-	int	depth = 0;
+	register char	*p, *sav_q;
+	register int	depth = 0;
 	
 	if ((p = strchr(s, '(')) == (char *)NULL) {
 		/* no comment found */

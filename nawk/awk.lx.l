@@ -269,7 +269,7 @@ unsigned char	*ep = ebuf;
 int
 awk_input(void)
 {
-	int c;
+	register int c;
 	extern unsigned char *lexprog;
 
 	if (lexprog != NULL) {	/* awk '...' */
@@ -297,7 +297,7 @@ awk_unput(int c)
 int
 input(void)
 {
-	int c;
+	register int c;
 	extern unsigned char *lexprog;
 
 	if (yysptr > yysbuf)

@@ -76,7 +76,7 @@ static void	execreq(const char *);
 int
 main(int argc, char **argv)
 {
-	int	i;
+	register int	i;
 	const char	*ms;
 
 	progname = basename(argv[0]);
@@ -144,7 +144,7 @@ chng(const char *ms, const char *fn)
 static mode_t
 newmode(const char *ms, const mode_t pm, const char *fn)
 {
-	mode_t	o, m, b;
+	register mode_t	o, m, b;
 	int	lock, setsgid = 0, didprc = 0, cleared = 0, copy = 0;
 	mode_t	nm, om, mm;
 
@@ -253,7 +253,7 @@ out:	if ((pm&S_IFMT) == S_IFDIR) {
 static mode_t
 absol(const char **ms)
 {
-	int c, i;
+	register int c, i;
 
 	i = 0;
 	while ((c = *(*ms)++) >= '0' && c <= '7')
@@ -265,7 +265,7 @@ absol(const char **ms)
 static mode_t
 who(const char **ms, mode_t *mp)
 {
-	int m;
+	register int m;
 
 	m = 0;
 	*mp = 0;
@@ -307,7 +307,7 @@ what(const char **ms)
 static mode_t
 where(const char **ms, mode_t om, int *lock, int *copy, const mode_t pm)
 {
-	mode_t m;
+	register mode_t m;
 
 	m = 0;
 	*copy = 0;

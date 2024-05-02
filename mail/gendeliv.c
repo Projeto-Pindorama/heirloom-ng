@@ -20,13 +20,13 @@ void
 gendeliv(FILE *fp, int rc, char *name)
 {
 	static char pn[] = "gendeliv";
-	char	*p;
+	register char	*p;
 	char		*buf = NULL, cbuf[256], ybuf[10];
 	size_t		bufsize;
-	int	i;
+	register int	i;
 	int		didafflines = 0, didrcvlines = 0, suppress = 0, svopts = 0;
 	time_t		ltmp;
-	struct hdrs	*hptr;
+	register struct hdrs	*hptr;
 	FILE		*outfile;
 
 	Dout(pn, 0, "at entry, fp = o%lo, rc = %d,name = '%s'\n", (long)fp, rc, name);

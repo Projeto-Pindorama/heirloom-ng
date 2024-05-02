@@ -35,9 +35,9 @@
 
 #include "mail.h"
 int 
-legal(char *file)
+legal(register char *file)
 {
-	char *sp;
+	register char *sp;
 	char dfile[MAXFILENAME];
 
 	/*

@@ -36,8 +36,8 @@ hashlook(const char *s)
 {
 	uint32_t h;
 	uint32_t t;
-	int32_t bp;
-	uint32_t *wp;
+	register int32_t bp;
+	register uint32_t *wp;
 	int32_t sum;
 	uint32_t *tp;
 
@@ -94,7 +94,7 @@ hashlook(const char *s)
 int
 prime(char *file)
 {
-	FILE *f;
+	register FILE *f;
 	int	i;
 
 	if ((f = fopen(file, "r")) == NULL)

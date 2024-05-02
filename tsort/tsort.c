@@ -75,9 +75,9 @@ static char *token(char **, int *, FILE *);
 int
 main(int argc,char **argv)
 {
-	struct predlist *t;
+	register struct predlist *t;
 	FILE *input = stdin;
-	struct nodelist *i, *j;
+	register struct nodelist *i, *j;
 	int x;
 	char *precedes = NULL, *follows = NULL;
 	int presiz = 0, folsiz = 0;
@@ -132,7 +132,7 @@ main(int argc,char **argv)
 static int
 present(struct nodelist *i,struct nodelist *j)
 {
-	struct predlist *t;
+	register struct predlist *t;
 	for(t=j->inedges; t!=NULL; t=t->nextpred)
 		if(t->pred==i)
 			return(1);
@@ -144,7 +144,7 @@ present(struct nodelist *i,struct nodelist *j)
 static int
 anypred(struct nodelist *i)
 {
-	struct predlist *t;
+	register struct predlist *t;
 	for(t=i->inedges; t!=NULL; t=t->nextpred)
 		if(t->pred->live==LIVE)
 			return(1);
@@ -154,10 +154,10 @@ anypred(struct nodelist *i)
 /*	turn a string into a node pointer
 */
 static struct nodelist *
-idx(const char *s)
+idx(register const char *s)
 {
-	struct nodelist *i;
-	char *t;
+	register struct nodelist *i;
+	register char *t;
 	for(i= &firstnode; i->nextnode!=NULL; i=i->nextnode)
 		if(cmp(s,i->name))
 			return(i);
@@ -176,7 +176,7 @@ idx(const char *s)
 }
 
 static int
-cmp(const char *s,const char *t)
+cmp(register const char *s,register const char *t)
 {
 	while(*s==*t) {
 		if(*s==0)
@@ -206,7 +206,7 @@ note(const char *s,const char *t)
 static struct nodelist *
 findloop(void)
 {
-	struct nodelist *i, *j;
+	register struct nodelist *i, *j;
 	for(i= &firstnode; i->nextnode!=NULL; i=i->nextnode)
 		if(i->live==LIVE)
 			break;
@@ -226,10 +226,10 @@ findloop(void)
  *	visits of the search
 */
 static struct nodelist *
-mark(struct nodelist *i)
+mark(register struct nodelist *i)
 {
-	struct nodelist *j;
-	struct predlist *t;
+	register struct nodelist *j;
+	register struct predlist *t;
 	if(i->live==DEAD)
 		return(NULL);
 	if(i->live==VISITED)

@@ -289,18 +289,18 @@ static int	xtrdev(const char *, struct stat *, mode_t);
 static int	xtrdir(const char *, struct stat *);
 static void	dotable(char *[]);
 static void	putempty(void);
-static void	longt(struct stat *, int);
-static void	pmode(struct stat *, int);
+static void	longt(register struct stat *, int);
+static void	pmode(register struct stat *, int);
 static void	tselect(int *, struct stat *);
-static int	checkdir(char *, struct stat *);
+static int	checkdir(register char *, struct stat *);
 static void	onsig(int);
-static void	tomodes(const char *, struct stat *);
+static void	tomodes(const char *, register struct stat *);
 static int	checksum(int);
 static int	checkw(int, const char *, struct stat *, int);
 static int	response(void);
 static int	checkupdate(const char *, struct stat *);
 static void	done(int);
-static int	prefix(const char *, const char *);
+static int	prefix(register const char *, register const char *);
 static off_t	lookup(const char *);
 static off_t	bsrch(const char *, int, off_t, off_t);
 static int	cmp(const char *, const char *, size_t);
@@ -750,7 +750,7 @@ dorep(char *argv[])
 static void
 doarg(char *arg)
 {
-	char *cp, *cp2;
+	register char *cp, *cp2;
 
 	cp2 = arg;
 	for (cp = arg; *cp; cp++)
@@ -778,7 +778,7 @@ endtape(int rew)
 }
 
 static void
-tgetdir(struct stat *sp)
+tgetdir(register struct stat *sp)
 {
 	long long	lval1, lval2;
 
@@ -1060,7 +1060,7 @@ tgetval(const char *s, int k)
 }
 
 static void
-passtape(struct stat *sp)
+passtape(register struct stat *sp)
 {
 	long long blocks;
 	char buf[TBLOCK];
@@ -1737,7 +1737,7 @@ putempty(void)
 }
 
 static void
-longt(struct stat *st, int linkflag)
+longt(register struct stat *st, int linkflag)
 {
 	struct tm	*tp;
 	char	buf[20];
@@ -1776,9 +1776,9 @@ static int	m9[] = { 2, STXT, 't', XOTH, 'x', '-' };
 static int	*m[] = { m1, m2, m3, m4, m5, m6, m7, m8, m9};
 
 static void
-pmode(struct stat *st, int linkflag)
+pmode(register struct stat *st, int linkflag)
 {
-	int **mp;
+	register int **mp;
 	int	c;
 
 	switch (linkflag) {
@@ -1806,7 +1806,7 @@ pmode(struct stat *st, int linkflag)
 static void
 tselect(int *pairp, struct stat *st)
 {
-	int n, *ap;
+	register int n, *ap;
 
 	ap = pairp;
 	n = *ap++;
@@ -1816,9 +1816,9 @@ tselect(int *pairp, struct stat *st)
 }
 
 static int
-checkdir(char *name, struct stat *sp)
+checkdir(register char *name, struct stat *sp)
 {
-	char *cp;
+	register char *cp;
 
 	for (cp = name; *cp; cp++) {
 		if (*cp == '/' && cp > name) {
@@ -1852,7 +1852,7 @@ onsig(int signo)
 }
 
 static void
-tomodes(const char *name, struct stat *sp)
+tomodes(const char *name, register struct stat *sp)
 {
 	const char	*cp;
 	int	mode;
@@ -1901,8 +1901,8 @@ tomodes(const char *name, struct stat *sp)
 static int
 checksum(int invert)
 {
-	uint32_t i;
-	char *cp;
+	register uint32_t i;
+	register char *cp;
 
 	for (cp = dblock.dbuf.chksum;
 			cp < &dblock.dbuf.chksum[sizeof(dblock.dbuf.chksum)];
@@ -1974,7 +1974,7 @@ done(int n)
 }
 
 static int
-prefix(const char *s1, const char *s2)
+prefix(register const char *s1, register const char *s2)
 {
 	while (*s1)
 		if (*s1++ != *s2++)
@@ -1994,7 +1994,7 @@ lookup(const char *s)
 static off_t
 bsrch(const char *s, int n, off_t l, off_t h)
 {
-	int i, j;
+	register int i, j;
 	char *b;
 	off_t m, m1;
 
@@ -2039,7 +2039,7 @@ loop:
 static int
 cmp(const char *b, const char *s, size_t n)
 {
-	int i;
+	register int i;
 
 	if(b[0] != '\n')
 		abort();
@@ -2227,7 +2227,7 @@ static char *
 nameof(struct header *hp, char *buf)
 {
 	const char	*cp;
-	char	*bp = buf;
+	register char	*bp = buf;
 
 	if (gnuflag <= 0 && hp->prefix[0] != '\0') {
 		cp = hp->prefix;
@@ -2286,7 +2286,7 @@ static char *
 linkof(struct header *hp, char *buf)
 {
 	const char	*cp;
-	char	*bp = buf;
+	register char	*bp = buf;
 
 
 	cp = hp->linkname;
@@ -2334,7 +2334,7 @@ edone(int i)
 static ssize_t
 mtwrite(const void *vdata, size_t sz)
 {
-	ssize_t	wo, wt = 0;
+	register ssize_t	wo, wt = 0;
 	const char	*data = vdata;
 
 	if (volsize && wrtotal >= volsize) {
@@ -2360,7 +2360,7 @@ mtwrite(const void *vdata, size_t sz)
 static ssize_t
 mtread(void *vdata, size_t sz)
 {
-	ssize_t	ro, rt = 0;
+	register ssize_t	ro, rt = 0;
 	char	*data = vdata;
 
 	if (volsize && rdtotal >= volsize) {

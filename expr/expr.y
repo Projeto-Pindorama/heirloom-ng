@@ -58,11 +58,11 @@ extern int	sysv3;
 static char	*Mstring[1];
 
 int		yylex(void);
-static char	*_rel(int op, char *r1, char *r2);
+static char	*_rel(int op, register char *r1, register char *r2);
 static char	*_arith(int op, char *r1, char *r2);
 static char	*_conj(int op, char *r1, char *r2);
 static char	*match(char *s, char *p);
-static int	ematch(char *s, char *p);
+static int	ematch(char *s, register char *p);
 static void	errxx(int c);
 static int	yyerror(const char *s);
 static int	numeric(const char *s);
@@ -181,8 +181,8 @@ static int op[] = {
 int
 yylex(void)
 {
-	char *p;
-	int i;
+	register char *p;
+	register int i;
 
 	if(Argi >= Ac) return NOARG;
 
@@ -199,9 +199,9 @@ yylex(void)
 }
 
 static char *
-_rel(int op, char *r1, char *r2)
+_rel(int op, register char *r1, register char *r2)
 {
-	int64_t i;
+	register int64_t i;
 
 	if (numeric(r1) && numeric(r2))
 		i = atoll(r1) - atoll(r2);
@@ -222,7 +222,7 @@ static char *
 _arith(int op, char *r1, char *r2)
 {
 	int64_t i1, i2;
-	char *rv;
+	register char *rv;
 
 	if (!numeric(r1) || !numeric(r2))
 		yyerror("non-numeric argument");
@@ -245,7 +245,7 @@ _arith(int op, char *r1, char *r2)
 static char *
 _conj(int op, char *r1, char *r2)
 {
-	char *rv = NULL;
+	register char *rv = NULL;
 
 	switch(op) {
 
@@ -277,7 +277,7 @@ _conj(int op, char *r1, char *r2)
 static char *
 match(char *s, char *p)
 {
-	char *rv;
+	register char *rv;
 	int	gotcha;
 
 	gotcha = ematch(s, p);
@@ -294,10 +294,10 @@ match(char *s, char *p)
 
 #if defined (SUS) || defined (SU3) || defined (S42)
 static int
-ematch(char *s, char *p)
+ematch(char *s, register char *p)
 {
 	regex_t	re;
-	int	num;
+	register int	num;
 	regmatch_t	bralist[2];
 	int	reflags = 0, val;
 
@@ -325,10 +325,10 @@ ematch(char *s, char *p)
 }
 #else	/* !SUS, !SU3, !S42 */
 static int
-ematch(char *s, char *p)
+ematch(char *s, register char *p)
 {
 	char *expbuf;
-	int num, val;
+	register int num, val;
 
 	if ((expbuf = compile(p, NULL, NULL)) == NULL)
 		errxx(regerrno);

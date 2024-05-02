@@ -25,7 +25,7 @@
 void (*
 setsig(int i, void (*f)(int)))(int)
 {
-	void (*rc)(int);
+	register void (*rc)(int);
 
 	if ((rc = sigset(i, SIG_IGN)) != SIG_IGN)
 		sigset(i, f);

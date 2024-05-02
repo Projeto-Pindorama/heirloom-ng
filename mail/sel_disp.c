@@ -26,7 +26,7 @@ int
 sel_disp(int type, int hdrtype, char *s)
 {
 	static char pn[] = "sel_disp";
-	char	*p;
+	register char	*p;
 	static	int	sav_lastrc = 0;
 	int		i, rc = 0;
 

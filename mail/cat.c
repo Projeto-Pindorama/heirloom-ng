@@ -33,7 +33,7 @@
 	
 void 
 cat(char **to, size_t *tosize,
-		const char *from1, const char *from2)
+		register const char *from1, register const char *from2)
 {
 	size_t	i = 0;
 

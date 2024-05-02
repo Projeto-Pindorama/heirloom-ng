@@ -179,7 +179,7 @@ traditional_renice(int argc, char **argv)
 			continue;
 		}
 		if (which == PRIO_USER) {
-			struct passwd	*pwd = getpwnam(*argv);
+			register struct passwd	*pwd = getpwnam(*argv);
 			
 			if (pwd == NULL) {
 				fprintf(stderr, "renice: %s: unknown user\n",

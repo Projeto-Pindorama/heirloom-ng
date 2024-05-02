@@ -25,7 +25,7 @@ int
 printhdr(int type, int hdrtype, struct hdrs *hptr, FILE *fp)
 {
 	char		buf[1024];
-	int	n;
+	register int	n;
 	struct hdrs 	*contptr;
 
 

@@ -188,7 +188,7 @@ copy(struct iblok *ip, char **lp, size_t *sz, int n)
 static int
 compare(const char *a, const char *b)
 {
-	const char *ra,*rb;
+	register const char *ra,*rb;
 	int	n;
 
 	if (ccoll) {

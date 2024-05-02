@@ -20,11 +20,11 @@
  */
 void
 dumprcv(
-	int	type,
-	int	htype,
-	int	*didrcvlines,
-	int	*suppress,
-	FILE	*f
+	register int	type,
+	register int	htype,
+	register int	*didrcvlines,
+	register int	*suppress,
+	register FILE	*f
 )
 {
 	int		rcvspot;	/* Place to put H_RECEIVED lines */

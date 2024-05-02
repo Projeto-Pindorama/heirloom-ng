@@ -889,9 +889,9 @@ fc_get(int color)
  * Display a nonprintable character.
  */
 static unsigned
-nonprint(int c, int doit)
+nonprint(register int c, int doit)
 {
-	int d;
+	register int d;
 	unsigned n;
 
 	if (present('b')) {
@@ -1355,8 +1355,8 @@ columnise(struct file **flist, struct file *fsav, int nplin)
 static int
 print(struct file **flist, struct file *fsav, int nplin, int doit)
 {
-	struct file *f;
-	int i, totlen;
+	register struct file *f;
+	register int i, totlen;
 
 	if (present('m')) {
 		if (!doit)

@@ -435,8 +435,8 @@ static void
 print(const char *fp, const char **argp)
 {
 	struct stat sbuf;
-	int sncol, i;
-	const char *sheader;
+	register int sncol, i;
+	register const char *sheader;
 	char cbuf[100], linebuf[100];
 	wint_t c;
 
@@ -541,7 +541,7 @@ print(const char *fp, const char **argp)
 static void
 mopen(const char **ap)
 {
-	const char **p, *p1;
+	register const char **p, *p1;
 
 	p = ap;
 	while((p1 = *p) && p++ <= lastarg) {
@@ -570,9 +570,9 @@ putpage(void)
 {
 	static long long	cnt;
 	long long	ocnt;
-	int lastcol, i;
-	wint_t c = 0;
-	wint_t *cp;
+	register int lastcol, i;
+	register wint_t c = 0;
+	register wint_t *cp;
 	int j, k, l, xplength, content;
 
 	if (ncol==0) {
@@ -730,9 +730,9 @@ static wint_t
 tpgetc(int ai)
 {
 	struct iblok *ip;
-	wint_t **p;
+	register wint_t **p;
 	wint_t c;
-	int i;
+	register int i;
 	int m;
 
 	i = ai;
@@ -788,7 +788,7 @@ tpgetc(int ai)
 static wint_t
 pgetc(int ai)
 {
-	wint_t c;
+	register wint_t c;
 	int i;
 
 	i = aflg?0:ai;
@@ -850,8 +850,8 @@ pgetc(int ai)
 static void
 put(wint_t ac)
 {
-	int ns;
-	wint_t c;
+	register int ns;
+	register wint_t c;
 
 	c = ac;
 	if (tabc) {

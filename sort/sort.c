@@ -219,11 +219,11 @@ static void	term(int);
 static int	cmpnum(const char *, const char *, const char *, const char *,
 			int);
 static int	cmp(const char *, const char *);
-static int	cmpa(const char *, const char *);
+static int	cmpa(register const char *, register const char *);
 static int	cmpm(const char *, const char *);
 static int	cmpl(const char *, const char *);
 static const char	*skip(const char *, struct field *, int);
-static const char	*eol(const char *);
+static const char	*eol(register const char *);
 static void	copyproto(void);
 static int	field(const char *, const char *, int, int);
 static int	number(const char **);
@@ -243,7 +243,7 @@ static int	(*cmpf)(const char *, const char *);
 int
 main(int argc, char **argv)
 {
-	int a;
+	register int a;
 	char *arg;
 	struct field *p, *q;
 	int i;
@@ -515,7 +515,7 @@ static void
 sort(void)
 {
 	char *cp;
-	int c, ln;
+	register int c, ln;
 	int done;
 	int i, lastc;
 	char *f = NULL, *of;
@@ -603,7 +603,7 @@ merge(int a, int b)
 	static struct merg	**ibuf;
 	static int	nibufs;
 	struct	merg	*p;
-	int	i;
+	register int	i;
 	struct merg **ip, *jp;
 	char	*f = NULL;
 	int	j;
@@ -705,10 +705,10 @@ merge(int a, int b)
 static int
 rline(struct merg *mp, const char *fn)
 {
-	char *cp;
-	char *ce;
+	register char *cp;
+	register char *ce;
 	FILE *bp;
-	int c = EOF;
+	register int c = EOF;
 	int	lastc;
 
 	bp = mp->b;
@@ -739,7 +739,7 @@ rline(struct merg *mp, const char *fn)
 static void
 disorder(const char *s, char *t)
 {
-	char *u;
+	register char *u;
 	for(u=t; *u!='\n';u++) ;
 	*u = 0;
 	diag(s,t);
@@ -749,7 +749,7 @@ disorder(const char *s, char *t)
 static void
 newfile(void)
 {
-	char *f;
+	register char *f;
 	int	fd;
 
 	f = setfil(nfiles);
@@ -797,7 +797,7 @@ oldfile(void)
 static void
 safeoutfil(void)
 {
-	int i;
+	register int i;
 	struct stat obuf,ibuf;
 
 	if(!mflg||outfil==0)
@@ -871,7 +871,7 @@ wrerr(int en)
 static void
 term(int signo)
 {
-	int i;
+	register int i;
 
 	if(nfiles == eargc)
 		nfiles++;
@@ -885,7 +885,7 @@ static int
 cmpnum(const char *pa, const char *pb, const char *la, const char *lb,
 		int rflg)
 {
-	int sa;
+	register int sa;
 	int sb;
 	int a, b;
 	int n;
@@ -1016,7 +1016,7 @@ cmp(const char *i, const char *j)
 	int (*code)(const char **);
 	int (*ignore)(const char *);
 	int n, k;
-	int sa;
+	register int sa;
 	int sb;
 	const char *la, *lb;
 	struct field *fp;
@@ -1074,7 +1074,7 @@ cmp(const char *i, const char *j)
 }
 
 static int
-cmpa(const char *pa, const char *pb)
+cmpa(register const char *pa, register const char *pb)
 {
 	while(*pa == *pb) {
 		if(*pa++ == '\n')
@@ -1127,7 +1127,7 @@ cmpl(const char *pa, const char *pb)
 static const char *
 skip(const char *pp, struct field *fp, int j)
 {
-	int i;
+	register int i;
 	const char *p;
 	int	runs = 0;
 
@@ -1212,7 +1212,7 @@ ret:
 }
 
 static const char *
-eol(const char *p)
+eol(register const char *p)
 {
 	while(*p != '\n') p++;
 	return(p);
@@ -1221,8 +1221,8 @@ eol(const char *p)
 static void
 copyproto(void)
 {
-	int i;
-	int *p, *q;
+	register int i;
+	register int *p, *q;
 
 	p = (int *)&proto;
 	q = (int *)&fields[nfields];
@@ -1233,8 +1233,8 @@ copyproto(void)
 static int
 field(const char *s, const char *nxt, int k, int posix)
 {
-	struct field *p;
-	int d;
+	register struct field *p;
+	register int d;
 	const char *arg;
 	int cons = 0;
 	p = &fields[nfields];
@@ -1337,7 +1337,7 @@ static int
 number(const char **ppa)
 {
 	int n;
-	const char *pa;
+	register const char *pa;
 	pa = *ppa;
 	n = 0;
 	while(isdigit(*pa&0377)) {
@@ -1366,7 +1366,7 @@ keydef(char *s)
 static void
 quicksort(char **a, char **l, int offs)
 {
-	char **i, **j;
+	register char **i, **j;
 	char **k;
 	char **lp, **hp;
 	int c;

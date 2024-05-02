@@ -282,7 +282,7 @@ main(int argc, char **argv)
 static int
 input(int n)		/* get input line and split into fields */
 {
-	int i;
+	register int i;
 	wint_t	wc;
 	int	m;
 	char	*bp;

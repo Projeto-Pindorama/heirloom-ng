@@ -62,7 +62,7 @@ struct fa *makedfa(const char *p)	/* returns dfa for re pointed to by p */
 }
 
 int
-match(void *v, const char *p)
+match(void *v, register const char *p)
 {
 	struct fa *pfa = v;
 	int i;
@@ -73,7 +73,7 @@ match(void *v, const char *p)
 }
 
 int
-member(char c, const char *s)	/* is c in s? */
+member(register char c, register const char *s)	/* is c in s? */
 {
 	while (*s)
 		if (c == *s++)

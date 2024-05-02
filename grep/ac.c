@@ -90,9 +90,9 @@ ac_build(void)
 static int
 ac_match(const char *line, size_t sz)
 {
-	const char *p;
-	int z;
-	struct words *c;
+	register const char *p;
+	register int z;
+	register struct words *c;
 	int failed;
 
 	p = line;
@@ -147,8 +147,8 @@ ac_match(const char *line, size_t sz)
 static int
 ac_range(struct iblok *ip, char *last)
 {
-	char *p;
-	struct words *c;
+	register char *p;
+	register struct words *c;
 	int failed;
 
 	p = ip->ib_cur;
@@ -182,7 +182,7 @@ ac_range(struct iblok *ip, char *last)
 			}
 		if (c->out) {
 			if (xflag) {
-				char *ep = p;
+				register char *ep = p;
 				while (*ep != '\n')
 					ep++;
 				if ((failed || ep > p) && vflag == 0) {
@@ -222,9 +222,9 @@ ac_range(struct iblok *ip, char *last)
 static int
 ac_matchw(const char *line, size_t sz)
 {
-	const char *p;
+	register const char *p;
 	wint_t z;
-	struct words *c;
+	register struct words *c;
 	int failed, n = 0;
 
 	p = line;
@@ -298,9 +298,9 @@ ac_matchw(const char *line, size_t sz)
 static int
 ac_rangew(struct iblok *ip, char *last)
 {
-	char *p;
+	register char *p;
 	wint_t	z;
-	struct words *c;
+	register struct words *c;
 	int failed, n = 0;
 
 	p = ip->ib_cur;
@@ -343,7 +343,7 @@ ac_rangew(struct iblok *ip, char *last)
 			}
 		if (c->out) {
 			if (xflag) {
-				char *ep = p;
+				register char *ep = p;
 				while (*ep != '\n')
 					ep++;
 				if ((failed || ep > p) && vflag == 0) {
@@ -384,8 +384,8 @@ ac_rangew(struct iblok *ip, char *last)
 static void
 cgotofn(void)
 {
-	int c;
-	struct words *s;
+	register int c;
+	register struct words *s;
 
 	woverflo();
 	s = smax = w = wcur;
@@ -481,8 +481,8 @@ cfail(void)
 	int qsize = 0;
 	struct words *state;
 	int bstart;
-	char c;
-	struct words *s;
+	register char c;
+	register struct words *s;
 	qoverflo(&queue, &qsize);
 	s = w;
 	front = rear = 0;

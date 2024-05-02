@@ -137,7 +137,7 @@ zipunshrink(struct file *f, const char *tgt, int tfd, int doswap, uint32_t *crc)
     struct globals G;
     int offset = (HSIZE - 1);
     uint8_t *stacktop = stack + offset;
-    uint8_t *newstr;
+    register uint8_t *newstr;
     int codesize=9, len, KwKwK;
     int16_t code, oldcode, freecode, curcode;
     int16_t lastfreecode;
@@ -228,7 +228,7 @@ zipunshrink(struct file *f, const char *tgt, int tfd, int doswap, uint32_t *crc)
           oldcode, (int)(*newstr), (*newstr<32 || *newstr>=127)? ' ':*newstr));
 
         {
-            uint8_t *p;
+            register uint8_t *p;
 
             for (p = newstr;  p < newstr+len;  ++p) {
                 *G.outptr++ = *p;
@@ -281,13 +281,13 @@ static void
 partial_clear(struct globals *Gp)
 {
 #define	G	(*Gp)
-    int16_t code;
+    register int16_t code;
 
     /* clear all nodes which have no children (i.e., leaf nodes only) */
 
     /* first loop:  mark each parent as such */
     for (code = BOGUSCODE+1;  code < HSIZE;  ++code) {
-        int16_t cparent = (int16_t)(parent[code] & CODE_MASK);
+        register int16_t cparent = (int16_t)(parent[code] & CODE_MASK);
 
         if (cparent > BOGUSCODE && cparent != FREE_CODE)
             FLAG_BITS[cparent] |= HAS_CHILD;   /* set parent's child-bit */

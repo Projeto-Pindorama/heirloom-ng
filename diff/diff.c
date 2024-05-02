@@ -306,7 +306,7 @@ dalloc(size_t n)
 void *
 talloc(size_t n)
 {
-	void *p;
+	register void *p;
 
 	if ((p = dalloc(n)) == NULL)
 		noroom();

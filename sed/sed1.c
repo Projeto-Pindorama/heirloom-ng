@@ -18,7 +18,7 @@
 
 #if !defined (SUS) && !defined (SU3) && !defined(S42)
 #define	INIT		extern char *cp, *badp; \
-			char *sp = cp;
+			register char *sp = cp;
 #define	GETC()		(*sp++)
 #define	PEEKC()		(*sp)
 #define	UNGETC(c)	(--sp)
@@ -157,8 +157,8 @@ static int	Loc1, Loc2;
 void
 execute(const char *file)
 {
-	char *p1, *p2;
-	struct reptr	*ipc;
+	register char *p1, *p2;
+	register struct reptr	*ipc;
 	int	c;
 	int	execc;
 
@@ -295,7 +295,7 @@ execute(const char *file)
 static int
 match(char *expbuf, int gf, int needloc)
 {
-	char	*p1;
+	register char	*p1;
 	int	i, val;
 
 	if(gf) {
@@ -356,8 +356,8 @@ substitute(struct reptr *ipc)
 static void
 dosub(char *rhsbuf)
 {
-	int lc, sc;
-	char	*rp;
+	register int lc, sc;
+	register char	*rp;
 	int c;
 
 	sflag = 1;
@@ -398,8 +398,8 @@ dosub(char *rhsbuf)
 static int
 place(int asc, int al1, int al2)
 {
-	int sc;
-	int l1, l2;
+	register int sc;
+	register int l1, l2;
 
 	sc = asc;
 	l1 = al1;
@@ -415,9 +415,9 @@ place(int asc, int al1, int al2)
 static void
 command(struct reptr *ipc)
 {
-	int	i;
+	register int	i;
 	wint_t	c;
-	char	*p1, *p2;
+	register char	*p1, *p2;
 	int	k1, k2, k3;
 	char	*lp;
 	int	execc;
@@ -685,9 +685,9 @@ command(struct reptr *ipc)
 static int
 gline(int addr)
 {
-	char	*p2;
-	int	c;
-	int	c1;
+	register char	*p2;
+	register int	c;
+	register int	c1;
 	c1 = addr;
 	p2 = cbp;
 	for (;;) {
@@ -739,7 +739,7 @@ gline(int addr)
 static void
 arout(void)
 {
-	char	*p1;
+	register char	*p1;
 	struct reptr **a;
 	FILE	*fi;
 	char	c;

@@ -54,7 +54,7 @@ static void	wput(const wchar_t *);
 int
 main(int argc, char **argv)
 {
-	int y = 1, i, j;
+	register int y = 1, i, j;
 	int m = 1;
 
 	progname = basename(argv[0]);
@@ -128,8 +128,8 @@ xlong:
 static int
 number(const char *str)
 {
-	int n, c;
-	const char *s;
+	register int n, c;
+	register const char *s;
 
 	n = 0;
 	s = str;
@@ -144,8 +144,8 @@ number(const char *str)
 static void
 pstr(char *str, int n)
 {
-	int i;
-	char *s;
+	register int i;
+	register char *s;
 
 	s = str;
 	i = n;
@@ -170,8 +170,8 @@ char	mon[] = {
 static void
 cal(int m, int y, char *p, int w)
 {
-	int d, i;
-	char *s;
+	register int d, i;
+	register char *s;
 
 	s = p;
 	d = jan1(y);
@@ -230,7 +230,7 @@ cal(int m, int y, char *p, int w)
 static int
 jan1(int yr)
 {
-	int y, d;
+	register int y, d;
 
 /*
  *	normal gregorian calendar

@@ -42,9 +42,9 @@ static int	linkit(const char *from, const char *to);
 static void	*srealloc(void *, size_t);
 
 int
-main(int argc, char **argv)
+main(int argc, register char **argv)
 {
-	int i, r;
+	register int i, r;
 
 	progname = basename(argv[0]);
 	argc--, argv++;

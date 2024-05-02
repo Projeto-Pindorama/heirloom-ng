@@ -250,7 +250,7 @@ static int	step(const char *, const char *);
 int
 main(int argc, char **argv)
 {
-	int i;
+	register int i;
 	void (*oldintr)(int);
 
 	progname = basename(argv[0]);
@@ -364,8 +364,8 @@ usage(char c, int misarg)
 static void
 commands(void)
 {
-	long *a1;
-	int c;
+	register long *a1;
+	register int c;
 	int	n;
 
 	for (;;) {
@@ -726,8 +726,8 @@ commands(void)
 static long *
 address(void)
 {
-	long *a1;
-	int minus, c;
+	register long *a1;
+	register int minus, c;
 	int n, relerr;
 
 	minus = 0;
@@ -859,7 +859,7 @@ nonzero(void)
 static void
 newline(void)
 {
-	int c;
+	register int c;
 
 	if ((c = getchr()) == '\n')
 		return;
@@ -878,8 +878,8 @@ newline(void)
 static void
 filename(int comm)
 {
-	char *p1, *p2;
-	int c, i;
+	register char *p1, *p2;
+	register int c, i;
 
 	count = 0;
 	c = getchr();
@@ -991,7 +991,7 @@ error(const char *s)
 static void
 error2(const char *s, const char *fn)
 {
-	int c;
+	register int c;
 
 	wrapp = 0;
 	listf = 0;
@@ -1056,8 +1056,8 @@ getchr(void)
 static int
 gettty(void)
 {
-	int c, i;
-	char *gf;
+	register int c, i;
+	register char *gf;
 
 	i = 0;
 	gf = globp;
@@ -1103,7 +1103,7 @@ getnum(void)
 static int
 getfile(void)
 {
-	int c, i, j;
+	register int c, i, j;
 	static int	nextj;
 
 	i = 0;
@@ -1150,8 +1150,8 @@ putfile(void)
 {
 	long *a1;
 	int n;
-	char *fp, *lp;
-	int nib;
+	register char *fp, *lp;
+	register int nib;
 
 	nib = 512;
 	fp = genbuf;
@@ -1190,7 +1190,7 @@ putfile(void)
 static int
 append(int (*f)(void), long *a)
 {
-	long *a1, *a2, *rdot;
+	register long *a1, *a2, *rdot;
 	int nline, tl;
 
 	nline = 0;
@@ -1329,7 +1329,7 @@ delete(void)
 static void
 rdelete(long *ad1, long *ad2)
 {
-	long *a1, *a2, *a3;
+	register long *a1, *a2, *a3;
 
 	a1 = ad1;
 	a2 = ad2+1;
@@ -1348,7 +1348,7 @@ rdelete(long *ad1, long *ad2)
 static void
 gdelete(void)
 {
-	long *a1, *a2, *a3;
+	register long *a1, *a2, *a3;
 
 	a3 = dol;
 	for (a1=zero+1; (*a1&01)==0; a1++)
@@ -1370,8 +1370,8 @@ gdelete(void)
 static char *
 getline(long tl, int nulterm)
 {
-	char *bp, *lp;
-	long nl;
+	register char *bp, *lp;
+	register long nl;
 
 	lp = linebuf;
 	bp = getblock(tl, READ);
@@ -1393,8 +1393,8 @@ getline(long tl, int nulterm)
 static int
 putline(void)
 {
-	char *bp, *lp;
-	long nl;
+	register char *bp, *lp;
+	register long nl;
 	long tl;
 
 	fchange = 1;
@@ -1422,7 +1422,7 @@ putline(void)
 static char *
 getblock(long atl, long iof)
 {
-	long bno, off;
+	register long bno, off;
 	
 	bno = (atl>>8)&BLKMSK;
 	off = (atl<<1)&0774;
@@ -1464,7 +1464,7 @@ blkio(long b, char *buf, int wr)
 static void
 init(void)
 {
-	long *markp;
+	register long *markp;
 
 	tline = 2;
 	for (markp = names; markp < &names[26]; markp++)
@@ -1484,8 +1484,8 @@ init(void)
 static void
 global(int k, int ia)
 {
-	int c;
-	long *a1;
+	register int c;
+	register long *a1;
 	static char *globuf;
 	char	mb[MB_LEN_MAX+1];
 	int	spflag = 0;
@@ -1551,9 +1551,9 @@ global(int k, int ia)
 }
 
 static void
-globrd(char **globuf, int c)
+globrd(char **globuf, register int c)
 {
-	int i;
+	register int i;
 
 	if (*globuf == 0 && (*globuf = malloc(GBSIZE=256)) == 0)
 		error("global too long");
@@ -1579,8 +1579,8 @@ globrd(char **globuf, int c)
 static void
 join(void)
 {
-	int i, j;
-	long *a1;
+	register int i, j;
+	register long *a1;
 
 	j = 0;
 	for (a1=addr1; a1<=addr2; a1++) {
@@ -1602,8 +1602,8 @@ join(void)
 static void
 substitute(int inglob)
 {
-	long *markp;
-	long *a1;
+	register long *markp;
+	register long *a1;
 	intptr_t nl;
 	int gsubf;
 
@@ -1646,7 +1646,7 @@ substitute(int inglob)
 static int
 compsub(void)
 {
-	int seof, c, i;
+	register int seof, c, i;
 	static char	*oldrhs;
 	static int	orhssz;
 	char	mb[MB_LEN_MAX+1];
@@ -1713,7 +1713,7 @@ compsub(void)
 static int
 getsub(void)
 {
-	char *p1, *p2;
+	register char *p1, *p2;
 
 	p1 = linebuf;
 	if ((p2 = linebp) == 0)
@@ -1727,8 +1727,8 @@ getsub(void)
 static int
 dosub(int really)
 {
-	char *lp, *sp;
-	int i, j, k;
+	register char *lp, *sp;
+	register int i, j, k;
 	int c;
 
 	if (!really)
@@ -1781,7 +1781,7 @@ dosub(int really)
 }
 
 static int
-place(int j, const char *l1, const char *l2)
+place(register int j, register const char *l1, register const char *l2)
 {
 
 	while (l1 < l2) {
@@ -1795,7 +1795,7 @@ place(int j, const char *l1, const char *l2)
 static void
 move(int cflag)
 {
-	long *adt, *ad1, *ad2;
+	register long *adt, *ad1, *ad2;
 
 	setdot();
 	nonzero();
@@ -1838,9 +1838,9 @@ move(int cflag)
 }
 
 static void
-reverse(long *a1, long *a2)
+reverse(register long *a1, register long *a2)
 {
-	int t;
+	register int t;
 
 	for (;;) {
 		t = *--a2;
@@ -1863,7 +1863,7 @@ getcopy(void)
 static int
 execute(int gf, long *addr, int subst)
 {
-	char *p1, *p2, c;
+	register char *p1, *p2, c;
 
 	for (c=0; c<NBRA; c++) {
 		braslist[c&0377] = 0;
@@ -1963,7 +1963,7 @@ doprnt(long *bot, long *top)
 static void
 putd(long c)
 {
-	int r;
+	register int r;
 
 	r = c%10;
 	c /= 10;
@@ -1973,7 +1973,7 @@ putd(long c)
 }
 
 static void
-nlputs(const char *sp)
+nlputs(register const char *sp)
 {
 	if (listf)
 		list(sp);
@@ -1984,7 +1984,7 @@ nlputs(const char *sp)
 }
 
 static void
-puts(const char *sp)
+puts(register const char *sp)
 {
 	while (*sp) {
 		if (*sp != '\n')
@@ -2117,8 +2117,8 @@ static char	*linp	= line;
 static void
 putchr(int ac)
 {
-	char *lp;
-	int c;
+	register char *lp;
+	register int c;
 
 	lp = linp;
 	c = ac;

@@ -168,7 +168,7 @@ printtime(const char *cp)
 {
 	struct tm *tp;
 	char fmt[256];
-	char *fp;
+	register char *fp;
 	char buf[256];
 	int mod;
 	char	*date_fmt;

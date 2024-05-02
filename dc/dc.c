@@ -39,8 +39,8 @@ main(int argc,char **argv)
 
 void
 commnds(void){
-	int c;
-	struct blk *p,*q;
+	register int c;
+	register struct blk *p,*q;
 	long l;
 	int sign;
 	struct blk **ptr,*s,*t;
@@ -613,7 +613,7 @@ div(struct blk *ddivd,struct blk *ddivr)
 	int carry, dig = 0,magic,d = 0,dd;
 	long c,td,cc;
 	struct blk *ps;
-	struct blk *p,*divd,*divr;
+	register struct blk *p,*divd,*divr;
 
 	rem = 0;
 	p = salloc(0);
@@ -737,8 +737,8 @@ ddone:
 
 int
 dscale(void){
-	struct blk *dd,*dr;
-	struct blk *r;
+	register struct blk *dd,*dr;
+	register struct blk *r;
 	int c;
 
 	dr = pop();
@@ -770,7 +770,7 @@ struct blk *
 removr(struct blk *p,int n)
 {
 	int nn;
-	struct blk *q,*s,*r;
+	register struct blk *q,*s,*r;
 
 	rewind(p);
 	nn = (n+1)/2;
@@ -849,7 +849,7 @@ sqrt(struct blk *p)
 struct blk *
 exp(struct blk *base,struct blk *ex)
 {
-	struct blk *r,*e,*p;
+	register struct blk *r,*e,*p;
 	struct blk *e1,*t,*cp;
 	int temp,c,n;
 	r = salloc(1);
@@ -904,7 +904,7 @@ edone:
 void
 init(int argc,char **argv)
 {
-	struct sym *sp;
+	register struct sym *sp;
 
 	if (sigset(SIGINT, SIG_IGN) != SIG_IGN)
 		sigset(SIGINT,onintr);
@@ -994,9 +994,9 @@ pop(void){
 
 struct blk *
 readin(void){
-	struct blk *p,*q;
+	register struct blk *p,*q;
 	int dp,dpct;
-	int c;
+	register int c;
 
 	dp = dpct=0;
 	p = salloc(0);
@@ -1045,7 +1045,7 @@ struct blk *
 add0(struct blk *p,int ct)
 {
 		/* returns pointer to struct with ct 0's & p */
-	struct blk *q,*t;
+	register struct blk *q,*t;
 
 	q = salloc(length(p)+(ct+1)/2);
 	while(ct>1){
@@ -1068,7 +1068,7 @@ add0(struct blk *p,int ct)
 struct blk *
 mult(struct blk *p,struct blk *q)
 {
-	struct blk *mp,*mq,*mr;
+	register struct blk *mp,*mq,*mr;
 	int sign,offset,carry;
 	int cq,cp,mt,mcr;
 
@@ -1124,8 +1124,8 @@ mult(struct blk *p,struct blk *q)
 void
 chsign(struct blk *p)
 {
-	int carry;
-	char ct;
+	register int carry;
+	register char ct;
 
 	carry=0;
 	rewind(p);
@@ -1194,7 +1194,7 @@ unreadc(char c)
 void
 binop(char c)
 {
-	struct blk *r = NULL;
+	register struct blk *r = NULL;
 
 	switch(c){
 	case '+':
@@ -1218,7 +1218,7 @@ void
 print(struct blk *hptr)
 {
 	int sc;
-	struct blk *p,*q,*dec;
+	register struct blk *p,*q,*dec;
 	int dig,dout,ct;
 
 	rewind(hptr);
@@ -1298,7 +1298,7 @@ struct blk *
 getdec(struct blk *p,int sc)
 {
 	int cc;
-	struct blk *q,*t,*s;
+	register struct blk *q,*t,*s;
 
 	rewind(p);
 	if(length(p)*2 < sc){
@@ -1329,7 +1329,7 @@ getdec(struct blk *p,int sc)
 void
 tenot(struct blk *p,int sc)
 {
-	int c,f;
+	register int c,f;
 	char	b[3];
 
 	fsfile(p);
@@ -1380,7 +1380,7 @@ tenot(struct blk *p,int sc)
 void
 oneot(struct blk *p,int sc,char ch)
 {
-	struct blk *q;
+	register struct blk *q;
 
 	q = removc(p,sc);
 	create(strptr);
@@ -1399,7 +1399,7 @@ oneot(struct blk *p,int sc,char ch)
 void
 hexot(struct blk *p,int flg,int unused)
 {
-	int c;
+	register int c;
 	rewind(p);
 	if(sfeof(p) != 0){
 		sputc(strptr,'0');
@@ -1419,8 +1419,8 @@ hexot(struct blk *p,int flg,int unused)
 void
 bigot(struct blk *p,int flg,int putspc)
 {
-	struct blk *t,*q;
-	int l = 0;
+	register struct blk *t,*q;
+	register int l = 0;
 	int neg;
 
 	if(flg == 1)t = salloc(0);
@@ -1472,8 +1472,8 @@ bigot(struct blk *p,int flg,int putspc)
 struct blk *
 add(struct blk *a1,struct blk *a2)
 {
-	struct blk *p;
-	int carry,n;
+	register struct blk *p;
+	register int carry,n;
 	int size;
 	int c = 0,n1,n2;
 
@@ -1518,8 +1518,8 @@ add(struct blk *a1,struct blk *a2)
 
 int
 eqk(void){
-	struct blk *p,*q;
-	int skp;
+	register struct blk *p,*q;
+	register int skp;
 	int skq;
 
 	p = pop();
@@ -1550,7 +1550,7 @@ eqk(void){
 struct blk *
 removc(struct blk *p,int n)
 {
-	struct blk *q,*r;
+	register struct blk *q,*r;
 
 	rewind(p);
 	while(n>1){
@@ -1572,7 +1572,7 @@ removc(struct blk *p,int n)
 struct blk *
 scalint(struct blk *p)
 {
-	int n;
+	register int n;
 	n = sunputc(p);
 	p = removc(p,n);
 	return(p);
@@ -1581,7 +1581,7 @@ scalint(struct blk *p)
 struct blk *
 scale(struct blk *p,int n)
 {
-	struct blk *q,*s,*t;
+	register struct blk *q,*s,*t;
 
 	t = add0(p,n);
 	q = salloc(1);
@@ -1615,8 +1615,8 @@ command(void){
 	static char *line;
 	static int linesize;
 	char *sl;
-	void (*savint)(int);
-	int pid,rpid;
+	register void (*savint)(int);
+	register int pid,rpid;
 	int retcode;
 
 	switch(c = readc()){
@@ -1655,8 +1655,8 @@ command(void){
 int
 cond(char c)
 {
-	struct blk *p;
-	int cc;
+	register struct blk *p;
+	register int cc;
 
 	if(subt() != 0)return(1);
 	p = pop();
@@ -1696,8 +1696,8 @@ cond(char c)
 
 void
 load(void){
-	int c;
-	struct blk *p,*q;
+	register int c;
+	register struct blk *p,*q;
 	struct blk *t,*s;
 	c = readc() & 0377;
 	sptr = stable[c];
@@ -1732,7 +1732,7 @@ load(void){
 int
 log_2(long n)
 {
-	int i;
+	register int i;
 
 	if(n == 0)return(0);
 	i=31;
@@ -1744,8 +1744,8 @@ log_2(long n)
 struct blk *
 salloc(int size)
 {
-	struct blk *hdr;
-	char *ptr;
+	register struct blk *hdr;
+	register char *ptr;
 	all++;
 	nbytes += size;
 	ptr = malloc((unsigned)(size?size:1));
@@ -1763,7 +1763,7 @@ salloc(int size)
 
 struct blk *
 morehd(void){
-	struct blk *h,*kk;
+	register struct blk *h,*kk;
 	headmor++;
 	nbytes += HEADSZ;
 	hfree = h = (struct blk *)malloc(HEADSZ);
@@ -1790,9 +1790,9 @@ sunputc(struct blk *hptr)
 struct blk *
 copy(struct blk *hptr,int size)
 {
-	struct blk *hdr;
-	unsigned sz;
-	char *ptr;
+	register struct blk *hdr;
+	register unsigned sz;
+	register char *ptr;
 
 	all++;
 	nbytes += size;
@@ -1833,7 +1833,7 @@ sdump(char *s1,struct blk *hptr)
 void
 seekc(struct blk *hptr,int n)
 {
-	char *nn,*p;
+	register char *nn,*p;
 
 	nn = hptr->beg+n;
 	if(nn > hptr->last){
@@ -1867,8 +1867,8 @@ salterwd(struct wblk *hptr,struct blk *n)
 void
 more(struct blk *hptr)
 {
-	unsigned size;
-	char *p;
+	register unsigned size;
+	register char *p;
 
 	if((size=(hptr->last-hptr->beg)*2) == 0)size=1;
 	nbytes += size/2;
@@ -1947,8 +1947,8 @@ printf("tmps %lo p %lo\n",(long)(intptr_t)tmps,(long)(intptr_t)p);
 void
 redef(struct blk *p)
 {
-	int offset;
-	char *newp;
+	register int offset;
+	register char *newp;
 
 	if ((intptr_t)p->beg&01) {
 		printf("odd ptr %lo hdr %lo\n",(long)(intptr_t)p->beg,
@@ -1966,7 +1966,7 @@ redef(struct blk *p)
 }
 
 void
-release(struct blk *p)
+release(register struct blk *p)
 {
 	rel++;
 	nbytes -= p->last - p->beg;
@@ -1978,7 +1978,7 @@ release(struct blk *p)
 struct blk *
 dcgetwd(struct blk *p)
 {
-	struct wblk *wp;
+	register struct wblk *wp;
 
 	wp = (struct wblk *)p;
 	if (wp->rdw == wp->wtw)
@@ -1989,7 +1989,7 @@ dcgetwd(struct blk *p)
 void
 putwd(struct blk *p, struct blk *c)
 {
-	struct wblk *wp;
+	register struct wblk *wp;
 
 	wp = (struct wblk *)p;
 	if (wp->wtw == wp->lastw)
@@ -2000,7 +2000,7 @@ putwd(struct blk *p, struct blk *c)
 struct blk *
 lookwd(struct blk *p)
 {
-	struct wblk *wp;
+	register struct wblk *wp;
 
 	wp = (struct wblk *)p;
 	if (wp->rdw == wp->wtw)
@@ -2009,9 +2009,9 @@ lookwd(struct blk *p)
 }
 
 char *
-nalloc(char *p,unsigned nbytes)
+nalloc(register char *p,unsigned nbytes)
 {
-	char *q, *r;
+	register char *q, *r;
 	q = r = malloc(nbytes ? nbytes : 1);
 	if(q==0)
 		return(0);

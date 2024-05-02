@@ -50,7 +50,7 @@ Any fractional part of an exponent is ignored.
 .BI s x
 The
 top of the stack is popped and stored into
-a named
+a register named
 .I x,
 where
 .I x
@@ -64,14 +64,17 @@ is treated as a stack and the value is pushed on it.
 .TP
 .BI l x
 The
-value in .I x
+value in register
+.I x
 is pushed on the stack.
-The .I x
+The register
+.I x
 is not altered.
 All registers start with zero value.
 If the
 .B l
 is capitalized,
+register
 .I x
 is treated as a stack and its top value is popped onto the main stack.
 .TP

@@ -20,11 +20,11 @@
  */
 void
 dumpaff(
-	int	type,
-	int	htype,
-	int	*didafflines,
-	int	*suppress,
-	FILE	*f
+	register int	type,
+	register int	htype,
+	register int	*didafflines,
+	register int	*suppress,
+	register FILE	*f
 )
 {
 	int		affspot;	/* Place to put H_AFWDFROM lines */

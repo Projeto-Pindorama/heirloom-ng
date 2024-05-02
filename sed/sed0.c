@@ -196,7 +196,7 @@ static void
 fcomp(void)
 {
 
-	char	*op, *tp, *q;
+	register char	*op, *tp, *q;
 	int	pt, pt1;
 	int	lpt;
 
@@ -543,7 +543,7 @@ jtcommon:
 static char	*
 compsub(char **rhsbuf, char *nsubp)
 {
-	char	*p, *op, *oq;
+	register char	*p, *op, *oq;
 	char	*q;
 	wint_t	c;
 	size_t	sz = 32;
@@ -598,9 +598,9 @@ compsub(char **rhsbuf, char *nsubp)
 static int
 rline(void)
 {
-	char	*q;
-	int	c;
-	int	t;
+	register char	*q;
+	register int	c;
+	register int	t;
 	static char	*saveq;
 
 	c = -1;
@@ -671,7 +671,7 @@ rline(void)
 static char	*
 address(char **expbuf)
 {
-	char	*rcp, *ep;
+	register char	*rcp, *ep;
 	long long	lno;
 
 	*expbuf = NULL;
@@ -715,7 +715,7 @@ address(char **expbuf)
 static int
 cmp(const char *a, const char *b)
 {
-	const char	*ra, *rb;
+	register const char	*ra, *rb;
 
 	ra = a - 1;
 	rb = b - 1;
@@ -728,7 +728,7 @@ cmp(const char *a, const char *b)
 static void
 text(char **textbuf)
 {
-	char	*p, *oq;
+	register char	*p, *oq;
 	char *q;
 	size_t sz = 128;
 
@@ -793,8 +793,8 @@ dechain(void)
 static char *
 ycomp_sb(char **expbuf)
 {
-	int	c, d;
-	char	*ep, *tsp;
+	register int	c, d;
+	register char	*ep, *tsp;
 	char	*sp;
 
 	*expbuf = smalloc(0400);
@@ -837,7 +837,7 @@ static char *
 ycomp_mb(char **expbuf)
 {
 	struct yitem	**yt, *yp;
-	wint_t	c, d;
+	register wint_t	c, d;
 	char	*otsp, *tsp, *sp, *mp;
 
 	tsp = sp = cp;
@@ -886,7 +886,7 @@ ycomp_mb(char **expbuf)
 static void
 rep_inc(void)
 {
-	char	*p;
+	register char	*p;
 	const int	chunk = 16;
 
 	if (++rep >= PTRSIZE) {
@@ -901,7 +901,7 @@ rep_inc(void)
 static void
 lab_inc(void)
 {
-	char	*p;
+	register char	*p;
 	const int	chunk = 8;
 
 	if (++lab >= LABSIZE) {
@@ -915,7 +915,7 @@ lab_inc(void)
 void
 aptr_inc(void)
 {
-	char	*p;
+	register char	*p;
 	const int	chunk = 8;
 
 	if (++aptr > ABUFSIZE) {
@@ -1002,7 +1002,7 @@ sed_compile(char **ep)
 	struct re_emu	*re;
 	static char	*pat;
 	static size_t	patsz;
-	char	*p, *oc;
+	register char	*p, *oc;
 	wint_t	c, d;
 
 	if (*cp != sed_seof)
@@ -1099,7 +1099,7 @@ static char *
 sed_compile(char **ep)
 {
 	extern char *compile(char *, char *, char *, int);
-	char *p;
+	register char *p;
 	size_t sz;
 
 	for (sz = 0, p = cp; *p; p++)
