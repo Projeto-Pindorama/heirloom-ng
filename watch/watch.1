@@ -12,14 +12,14 @@ watch \- Keep an eye on a command output.
 The
 .B watch 
 utility executes a command repeatedly every
-"user-defined" seconds. This allows you to watch
+\fIseconds\fR seconds. This allows you to watch
 a program output change over the time.
 .PP
 It accepts the following options:
 .TP
 .B \-n
 Specifies the interval to refresh the output.
-Per default, the interval is of 2 seconds.
+By default, the interval is of 2 seconds.
 .TP
 .B \-b
 Beeps if the program being run returns a non-zero
@@ -36,10 +36,10 @@ or another terminal multiplexer that shows you
 information that would originally be shown by that
 header.
 .SH EXAMPLES
-It can be very useful when backuping some disc and
-needing to see how many files were already copied.
+It can be very useful when backing up a disk and
+you need to see how many files were already copied.
 .br
-Lets suppose you're copying a disc from a terminal
+Let's suppose you're copying a disk from a terminal
 and, in another, you want to keep an eye at
 \fIdu\fR(1) output to see every minute if the file
 size matches with what you're expecting.
@@ -65,7 +65,7 @@ The
 .B watch(1)
 utility has a hazy history.
 Nobody seems to be actually sure of where
-it has appeared first.
+it appeared first.
 .br
 According to procps 010114's watch
 C source code, where it first appeared in
@@ -79,14 +79,14 @@ Internet Initiative Japan Inc.'s iwatch
 manual page, the watch utility came first
 from BSDI Inc. BSD/OS 3.1 and their code
 is slightly derived from it; he/she
-\(em who wrote the manual page and comments
-at the original source code \(em also
+who wrote the manual page and comments
+at the original source code also
 speculated that its existence was earlier
 than BSD/OS 3.1, from some another free
 distribution, but there's no further
 information that supports this.
 .PP
-This implementation mimicks some of the basic
-behavior of procps-ng's watch, just the
-necessary to have a useful, simple and stable
-program.
+This implementation mimics some of the basic
+behavior of procps-ng's watch, but only the
+necessary behavior to have a useful, simple 
+and stable program.
