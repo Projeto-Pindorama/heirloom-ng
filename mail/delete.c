@@ -19,7 +19,7 @@
 		i	-> signal #
 */
 void 
-delete(register int i)
+delete(int i)
 {
 	static char pn[] = "delete";
 
