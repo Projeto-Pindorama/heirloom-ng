@@ -4,17 +4,16 @@
 # SPDX-Licence-Identifier: Zlib
 
 main() {
-	if [ "`echo "x$@"`" \= 'x' ]; then
-		# stdin
-		while read input; do
-			question "$input" || break
-		done
-	else
-		# argv
-		for input do
-			question "$input" || break
-		done
-	fi
+	case "`echo "x$@"`" in
+		'x') # stdin
+			while read input; do
+				question "$input" || break
+			done ;;
+		*) # argv
+			for input do
+				question "$input" || break
+			done ;;
+	esac
 	exit 0
 }
 
