@@ -1,4 +1,8 @@
 Release ...
+* Fixes for building dynamically on Arch Linux and other GNU C
+  Library-based Linux systems which ships exclusively dynamic versions
+  of its libraries, also remove `readlink_ucb' object file at `readlink/'
+  build directory when executing `make clean' (patch by Molly A. McCollum).
 * Remove `register's from legacy code that was living unchanged since at
   least the 80's, since modern linters started complying about it and it
   is not used as much on most common architectures such as x86
