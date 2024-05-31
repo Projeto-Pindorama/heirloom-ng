@@ -37,10 +37,10 @@
 	Returns TRUE on a completely successful copy.
 */
 
-static int	xxxcopylet(int letnum, register FILE *f, int type);
+static int	xxxcopylet(int letnum, FILE *f, int type);
 
 int
-copylet(int letnum, register FILE *f, int type) 
+copylet(int letnum, FILE *f, int type) 
 {
 	int		pos = ftell(f);
 	int		rc  = xxxcopylet(letnum, f, type);
@@ -61,7 +61,7 @@ copylet(int letnum, register FILE *f, int type)
 #define	Return	free(buf); return
 
 static int
-xxxcopylet(int letnum, register FILE *f, int type) 
+xxxcopylet(int letnum, FILE *f, int type) 
 {
 	static char	pn[] = "copylet";
 	char	lastc;

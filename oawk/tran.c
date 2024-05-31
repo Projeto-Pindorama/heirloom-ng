@@ -95,8 +95,8 @@ freesymtab(cell *ap)	/* free symbol table */
 
 cell *setsymtab(const char *n, char *s, awkfloat f, unsigned t, cell **tab)
 {
-	register int h;
-	register cell *p;
+	int h;
+	cell *p;
 
 	if (n != NULL && (p = lookup(n, tab, 0)) != NULL) {
 		if (s != EMPTY ) xfree(s); /* careful here */
@@ -120,19 +120,19 @@ cell *setsymtab(const char *n, char *s, awkfloat f, unsigned t, cell **tab)
 }
 
 int
-hash(register const unsigned char *s)	/* form hash value for string s */
+hash(const unsigned char *s)	/* form hash value for string s */
 {
-	register int hashval;
+	int hashval;
 
 	for (hashval = 0; *s != '\0'; )
 		hashval += *s++;
 	return(hashval % MAXSYM);
 }
 
-cell *lookup(register const char *s, cell **tab, int flag)
+cell *lookup(const char *s, cell **tab, int flag)
 	/* look for s in tab, flag must match*/
 {
-	register cell *p;
+	cell *p;
 
 	for (p = tab[hash((unsigned char *)s)]; p != NULL; p = p->nextval)
 		if (strcmp(s, p->nval) == 0 &&
@@ -141,7 +141,7 @@ cell *lookup(register const char *s, cell **tab, int flag)
 	return(NULL);	/* not found */
 }
 
-awkfloat setfval(register cell *vp, awkfloat f)
+awkfloat setfval(cell *vp, awkfloat f)
 {
 	dprintf("setfval: %lo %g\n", (long)vp, f);
 	checkval(vp);
@@ -154,7 +154,7 @@ awkfloat setfval(register cell *vp, awkfloat f)
 	return(vp->fval = f);
 }
 
-char *setsval(register cell *vp, const char *s)
+char *setsval(cell *vp, const char *s)
 {
 	dprintf("setsval: %lo %s\n", (long)vp, s);
 	checkval(vp);
@@ -170,7 +170,7 @@ char *setsval(register cell *vp, const char *s)
 	return(vp->sval = tostring(s));
 }
 
-awkfloat getfval(register cell *vp)
+awkfloat getfval(cell *vp)
 {
 
 	if (vp->sval == record && donerec == 0)
@@ -194,7 +194,7 @@ awkfloat getfval(register cell *vp)
 	return(vp->fval);
 }
 
-char *getsval(register cell *vp)
+char *getsval(cell *vp)
 {
 	char s[100];
 
@@ -218,7 +218,7 @@ char *getsval(register cell *vp)
 }
 
 void
-checkval(register cell *vp)
+checkval(cell *vp)
 {
 	if (vp->tval & ARR)
 		error(FATAL, "illegal reference to array %s", vp->nval);
@@ -227,9 +227,9 @@ checkval(register cell *vp)
 			vp->sval, vp->fval, vp->tval);
 }
 
-char *tostring(register const char *s)
+char *tostring(const char *s)
 {
-	register char *p;
+	char *p;
 
 	if (s==NULL){
 		p = malloc(1);

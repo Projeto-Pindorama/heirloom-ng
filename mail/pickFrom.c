@@ -21,9 +21,9 @@
  */
 
 void 
-pickFrom(register char *lineptr)
+pickFrom(char *lineptr)
 {
-	register char *p;
+	char *p;
 	static char rf[] = "remote from ";
 	int rfl;
 

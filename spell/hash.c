@@ -56,8 +56,8 @@ static int8_t hashtab[] = {
 uint32_t
 hash(const char *s)
 {
-	register int32_t c;
-	register int32_t *lp;
+	int32_t c;
+	int32_t *lp;
 	uint32_t h = 0;
 	for (lp = pow2; (c = *s++) != 0; ) {
 		c = hashtab[c-' '];
@@ -74,7 +74,7 @@ hashinit(void)
 #if ((1L << (HASHWIDTH+LOCHWIDTH) == 0) || (1L << (HASHWIDTH+HICHWIDTH) == 0))
 	abort();	/* overflow is imminent */
 #else
-	register int i;
+	int i;
 
 	pow2[0] = 1L<<(HASHWIDTH-CHARWIDTH-2);
 	for (i = 0; i < 2*NC-3; i += 2) {

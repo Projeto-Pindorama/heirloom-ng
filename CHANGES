@@ -1,4 +1,9 @@
 Release ...
+* Remove `register's from legacy code that was living unchanged since at
+  least the 80's, since modern linters started complying about it and it
+  is not used as much on most common architectures such as x86
+  (patch by Samuel Brederodes).
+* watch: `use_default_colors()', do not force black and white.
 * cpio, diff, tabs: Fix duplicated definitions (made/reported by crumbtoo,
   merged by me, Luiz Antônio Rangel). Thanks! --- or better: Merci!
 * rm: Added real support for the POSIX 1003.1(2008) standard, implemented
