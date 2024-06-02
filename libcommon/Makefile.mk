@@ -127,6 +127,8 @@ setuxlabel.o: setuxlabel.c
 
 pfmt_label.o: pfmt_label.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c pfmt_label.c
+wcputs.o: wcputs.c
+	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c wcputs.c 
 
 asciitype.o: asciitype.h
 ib_alloc.o: iblok.h
@@ -154,5 +156,6 @@ sigrelse.o: sigset.h
 sigset.o: sigset.h
 signal.o: sigset.h
 pathconf.o: pathconf.h
+wcputs.o: putws.h 
 
 MRPROPER = libcommon.a
