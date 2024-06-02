@@ -75,7 +75,7 @@ void main(int argc, char *argv[]) {
 			string[j] = string[magia];
 			string[magia] = swc;
 		}
-		printf("%s\n", string);
+		puts(string);
 
 		/* Wash the string. */ 
 		strncpy(string, "", BUFSIZ);
