@@ -50,7 +50,6 @@ void main(int argc, char *argv[]) {
 				case '\n':
 					break;
 				case EOF:
-					string[i] = '\0';
 					goto eof;
 				default:
 					string[i] = c;
@@ -61,6 +60,7 @@ void main(int argc, char *argv[]) {
 		}
 
 		slen = strlen(string);	  
+		string[(slen + 1)] = '\0';
 		for (j = 0; j < (slen / 2); j++) {
 			/*
 			 * Number that will indicate the second
