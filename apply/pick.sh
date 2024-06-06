@@ -10,7 +10,7 @@ main() {
 				# An "arrayoid", so we can
 				# cache std.in. into "argv".
 				set -- "$@" "$l"
-			done 
+			done
 			break ;;
 		*) # argv
 			break ;;
