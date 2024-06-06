@@ -1,6 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define EOUTRANGE	-2
+#define ENOTNO		-1
+
 /*
  * Apply runs the named command on each argument arg in turn.
  * Normally arguments are chosen singly; the optional number n
@@ -14,6 +17,7 @@
  * the -a option.
  */
 char *progname;
+int crargs(char *s);
 void usage(void);
 
 void main(int argc, char *argv[]) {
@@ -24,6 +28,7 @@ void main(int argc, char *argv[]) {
 	register unsigned int i = 0,
 		 	j = 0,
 			cmdc = 0;
+	int nargs = 0;
 	char magia = '\0';
 	bool vflag = false;
 
@@ -36,7 +41,8 @@ void main(int argc, char *argv[]) {
 						vflag = true;
 						break;
 					case 'a':
-						magia = argv[i][2];
+						argv[i]++;
+						magia = argv[i][1];
 						switch (magia) {
 							case '\0':
 								usage();
@@ -45,10 +51,20 @@ void main(int argc, char *argv[]) {
 						}
 						break;
 					default:
-						fprintf(stderr,
-							"%s: unrecognized flag: %s\n",
-								progname, argv[i]);
-						usage();
+						nargs = crargs(argv[i]);
+						switch (nargs) {
+							case EOUTRANGE:
+							case ENOTNO:
+								fprintf(stderr,
+									(EOUTRANGE
+									 ? "%s: number out of range: %s\n"
+									 : "%s: unrecognized flag: %s\n"),
+										progname, argv[i]);
+								usage();
+							default:
+								break;
+						}
+
 				}
 				argv[i] = NULL;
 				argc--;
@@ -57,13 +73,40 @@ void main(int argc, char *argv[]) {
 cmd:
 				/* End of arguments for the program. */
 				cmdc++;
+				argc--;
 				continue;
 		}
 	}
 
+	if (cmdc < 1) {
+		usage();
+	}
+
 	/* Debug */
-	printf("argc: %d\ncmdc: %d\nvflag: %d\nmaxia: %c\n",
-			argc, cmdc, vflag, magia);
+	printf("argc: %d\ncmdc: %d\nvflag: %d\nmagia: %c\nnargs: %d\n",
+			argc, cmdc, vflag, magia, nargs);
+}
+
+int crargs(char *s) {
+	long n = 0;
+	char *ss = NULL,
+	     *r = NULL;
+
+	/* 
+	 * Shift the first character
+	 * (expected to be '-').
+	 */
+	ss = s;
+	ss++;
+
+	n = strtol(ss, &r, 10);
+	if (n == 0 && r[0] != '\0') {
+		n = ENOTNO;
+	} else if (n < 0 || 9 < n) {
+		n = EOUTRANGE;
+	}
+
+	return (int)n;
 }
 
 void usage(void) {
