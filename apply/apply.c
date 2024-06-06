@@ -56,7 +56,7 @@ void main(int argc, char *argv[]) {
 							case EOUTRANGE:
 							case ENOTNO:
 								fprintf(stderr,
-									(EOUTRANGE
+									(nargs == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: unrecognized flag: %s\n"),
 										progname, argv[i]);
