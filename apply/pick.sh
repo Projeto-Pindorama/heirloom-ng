@@ -15,7 +15,7 @@ main() {
 		*) # argv
 			break ;;
 	esac
-	for input in "$@"; do
+	for input do
 		question "$input" || break
 	done
 	exit 0
@@ -29,11 +29,14 @@ question() {
 	# having headaches with std.in.
 	read r </dev/tty
 	case "$r" in
-		'y') echo "$1" ;;
-		'q') ec=1 ;;
-		*) ec=0 ;;
+		'y') echo "$1"
+			break ;;
+		'q') ec=1
+			break ;;
+		*) ec=0
+			break ;;
 	esac
-	unset input
+	unset input r
 	return $ec
 }
 
