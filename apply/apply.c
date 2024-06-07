@@ -41,7 +41,7 @@
 char *progname;
 void main(int argc, char *argv[]);
 int crargs(char *s);
-/* int execute(const char command[]); */
+int execute(const char command[]);
 void usage(void);
 
 void main(int argc, char *argv[]) {
@@ -69,7 +69,6 @@ void main(int argc, char *argv[]) {
 	for (i = 0; argv[i]; i++) { 
 		switch (argv[i][0]) {
 			case '-':
-				eoargs++;
 				switch (argv[i][1]) {
 					case 'd':
 						/* Dry-run, do not execute
@@ -144,8 +143,10 @@ void main(int argc, char *argv[]) {
 	cmdl = commandv[0];
 
 	/* Debug */
-	printf("argc: %d\ncmdl: %s\nvflag: %d\nmagia: %c\nnargs: %d\nSHELL: %s\n",
-		argc, cmdl, vflag, magia, nargs, SHELL);
+	printf("argc: %d\ncmdc: %d\ncmdl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
+		argc, cmdc, cmdl, vflag, magia, nargs);
+
+	execute(cmdl); /* Just for filling, need to work on this later. */
 
 	free(commandv);
 	exit(0);
@@ -174,10 +175,16 @@ int crargs(char *s) {
 	return (int)n;
 }
 
-/* int execute(const char command[]) {
- *
- * }
- */
+int execute(const char command[]) {
+	char *shell = NULL;
+	shell = (getenv("SHELL") != NULL)
+		? getenv("SHELL")
+		: SHELL;
+
+	printf("SHELL: %s\n", shell);
+	return 0;
+}
+
 
 void usage(void) {
 	fprintf(stderr, "%s: [-#] [-a magia] command args ...\n", progname);
