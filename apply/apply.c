@@ -1,10 +1,22 @@
+/*
+ * apply.c - apply a command to a set of arguments
+ */
+/* 
+ * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ */
+
 #include <errno.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define EOUTRANGE	-2
-#define ENOTNO		-1
+
+/* Error codes for crargs(). */
+#define EOUTRANGE	(INT_MIN >> 10)
+#define ENOTNO		(INT_MIN >> 11)
 
 /*
  * Devem funcionar:
@@ -25,9 +37,11 @@
  * value of d in command. The character `%' may be changed by
  * the -a option.
  */
+
 char *progname;
 void main(int argc, char *argv[]);
 int crargs(char *s);
+/* int execute(const char command[]); */
 void usage(void);
 
 void main(int argc, char *argv[]) {
@@ -52,8 +66,6 @@ void main(int argc, char *argv[]) {
 	 * readability.
 	 */
 	for (i = 0; argv[i]; i++) { 
-	       /* Don't interfere with the command to be executed. */
-	/*	if (cmdc) goto cmd; */
 		switch (argv[i][0]) {
 			case '-':
 				switch (argv[i][1]) {
@@ -63,10 +75,11 @@ void main(int argc, char *argv[]) {
 						dflag = true;
 						break;
 					case 'v':
+						/* Verbose, sets dry-run as
+						 * false. */
 						dflag = false;
 						vflag = true;
 						break;
-					
 					case 'a':
 						argv[i]++;
 						magia = argv[i][1];
@@ -78,6 +91,8 @@ void main(int argc, char *argv[]) {
 						}
 						break;
 					default:
+						/* Check for numeric value
+						 * betwixt 0 and 9. */
 						nargs = crargs(argv[i]);
 						switch (nargs) {
 							case EOUTRANGE:
@@ -91,19 +106,18 @@ void main(int argc, char *argv[]) {
 							default:
 								break;
 						}
+						break;
 
 				}
 				argv[i] = NULL;
 				argc--;
 				break;
 			default:
-				/* Mark the end of program arguments. */
-				eoargs = (!eoargs) ? i : eoargs;
-/* cmd:
-				cmdc++;
-				argc--;
-				continue;
-*/
+				/* Mark the end of program arguments and start
+				 * of the command line to be executed. */
+				eoargs = (!eoargs)
+					? i 
+					: eoargs;
 				continue;
 		}
 	}
