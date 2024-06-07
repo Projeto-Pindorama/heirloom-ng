@@ -50,9 +50,10 @@ void main(int argc, char *argv[]) {
 	argc--;
 
 	register unsigned int i = 0,
-		 	j = 0;
-	int eoargs = 0,
-		nargs = 0;
+		 j = 0;
+	int cmdc = 0,
+	    eoargs = 0,
+	    nargs = 0;
 	char magia = '%',
 	     **commandv,
 	     *cmdl = NULL;
@@ -68,6 +69,7 @@ void main(int argc, char *argv[]) {
 	for (i = 0; argv[i]; i++) { 
 		switch (argv[i][0]) {
 			case '-':
+				eoargs++;
 				switch (argv[i][1]) {
 					case 'd':
 						/* Dry-run, do not execute
@@ -101,7 +103,7 @@ void main(int argc, char *argv[]) {
 									(nargs == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: unrecognized flag: %s\n"),
-										progname, argv[i]);
+									progname, argv[i]);
 								usage();
 							default:
 								break;
@@ -110,32 +112,31 @@ void main(int argc, char *argv[]) {
 
 				}
 				argv[i] = NULL;
-				argc--;
-				break;
+				continue;
 			default:
 				/* Mark the end of program arguments and start
 				 * of the command line to be executed. */
-				eoargs = (!eoargs)
-					? i 
-					: eoargs;
-				continue;
+				eoargs = i;
+				break;
 		}
+		break;
 	}
 
-	if (argc < 2) {
+	cmdc = (argc - eoargs);
+	if (cmdc < 2) {
 		usage();
 	}
 
-	if ((commandv = calloc((size_t)argc, sizeof(char *))) == NULL) {
+	if ((commandv = calloc((size_t)cmdc, sizeof(char *))) == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
 			progname, (argc * sizeof(char *)), strerror(errno));
 		exit(1);
 	}
 
-	for (j = 0; j < argc; j++) {
-				/* Shift element from the end
-				 * of command arguments. */
+	for (j = 0; j < cmdc; j++) {
+		/* Shift element from the end
+		 * of command arguments. */
 		commandv[j] = argv[(eoargs + j)];
 	}
 
@@ -144,8 +145,9 @@ void main(int argc, char *argv[]) {
 
 	/* Debug */
 	printf("argc: %d\ncmdl: %s\nvflag: %d\nmagia: %c\nnargs: %d\nSHELL: %s\n",
-			argc, cmdl, vflag, magia, nargs, SHELL);
+		argc, cmdl, vflag, magia, nargs, SHELL);
 
+	free(commandv);
 	exit(0);
 }
 
