@@ -1,9 +1,18 @@
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define EOUTRANGE	-2
 #define ENOTNO		-1
 
+/*
+ * Devem funcionar:
+ * apply echo * # equals ls
+ * apply -2 cmp A1 B1 A2 B2   # compares A's with B's
+ * apply "ln %1 /usr/fred/dir" #  duplicates a directory
+ * apply -v ...	# print each command first
+ */
 /*
  * Apply runs the named command on each argument arg in turn.
  * Normally arguments are chosen singly; the optional number n
@@ -17,6 +26,7 @@
  * the -a option.
  */
 char *progname;
+void main(int argc, char *argv[]);
 int crargs(char *s);
 void usage(void);
 
@@ -26,20 +36,37 @@ void main(int argc, char *argv[]) {
 	argc--;
 
 	register unsigned int i = 0,
-		 	j = 0,
-			cmdc = 0;
-	int nargs = 0;
-	char magia = '\0';
-	bool vflag = false;
+		 	j = 0;
+	int eoargs = 0,
+		nargs = 0;
+	char magia = '%',
+	     **commandv,
+	     *cmdl = NULL;
+	bool vflag = false,
+	     dflag = false;
 
+	/* 
+	 * This is an argument parser.
+	 * taks note: It's awful. There's probably another way
+	 * to do this and that doesn't sacrifice speed and/or
+	 * readability.
+	 */
 	for (i = 0; argv[i]; i++) { 
-		if (cmdc) goto cmd;
+	       /* Don't interfere with the command to be executed. */
+	/*	if (cmdc) goto cmd; */
 		switch (argv[i][0]) {
 			case '-':
 				switch (argv[i][1]) {
+					case 'd':
+						/* Dry-run, do not execute
+						 * the command. */
+						dflag = true;
+						break;
 					case 'v':
+						dflag = false;
 						vflag = true;
 						break;
+					
 					case 'a':
 						argv[i]++;
 						magia = argv[i][1];
@@ -70,23 +97,45 @@ void main(int argc, char *argv[]) {
 				argc--;
 				break;
 			default:
-cmd:
-				/* End of arguments for the program. */
+				/* Mark the end of program arguments. */
+				eoargs = (!eoargs) ? i : eoargs;
+/* cmd:
 				cmdc++;
 				argc--;
+				continue;
+*/
 				continue;
 		}
 	}
 
-	if (cmdc < 1) {
+	if (argc < 2) {
 		usage();
 	}
 
+	if ((commandv = calloc((size_t)argc, sizeof(char *))) == NULL) {
+		fprintf(stderr,
+			"%s: failed to allocate %lu bytes on memory: %s\n",
+			progname, (argc * sizeof(char *)), strerror(errno));
+		exit(1);
+	}
+
+	for (j = 0; j < argc; j++) {
+				/* Shift element from the end
+				 * of command arguments. */
+		commandv[j] = argv[(eoargs + j)];
+	}
+
+	/* Set command to be run. */
+	cmdl = commandv[0];
+
 	/* Debug */
-	printf("argc: %d\ncmdc: %d\nvflag: %d\nmagia: %c\nnargs: %d\n",
-			argc, cmdc, vflag, magia, nargs);
+	printf("argc: %d\ncmdl: %s\nvflag: %d\nmagia: %c\nnargs: %d\nSHELL: %s\n",
+			argc, cmdl, vflag, magia, nargs, SHELL);
+
+	exit(0);
 }
 
+/* Parses -# into #, with # being an integer. */
 int crargs(char *s) {
 	long n = 0;
 	char *ss = NULL,
@@ -108,6 +157,11 @@ int crargs(char *s) {
 
 	return (int)n;
 }
+
+/* int execute(const char command[]) {
+ *
+ * }
+ */
 
 void usage(void) {
 	fprintf(stderr, "%s: [-#] [-a magia] command args ...\n", progname);
