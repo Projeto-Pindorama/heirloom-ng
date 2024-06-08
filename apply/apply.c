@@ -56,7 +56,7 @@ void main(int argc, char *argv[]) {
 	    nargs = 0;
 	char magia = '%',
 	     **commandv,
-	     *cmdl = NULL;
+	     *cmdl = "";
 	bool vflag = false,
 	     dflag = false;
 
@@ -101,14 +101,13 @@ void main(int argc, char *argv[]) {
 								fprintf(stderr,
 									(nargs == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
-									 : "%s: unrecognized flag: %s\n"),
-									progname, argv[i]);
+									 : "%s: illegal option -- %s\n"),
+									progname, (argv[i] + 1));
 								usage();
 							default:
 								break;
 						}
 						break;
-
 				}
 				argv[i] = NULL;
 				continue;
@@ -155,17 +154,15 @@ void main(int argc, char *argv[]) {
 /* Parses -# into #, with # being an integer. */
 int crargs(char *s) {
 	long n = 0;
-	char *ss = NULL,
-	     *r = NULL;
+	char *r = "";
 
 	/* 
 	 * Shift the first character
 	 * (expected to be '-').
 	 */
-	ss = s;
-	ss++;
+	s++;
 
-	n = strtol(ss, &r, 10);
+	n = strtol(s, &r, 10);
 	if (n == 0 && r[0] != '\0') {
 		n = ENOTNO;
 	} else if (n < 0 || 9 < n) {
