@@ -39,8 +39,10 @@
  */
 
 char *progname;
+char magia = '%';
 void main(int argc, char *argv[]);
 int crargs(char *s);
+char *buildcmd(char *arg[]);
 int execute(const char command[]);
 void usage(void);
 
@@ -54,9 +56,8 @@ void main(int argc, char *argv[]) {
 	int cmdc = 0,
 	    eoargs = 0,
 	    nargs = 0;
-	char magia = '%',
-	     **commandv,
-	     *cmdl = "";
+	char **commandv,
+	     *commandl = "";
 	bool vflag = false,
 	     dflag = false;
 
@@ -139,13 +140,12 @@ void main(int argc, char *argv[]) {
 	}
 
 	/* Set command to be run. */
-	cmdl = commandv[0];
+	commandl = buildcmd(commandv);
 
 	/* Debug */
-	printf("argc: %d\ncmdc: %d\ncmdl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, cmdl, vflag, magia, nargs);
+	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
+		argc, cmdc, commandl, vflag, magia, nargs);
 
-	execute(cmdl); /* Just for filling, need to work on this later. */
 
 	free(commandv);
 	exit(0);
@@ -172,8 +172,28 @@ int crargs(char *s) {
 	return (int)n;
 }
 
+char *buildcmd(char *arg[]) {
+	register unsigned int c = 0;
+	char *cmdl = "",
+	     m = '\0';
+	/* 
+	 * Count the number of magic characters
+	 * on the command string.
+	 */
+	for (c = 0; arg[0][c]; c++) {
+		m = arg[0][c];
+		if (m == magia) {
+			puts("O belo pode ser simples, e o simples pode ser belo");
+			printf("magia: %c\n", arg[0][(c + 1)]);
+		}
+		printf("%c\n", m);
+	}
+
+	return cmdl;
+}
+
 int execute(const char command[]) {
-	char *shell = NULL;
+	char *shell = "";
 	shell = (getenv("SHELL") != NULL)
 		? getenv("SHELL")
 		: SHELL;
