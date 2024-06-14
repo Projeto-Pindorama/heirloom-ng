@@ -263,11 +263,15 @@ int afterdecsep(char *s) {
 	 */
 	if (strchr(s, '.') != NULL) {
 		for (c = 0; s[c]; c++) {
-		       if (s[c] == '.') {
-				fracpart = &s[(c + 1)];
-				s[c] = '\0';
-				break;
-		       }
+			switch (s[c]) {
+				case '.':
+					fracpart = &s[(c + 1)];
+					s[c] = '\0';
+					break;
+				default:
+					continue;
+			}
+			break;
 		}
 		fraclen = strlen(fracpart);
 	}
