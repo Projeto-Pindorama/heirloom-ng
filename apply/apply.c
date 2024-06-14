@@ -39,7 +39,7 @@
  */
 
 char *progname;
-short int feitiço = 0;
+short int mn = 0;
 char magia = '%';
 bool fMagia = false;
 
@@ -97,12 +97,12 @@ void main(int argc, char *argv[]) {
 					default:
 						/* Check for numeric value
 						 * betwixt 0 and 9. */
-						feitiço = crargs(argv[i]);
-						switch (feitiço) {
+						mn = crargs(argv[i]);
+						switch (mn) {
 							case EOUTRANGE:
 							case ENOTNO:
 								fprintf(stderr,
-									(feitiço == EOUTRANGE
+									(mn == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
 									progname, (argv[i] + 1));
@@ -150,7 +150,7 @@ void main(int argc, char *argv[]) {
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, toexec[1], fVerbose, magia, feitiço);
+		argc, cmdc, toexec[1], fVerbose, magia, mn);
 
 
 	free(commandv);
@@ -160,10 +160,13 @@ void main(int argc, char *argv[]) {
 
 char **buildcmd(char *arg[], int cmdc) {
 	register unsigned int c = 0,
+		 d = 0,
+		 e = 0,
+		 i = 0,
 		 m = 0,
-		 maxm = 0,
-		 i = 0;
+		 maxm = 0;
 	char *cmd = "",
+	     *cmdbuf = "",
 	     **bufexec,
 	     ch = '\0';
 	/* 
@@ -182,21 +185,40 @@ char **buildcmd(char *arg[], int cmdc) {
 	cmdc--;
 
 	/* 
-	 * Is 'feitiço' not defined nor do we have
+	 * Is 'mn' not defined nor do we have
 	 * a magic character on the command string?
 	 * Default it to one.
 	 * It will also prioritize magic characters
 	 * over numbers toggled by the switch.
 	 */
-	if ((feitiço == 0 && !fMagia) && !maxm) {
-		feitiço = 1;
+	if ((mn == 0 && !fMagia) && !maxm) {
+		mn = 1;
 	} else {
-		feitiço = maxm;
+		mn = maxm;
 	}
 
 	/* Allocate the command buffer. */
 	bufexec = calloc((size_t)cmdc, sizeof(char *));
 	
+	for (i=0; i < cmdc; i+=mn) {
+		cmdbuf = malloc(sizeof(cmd) + sizeof(arg[i]) + 1);
+		for (d = 0; cmd[d]; d++) {
+			ch = cmd[d];
+			if (ch == magia) {
+				m = ((cmd[(d + 1)] - '0') - 1);
+				for (e = 0; e < strlen(arg[m]); e++) {
+					cmdbuf[(d + e)] = arg[m][e]; 
+				}
+				d += (e + 1);
+			} else {
+				cmdbuf[d]= ch;
+			}
+			
+		}
+		puts(cmdbuf);
+		free(cmdbuf);
+	}
+
 	/* 
 	 * puts(cmd);
 	 * for (i = 0; i < cmdc; i++) {
