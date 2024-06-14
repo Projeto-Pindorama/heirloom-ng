@@ -59,7 +59,7 @@ void main(int argc, char *argv[]) {
 	int cmdc = 0,
 	    eoargs = 0;
 	char **commandv,
-	     **commandl;
+	     **toexec;
 	bool fVerbose = false,
 	     fDry = false;
 
@@ -146,14 +146,15 @@ void main(int argc, char *argv[]) {
 	}
 
 	/* Set command to be run. */
-	commandl = buildcmd(commandv, cmdc);
+	toexec = buildcmd(commandv, cmdc);
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, commandl[1], fVerbose, magia, feitiço);
+		argc, cmdc, toexec[1], fVerbose, magia, feitiço);
 
 
 	free(commandv);
+	free(toexec);
 	exit(0);
 }
 
