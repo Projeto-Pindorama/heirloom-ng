@@ -3,11 +3,11 @@
 .\"
 .\" SPDX-Licence-Identifier: Zlib
 .\"
-.TH SEQ 1 "06/03/23" "Heirloom Toolchest" "User Commands"
+.TH SEQ 1 "02/25/24" "Heirloom Toolchest" "User Commands"
 .SH NAME
 seq \- print a sequence of numbers
 .SH SYNOPSIS
-\fBseq\fR [\fB\-s separator\fR] [\fBstart\fR [\fBstep\fR]] stop
+\fBseq\fR [\fB\-w\fR] [\fB\-ppicture\fR] [\fB\-sseparator\fR] [\fBstart\fR [\fBstep\fR]] stop
 .SH DESCRIPTION
 The
 .B seq
@@ -18,37 +18,42 @@ possible to \fBstop\fR, in steps of \fBstep\fR.
 .br
 It works in a similar spirit than a
 .B for()
-loop, present in the C programming language, Google Go
-and
+loop, present in the C, Go and
 .B ksh93(1)
-, and 
+programming languages, and also
 .B range()
 in Python.
 .PP
 It accepts the following options:
 .TP
-.B \-s
+.B \-w
+Sets the number of decimal places as a constant width
+per padding short numbers with leading decimal zeroes.
+It gets annulled if combined with \-p.
+.TP
+.B \-p \fIpicture\fR
+Defines the number of decimal places to be printed 
+after the decimal separator per using another number
+as a \fIpicture\fR.
+The default is full precision (see "%g" at \fBprintf(3)\fR).
+.TP
+.B \-s \fIseparator\fR
 Defines a character to be the separator between the
 numbers being printed. The default is a line break ("\\n").
 .SH EXAMPLES
 The
 .B seq
 utility may be used as one of the ways to calculate a
-termial (\fIn\?\fR) in a quick way using
-.Xr bc 1
+termial (\fIn?\fR) in a quick way using
+.B bc(1)
 in a
-.Xr sh 1
+.B sh(1)
 pipeline.
 .IP \& 2
 .BI "example% seq -s'+' 4 | bc"
 .LP
 .SH NOTES
-No, it does not support floating points,
-altough it's fairly faster than the most
-common GNU implementation when counting
-small (less than 10^4) numbers. This was
-tested on a AMD Ryzen 5 3500U.
-.br
+.PP
 If you need to count from a negative number
 to a positive one, you will need to do this
 maneuver below, at least for now:
@@ -56,11 +61,14 @@ maneuver below, at least for now:
 .BI "example% seq -s' ' -- -5 10" 
 .LP
 .br
-It does not implement the \-w option
-neither \-f found in Plan 9 from Bell
-Labs' implementation.
+.PP
+It does not implement the \-f option found
+in Plan 9 from Bell Labs' implementation,
+although \-p can replace \-f in many cases.
 .SH BUGS
 Maybe?
+.SH "SEE ALSO"
+printf(3)
 .SH HISTORY
 A
 .B seq
@@ -68,7 +76,8 @@ command first appeared in AT&T
 Research Unix 8th edition.
 .br
 This version has its payloads
-based off Plan 9 from Bell Labs,
-1th Ed. and GNU shell utilities 1.13
-implementation, but only part of the
-standard was implemented.
+based off Research Unix 8th edition
+with some extensions that appeared in
+Plan 9 from Bell Labs, 1st Ed. and
+GNU shell utilities 1.13 \(em for
+the \-s option.

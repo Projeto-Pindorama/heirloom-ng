@@ -19,6 +19,8 @@
 #define ROOTUID 0
 
 char *progname;
+int main(int argc, char *argv[]);
+void usage(void);
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];	
@@ -42,7 +44,7 @@ int main(int argc, char *argv[]) {
 	) {
 		// Boilerplate for using pfmt() with errno
 		prerror(errno);
-		exit(3);
+		exit(-1);
 	}
 }
 

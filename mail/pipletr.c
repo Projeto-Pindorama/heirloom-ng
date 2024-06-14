@@ -19,7 +19,7 @@
 int 
 dowait(pid_t pidval)
 {
-	register pid_t w;
+	pid_t w;
 	int status;
 	void (*istat)(int), (*qstat)(int);
 

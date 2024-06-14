@@ -41,9 +41,11 @@ link.
 For instance, here is an example of how to read both the current
 directory and the path of a program behind a process on the
 .B /proc
-directory.
+directory \(em via the
+.B proc(5)
+file system.
 .IP \& 2
-.BI "readlink \-f /proc/\`ps -a | nawk '/vim/{ print $1; exit}'\`/{cwd,exe}"
+.BI "readlink \-f /proc/\`ps -a | nawk '/vim/{ print $1; exit; }'\`/{cwd,exe}"
 .LP
 .SH "SEE ALSO"
 ln(1),

@@ -1,16 +1,16 @@
 all: tabs newform
 
 tabs: tabs.o tabspec.o
-	$(LD) -z muldefs $(LDFLAGS) tabs.o tabspec.o $(LCURS) $(LCOMMON) $(LWCHAR) $(LIBS) -o tabs
+	$(LD) $(LDFLAGS) tabs.o tabspec.o $(LCURS) $(LCOMMON) $(LWCHAR) $(LIBS) -o tabs
 
 tabs.o: tabs.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c tabs.c
 
 newform: newform.o tabspec.o
-	$(LD) -z muldefs $(LDFLAGS) newform.o tabspec.o $(LCOMMON) $(LWCHAR) $(LIBS) -o newform
+	$(LD) $(LDFLAGS) newform.o tabspec.o $(LCOMMON) $(LWCHAR) $(LIBS) -o newform
 
 newform.o: newform.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c newform.c
+	$(CC) $(CFLAGS) $(CPPFLAGS)  $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c newform.c
 
 tabspec.o: tabspec.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(XO6FL) $(LARGEF) $(IWCHAR) $(ICOMMON) -c tabspec.c

@@ -189,8 +189,8 @@ extern void startreg(void);
 /* b.c */
 extern void overflo(void);
 extern struct fa *makedfa(const char *);
-extern int match(void *, register const char *);
-extern int member(register char, register const char *);
+extern int match(void *, const char *);
+extern int member(char, const char *);
 /* lib.c */
 extern void growrec(void);
 extern void fldinit(void);
@@ -202,7 +202,7 @@ extern cell *fieldadr(int);
 extern void yyerror(const char *);
 extern void error(int, const char *, ...);
 extern void PUTS(const char *);
-extern int isanumber(register const char *);
+extern int isanumber(const char *);
 /* main.c */
 extern int yywrap(void);
 /* parse.c */
@@ -268,11 +268,11 @@ extern void syminit(void);
 extern cell **makesymtab(void);
 extern void freesymtab(cell *);
 extern cell *setsymtab(const char *, char *, awkfloat, unsigned, cell **);
-extern int hash(register const unsigned char *);
-extern cell *lookup(register const char *, cell **, int);
-extern awkfloat setfval(register cell *, awkfloat);
-extern char *setsval(register cell *, const char *);
-extern awkfloat getfval(register cell *);
-extern char *getsval(register cell *);
-extern void checkval(register cell *);
-extern char *tostring(register const char *);
+extern int hash(const unsigned char *);
+extern cell *lookup(const char *, cell **, int);
+extern awkfloat setfval(cell *, awkfloat);
+extern char *setsval(cell *, const char *);
+extern awkfloat getfval(cell *);
+extern char *getsval(cell *);
+extern void checkval(cell *);
+extern char *tostring(const char *);

@@ -12,6 +12,8 @@
 # cmd/spell/Makefile
 #
 
+# O.k., we surrender: let's build this one-corely until we
+# debug this enough to find a solution using .NO_PARALLEL.
 MAKEFLAGS := -j1
 
 .c.o: ; $(CC) -c $(CFLAGS) $(CPPFLAGS) $(GNUFL) $(IWCHAR) $(ICOMMON) -c $<

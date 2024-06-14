@@ -12,9 +12,9 @@
 
 #define USED
 #if defined (SUS)
-static const char sccsid[] USED = "@(#)date_sus.sl	1.26 (gritter) 1/22/06";
+static const char sccsid[] USED = "@(#)date_sus.sl	1.27 (gritter) 12/16/07";
 #else
-static const char sccsid[] USED = "@(#)date.sl	1.26 (gritter) 1/22/06";
+static const char sccsid[] USED = "@(#)date.sl	1.27 (gritter) 12/16/07";
 #endif
 
 #include	<unistd.h>
@@ -155,10 +155,10 @@ settime(char *op)
 	if (bflag == 0) {
 		pututxline(&before);
 		pututxline(&after);
-#if !defined (__hpux) && !defined (_AIX)
+#if !defined (__hpux) && !defined (_AIX) && !defined(__APPLE__)
 		updwtmpx(wtmpxfile, &before);
 		updwtmpx(wtmpxfile, &after);
-#endif	/* !__hpux, !__AIX */
+#endif	/* !__hpux, !__AIX, !__APPLE__ */
 	}
 	exit(0);
 }
@@ -168,7 +168,7 @@ printtime(const char *cp)
 {
 	struct tm *tp;
 	char fmt[256];
-	register char *fp;
+	char *fp;
 	char buf[256];
 	int mod;
 	char	*date_fmt;

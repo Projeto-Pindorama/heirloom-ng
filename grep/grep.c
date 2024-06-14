@@ -5,7 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- *
+ * Copyright (C) 2023 Luiz Antônio Rangel
  * SPDX-Licence-Identifier: Zlib
  */
 
@@ -42,6 +42,7 @@ int		Fflag;			/* use fixed strings */
 int		bflag;			/* print buffer count */
 int		cflag;			/* print count only */
 int		fflag;			/* had pattern file argument */
+int		Hflag;			/* print filenames along with the match */
 int		hflag;			/* do not print filenames */
 int		iflag;			/* ignore case */
 int		lflag;			/* print filenames only */
@@ -83,7 +84,7 @@ static int	vismax;			/* number of members in visited */
  * Lower-case a character string.
  */
 size_t
-loconv(register char *dst, register char *src, size_t sz)
+loconv(char *dst, char *src, size_t sz)
 {
 	char	*odst = dst;
 
@@ -245,8 +246,8 @@ redirect(struct iblok *ip, const char *arg0, const char *arg1)
 void
 report(const char *line, size_t llen, off_t bcnt, int addnl)
 {
-	if (filename && !hflag)
-		printf("%s:", filename);
+	if (filename && (!hflag || Hflag))
+		printf("%s:\040", filename);
 #ifdef	LONGLONG
 	if (bflag)
 		printf("%llu:", (long long)bcnt);
@@ -334,7 +335,7 @@ static struct iblok *
 grep(struct iblok *ip)
 {
 	char *line = NULL;		/* line buffer */
-	register char *lastnl;		/* last newline in file buffer */
+	char *lastnl;		/* last newline in file buffer */
 	size_t sz = 0;			/* length of line in line buffer */
 	char *cp;
 	int hadnl;			/* lastnl points to newline char */
@@ -614,6 +615,9 @@ main(int argc, char **argv)
 			fflag++;
 			patfile(optarg);
 			hadpat++;
+			break;
+		case 'H':
+			Hflag = 1;
 			break;
 		case 'h':
 			hflag = 1;

@@ -1,5 +1,3 @@
-LDFLAGS += -z muldefs
-
 all: cpio pax pax_su3
 
 cpio: cpio.o unshrink.o explode.o expand.o inflate.o crc32.o blast.o flags.o nonpax.o version.o

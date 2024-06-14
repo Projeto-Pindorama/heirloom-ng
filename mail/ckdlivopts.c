@@ -48,8 +48,8 @@ struct dlvopts {
 	int	ign;
 };
 
-static void getopts(register char *, register struct dlvopts *);
-static void mergeopts(register struct dlvopts *, register struct dlvopts *);
+static void getopts(char *, struct dlvopts *);
+static void mergeopts(struct dlvopts *, struct dlvopts *);
 
 int 
 ckdlivopts(int tcopy_hdr, int *svopts)
@@ -103,9 +103,9 @@ ckdlivopts(int tcopy_hdr, int *svopts)
  * If conflicting options found, use MOST demanding; i.e. - /delivery/return.
  */
 static void 
-getopts(register char *s, register struct dlvopts *optr)
+getopts(char *s, struct dlvopts *optr)
 {
-	register char	*op;
+	char	*op;
 
 	for (op = strchr (s, '/'); op++; op = strchr(op, '/')) {
 		if (casncmp(op, "delivery", 7) == 0) {
@@ -137,7 +137,7 @@ getopts(register char *s, register struct dlvopts *optr)
  * Results left in lower set.
  */
 static void 
-mergeopts(register struct dlvopts *higher, register struct dlvopts *lower)
+mergeopts(struct dlvopts *higher, struct dlvopts *lower)
 {
 	if (higher->deliv == 1) {
 		lower->deliv = 1;
