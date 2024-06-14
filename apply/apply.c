@@ -15,8 +15,8 @@
 #include <string.h>
 
 /* Error codes for crargs(). */
-#define EOUTRANGE	(INT_MIN >> 10)
-#define ENOTNO		(INT_MIN >> 11)
+#define EOUTRANGE	(SHRT_MIN >> 10)
+#define ENOTNO		(SHRT_MIN >> 11)
 
 /*
  * Devem funcionar:
@@ -39,10 +39,13 @@
  */
 
 char *progname;
+short int feitiço = 0;
 char magia = '%';
+bool fMagia = false;
+
 void main(int argc, char *argv[]);
-int crargs(char *s);
-char *buildcmd(char *arg[]);
+short int crargs(char *s);
+char **buildcmd(char *arg[], int cmdc);
 int execute(const char command[]);
 void usage(void);
 
@@ -54,12 +57,11 @@ void main(int argc, char *argv[]) {
 	register unsigned int i = 0,
 		 j = 0;
 	int cmdc = 0,
-	    eoargs = 0,
-	    nargs = 0;
+	    eoargs = 0;
 	char **commandv,
-	     *commandl = "";
-	bool vflag = false,
-	     dflag = false;
+	     **commandl;
+	bool fVerbose = false,
+	     fDry = false;
 
 	/* 
 	 * This is an argument parser.
@@ -74,13 +76,13 @@ void main(int argc, char *argv[]) {
 					case 'd':
 						/* Dry-run, do not execute
 						 * the command. */
-						dflag = true;
+						fDry = true;
 						break;
 					case 'v':
 						/* Verbose, sets dry-run as
 						 * false. */
-						dflag = false;
-						vflag = true;
+						fDry = false;
+						fVerbose = true;
 						break;
 					case 'a':
 						argv[i]++;
@@ -95,17 +97,20 @@ void main(int argc, char *argv[]) {
 					default:
 						/* Check for numeric value
 						 * betwixt 0 and 9. */
-						nargs = crargs(argv[i]);
-						switch (nargs) {
+						feitiço = crargs(argv[i]);
+						switch (feitiço) {
 							case EOUTRANGE:
 							case ENOTNO:
 								fprintf(stderr,
-									(nargs == EOUTRANGE
+									(feitiço == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
 									progname, (argv[i] + 1));
 								usage();
 							default:
+								/* So you've set
+								 * a number? */
+								fMagia = true;
 								break;
 						}
 						break;
@@ -125,8 +130,9 @@ void main(int argc, char *argv[]) {
 	if (cmdc < 2) {
 		usage();
 	}
-
-	if ((commandv = calloc((size_t)cmdc, sizeof(char *))) == NULL) {
+	
+	commandv = calloc((size_t)cmdc, sizeof(char *));
+	if (commandv == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
 			progname, (argc * sizeof(char *)), strerror(errno));
@@ -140,19 +146,69 @@ void main(int argc, char *argv[]) {
 	}
 
 	/* Set command to be run. */
-	commandl = buildcmd(commandv);
+	commandl = buildcmd(commandv, cmdc);
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, commandl, vflag, magia, nargs);
+		argc, cmdc, commandl[1], fVerbose, magia, feitiço);
 
 
 	free(commandv);
 	exit(0);
 }
 
+char **buildcmd(char *arg[], int cmdc) {
+	register unsigned int c = 0,
+		 m = 0,
+		 maxm = 0,
+		 i = 0;
+	char *cmd = "",
+	     **bufexec,
+	     ch = '\0';
+	/* 
+	 * Count the number of magic characters
+	 * on the command string.
+	 */
+	cmd = strdup(arg[0]);
+	for (c = 0; cmd[c]; c++) {
+		ch = cmd[c];
+		if (ch == magia) {
+			m = (cmd[(c + 1)] - '0');
+			if (m > maxm) maxm = m;
+		}
+	}
+	arg++;
+	cmdc--;
+
+	/* 
+	 * Is 'feitiço' not defined nor do we have
+	 * a magic character on the command string?
+	 * Default it to one.
+	 * It will also prioritize magic characters
+	 * over numbers toggled by the switch.
+	 */
+	if ((feitiço == 0 && !fMagia) && !maxm) {
+		feitiço = 1;
+	} else {
+		feitiço = maxm;
+	}
+
+	/* Allocate the command buffer. */
+	bufexec = calloc((size_t)cmdc, sizeof(char *));
+	
+	/* 
+	 * puts(cmd);
+	 * for (i = 0; i < cmdc; i++) {
+	 * puts(arg[i]);
+	 * }
+	 */
+	
+
+	return bufexec;
+}
+
 /* Parses -# into #, with # being an integer. */
-int crargs(char *s) {
+short int crargs(char *s) {
 	long n = 0;
 	char *r = "";
 
@@ -169,27 +225,7 @@ int crargs(char *s) {
 		n = EOUTRANGE;
 	}
 
-	return (int)n;
-}
-
-char *buildcmd(char *arg[]) {
-	register unsigned int c = 0;
-	char *cmdl = "",
-	     m = '\0';
-	/* 
-	 * Count the number of magic characters
-	 * on the command string.
-	 */
-	for (c = 0; arg[0][c]; c++) {
-		m = arg[0][c];
-		if (m == magia) {
-			puts("O belo pode ser simples, e o simples pode ser belo");
-			printf("magia: %c\n", arg[0][(c + 1)]);
-		}
-		printf("%c\n", m);
-	}
-
-	return cmdl;
+	return (short int)n;
 }
 
 int execute(const char command[]) {
