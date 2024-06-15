@@ -9,6 +9,7 @@
 
 #include <ctype.h>
 #include <pfmt.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,8 +27,8 @@ static char *progname;
  * Make flags public since it will
  * be used by buildfmt().
  */
-static int fPicture = 0,
-	   fWadding = 0;
+static bool fPicture = false,
+	    fWadding = false;
 static char *picstr = "";
 static float start = 0,
 	     stop = 0,
@@ -45,21 +46,25 @@ void main(int argc, char *argv[]) {
 	int option = 0;
 	register float count = 0;
 	char *format = "",
-		*separator = "";
-	
-/*	while ((!isdigit(argv[optind][1]) && (argc > optind)) */
+	     *separator = "";
+
+	/* 
+	 * Stop searching for arguments in the moment
+	 * it finds a digit, also stop increasing
+	 * 'optind'.
+	 */
 	while (!isdigit(argv[optind][1])
 		&& (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
 		switch (option) {
 			case 'p':
-				fPicture = 1;
+				fPicture = true;
 				picstr = optarg;
 				break;
 			case 's':
 				separator = optarg;
 				break;
 			case 'w':
-				fWadding = 1;
+				fWadding = true;
 				break;
 			default:
 				usage();
@@ -67,7 +72,7 @@ void main(int argc, char *argv[]) {
 	}
 	argc -= optind;
 	argv += optind;
-	
+
 	if ( argc < 1 ) {
 		usage();
 	}
@@ -91,7 +96,7 @@ void main(int argc, char *argv[]) {
 	step = ( argc < 3 )
 		? 1
 		: atof(argv[1]);
-	
+
 	if (step == 0) {
 		pfmt(stderr, MM_ERROR,
 			"%s: increment can not be zero.\n",
@@ -123,7 +128,7 @@ void main(int argc, char *argv[]) {
 char *buildfmt(void) {
 	char *picture = "",
 	     *fmtbuf = ""; 
-	
+
 	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
 			"array of %d elements, each one "
@@ -137,11 +142,11 @@ char *buildfmt(void) {
 		snprintf(fmtbuf, sizeof(fmtbuf), "%s", "%g%s");
 		return fmtbuf;
 	} 
-	
+
 	if (fPicture || fWadding) { 
 		long int precision = 0;
 		unsigned long int natural = 0;
-			      
+
 		char strnum[32] = "",
 			/* 
 			 * Unlike the default,
@@ -179,9 +184,9 @@ char *buildfmt(void) {
 		 */
 		if (fWadding) {
 			snprintf(strnum, sizeof(strnum), "%.0f",
-								(start < 0)
-								? start
-								: stop);
+							(start < 0)
+							? start
+							: stop);
 		} else {
 			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
@@ -197,7 +202,7 @@ char *buildfmt(void) {
 		if (!fPicture && fWadding) {
 			free(picture);
 		}
-	
+
 		/* 
 		 * If there are decimal values, add it to
 		 * "natural" plus one, since "natural" in
@@ -214,7 +219,7 @@ char *buildfmt(void) {
 		snprintf(buf, sizeof(buf), "%%%d%ld.%ldf%%s",
 					0, natural, precision);
 		fmtbuf = strdup(buf);
-		
+
 		return fmtbuf;
 	}
 
@@ -247,7 +252,7 @@ char *getlgstr(void) {
 	 */
 	snprintf(strflt, sizeof(strflt), "%g", (start - step));
 	lgstnum = strdup(strflt);
-		
+
 	return lgstnum;
 }
 
