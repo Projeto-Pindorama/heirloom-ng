@@ -1,4 +1,6 @@
 Release ...
+* seq: Support for counting from negative numbers to positive or making a
+  negative sequence.
 * Fixes for building dynamically on Arch Linux and other GNU C
   Library-based Linux systems which ships exclusively dynamic versions
   of its libraries, also remove `readlink_ucb' object file at `readlink/'
