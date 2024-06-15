@@ -104,6 +104,15 @@ void main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+	/* 
+	 * If the stop is smaller than
+	 * the start, it will be
+	 * decreasing, not increasing.
+	 */
+	step = ( stop < start )
+		? (step * (-1))
+		: step;
+
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
@@ -111,7 +120,10 @@ void main(int argc, char *argv[]) {
 			? "\n"
 			: separator;
 
-	for (count = start; count <= stop; count += step) {
+	for (count = start; ((0 < step)
+				? count <= stop
+				: count >= stop);
+				count += step) {
 		/* 
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
