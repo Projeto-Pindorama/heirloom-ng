@@ -127,6 +127,8 @@ void main(int argc, char *argv[]) {
 		/* 
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
+		 * This is not the best way of doing it, but it makes
+		 * separator works in both negative and positive numbers.
 		 */
 		separator = ((0 < step)
 				? (count + step) <= stop
