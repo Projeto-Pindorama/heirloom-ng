@@ -128,8 +128,10 @@ void main(int argc, char *argv[]) {
 		 * If the count has come to the end or if the next sum is
 		 * larger than stop, default separator back to '\n'.
 		 */
-		separator = (count == stop || (count + step) > stop)
-				? "\n" : separator;
+		separator = ((0 < step)
+				? (count + step) <= stop
+				: (count + step) >= stop)
+				? separator : "\n";
 		printf(format, count, separator);
 	}
 	free(format);
