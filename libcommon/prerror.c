@@ -8,7 +8,7 @@
  */
 
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include "pfmt.h"
 
 void prerror(int error) {
