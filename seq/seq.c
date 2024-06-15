@@ -47,7 +47,9 @@ void main(int argc, char *argv[]) {
 	char *format = "",
 		*separator = "";
 	
-	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
+/*	while ((!isdigit(argv[optind][1]) && (argc > optind)) */
+	while (!isdigit(argv[optind][1])
+		&& (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
 		switch (option) {
 			case 'p':
 				fPicture = 1;
@@ -176,7 +178,10 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			snprintf(strnum, sizeof(strnum), "%.0f", stop);
+			snprintf(strnum, sizeof(strnum), "%.0f",
+								(start < 0)
+								? start
+								: stop);
 		} else {
 			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
