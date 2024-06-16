@@ -8,6 +8,7 @@
  */
 
 #include <ctype.h>
+#include <math.h>
 #include <pfmt.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -120,20 +121,17 @@ void main(int argc, char *argv[]) {
 			? "\n"
 			: separator;
 
-	for (count = start; ((0 < step)
-				? count <= stop
-				: count >= stop);
-				count += step) {
+	for (count = start; ((0 < step) ? count <= stop : count >= stop);
+							count += step) {
 		/* 
-		 * If the count has come to the end or if the next sum is
-		 * larger than stop, default separator back to '\n'.
-		 * This is not the best way of doing it, but it makes
-		 * separator works in both negative and positive numbers.
+		 * If the count has come to the end or if the next sum
+		 * is larger than stop, default separator back to '\n'.
+		 * Do not be preoccupied about performance, the abs(3)
+		 * family of functions is optimized at new processors
+		 * and the overhead isn't so large anyway.
 		 */
-		separator = ((0 < step)
-				? (count + step) <= stop
-				: (count + step) >= stop)
-				? separator : "\n";
+		separator = (fabs(count + step) > fabs(stop))
+				? "\n" : separator;
 		printf(format, count, separator);
 	}
 	free(format);
