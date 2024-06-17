@@ -54,7 +54,7 @@ void main(int argc, char *argv[]) {
 	 * it finds a digit, also stop increasing
 	 * 'optind'.
 	 */
-	while (!isdigit(argv[optind][1])
+	while (argv[optind] != NULL && !isdigit(argv[optind][1])
 		&& (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
 		switch (option) {
 			case 'p':
