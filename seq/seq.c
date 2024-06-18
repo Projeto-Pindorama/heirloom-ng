@@ -31,7 +31,7 @@ static char *progname;
 static bool fPicture = false,
 	    fWadding = false;
 static char *picstr = "";
-static float start = 0,
+static double start = 0,
 	     stop = 0,
 	     step = 0;
 
@@ -45,7 +45,7 @@ void main(int argc, char *argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
-	register float count = 0;
+	register double count = 0;
 	char *format = "",
 	     *separator = "";
 
@@ -86,15 +86,15 @@ void main(int argc, char *argv[]) {
 	 * If argc is 3, stop will be defined as the third, start as the first and
 	 * step as the second.
 	 */
-	stop = ( argc == 1 )
+	stop = (argc == 1)
 		? atof(argv[0])
-		: ( argc == 3 )
+		: (argc == 3)
 		? atof(argv[2])
 		: atof(argv[1]);
-	start = ( argc == 1 )
+	start = (argc == 1)
 		? 1
 		: atof(argv[0]);
-	step = ( argc < 3 )
+	step = (argc < 3)
 		? 1
 		: atof(argv[1]);
 
@@ -110,7 +110,7 @@ void main(int argc, char *argv[]) {
 	 * the start, it will be
 	 * decreasing, not increasing.
 	 */
-	step = ( stop < start )
+	step = (stop < start)
 		? (step * (-1))
 		: step;
 
@@ -197,10 +197,9 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			snprintf(strnum, sizeof(strnum), "%.0f",
-							(start < 0)
-							? start
-							: stop);
+			snprintf(strnum, sizeof(strnum), "%.0f", ((start < stop || 0 < start)
+									? stop
+									: start));
 		} else {
 			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
@@ -243,6 +242,8 @@ char *buildfmt(void) {
 char *getlgstr(void) {
 	char strflt[32] = "",
 	     *lgstnum = "";
+	double fstn = 0.0F,
+	       stepn = 0.0F;
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -263,8 +264,14 @@ char *getlgstr(void) {
 	 * big enough to be converted by
 	 * 'printf("%g", ...)' into scientific notation,
 	 * which can not be parsed by afterdecsep().
+	 * Also have a metric if the start isn't actually
+	 * the stop (sequence done in decrescent order).
 	 */
-	snprintf(strflt, sizeof(strflt), "%g", (start - step));
+	fstn = (start < stop) 
+		? fabs(start)
+		: fabs(stop);
+	stepn = fabs(step);
+	snprintf(strflt, sizeof(strflt), "%g", (fstn - stepn));
 	lgstnum = strdup(strflt);
 
 	return lgstnum;
