@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define shift(p, d)	p++; d--
 /* Error codes for crargs(). */
 #define EOUTRANGE	(SHRT_MIN >> 10)
 #define ENOTNO		(SHRT_MIN >> 11)
@@ -54,12 +55,12 @@ void usage(void);
 
 void main(int argc, char *argv[]) {
 	progname = argv[0];
-	argv++;
-	argc--;
+	shift(argv, argc);
 
 	register unsigned int opt = 0,
 		 c = 0,
 		 i = 0;
+	short int maxmn = 0;
 	int cmdc = 0,
 	    eoargs = 0;
 	char **arg,
@@ -142,17 +143,32 @@ void main(int argc, char *argv[]) {
 			progname, (argc * sizeof(char *)), strerror(errno));
 		exit(1);
 	}
-
+	
 	for (c = 0; c < cmdc; c++) {
 		/* Shift element from the end
 		 * of command arguments. */
 		arg[c] = argv[(eoargs + c)];
 	}
 
+	/* Declare the command string. */
 	cmd = strdup(arg[0]);
-	arg++;
-	cmdc--;
+	shift(arg, cmdc);
+	
+	maxmn = magiac();
+	/* 
+	 * Is 'mn' not defined nor do we have
+	 * a magic character on the command string?
+	 * Default it to one.
+	 * It will also prioritize magic characters
+	 * over numbers toggled by the switch.
+	 */
+	if ((mn == 0 && !fMagia) && !maxmn) {
+		mn = 1;
+	} else if (!fMagia && maxmn) {
+		mn = maxmn;
+	}
 
+	printf("Max magic number found: %d\n", maxmn);
 	/* Set command to be run. */
 	for (i=0; i < cmdc; i++) {
 		toexec = buildcmd(arg, i);
@@ -164,33 +180,13 @@ void main(int argc, char *argv[]) {
 		argc, cmdc, toexec, fVerbose, magia, mn);
 
 
-	//free(arg);
+	free(toexec);
 	exit(0);
 }
 
 char *buildcmd(char *arg[], int carg) {
-	register unsigned int c = 0,
-		 d = 0,
-		 e = 0,
-		 i = 0,
-		 m = 0,
-		 maxm = 0;
-	char *cmdbuf = "",
-	     ch = '\0';
-
-	/* 
-	 * Is 'mn' not defined nor do we have
-	 * a magic character on the command string?
-	 * Default it to one.
-	 * It will also prioritize magic characters
-	 * over numbers toggled by the switch.
-	 */
-	if ((mn == 0 && !fMagia) && !maxm) {
-		mn = 1;
-	} else {
-		mn = maxm;
-	}
-
+	register unsigned int c = 0;
+	char *cmdbuf = "";
 
 	/* Allocate command buffer. */
 	cmdbuf = calloc((sizeof(*arg[carg]) + sizeof(cmd)), sizeof(char *));
@@ -230,10 +226,16 @@ char *buildcmd(char *arg[], int carg) {
  * string.
  */
 short int magiac() {
+	/* 
+	 * 'm' is the magic number found,
+	 * 'maxms' is the largest magic
+	 * number on the string.
+	 */
 	register short int m = 0,
-	 	maxm = 0;
+	 	maxms = 0;
 	register unsigned int c = 0;
 	char ch = '\0';
+
 	/* 
 	 * Count the number of magic characters
 	 * on the command string.
@@ -242,11 +244,11 @@ short int magiac() {
 		ch = cmd[c];
 		if (ch == magia) {
 			m = (cmd[(c + 1)] - '0');
-			if (m > maxm) maxm = m;
+			if (m > maxms) maxms = m;
 		}
 	}
 
-	return maxm;
+	return maxms;
 }
 
 int execute(const char command[]) {
