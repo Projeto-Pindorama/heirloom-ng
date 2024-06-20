@@ -14,7 +14,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* 
+ * Boilerplate for 'pointer++; pointerc--;'
+ * when shifting argv and friends.
+ */
 #define shift(p, d)	p++; d--
+#define shiftn(p, d, t) \
+	for (register int i=0; i < t; i++) shift(p, d);
+
 /* Error codes for crargs(). */
 #define EOUTRANGE	(SHRT_MIN >> 10)
 #define ENOTNO		(SHRT_MIN >> 11)
@@ -64,7 +71,7 @@ void main(int argc, char *argv[]) {
 	int cmdc = 0,
 	    eoargs = 0;
 	char **arg,
-	     *toexec;
+	     *toexec = "";
 	bool fVerbose = false,
 	     fDry = false;
 
@@ -161,14 +168,14 @@ void main(int argc, char *argv[]) {
 		 * magic number, set it
 		 * as one.
 		 */
-		if (mn == 0 && !fMagia) mn = 1;
+		mn = (mn == 0 && !fMagia) ? 1 : mn;
 	} else {
 		mn = maxmn;
 	}
 
 	printf("Max magic number found: %d\n", maxmn);
 	/* Set command to be run. */
-	for (i=0; i < cmdc; i++) {
+	for (i=0; i < cmdc; i+=mn) {
 		toexec = buildcmd(arg, i);
 		puts(toexec);
 	}
@@ -188,31 +195,6 @@ char *buildcmd(char *arg[], int carg) {
 
 	/* Allocate command buffer. */
 	cmdbuf = calloc((sizeof(*arg[carg]) + sizeof(cmd)), sizeof(char *));
-/*	for (i=0; i < cmdc; i+=mn) {
- *		cmdbuf = malloc(sizeof(cmd) + sizeof(arg[i]) + 1);
- *		for (d = 0; cmd[d]; d++) {
- *			ch = cmd[d];
- * 			if (ch == magia) {
- * 				m = ((cmd[(d + 1)] - '0') - 1);
- *				for (e = 0; e < strlen(arg[m]); e++) {
- *					cmdbuf[(d + e)] = arg[m][e]; 
- *				}
- *				d += (e + 1);
- *			} else {
- *				cmdbuf[d]= ch;
- *			}
- *			
- *		}
- *		puts(cmdbuf);
- *		free(cmdbuf);
- *	}
- */
-	/* 
-	 * puts(cmd);
-	 * for (i = 0; i < cmdc; i++) {
-	 * puts(arg[i]);
-	 * }
-	 */
 	
 	sprintf(cmdbuf, "%s + %s", cmd, arg[carg]);
 	return cmdbuf; 
