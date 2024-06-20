@@ -41,17 +41,13 @@
 char *progname;
 
 short int mn = 0;
-/* 
- * Permit buildcmd() to memorize
- * 'cmd' making it public. 
- */
 char magia = '%',
      *cmd = "";
 bool fMagia = false;
 
 void main(int argc, char *argv[]);
 short int crargs(char *s);
-char **buildcmd(char *arg[], int cmdc);
+char *buildcmd(char arg[], int cmdc);
 int execute(const char command[]);
 void usage(void);
 
@@ -65,8 +61,8 @@ void main(int argc, char *argv[]) {
 		 i = 0;
 	int cmdc = 0,
 	    eoargs = 0;
-	char **commandv,
-	     **toexec;
+	char **arg,
+	     *toexec;
 	bool fVerbose = false,
 	     fDry = false;
 
@@ -138,8 +134,8 @@ void main(int argc, char *argv[]) {
 		usage();
 	}
 	
-	commandv = calloc((size_t)cmdc, sizeof(char *));
-	if (commandv == NULL) {
+	arg = calloc((size_t)cmdc, sizeof(char *));
+	if (arg == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
 			progname, (argc * sizeof(char *)), strerror(errno));
@@ -149,48 +145,50 @@ void main(int argc, char *argv[]) {
 	for (c = 0; c < cmdc; c++) {
 		/* Shift element from the end
 		 * of command arguments. */
-		commandv[c] = argv[(eoargs + c)];
+		arg[c] = argv[(eoargs + c)];
 	}
 
+	cmd = strdup(arg[0]);
+	arg++;
+	cmdc--;
+
 	/* Set command to be run. */
-	for (i=1; i < cmdc; i++) {
-		toexec = buildcmd(commandv, cmdc);
-		printf("toexec: %s\nk: %d\n", toexec[0], i);
+	for (i=0; i < cmdc; i++) {
+		toexec = buildcmd(arg[i], cmdc);
+		puts(toexec);
 	}
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, toexec[1], fVerbose, magia, mn);
+		argc, cmdc, toexec, fVerbose, magia, mn);
 
 
-	free(commandv);
-	free(toexec);
+	free(arg);
 	exit(0);
 }
 
-char **buildcmd(char *arg[], int cmdc) {
+char *buildcmd(char arg[], int cmdc) {
 	register unsigned int c = 0,
 		 d = 0,
 		 e = 0,
 		 i = 0,
 		 m = 0,
 		 maxm = 0;
-	char *cmd = "",
-	     *cmdbuf = "",
-	     **execbuf,
+	char *cmdbuf = "",
+	     *execbuf,
 	     ch = '\0';
-	
+	bool firsttime = false;
+
 	/* 
 	 * Has 'cmd' already been created
 	 * and magic already computed?
 	 * If not, do it.
 	 */
-	if(! *cmd) {
+	if(firsttime) {
 		/* 
 		 * Count the number of magic characters
 		 * on the command string.
 		 */
-		cmd = strdup(arg[0]);
 		for (c = 0; cmd[c]; c++) {
 			ch = cmd[c];
 			if (ch == magia) {
@@ -200,6 +198,7 @@ char **buildcmd(char *arg[], int cmdc) {
 		}
 		arg++;
 		cmdc--;
+		firsttime = false;
 	}
 
 	/* 
@@ -244,8 +243,8 @@ char **buildcmd(char *arg[], int cmdc) {
 	 * }
 	 */
 	
-
-	return execbuf;
+	 sprintf(execbuf, "%s + %s", cmd, arg);
+	return execbuf; 
 }
 
 /* Parses -# into #, with # being an integer. */
