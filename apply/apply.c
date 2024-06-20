@@ -155,16 +155,14 @@ void main(int argc, char *argv[]) {
 	shift(arg, cmdc);
 	
 	maxmn = magiac();
-	/* 
-	 * Is 'mn' not defined nor do we have
-	 * a magic character on the command string?
-	 * Default it to one.
-	 * It will also prioritize magic characters
-	 * over numbers toggled by the switch.
-	 */
-	if ((mn == 0 && !fMagia) && !maxmn) {
-		mn = 1;
-	} else if (!fMagia && maxmn) {
+	if (maxmn == 0) {
+		/* 
+		 * If nothing defined a 
+		 * magic number, set it
+		 * as one.
+		 */
+		if (mn == 0 && !fMagia) mn = 1;
+	} else {
 		mn = maxmn;
 	}
 
