@@ -261,9 +261,16 @@ char *buildcmd(char *arg[], int carg) {
 			m = (cmd[(c + 1)] - '0');
 			n = (carg + (m - 1));
 			c++;
-			if (m == 0) continue;
-			cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-			enamo = true;
+			if (m <= 0 || 9 < m) {
+				/* It will be doing the reverse of
+				 * 'm' per adding '0'. */
+				cmdbufp += sprintf(cmdbufp, "%c%c",
+						ch, (m + '0'));
+				continue;
+			} else {
+				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
+				enamo = true;
+			}
 		} else {
 			*cmdbufp++ = ch;
 		}
