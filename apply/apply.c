@@ -20,7 +20,7 @@
  */
 #define shift(p, d)	p++; d--
 #define shiftn(p, d, t) \
-	for (register int i=0; i < t; i++) shift(p, d);
+	for (int i=0; i < t; i++) shift(p, d);
 
 /* Error codes for crargs(). */
 #define EOUTRANGE	(SHRT_MIN >> 10)
@@ -63,17 +63,18 @@ void main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
-	register unsigned int opt = 0,
-		 c = 0,
-		 i = 0;
+	unsigned int opt = 0,
+		     c = 0,
+		     i = 0;
 	short int maxmstep = 0;
 	int cmdc = 0,
 	    eoargs = 0;
 	char **arg,
-	     *toexec = "";
+	     *cmdl = "";
 	bool fVerbose = false,
 	     fDry = false,
 	     fMagia = false;
+
 	/* 
 	 * This is an argument parser.
 	 * taks note: It's awful. There's probably another way
@@ -181,16 +182,17 @@ void main(int argc, char *argv[]) {
 					progname, (mstep - cmdc), arg[cmdc - 1]);
 			exit(1);
 		}
-		toexec = buildcmd(arg, i);
-		eXec(toexec);
+		cmdl = buildcmd(arg, i);
+		if (fDry || fVerbose) puts(cmdl);	
+		if (!fDry) eXec(cmdl);
 	}
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, toexec, fVerbose, magia, mstep);
+		argc, cmdc, cmdl, fVerbose, magia, mstep);
 
 
-	free(toexec);
+	free(cmdl);
 	exit(0);
 }
 
@@ -205,10 +207,10 @@ short int magiac() {
 	 * 'maxms' is the largest magic
 	 * number on the string.
 	 */
-	register short int m = 0,
+	short int m = 0,
 	 	maxms = 0;
-	register unsigned int c = 0;
-	register char ch = '\0';
+	unsigned int c = 0;
+	char ch = '\0';
 
 	/* 
 	 * Count the number of magic characters
@@ -227,14 +229,15 @@ short int magiac() {
 }
 
 char *buildcmd(char *arg[], int carg) {
-	register unsigned int c = 0,
+	unsigned int c = 0,
 		 l = 0;
-	register char ch = '\0';
+	char ch = '\0';
 	int m = 0,
 	    n = 0,
 	    cmdlen = 0;
 	char *cmdbuf = "",
 	     *cmdbufp = "";
+	bool enamo = false;
 
 	/* 
 	 * Count the actual size needed
@@ -249,7 +252,7 @@ char *buildcmd(char *arg[], int carg) {
 	/* 
 	 * Allocate the command buffer.
 	 */
-	cmdbuf = calloc((size_t)(l + 1), sizeof(char *));
+	cmdbuf = calloc((size_t)(cmdlen + 1), sizeof(char *));
 	
 	cmdbufp = cmdbuf;
 	for (c = 0; cmd[c] != '\0'; c++) {
@@ -260,6 +263,7 @@ char *buildcmd(char *arg[], int carg) {
 			c++;
 			if (m == 0) continue;
 			cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
+			enamo = true;
 		} else {
 			*cmdbufp++ = ch;
 		}
@@ -267,10 +271,11 @@ char *buildcmd(char *arg[], int carg) {
 	
 	/* 
 	 * Payload for cases where a magic character
-	 * in the string is not present.
+	 * in the string is not present. It can be
+	 * checked if 'enamo' is false.
 	 */
-	if (mstep != 0 && n == 0) {
-		register short int i = 0;
+	if (mstep != 0 && !enamo) {
+		short int i = 0;
 		for (i = 0; i < mstep; i++) {
 			n = (carg + i);
 			cmdbufp += sprintf(cmdbufp, "%c%s", ' ', arg[n]);
@@ -285,7 +290,7 @@ char *buildcmd(char *arg[], int carg) {
 
 /* Parses -# into #, with # being an integer. */
 short int crargs(char *s) {
-	long n = 0;
+	long int n = 0;
 	char *r = "";
 
 	/* 
