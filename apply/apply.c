@@ -48,10 +48,9 @@
 
 char *progname;
 
-short int mn = 0;
+short int mstep = 0;
 char magia = '%',
      *cmd = "";
-bool fMagia = false;
 
 void main(int argc, char *argv[]);
 short int magiac();
@@ -67,14 +66,14 @@ void main(int argc, char *argv[]) {
 	register unsigned int opt = 0,
 		 c = 0,
 		 i = 0;
-	short int maxmn = 0;
+	short int maxmstep = 0;
 	int cmdc = 0,
 	    eoargs = 0;
 	char **arg,
 	     *toexec = "";
 	bool fVerbose = false,
-	     fDry = false;
-
+	     fDry = false,
+	     fMagia = false;
 	/* 
 	 * This is an argument parser.
 	 * taks note: It's awful. There's probably another way
@@ -109,12 +108,12 @@ void main(int argc, char *argv[]) {
 					default:
 						/* Check for numeric value
 						 * betwixt 0 and 9. */
-						mn = crargs(argv[opt]);
-						switch (mn) {
+						mstep = crargs(argv[opt]);
+						switch (mstep) {
 							case EOUTRANGE:
 							case ENOTNO:
 								fprintf(stderr,
-									(mn == EOUTRANGE
+									(mstep == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
 									progname, (argv[opt] + 1));
@@ -161,43 +160,37 @@ void main(int argc, char *argv[]) {
 	cmd = strdup(arg[0]);
 	shift(arg, cmdc);
 	
-	maxmn = magiac();
-	if (maxmn == 0) {
+	maxmstep = magiac();
+	if (maxmstep == 0) {
 		/* 
 		 * If nothing defined a 
 		 * magic number, set it
 		 * as one.
 		 */
-		mn = (mn == 0 && !fMagia) ? 1 : mn;
+		mstep = (mstep == 0 && !fMagia)
+			? 1
+			: mstep;
 	} else {
-		mn = maxmn;
+		mstep = maxmstep;
 	}
 
-	printf("Max magic number found: %d\n", maxmn);
 	/* Set command to be run. */
-	for (i=0; i < cmdc; i+=mn) {
+	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
+		if (cmdc < mstep) {
+			fprintf(stderr, "%s: expecting %d arguments after `%s'\n",
+					progname, (mstep - cmdc), arg[i]);
+		}
 		toexec = buildcmd(arg, i);
 		puts(toexec);
 	}
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, toexec, fVerbose, magia, mn);
+		argc, cmdc, toexec, fVerbose, magia, mstep);
 
 
 	free(toexec);
 	exit(0);
-}
-
-char *buildcmd(char *arg[], int carg) {
-	register unsigned int c = 0;
-	char *cmdbuf = "";
-
-	/* Allocate command buffer. */
-	cmdbuf = calloc((sizeof(*arg[carg]) + sizeof(cmd)), sizeof(char *));
-	
-	sprintf(cmdbuf, "%s + %s", cmd, arg[carg]);
-	return cmdbuf; 
 }
 
 /* 
@@ -214,7 +207,7 @@ short int magiac() {
 	register short int m = 0,
 	 	maxms = 0;
 	register unsigned int c = 0;
-	char ch = '\0';
+	register char ch = '\0';
 
 	/* 
 	 * Count the number of magic characters
@@ -225,20 +218,61 @@ short int magiac() {
 		if (ch == magia) {
 			m = (cmd[(c + 1)] - '0');
 			if (m > maxms) maxms = m;
+			c++;
 		}
 	}
 
 	return maxms;
 }
 
-int execute(const char command[]) {
-	char *shell = "";
-	shell = (getenv("SHELL") != NULL)
-		? getenv("SHELL")
-		: SHELL;
+char *buildcmd(char *arg[], int carg) {
+	register unsigned int c = 0,
+		 l = 0;
+	register char ch = '\0';
+	int m = 0,
+	    n = 0,
+	    cmdlen = 0;
+	char *cmdbuf = "",
+	     *cmdbufp = "";
 
-	printf("SHELL: %s\n", shell);
-	return 0;
+	/* 
+	 * Count the actual size needed
+	 * to make the command string.
+	 */
+	for (cmdlen = strlen(cmd), l=0; l < mstep; l++,
+		n = (carg + l), cmdlen += strlen(arg[n]));
+
+	/* 
+	 * Allocate the command buffer.
+	 */
+	cmdbuf = calloc((size_t)(l + 1), sizeof(char *));
+	
+	cmdbufp = cmdbuf;
+	for (c = 0; cmd[c] != '\0'; c++) {
+		ch = cmd[c];
+		if (ch == magia) {
+			m = (cmd[(c + 1)] - '0');
+			n = (carg + m);
+			c++;
+			if (m == 0) continue;
+			cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
+		} else if (mstep != 0 && n == 0) {
+			register short int i = 0;
+			for (i = 0; i < mstep; i++) {
+				n = (carg + i);
+				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
+			}
+			break;
+		} else {
+			*cmdbufp++ = ch;
+		}
+	}
+
+	/* Close the string. */
+	*cmdbufp = '\0';
+
+	//sprintf(cmdbuf, "%s + %s", cmd, arg[carg]);
+	return cmdbuf; 
 }
 
 /* Parses -# into #, with # being an integer. */
@@ -260,6 +294,16 @@ short int crargs(char *s) {
 	}
 
 	return (short int)n;
+}
+
+int execute(const char command[]) {
+	char *shell = "";
+	shell = (getenv("SHELL") != NULL)
+		? getenv("SHELL")
+		: SHELL;
+
+	printf("SHELL: %s\n", shell);
+	return 0;
 }
 
 void usage(void) {
