@@ -46,9 +46,10 @@ char magia = '%',
 bool fMagia = false;
 
 void main(int argc, char *argv[]);
-short int crargs(char *s);
-char *buildcmd(char arg[], int cmdc);
+short int magiac();
+char *buildcmd(char *arg[], int carg);
 int execute(const char command[]);
+short int crargs(char *s);
 void usage(void);
 
 void main(int argc, char *argv[]) {
@@ -154,7 +155,7 @@ void main(int argc, char *argv[]) {
 
 	/* Set command to be run. */
 	for (i=0; i < cmdc; i++) {
-		toexec = buildcmd(arg[i], cmdc);
+		toexec = buildcmd(arg, i);
 		puts(toexec);
 	}
 
@@ -163,11 +164,11 @@ void main(int argc, char *argv[]) {
 		argc, cmdc, toexec, fVerbose, magia, mn);
 
 
-	free(arg);
+	//free(arg);
 	exit(0);
 }
 
-char *buildcmd(char arg[], int cmdc) {
+char *buildcmd(char *arg[], int carg) {
 	register unsigned int c = 0,
 		 d = 0,
 		 e = 0,
@@ -175,31 +176,7 @@ char *buildcmd(char arg[], int cmdc) {
 		 m = 0,
 		 maxm = 0;
 	char *cmdbuf = "",
-	     *execbuf,
 	     ch = '\0';
-	bool firsttime = false;
-
-	/* 
-	 * Has 'cmd' already been created
-	 * and magic already computed?
-	 * If not, do it.
-	 */
-	if(firsttime) {
-		/* 
-		 * Count the number of magic characters
-		 * on the command string.
-		 */
-		for (c = 0; cmd[c]; c++) {
-			ch = cmd[c];
-			if (ch == magia) {
-				m = (cmd[(c + 1)] - '0');
-				if (m > maxm) maxm = m;
-			}
-		}
-		arg++;
-		cmdc--;
-		firsttime = false;
-	}
 
 	/* 
 	 * Is 'mn' not defined nor do we have
@@ -214,9 +191,9 @@ char *buildcmd(char arg[], int cmdc) {
 		mn = maxm;
 	}
 
-	/* Allocate the command buffer. */
-	execbuf = calloc((size_t)cmdc, sizeof(char *));
-	
+
+	/* Allocate command buffer. */
+	cmdbuf = calloc((sizeof(*arg[carg]) + sizeof(cmd)), sizeof(char *));
 /*	for (i=0; i < cmdc; i+=mn) {
  *		cmdbuf = malloc(sizeof(cmd) + sizeof(arg[i]) + 1);
  *		for (d = 0; cmd[d]; d++) {
@@ -243,8 +220,43 @@ char *buildcmd(char arg[], int cmdc) {
 	 * }
 	 */
 	
-	 sprintf(execbuf, "%s + %s", cmd, arg);
-	return execbuf; 
+	sprintf(cmdbuf, "%s + %s", cmd, arg[carg]);
+	return cmdbuf; 
+}
+
+/* 
+ * Count the number of magic
+ * characters on the command
+ * string.
+ */
+short int magiac() {
+	register short int m = 0,
+	 	maxm = 0;
+	register unsigned int c = 0;
+	char ch = '\0';
+	/* 
+	 * Count the number of magic characters
+	 * on the command string.
+	 */
+	for (c = 0; cmd[c]; c++) {
+		ch = cmd[c];
+		if (ch == magia) {
+			m = (cmd[(c + 1)] - '0');
+			if (m > maxm) maxm = m;
+		}
+	}
+
+	return maxm;
+}
+
+int execute(const char command[]) {
+	char *shell = "";
+	shell = (getenv("SHELL") != NULL)
+		? getenv("SHELL")
+		: SHELL;
+
+	printf("SHELL: %s\n", shell);
+	return 0;
 }
 
 /* Parses -# into #, with # being an integer. */
@@ -267,17 +279,6 @@ short int crargs(char *s) {
 
 	return (short int)n;
 }
-
-int execute(const char command[]) {
-	char *shell = "";
-	shell = (getenv("SHELL") != NULL)
-		? getenv("SHELL")
-		: SHELL;
-
-	printf("SHELL: %s\n", shell);
-	return 0;
-}
-
 
 void usage(void) {
 	fprintf(stderr, "%s: [-#] [-a magia] command args ...\n", progname);
