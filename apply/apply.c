@@ -39,8 +39,14 @@
  */
 
 char *progname;
+
 short int mn = 0;
-char magia = '%';
+/* 
+ * Permit buildcmd() to memorize
+ * 'cmd' making it public. 
+ */
+char magia = '%',
+     *cmd = "";
 bool fMagia = false;
 
 void main(int argc, char *argv[]);
@@ -54,8 +60,9 @@ void main(int argc, char *argv[]) {
 	argv++;
 	argc--;
 
-	register unsigned int i = 0,
-		 j = 0;
+	register unsigned int opt = 0,
+		 c = 0,
+		 i = 0;
 	int cmdc = 0,
 	    eoargs = 0;
 	char **commandv,
@@ -69,10 +76,10 @@ void main(int argc, char *argv[]) {
 	 * to do this and that doesn't sacrifice speed and/or
 	 * readability.
 	 */
-	for (i = 0; argv[i]; i++) { 
-		switch (argv[i][0]) {
+	for (opt = 0; argv[opt]; opt++) { 
+		switch (argv[opt][0]) {
 			case '-':
-				switch (argv[i][1]) {
+				switch (argv[opt][1]) {
 					case 'd':
 						/* Dry-run, do not execute
 						 * the command. */
@@ -85,8 +92,8 @@ void main(int argc, char *argv[]) {
 						fVerbose = true;
 						break;
 					case 'a':
-						argv[i]++;
-						magia = argv[i][1];
+						argv[opt]++;
+						magia = argv[opt][1];
 						switch (magia) {
 							case '\0':
 								usage();
@@ -97,7 +104,7 @@ void main(int argc, char *argv[]) {
 					default:
 						/* Check for numeric value
 						 * betwixt 0 and 9. */
-						mn = crargs(argv[i]);
+						mn = crargs(argv[opt]);
 						switch (mn) {
 							case EOUTRANGE:
 							case ENOTNO:
@@ -105,7 +112,7 @@ void main(int argc, char *argv[]) {
 									(mn == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
-									progname, (argv[i] + 1));
+									progname, (argv[opt] + 1));
 								usage();
 							default:
 								/* So you've set
@@ -115,12 +122,12 @@ void main(int argc, char *argv[]) {
 						}
 						break;
 				}
-				argv[i] = NULL;
+				argv[opt] = NULL;
 				continue;
 			default:
 				/* Mark the end of program arguments and start
 				 * of the command line to be executed. */
-				eoargs = i;
+				eoargs = opt;
 				break;
 		}
 		break;
@@ -139,14 +146,17 @@ void main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	for (j = 0; j < cmdc; j++) {
+	for (c = 0; c < cmdc; c++) {
 		/* Shift element from the end
 		 * of command arguments. */
-		commandv[j] = argv[(eoargs + j)];
+		commandv[c] = argv[(eoargs + c)];
 	}
 
 	/* Set command to be run. */
-	toexec = buildcmd(commandv, cmdc);
+	for (i=1; i < cmdc; i++) {
+		toexec = buildcmd(commandv, cmdc);
+		printf("toexec: %s\nk: %d\n", toexec[0], i);
+	}
 
 	/* Debug */
 	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
@@ -167,22 +177,30 @@ char **buildcmd(char *arg[], int cmdc) {
 		 maxm = 0;
 	char *cmd = "",
 	     *cmdbuf = "",
-	     **bufexec,
+	     **execbuf,
 	     ch = '\0';
+	
 	/* 
-	 * Count the number of magic characters
-	 * on the command string.
+	 * Has 'cmd' already been created
+	 * and magic already computed?
+	 * If not, do it.
 	 */
-	cmd = strdup(arg[0]);
-	for (c = 0; cmd[c]; c++) {
-		ch = cmd[c];
-		if (ch == magia) {
-			m = (cmd[(c + 1)] - '0');
-			if (m > maxm) maxm = m;
+	if(! *cmd) {
+		/* 
+		 * Count the number of magic characters
+		 * on the command string.
+		 */
+		cmd = strdup(arg[0]);
+		for (c = 0; cmd[c]; c++) {
+			ch = cmd[c];
+			if (ch == magia) {
+				m = (cmd[(c + 1)] - '0');
+				if (m > maxm) maxm = m;
+			}
 		}
+		arg++;
+		cmdc--;
 	}
-	arg++;
-	cmdc--;
 
 	/* 
 	 * Is 'mn' not defined nor do we have
@@ -198,27 +216,27 @@ char **buildcmd(char *arg[], int cmdc) {
 	}
 
 	/* Allocate the command buffer. */
-	bufexec = calloc((size_t)cmdc, sizeof(char *));
+	execbuf = calloc((size_t)cmdc, sizeof(char *));
 	
-	for (i=0; i < cmdc; i+=mn) {
-		cmdbuf = malloc(sizeof(cmd) + sizeof(arg[i]) + 1);
-		for (d = 0; cmd[d]; d++) {
-			ch = cmd[d];
-			if (ch == magia) {
-				m = ((cmd[(d + 1)] - '0') - 1);
-				for (e = 0; e < strlen(arg[m]); e++) {
-					cmdbuf[(d + e)] = arg[m][e]; 
-				}
-				d += (e + 1);
-			} else {
-				cmdbuf[d]= ch;
-			}
-			
-		}
-		puts(cmdbuf);
-		free(cmdbuf);
-	}
-
+/*	for (i=0; i < cmdc; i+=mn) {
+ *		cmdbuf = malloc(sizeof(cmd) + sizeof(arg[i]) + 1);
+ *		for (d = 0; cmd[d]; d++) {
+ *			ch = cmd[d];
+ * 			if (ch == magia) {
+ * 				m = ((cmd[(d + 1)] - '0') - 1);
+ *				for (e = 0; e < strlen(arg[m]); e++) {
+ *					cmdbuf[(d + e)] = arg[m][e]; 
+ *				}
+ *				d += (e + 1);
+ *			} else {
+ *				cmdbuf[d]= ch;
+ *			}
+ *			
+ *		}
+ *		puts(cmdbuf);
+ *		free(cmdbuf);
+ *	}
+ */
 	/* 
 	 * puts(cmd);
 	 * for (i = 0; i < cmdc; i++) {
@@ -227,7 +245,7 @@ char **buildcmd(char *arg[], int cmdc) {
 	 */
 	
 
-	return bufexec;
+	return execbuf;
 }
 
 /* Parses -# into #, with # being an integer. */
