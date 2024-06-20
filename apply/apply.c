@@ -55,7 +55,7 @@ char magia = '%',
 void main(int argc, char *argv[]);
 short int magiac();
 char *buildcmd(char *arg[], int carg);
-int execute(const char command[]);
+int eXec(const char command[]);
 short int crargs(char *s);
 void usage(void);
 
@@ -178,10 +178,11 @@ void main(int argc, char *argv[]) {
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if (cmdc < mstep) {
 			fprintf(stderr, "%s: expecting %d arguments after `%s'\n",
-					progname, (mstep - cmdc), arg[i]);
+					progname, (mstep - cmdc), arg[cmdc - 1]);
+			exit(1);
 		}
 		toexec = buildcmd(arg, i);
-		puts(toexec);
+		eXec(toexec);
 	}
 
 	/* Debug */
@@ -239,8 +240,11 @@ char *buildcmd(char *arg[], int carg) {
 	 * Count the actual size needed
 	 * to make the command string.
 	 */
-	for (cmdlen = strlen(cmd), l=0; l < mstep; l++,
-		n = (carg + l), cmdlen += strlen(arg[n]));
+	for (cmdlen = strlen(cmd), l=0; l < mstep; l++) {
+		n = (carg + l);
+	       	cmdlen += strlen(arg[n]);
+		n = 0;
+	}
 
 	/* 
 	 * Allocate the command buffer.
@@ -252,26 +256,30 @@ char *buildcmd(char *arg[], int carg) {
 		ch = cmd[c];
 		if (ch == magia) {
 			m = (cmd[(c + 1)] - '0');
-			n = (carg + m);
+			n = (carg + (m - 1));
 			c++;
 			if (m == 0) continue;
 			cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-		} else if (mstep != 0 && n == 0) {
-			register short int i = 0;
-			for (i = 0; i < mstep; i++) {
-				n = (carg + i);
-				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-			}
-			break;
 		} else {
 			*cmdbufp++ = ch;
+		}
+	}
+	
+	/* 
+	 * Payload for cases where a magic character
+	 * in the string is not present.
+	 */
+	if (mstep != 0 && n == 0) {
+		register short int i = 0;
+		for (i = 0; i < mstep; i++) {
+			n = (carg + i);
+			cmdbufp += sprintf(cmdbufp, "%c%s", ' ', arg[n]);
 		}
 	}
 
 	/* Close the string. */
 	*cmdbufp = '\0';
 
-	//sprintf(cmdbuf, "%s + %s", cmd, arg[carg]);
 	return cmdbuf; 
 }
 
@@ -296,12 +304,13 @@ short int crargs(char *s) {
 	return (short int)n;
 }
 
-int execute(const char command[]) {
+int eXec(const char command[]) {
 	char *shell = "";
 	shell = (getenv("SHELL") != NULL)
 		? getenv("SHELL")
 		: SHELL;
 
+	puts(command);
 	printf("SHELL: %s\n", shell);
 	return 0;
 }
