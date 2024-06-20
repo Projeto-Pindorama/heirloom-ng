@@ -8,11 +8,14 @@
  */
 
 #include <errno.h>
+#include <libgen.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 /* 
  * Boilerplate for 'pointer++; pointerc--;'
@@ -68,7 +71,8 @@ void main(int argc, char *argv[]) {
 		     i = 0;
 	short int maxmstep = 0;
 	int cmdc = 0,
-	    eoargs = 0;
+	    eoargs = 0,
+	    estatus = 0;
 	char **arg,
 	     *cmdl = "";
 	bool fVerbose = false,
@@ -184,16 +188,32 @@ void main(int argc, char *argv[]) {
 		}
 		cmdl = buildcmd(arg, i);
 		if (fDry || fVerbose) puts(cmdl);	
-		if (!fDry) eXec(cmdl);
+		if (!fDry) estatus = eXec(cmdl);
 	}
 
-	/* Debug */
-	printf("argc: %d\ncmdc: %d\ncommandl: %s\nvflag: %d\nmagia: %c\nnargs: %d\n",
-		argc, cmdc, cmdl, fVerbose, magia, mstep);
-
-
 	free(cmdl);
-	exit(0);
+	exit(estatus);
+}
+
+/* Parses -# into #, with # being an integer. */
+short int crargs(char *s) {
+	long int n = 0;
+	char *r = "";
+
+	/* 
+	 * Shift the first character
+	 * (expected to be '-').
+	 */
+	s++;
+
+	n = strtol(s, &r, 10);
+	if (n == 0 && r[0] != '\0') {
+		n = ENOTNO;
+	} else if (n < 0 || 9 < n) {
+		n = EOUTRANGE;
+	}
+
+	return (short int)n;
 }
 
 /* 
@@ -295,36 +315,39 @@ char *buildcmd(char *arg[], int carg) {
 	return cmdbuf; 
 }
 
-/* Parses -# into #, with # being an integer. */
-short int crargs(char *s) {
-	long int n = 0;
-	char *r = "";
-
-	/* 
-	 * Shift the first character
-	 * (expected to be '-').
-	 */
-	s++;
-
-	n = strtol(s, &r, 10);
-	if (n == 0 && r[0] != '\0') {
-		n = ENOTNO;
-	} else if (n < 0 || 9 < n) {
-		n = EOUTRANGE;
-	}
-
-	return (short int)n;
-}
-
+/* What tha name says: it executes a command. */
 int eXec(const char command[]) {
-	char *shell = "";
+	int st = 0;
+	char *shell = "",
+	     *shpath = "",
+	     *name = "";
+	pid_t pid = 0;
 	shell = (getenv("SHELL") != NULL)
 		? getenv("SHELL")
 		: SHELL;
+	shpath = strdup(shell);
+	name = basename(shpath);
 
-	puts(command);
-	printf("SHELL: %s\n", shell);
-	return 0;
+	pid = fork();
+	switch (pid) {
+		case 0:
+			execl(shell, name, "-c", command, (char *)NULL);
+			_exit(127);
+		default:
+			break;
+	}
+
+	switch (pid) {
+		case -1:
+			fprintf(stderr, "%s: failed to fork: %s\n",
+					progname, strerror(errno));
+			exit(-1);
+		default:
+			while (waitpid(pid, &st, 0) == -1) continue;
+			break;
+	}
+
+	return st;
 }
 
 void usage(void) {
