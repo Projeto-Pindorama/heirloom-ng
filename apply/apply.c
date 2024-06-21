@@ -233,11 +233,11 @@ short int magiac(void) {
 char *buildcmd(char *arg[], int carg) {
 	unsigned int c = 0,
 		 l = 0;
-	char ch = '\0';
 	int m = 0,
 	    n = 0,
 	    cmdlen = 0;
-	char *cmdbuf = "",
+	char ch = '\0',
+	     *cmdbuf = "",
 	     *cmdbufp = "";
 	bool enamo = false;
 
@@ -301,6 +301,7 @@ int eXec(const char command[]) {
 	     *shpath = "",
 	     *name = "";
 	pid_t pid = 0;
+
 	shell = (getenv("SHELL") != NULL)
 		? getenv("SHELL")
 		: SHELL;
