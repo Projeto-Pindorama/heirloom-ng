@@ -31,10 +31,10 @@
 #define EOUTRANGE	(SHRT_MIN >> 10)
 #define ENOTNO		(SHRT_MIN >> 11)
 
-char *progname;
-short int mstep = 0;
-char magia = '%',
-     *cmd = "";
+static char *progname;
+static short int mstep = 0;
+static char magia = '%',
+	    *cmd = "";
 
 void main(int argc, char *argv[]);
 short int crargs(char *s);
