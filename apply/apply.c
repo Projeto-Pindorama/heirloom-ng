@@ -147,18 +147,13 @@ void main(int argc, char *argv[]) {
 	shift(arg, cmdc);
 
 	maxmstep = magiac();
-	if (maxmstep == 0) {
-		/*
-		 * If nothing defined a
-		 * magic number, set it
-		 * as one.
-		 */
-		mstep = (mstep == 0 && !fMagia)
+	/* If nothing defined a magic
+	 * number, set it as one. */
+	mstep = (maxmstep == 0) ?
+			(mstep == 0 && !fMagia)
 			? 1
-			: mstep;
-	} else {
-		mstep = maxmstep;
-	}
+			: mstep
+		: maxmstep;
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
