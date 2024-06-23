@@ -149,8 +149,8 @@ void main(int argc, char *argv[]) {
 	maxmstep = magiac();
 	/* If nothing defined a magic
 	 * number, set it as one. */
-	mstep = (maxmstep == 0) ?
-			(mstep == 0 && !fMagia)
+	mstep = (maxmstep == 0) 
+		? (mstep == 0 && !fMagia)
 			? 1
 			: mstep
 		: maxmstep;
