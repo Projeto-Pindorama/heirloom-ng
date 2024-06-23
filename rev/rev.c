@@ -1,8 +1,11 @@
 /*
  * rev.c - reverse lines of a file 
+ *
+ * A little bit based on Luiz' implementation
  */
-/* 
+/*
  * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2024: Samuel Brederodes (callsamu)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -15,73 +18,71 @@
 #include <string.h>
 #include <unistd.h>
 
+#define NULL_BYTE '\0'
+
 static char *progname;
 
-void main(int argc, char *argv[]) {
-	progname = argv[0];
-	register size_t i = 0,
-		 j = 0;
-	register unsigned int magia = 0;
-	register char c = '\0',
-		 swc = '\0';
-	unsigned int slen = 0;
-	int fdinput = STDIN_FILENO;
-	char string[BUFSIZ] = "";
-	FILE *input = NULL;
+int copy_line(FILE * from, char * to_buffer, size_t to_buffer_size) {
+    for (int i = 0; i < to_buffer_size; i++) {
+        int c = fgetc(from);
 
-	if (argc > 1) {
-		if ((fdinput = open(argv[1], O_RDONLY)) < 0) {
-			fprintf(stderr, "%s: cannot open %s: %s\n", 
-				progname, argv[1], strerror(errno));
-			exit(1);
-		}
-	}
+        switch (c) {
+        case EOF:
+            to_buffer[i] = NULL_BYTE;
+            return EOF;
+        case '\n':
+            to_buffer[i] = NULL_BYTE;
+            return 0;
+        default:
+            to_buffer[i] = c;
+        }
+    }
 
-	if ((input = fdopen(fdinput, "r")) == NULL) { 
-		fprintf(stderr, "%s: cannot open stream at descriptor %d: %s\n",
-			progname, fdinput, strerror(errno));
-		exit(1);
-	}
+    return 0;
+}
 
-	for (;;) {
-		for (i = 0; i < BUFSIZ; i++) {
-			c = fgetc(input);
-			switch (c) {
-				case '\n':
-					break;
-				case EOF:
-					goto eof;
-				default:
-					string[i] = c;
-					continue;
-			}
-			/* Just a simple formality. */ 
-			break;
-		}
+void reverse_string(char * string) {
+    int len = strlen(string);
 
-		slen = strlen(string);	  
-		string[(slen + 1)] = '\0';
-		for (j = 0; j < (slen / 2); j++) {
-			/*
-			 * Number that will indicate the second
-			 * simmetric element of a duo on the string.
-			 * The subtraction of one is related to the
-			 * string closer character, which would
-			 * prevent the string from even being printed.
-			 */
-			magia = (slen - j - 1);
+    for (int i = 0; i < len / 2; i++) {
+        char tmp = string[i];
+        string[i] = string[len - i - 1];
+        string[len - i - 1] = tmp;
+    }
+}
 
-			swc = string[j];
-			string[j] = string[magia];
-			string[magia] = swc;
-		}
-		puts(string);
+int main(int argc, char * argv[]) {
+    progname = argv[0];
 
-		/* Wash the string. */ 
-		strncpy(string, "", BUFSIZ);
-	}
+    int fdinput = STDIN_FILENO;
+    if (argc > 1) {
+        fdinput = open(argv[1], O_RDONLY);
 
-eof:
-	if (fdinput) fclose(input);
-	exit(0);
+        if (fdinput < 0) {
+            fprintf(stderr, "%s: %s\n", progname, strerror(errno));
+            return EXIT_FAILURE;
+        }
+    }
+
+    FILE * input = fdopen(fdinput, "r");
+    if (!input) {
+        fprintf(stderr, "%s: cannot open stream at descriptor %d: %s\n", progname, fdinput, strerror(errno));
+        return EXIT_FAILURE;
+    }
+
+    char buffer[BUFSIZ];
+
+    while (1) {
+        int eof = copy_line(input, buffer, BUFSIZ);
+        reverse_string(buffer);
+        puts(buffer);
+        strncpy(buffer, "", BUFSIZ);
+
+        if (eof == EOF) {
+            if (fdinput) {
+                fclose(input);
+            }
+            return EXIT_SUCCESS;
+        }
+    }
 }

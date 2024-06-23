@@ -1,4 +1,5 @@
 Release ...
+* rev: Full refactor (made by Samuel Brederodes).
 * [NEW] rev: New implementation, not capable of UTF-8 yet.
 * cpio, diff, tabs: Fix duplicated definitions (made/reported by crumbtoo,
   merged by me, Luiz Antônio Rangel). Thanks! --- or better: Merci!
