@@ -157,7 +157,7 @@ void main(int argc, char *argv[]) {
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
-			fprintf(stderr, "%s: expecting %d arguments after `%s'\n",
+			fprintf(stderr, "%s: expecting %d argument(s) after `%s'\n",
 					progname, (mstep - (cmdc - i)), arg[cmdc - 1]);
 			exit(1);
 		}
