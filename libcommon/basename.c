@@ -1,6 +1,6 @@
 /*
  * basename.c - a basename(3) implementation in case of
- * the target system not being POSIX.1-2001.
+ * the target system not being POSIX.1-2001 compliant.
  *
  * Copyright (c) 2024 Luiz Antônio Rangel (takusuman)
  *
