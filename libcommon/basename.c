@@ -21,7 +21,7 @@
  * POSIX.1-2001, before that it had to be
  * made manually.
  */
-char *basename(char *s) {
+char *basename(const char *s) {
 	register char *name = "",
 		 *token = "",
 		 *ss = "";

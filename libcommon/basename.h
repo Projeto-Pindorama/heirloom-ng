@@ -6,4 +6,4 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
-extern char *basename(char *path);
+extern char *basename(const char *path);
