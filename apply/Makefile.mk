@@ -1,11 +1,10 @@
 all: apply pick
 
 apply.o: apply.c
-	$(CC) -v $(CFLAGS2) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -std=c99 -c apply.c 
-#	$(CC) -o apply_v8 -std=c99 apply.c -DSHELL='"/bin/ksh"' -g
+	$(CC) $(CFLAGS2) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -std=c99 -c apply.c 
 
 apply: apply.o
-	$(LD) $(LDFLAGS) apply.o $(LIBS) $(LCOMMON) -Wl,--verbose -o apply
+	$(LD) $(LDFLAGS) apply.o $(LIBS) $(LCOMMON) -o apply
 
 pick: pick.sh
 	echo '#!$(SHELL)' | cat - pick.sh > pick
