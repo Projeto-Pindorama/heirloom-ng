@@ -23,8 +23,8 @@
  */
 char *basename(const char *s) {
 	register char *name = "",
-		 *token = "",
-		 *ss = "";
+		 *token = "";
+	char *ss = "";
 
 	/*
 	 * Always strdup() 's', since executing
