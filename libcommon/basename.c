@@ -30,7 +30,7 @@ char *basename(const char *s) {
 	 * Always strdup() 's', since executing
 	 * strtok on it can give a memory fault
 	 * since we would modify a variable that
-	 * we're not supposed to modify.
+	 * we're not supposed to.
 	 */
 #ifdef __unix__
 	char *dirsep = "/";
