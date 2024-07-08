@@ -7,25 +7,19 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
-#include <basename.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 /* main() exit()s, does not return(). */
 #pragma clang diagnostic ignored "-Wmain-return-type"
-
-/*
- * Boilerplate for 'pointer++; pointerc--;'
- * when shifting argv and friends.
- */
-#define shift(p, d)	p++; d--
 
 /* Error codes for crargs(). */
 #define EOUTRANGE	(SHRT_MIN >> 10)
