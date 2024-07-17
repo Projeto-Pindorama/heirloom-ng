@@ -1,5 +1,5 @@
 /*
- * apply.c - apply a command to a set of arguments
+ * apply.c - apply a command to a group of arguments
  */
 /*
  * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
@@ -65,14 +65,19 @@ void main(int argc, char *argv[]) {
 			case '-':
 				switch (argv[opt][1]) {
 					case 'd':
-						/* Dry-run, do not execute
-						 * the command. */
+						/*
+						 * Dry-run, do not execute the
+						 * command.
+						 * This also sets fVerbose as false
+						 * instead of the contrary, since
+						 * it will be opting out for the
+						 * least "destructive"/modifying
+						 * action in case of ambiguity.
+						 */
 						fDry = true;
+						fVerbose = false;
 						break;
 					case 'v':
-						/* Verbose, sets dry-run
-						 * as false. */
-						fDry = false;
 						fVerbose = true;
 						break;
 					case 'a':
