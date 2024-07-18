@@ -22,8 +22,8 @@
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
 /* Error codes for crargs(). */
-#define EOUTRANGE	(SHRT_MIN >> 10)
-#define ENOTNO		(SHRT_MIN >> 11)
+#define EOUTRANGE      (SHRT_MIN >> 10)
+#define ENOTNO         (SHRT_MIN >> 11)
 
 static char *progname;
 static short int mstep = 0;
@@ -91,8 +91,6 @@ void main(int argc, char *argv[]) {
 						}
 						break;
 					default:
-						/* Check for numeric value
-						 * betwixt 0 and 9. */
 						mstep = crargs(argv[opt]);
 						switch (mstep) {
 							case EOUTRANGE:
@@ -101,7 +99,7 @@ void main(int argc, char *argv[]) {
 									(mstep == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
-									progname, (argv[opt] + 1));
+								       progname, (argv[opt] + 1));
 								usage();
 							default:
 								/* So you've set
@@ -185,7 +183,7 @@ short int crargs(char *s) {
 	n = strtol(s, &r, 10);
 	if (n == 0 && r[0] != '\0') {
 		n = ENOTNO;
-	} else if (n < 0 || 9 < n) {
+	} else if (n < 0) {
 		n = EOUTRANGE;
 	}
 
