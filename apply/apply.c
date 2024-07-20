@@ -7,6 +7,7 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -213,8 +214,9 @@ short int magiac(void) {
 	for (c = 0; cmd[c]; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
-			m = (cmd[(c + 1)] - '0');
-			if (m > maxms) maxms = m;
+			if (!isalpha(cmd[(c + 1)]))
+				m = (cmd[(c + 1)] - '0');
+				if (m > maxms) maxms = m;
 			c++;
 		}
 	}
