@@ -118,7 +118,7 @@ Pick some songs from a folder and
 enqueue on the playlist in
 Qt-based Multimedia Player:
 .IP \& 2
-.BI "% find \[dq]/usr/people/luiz/Music/Cauby Peixoto\[dq] -type f -print | pick -f | xargs qmmp -e"
+.BI "% find \[dq]/usr/home/luiz/Music/Cauby Peixoto\[dq] -type f -print | pick -f | xargs qmmp -e"
 .LP
 Move commits from one branch to
 another, from the oldest to the
@@ -148,18 +148,22 @@ bottles of beer", taking advantage
 of the fact that
 .I apply
 calls \fBsh(1)\fR per default:
-.IP \& 2
-.BI "% apply \[dq]s=''; \
-[ %1 \-ne 1 ] && s='s'; \
-printf '%d bottle%c of beer on the wall, %d bottle%c of beer.\[rs]n' \
-%1 \[dq]$s\[dq] %1 \[dq]$s\[dq]; \
+.RS
+.nf
+.eo
+% apply "s=''; [ %1 -ne 1 ] && s='s'; \
+printf '%d bottle%c of beer on the wall, %d bottle%c of beer.\n' \
+%1 \"$s\" %1 \"$s\"; \
 printf 'Take one down and pass around,'; \
-if [ -n \[dq]$s\[dq] ]; then \
-printf ' %d bottle%c of beer on the wall.\[rs]n' \%1 \[dq]$s\[dq]; \
+if [ -n $s ]; then \
+printf ' %d bottle%c of beer on the wall.\n' `expr %1 - 1` \"$s\"; \
 else \
-printf ' no more bottles of beer on the wall!\[rs]n'; \
-fi\[dq] `seq 99 -1 1`" 
-.LP
+printf ' no more bottles of beer on the wall!\n'; \
+fi" `seq 99 -1 1` 
+.ec
+.fi
+.RE
+
 .SH "ENVIRONMENT VARIABLES"
 .TP
 .B SHELL
