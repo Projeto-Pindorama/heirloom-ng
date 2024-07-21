@@ -1,14 +1,11 @@
-# pick.sh - select arguments
-#
 # Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
 # SPDX-Licence-Identifier: Zlib
 
+fGlob=false
 main() {
 	while getopts ':f' c; do
 		case $c in
-			f) # sets echo as boilerplate
-			   # for printq.
-				echo() { printq "$@"; }
+			f) fGlob=true
 				break ;;
 			\?) # ignore
 				break ;;
@@ -27,6 +24,7 @@ main() {
 		*) # argv
 			break ;;
 	esac
+
 	for input do
 		question "$input" || break
 	done
@@ -41,7 +39,7 @@ question() {
 	# having headaches with std.in.
 	read r </dev/tty
 	case "$r" in
-		'y') echo "$1"
+		'y') puts "$1"
 			break ;;
 		'q') ec=1
 			break ;;
@@ -52,18 +50,39 @@ question() {
 	return $ec
 }
 
-# References:
-# https://github.com/bminor/bash/blob/bash-5.2/builtins/printf.def#L595-L644
-# https://github.com/digitalocean/gnulib/blob/master/lib/quotearg.c#L255-L772
-# https://github.com/ksh93/ksh/blob/dev/src/cmd/ksh93/sh/string.c#L453-L660
-printq() {
-	printf '%s' "$@" \
-	| nawk -v RS='' '{
-		gsub("\n", "\\n");
-		gsub("\r", "\\r");
-		gsub("\t", "\\t");
-		gsub("'\''", "\\\'\''");
-	} 1'
+puts() {
+	if [ "x$fGlob" \= "xtrue" ]; then
+		echo "$@" | nawk -v RS='' \
+		'BEGIN {
+			# Partial escape table,
+			# not implemented 1-per-1
+			# to KornShell 93 nor
+			# GNU Broken-Again.
+			esc["\a"]="\\a"
+			esc["\b"]="\\b"
+			esc["\f"]="\\f"
+			esc["\n"]="\\n"
+			esc["\r"]="\\r"
+			esc["\t"]="\\t"
+			esc["\v"]="\\v"
+			esc["#"]="\\#"
+			esc["\~"]="\\~"
+			esc["'\''"]="'\''\\'\'''\''"
+			esc["\\*"]="\\\\*"
+			esc[";"]="\\;"
+			esc["\="]="\\="
+			esc["\\|"]="\\\\|"
+			esc["`"]="\\`"
+		}
+		{
+			for (c in esc) {
+				gsub(c, esc[c]);
+			}
+			printf("'\''%s'\''\n", $0);
+		}'
+	else
+		echo "$@"
+	fi
 }
 
 eprintf() {
