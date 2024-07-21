@@ -1,4 +1,7 @@
 Release ...
+* [NEW] apply, pick: Complete implementation for both apply and pick, from
+  Research UNIX 8th and 10th respectively; extended payloads for pick in
+  comparison with the original implementation.
 * seq: Support for counting from negative numbers to positive or making a
   negative sequence.
 * Fixes for building dynamically on Arch Linux and other GNU C
