@@ -127,6 +127,6 @@ void usage(void) {
 #else /* BSD variant */
 		"usage: %s [-fn] file\n",
 #endif
-		progname, personality);
+		progname);
 	exit(1);
 }
