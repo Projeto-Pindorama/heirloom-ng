@@ -27,8 +27,8 @@
 int 
 isheader(char *lp, int *ctfp)
 {
-	register char	*p, *q;
-	register int	i;
+	char	*p, *q;
+	int	i;
 
 	p = lp;
 	while((*p) && (*p != '\n') && (spacechar(*p&0377))) {

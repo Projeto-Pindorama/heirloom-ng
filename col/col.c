@@ -238,7 +238,7 @@ main (int argc, char **argv)
 }
 
 static void
-outc (register long long c)
+outc (long long c)
 {
 	int i, v, w;
 	size_t n;
@@ -356,7 +356,7 @@ store (int lno)
 static void
 fetch(int lno)
 {
-	register long long *p;
+	long long *p;
 	size_t	n;
 
 	lno %= PL;
@@ -375,8 +375,8 @@ static void
 emit (long long *s, int lineno)
 {
 	static int cline = 0;
-	register int ncp, i;
-	register long long *p;
+	int ncp, i;
+	long long *p;
 	static long long gflag = 0;
 
 	if (*s) {

@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 
 SUBDIRS = build libwchar libcommon libuxre _install \
-	banner basename bc bdiff bfs \
+	apply banner basename bc bdiff bfs \
 	cal calendar cat chmod chown chroot \
 	cksum cmp col comm copy cp cpio csplit cut \
 	date dc dd deroff diff diff3 dircmp dirname df du \
@@ -14,9 +14,8 @@ SUBDIRS = build libwchar libcommon libuxre _install \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
 	random readlink renice rm rmdir \
 	sdiff sed seq setpgrp shl sleep sort spell split stty su sum sync \
-	tabs tail tapecntl tar tcopy tee test time timeout touch tr true \
-  tsort tty ul uname uniq units users watch wc what who whoami whodo \
-  xargs yes
+	tabs tail tapecntl tar tcopy tee test time touch tr true tsort tty \
+	ul uname uniq units users watch wc what who whoami whodo xargs yes
 
 dummy: makefiles all
 

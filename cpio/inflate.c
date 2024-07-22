@@ -463,14 +463,14 @@ inflate_codes(struct globals *Gp,
 /* inflate (decompress) the codes in a deflated (compressed) block.
    Return an error code or zero if it all goes ok. */
 {
-  register unsigned e;  /* table entry flag/number of extra bits */
+  unsigned e;  /* table entry flag/number of extra bits */
   unsigned d;           /* index for copy */
   uint32_t n;           /* length for copy (deflate64: might be 64k+2) */
   uint32_t w;           /* current window position (deflate64: up to 64k) */
   struct huft *t;       /* pointer to table entry */
   unsigned ml, md;      /* masks for bl and bd bits */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -587,8 +587,8 @@ inflate_stored(struct globals *Gp)
 {
   uint32_t w;           /* current window position (deflate64: up to 64k!) */
   unsigned n;           /* number of bytes in block */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -706,8 +706,8 @@ static int inflate_dynamic(struct globals *Gp)
   unsigned nl;          /* number of literal/length codes */
   unsigned nd;          /* number of distance codes */
   unsigned ll[MAXLITLENS+MAXDISTS]; /* lit./length and distance code lengths */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 
@@ -862,8 +862,8 @@ static int inflate_block(struct globals *Gp, int *e)
 /* decompress an inflated block */
 {
   unsigned t;           /* block type */
-  register uint32_t b;       /* bit buffer */
-  register unsigned k;  /* number of bits in bit buffer */
+  uint32_t b;       /* bit buffer */
+  unsigned k;  /* number of bits in bit buffer */
   int retval = 0;       /* error code returned: initialized to "no error" */
 
 

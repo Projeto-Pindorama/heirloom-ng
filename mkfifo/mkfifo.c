@@ -111,7 +111,7 @@ static mode_t	where(const char **, mode_t, int *, int *, const mode_t);
 static mode_t
 newmode(const char *ms, const mode_t pm, const char *fn)
 {
-	register mode_t	o, m, b;
+	mode_t	o, m, b;
 	int	lock, setsgid = 0, cleared = 0, copy = 0;
 	mode_t	nm, om, mm;
 
@@ -171,7 +171,7 @@ out:	if ((pm & S_ISGID) && setsgid == 0)
 static mode_t
 absol(const char **ms)
 {
-	register int c, i;
+	int c, i;
 
 	i = 0;
 	while ((c = *(*ms)++) >= '0' && c <= '7')
@@ -183,7 +183,7 @@ absol(const char **ms)
 static mode_t
 who(const char **ms, mode_t *mp)
 {
-	register int m;
+	int m;
 
 	m = 0;
 	*mp = 0;
@@ -225,7 +225,7 @@ what(const char **ms)
 static mode_t
 where(const char **ms, mode_t om, int *lock, int *copy, const mode_t pm)
 {
-	register mode_t m;
+	mode_t m;
 
 	m = 0;
 	*copy = 0;
