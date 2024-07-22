@@ -1,4 +1,5 @@
 Release ...
+* rev: UTF-8 support.
 * [NEW] apply, pick: Complete implementation for both apply and pick, from
   Research UNIX 8th and 10th respectively; extended payloads for pick in
   comparison with the original implementation.
