@@ -8,6 +8,10 @@
  * Copyright (C) 2024: Samuel Brederodes (callsamu)
  *
  * SPDX-Licence-Identifier: Zlib
+ * 
+ * UTF-8 support borrowed from suckless sbase implementation.
+ * Copyright (C) 2016 Mattias Andrée (maandree@kth.se)
+ * SPDX-Licence-Identifier: MIT 
  */
 
 #include <errno.h>
@@ -36,7 +40,8 @@ int copy_line(FILE *from, char *to_buffer, size_t to_buffer_size) {
 				to_buffer[i] = NULL_BYTE;
 				return EOF;
 			case '\n':
-				to_buffer[i] = NULL_BYTE;
+				to_buffer[i] = '\n';
+				to_buffer[(i + 1)] = NULL_BYTE;
 				return 0;
 			default:
 				to_buffer[i] = c;
@@ -47,36 +52,36 @@ int copy_line(FILE *from, char *to_buffer, size_t to_buffer_size) {
 }
 
 bool isutf8chr(char c) {
-	if ((c & 0x80) == 0) {
-		return false;
-	} else if ((c & 0xc0) == 0xc0) {
+	if ((c & 0xC0) == 0x80) {
 		return true;
+	} else {
+		return false;
 	}
 }
 
 void reverse_string(char *string) {
-	int len = strlen(string);
-
-	for (int i = 0; i < len / 2; i++) { 
-		char tmp = string[i];
-		if (isutf8chr(string[len - i - 1])) {
-			/* New temporary character for the string[i + 1]. */
-			char ntmp = string[i + 1];
-
-			/* Interpret "i - 2" as "(i - 1) - 1" because, for some
-			 * reason, this code breaks when trying to format this
-			 * equation better. Much obliged, compiler. 
-			 * This move a multi-byte cluster. */
-			string[i] = string[len - i - 2];
-			string[i + 1] = string[len - i - 1];
-			string[len - i - 1] = tmp;
-			string[len - (i + 1) - 1] = ntmp;
-			i++;
-		} else {
-			string[i] = string[len - i - 1];
-			string[len - i - 1] = tmp;
+	int len = strlen(string),
+	    i = 0,
+	    lf = 0;
+	
+	lf = len && string[(len - 1)] == '\n';
+	len -= lf;
+	i = len;
+	for (len = 0; i--;) {
+		switch (isutf8chr(string[i])) {
+			case true:
+				len++;
+				break;
+			default: /* "Else", "false", call it what you like. */
+				fwrite((string + i), 1,
+					(len + 1), stdout);
+				len = 0;
+				break;
 		}
 	}
+
+	if (len) fwrite(string, 1, len, stdout);
+	if (lf) fputc('\n', stdout);
 }
 
 int main(int argc, char *argv[]) {
@@ -105,8 +110,6 @@ int main(int argc, char *argv[]) {
 	while (true) {
 		int eof = copy_line(input, buffer, BUFSIZ);
 		reverse_string(buffer);
-		puts(buffer);
-		strncpy(buffer, "", BUFSIZ);
 
 		if (eof == EOF) {
 			if (fdinput) {
