@@ -1,5 +1,8 @@
 # Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
 # SPDX-Licence-Identifier: Zlib
+#
+# Honorable mention to Nosomy for help given in the
+# AWK section of this script.
 
 fGlob=false
 main() {
