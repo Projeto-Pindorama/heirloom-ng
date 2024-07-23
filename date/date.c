@@ -5,7 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- * Copyright (c) 2022: Luiz Antônio (takusuman)
+ * Copyright (c) 2023 - 2024: Luiz Antônio (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -131,7 +131,15 @@ stime(time_t *t)
 static void
 settime(char *op)
 {
+	/*
+	 * Since it's not guaranteed that (utmpx).ut_tv
+	 * is a struct of the type timeval, we will be
+	 * recording the time from gettimeofday(2) on
+	 * a temporary struct of the type timeval and
+	 * then copying the values to the ".ut_tv".
+	 */
 	struct utmpx before, after;
+	struct timeval tv_tmp;
 	const char wtmpxfile[] = "/var/log/wtmp";
 	time_t newtime;
 
@@ -143,12 +151,18 @@ settime(char *op)
 	strcpy(after.ut_line, "new time");
 	if ((newtime = timeop(op)) == (time_t)-1)
 		badconv();
-	gettimeofday(&before.ut_tv, NULL);
+	gettimeofday(&tv_tmp, NULL);
+	before.ut_tv.tv_sec = tv_tmp.tv_sec;
+	before.ut_tv.tv_usec = tv_tmp.tv_usec;
+	/* Clean it for (struct utmpx)after. */
+	memset(&tv_tmp, 0, sizeof tv_tmp);
 	if (stime(&newtime) < 0) {
 		fprintf(stderr, "%s: no permission\n", progname);
 		exit(1);
 	}
-	gettimeofday(&after.ut_tv, NULL);
+	gettimeofday(&tv_tmp, NULL);
+	after.ut_tv.tv_sec = tv_tmp.tv_sec;
+	after.ut_tv.tv_usec = tv_tmp.tv_usec;
 #ifdef	__linux__
 	system("/sbin/hwclock -w >/dev/null 2>&1");
 #endif	/* __linux__ */
