@@ -7,7 +7,7 @@
 fGlob=false
 main() {
 	while getopts ':f' c; do
-		case $c in
+		case "$c" in
 			f) fGlob=true
 				break ;;
 			\?) # ignore
@@ -27,6 +27,9 @@ main() {
 		*) # argv
 			break ;;
 	esac
+	# Set echo as a boilerplate for
+	# printq() if $fGlob is true.
+	$fGlob && echo() { printq "$@"; }
 
 	for input do
 		question "$input" || break
@@ -42,7 +45,7 @@ question() {
 	# having headaches with std.in.
 	read r </dev/tty
 	case "$r" in
-		'y') puts "$1"
+		'y') echo "$1"
 			break ;;
 		'q') ec=1
 			break ;;
@@ -53,9 +56,8 @@ question() {
 	return $ec
 }
 
-puts() {
-	if [ "x$fGlob" \= "xtrue" ]; then
-		echo "$@" | nawk -v RS='' \
+printq() {
+	printf '%s' "$@" | nawk -v RS='' \
 		'BEGIN {
 			# Partial escape table,
 			# not implemented 1-per-1
@@ -83,9 +85,6 @@ puts() {
 			}
 			printf("'\''%s'\''\n", $0);
 		}'
-	else
-		echo "$@"
-	fi
 }
 
 eprintf() {
