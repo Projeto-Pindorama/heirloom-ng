@@ -1,4 +1,6 @@
 Release ...
+* date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
+  of type 'timeval'.
 * rev: UTF-8 support, borrowed from suckless sbase. In varietate concordia.
 * [NEW] apply, pick: Complete implementation for both apply and pick, from
   Research UNIX 8th and 10th respectively; extended payloads for pick in
