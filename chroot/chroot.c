@@ -19,6 +19,8 @@
 #define ROOTUID 0
 
 char *progname;
+int main(int argc, char *argv[]);
+void usage(void);
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];	

@@ -243,8 +243,8 @@ static FILE *file, *found;
 int
 main(int argc, char **argv)
 {
-	register char *ep, *cp;
-	register char *dp;
+	char *ep, *cp;
+	char *dp;
 	int fold;
 	int c, j;
 	int pass;
@@ -363,8 +363,8 @@ foundit:
 static int
 trysuff(char *ep, int lev)
 {
-	register struct suftab	*t;
-	register char *cp, *sp;
+	struct suftab	*t;
+	char *cp, *sp;
 
 	lev += DLEV;
 	if (lev+2 >= derivsize) {
@@ -599,8 +599,8 @@ VCe(char *ep, char *d, char *a, int lev)
 static char *
 lookuppref(char **wp, char *ep)
 {
-	register char **sp;
-	register char *bp, *cp;
+	char **sp;
+	char *bp, *cp;
 
 	for (sp = preftab; *sp; sp++) {
 		bp = *wp;
@@ -624,7 +624,7 @@ next:;
 static int
 trypref(char *ep, char *a, int lev)
 {
-	register char *cp;
+	char *cp;
 	char *bp;
 	size_t pn;
 	int val = 0;
@@ -667,7 +667,7 @@ trypref(char *ep, char *a, int lev)
 static int
 tryword(char *bp, char *ep, int lev)
 {
-	register int i, j;
+	int i, j;
 	char duple[3], *dp;
 	size_t an;
 	if (ep-bp <= 1)
@@ -754,7 +754,7 @@ vowel(int c)
 static void
 ise(void)
 {
-	register struct suftab *p;
+	struct suftab *p;
 
 	for (p = suftab; p->suf; p++) {
 		p->suf = ztos(p->suf);
@@ -776,7 +776,7 @@ ztos(const char *_s)
 static int
 dict(char *bp, char *ep)
 {
-	register int temp, result;
+	int temp, result;
 	if (xflag)
 		fprintf(stdout, "=%.*s\n", ep-bp, bp);
 	temp = *ep;

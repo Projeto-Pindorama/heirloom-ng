@@ -135,9 +135,9 @@ regexp_h_static unsigned char	bittab[] = {
 	64,
 	128
 };
-static int	regexp_h_advance(register const char *lp,
-			register const char *ep);
-static void	regexp_h_getrnge(register const char *str, int least);
+static int	regexp_h_advance(const char *lp,
+			const char *ep);
+static void	regexp_h_getrnge(const char *str, int least);
 
 static const char	*regexp_h_bol;	/* beginning of input line (for \<) */
 
@@ -263,9 +263,9 @@ regexp_h_previous(const char *mb)
 	)
 
 static regexp_h_inline int
-regexp_h_cclass_wc(const char *set, register wint_t c, int af)
+regexp_h_cclass_wc(const char *set, wint_t c, int af)
 {
-	register wint_t wc, wl = WEOF;
+	wint_t wc, wl = WEOF;
 	const char *end;
 
 	end = &set[18] + set[0] - 1;
@@ -306,8 +306,8 @@ regexp_h_static char *
 compile(char *instring, char *ep, const char *endbuf, int seof)
 {
 	INIT	/* Dependent declarations and initializations */
-	register int c;
-	register int eof = seof;
+	int c;
+	int eof = seof;
 	char *lastep = instring;
 	int cclcnt;
 	char bracket[NBRA], *bracketp;
@@ -616,9 +616,9 @@ compile(char *instring, char *ep, const char *endbuf, int seof)
 int
 step(const char *p1, const char *p2)
 {
-	register int c;
+	int c;
 #ifdef	REGEXP_H_WCHARS
-	register int d;
+	int d;
 #endif	/* REGEXP_H_WCHARS */
 
 	REGEXP_H_STEP_INIT	/* get circf */
@@ -801,7 +801,7 @@ regexp_h_zerostak(struct regexp_h_stack **sb, struct regexp_h_stack **sp)
 static int
 regexp_h_advance(const char *lp, const char *ep)
 {
-	register const char *curlp;
+	const char *curlp;
 	int c, least;
 #ifdef	REGEXP_H_WCHARS
 	int d;
@@ -1165,7 +1165,7 @@ regexp_h_advance(const char *lp, const char *ep)
 }
 
 static void
-regexp_h_getrnge(register const char *str, int least)
+regexp_h_getrnge(const char *str, int least)
 {
 	low = *str++ & 0377;
 	size = least & REGEXP_H_LEAST ? /*20000*/INT_MAX : (*str & 0377) - low;

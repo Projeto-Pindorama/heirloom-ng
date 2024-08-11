@@ -15,7 +15,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
+static const char sccsid[] USED = "@(#)tar.sl	1.180 (gritter) 10/9/10";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -57,10 +57,12 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 
 #include <sys/ioctl.h>
 
-#if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
-	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
-	defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#if defined (__linux__) || defined (__sun) || defined (__FreeBSD__) || \
+	defined (__hpux) || defined (_AIX) || defined (__NetBSD__) || \
+	defined (__OpenBSD__) || defined (__DragonFly__) || defined (__APPLE__)
+#ifndef __G__
 #include <sys/mtio.h>
+#endif
 #else	/* SVR4.2MP */
 #include <sys/scsi.h>
 #include <sys/st01.h>
@@ -68,9 +70,9 @@ static const char sccsid[] USED = "@(#)tar.sl	1.177 (gritter) 4/14/07";
 
 #if defined(__linux__) || defined(_AIX)
 #include <sys/sysmacros.h>
-#endif  /* __linux__ or _AIX, since sys/sysmacros.h
-	            * adds a definition of "major". */
-#ifndef major
+#endif
+
+#if !defined (major) && !defined (__G__)
 #include <sys/mkdev.h>
 #endif /* If "major" still not defined. */
 
@@ -289,18 +291,18 @@ static int	xtrdev(const char *, struct stat *, mode_t);
 static int	xtrdir(const char *, struct stat *);
 static void	dotable(char *[]);
 static void	putempty(void);
-static void	longt(register struct stat *, int);
-static void	pmode(register struct stat *, int);
+static void	longt(struct stat *, int);
+static void	pmode(struct stat *, int);
 static void	tselect(int *, struct stat *);
-static int	checkdir(register char *, struct stat *);
+static int	checkdir(char *, struct stat *);
 static void	onsig(int);
-static void	tomodes(const char *, register struct stat *);
+static void	tomodes(const char *, struct stat *);
 static int	checksum(int);
 static int	checkw(int, const char *, struct stat *, int);
 static int	response(void);
 static int	checkupdate(const char *, struct stat *);
 static void	done(int);
-static int	prefix(register const char *, register const char *);
+static int	prefix(const char *, const char *);
 static off_t	lookup(const char *);
 static off_t	bsrch(const char *, int, off_t, off_t);
 static int	cmp(const char *, const char *, size_t);
@@ -349,6 +351,7 @@ static char	*sequence(void);
 static void	docomp(const char *);
 static int	jflag, zflag, Zflag;
 static int	utf8(const char *);
+static void	settmp(char *, size_t, const char *);
 
 int
 main(int argc, char *argv[])
@@ -650,11 +653,12 @@ dorep(char *argv[])
 			} while (!endtape(1));
 		}
 		if (tfile != NULL) {
-			char tname[] = "/tmp/tarXXXXXX";
+			char tname[PATH_MAX+1];
 			int tfd;
 			pid_t pid;
 			fflush(tfile);
 			rewind(tfile);
+			settmp(tname, sizeof tname, "%s/tarXXXXXX");
 			if ((tfd = mkstemp(tname)) < 0) {
 				fprintf(stderr, "%s: cannot create temporary "
 						"file (%s)\n", progname, tname);
@@ -750,7 +754,7 @@ dorep(char *argv[])
 static void
 doarg(char *arg)
 {
-	register char *cp, *cp2;
+	char *cp, *cp2;
 
 	cp2 = arg;
 	for (cp = arg; *cp; cp++)
@@ -778,7 +782,7 @@ endtape(int rew)
 }
 
 static void
-tgetdir(register struct stat *sp)
+tgetdir(struct stat *sp)
 {
 	long long	lval1, lval2;
 
@@ -1060,7 +1064,7 @@ tgetval(const char *s, int k)
 }
 
 static void
-passtape(register struct stat *sp)
+passtape(struct stat *sp)
 {
 	long long blocks;
 	char buf[TBLOCK];
@@ -1620,7 +1624,23 @@ xtrreg(const char *name, struct stat *sp)
 static int
 xtrlink(const char *name, struct stat *sp, int symbolic)
 {
-	remove(name);
+	struct stat	nst, ost;
+
+	if (lstat(name, &nst) == 0) {
+		if ((nst.st_mode & S_IFMT) == S_IFDIR)
+			rmdir(name);
+		else if (!symbolic && lstat(hbuf.rlinkname, &ost) == 0 &&
+				nst.st_dev == ost.st_dev &&
+				nst.st_ino == ost.st_ino)
+			/* An attempt to hardlink "name" to itself. This
+			 * happens if a file with more than link has been
+			 * stored in the archive more than once under the
+			 * same name. This is odd but the best we can do
+			 * is nothing at all in such a case. */
+			goto good;
+		else
+			unlink(name);
+	}
 	if ((symbolic?symlink:link)(symbolic?hbuf.linkname:hbuf.rlinkname,
 				name) < 0) {
 		if (symbolic)
@@ -1631,7 +1651,7 @@ xtrlink(const char *name, struct stat *sp, int symbolic)
 		edone(1);
 		return -1;
 	}
-	if (vflag)
+good:	if (vflag)
 		fprintf(stderr, "%s %s %s\n", name,
 				symbolic ? "symbolic link to" : "linked to",
 				hbuf.linkname);
@@ -1737,7 +1757,7 @@ putempty(void)
 }
 
 static void
-longt(register struct stat *st, int linkflag)
+longt(struct stat *st, int linkflag)
 {
 	struct tm	*tp;
 	char	buf[20];
@@ -1776,9 +1796,9 @@ static int	m9[] = { 2, STXT, 't', XOTH, 'x', '-' };
 static int	*m[] = { m1, m2, m3, m4, m5, m6, m7, m8, m9};
 
 static void
-pmode(register struct stat *st, int linkflag)
+pmode(struct stat *st, int linkflag)
 {
-	register int **mp;
+	int **mp;
 	int	c;
 
 	switch (linkflag) {
@@ -1806,7 +1826,7 @@ pmode(register struct stat *st, int linkflag)
 static void
 tselect(int *pairp, struct stat *st)
 {
-	register int n, *ap;
+	int n, *ap;
 
 	ap = pairp;
 	n = *ap++;
@@ -1816,9 +1836,9 @@ tselect(int *pairp, struct stat *st)
 }
 
 static int
-checkdir(register char *name, struct stat *sp)
+checkdir(char *name, struct stat *sp)
 {
-	register char *cp;
+	char *cp;
 
 	for (cp = name; *cp; cp++) {
 		if (*cp == '/' && cp > name) {
@@ -1852,7 +1872,7 @@ onsig(int signo)
 }
 
 static void
-tomodes(const char *name, register struct stat *sp)
+tomodes(const char *name, struct stat *sp)
 {
 	const char	*cp;
 	int	mode;
@@ -1901,8 +1921,8 @@ tomodes(const char *name, register struct stat *sp)
 static int
 checksum(int invert)
 {
-	register uint32_t i;
-	register char *cp;
+	uint32_t i;
+	char *cp;
 
 	for (cp = dblock.dbuf.chksum;
 			cp < &dblock.dbuf.chksum[sizeof(dblock.dbuf.chksum)];
@@ -1974,7 +1994,7 @@ done(int n)
 }
 
 static int
-prefix(register const char *s1, register const char *s2)
+prefix(const char *s1, const char *s2)
 {
 	while (*s1)
 		if (*s1++ != *s2++)
@@ -1994,7 +2014,7 @@ lookup(const char *s)
 static off_t
 bsrch(const char *s, int n, off_t l, off_t h)
 {
-	register int i, j;
+	int i, j;
 	char *b;
 	off_t m, m1;
 
@@ -2039,7 +2059,7 @@ loop:
 static int
 cmp(const char *b, const char *s, size_t n)
 {
-	register int i;
+	int i;
 
 	if(b[0] != '\n')
 		abort();
@@ -2128,6 +2148,7 @@ static void
 tseek(int n, int rew)
 {
 	int	fault;
+#ifndef __G__
 	if (tapeblock > 0 && rew) {
 #if defined(__linux__) || defined(__sun) || defined(__FreeBSD__) || \
 	defined(__hpux) || defined(_AIX) || defined(__NetBSD__) || \
@@ -2143,6 +2164,7 @@ tseek(int n, int rew)
 		fault = ioctl(mt, t, a) < 0;
 #endif	/* SVR4.2MP */
 	} else
+#endif
 		fault = lseek(mt, TBLOCK*n, SEEK_CUR) == (off_t)-1;
 	if (fault && rew) {
 		fprintf(stderr, "%s: device seek error\n", progname);
@@ -2227,7 +2249,7 @@ static char *
 nameof(struct header *hp, char *buf)
 {
 	const char	*cp;
-	register char	*bp = buf;
+	char	*bp = buf;
 
 	if (gnuflag <= 0 && hp->prefix[0] != '\0') {
 		cp = hp->prefix;
@@ -2286,7 +2308,7 @@ static char *
 linkof(struct header *hp, char *buf)
 {
 	const char	*cp;
-	register char	*bp = buf;
+	char	*bp = buf;
 
 
 	cp = hp->linkname;
@@ -2334,7 +2356,7 @@ edone(int i)
 static ssize_t
 mtwrite(const void *vdata, size_t sz)
 {
-	register ssize_t	wo, wt = 0;
+	ssize_t	wo, wt = 0;
 	const char	*data = vdata;
 
 	if (volsize && wrtotal >= volsize) {
@@ -2360,7 +2382,7 @@ mtwrite(const void *vdata, size_t sz)
 static ssize_t
 mtread(void *vdata, size_t sz)
 {
-	register ssize_t	ro, rt = 0;
+	ssize_t	ro, rt = 0;
 	char	*data = vdata;
 
 	if (volsize && rdtotal >= volsize) {
@@ -2632,11 +2654,13 @@ domtstat(void)
 			}
 #endif	/* BLKBSZGET */
 		}
+#ifndef __G__
 	} else if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
 		struct mtget	mg;
 		if (ioctl(mt, MTIOCGET, &mg) == 0)
 			tapeblock = ((mg.mt_dsreg&MT_ST_BLKSIZE_MASK)
 					>> MT_ST_BLKSIZE_SHIFT);
+#endif
 	}
 #elif defined(__sun)
 	if ((mtstat.st_mode&S_IFMT) == S_IFCHR) {
@@ -2928,10 +2952,11 @@ readexcl(const char *fn)
 static void
 creatfile(void)
 {
-	char	tname[] = "/tmp/tarXXXXXX";
+	char	tname[PATH_MAX+1];
 
 	if (tfile != NULL)
 		return;
+	settmp(tname, sizeof tname, "%s/tarXXXXXX");
 	if ((tfile = fdopen(mkstemp(tname), "w")) == NULL) {
 		fprintf(stderr, "%s: cannot create temporary file (%s)\n",
 			progname, tname);
@@ -3146,4 +3171,15 @@ utf8(const char *cp)
 		}
 	}
 	return 1;
+}
+
+static void
+settmp(char *tbuf, size_t len, const char *template)
+{
+	char	*tmpdir;
+
+	if ((tmpdir = getenv("TMPDIR")) == NULL)
+		tmpdir = "/tmp";
+	if (snprintf(tbuf, len, template, tmpdir) >= len)
+		snprintf(tbuf, len, template, "/tmp");
 }

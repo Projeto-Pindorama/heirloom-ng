@@ -1,7 +1,3 @@
-# Build without paralelism, since this Makefile doesn't support paralelism so
-# well.
-MAKEFLAGS := -j1
-
 all: awk awk_sus awk_su3
 
 OBJ = awk.lx.o b.o lib.o main.o parse.o proctab.o run.o tran.o
@@ -20,6 +16,10 @@ awk.g.c: awk.g.y
 	mv -f y.tab.c awk.g.c
 	(echo '1i'; echo '#include <inttypes.h>'; echo '.'; echo 'w';) | \
 		ed -s y.tab.h
+
+y.tab.h: awk.g.c
+
+.NO_PARALLEL: awk.g.c awk.g.2001.c
 
 awk.g.2001.c: awk.g.2001.y awk.g.c
 	$(YACC) awk.g.2001.y

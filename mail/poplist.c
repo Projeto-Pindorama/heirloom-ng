@@ -17,7 +17,7 @@
  * Remove an entry from its linked list and free any malloc'd memory..
  */
 void 
-poplist(register int hdrtype, register int where)
+poplist(int hdrtype, int where)
 {
 	struct	hdrs	*hdr2rm, *cont2rm, *nextcont;
 

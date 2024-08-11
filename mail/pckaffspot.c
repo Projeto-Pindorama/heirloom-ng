@@ -25,7 +25,7 @@ int
 pckaffspot(void)
 {
 	static char pn[] = "pckaffspot";
-	register int	rc = 0;
+	int	rc = 0;
 
 	if (hdrlines[H_AFWDFROM].head == (struct hdrs *)NULL) {
 		rc = -1;

@@ -307,12 +307,23 @@ doutmp(int action, struct layer *l)
 	struct passwd *pwd = getpwuid(myuid);
 	struct utmpx utx;
 	char *id;
+	/* 
+	 * In short, it's not guaranteed that (struct utmpx).ut_tv
+	 * will be of type timeval, so it's necessary to create a
+	 * temporary struct of the correct type for using with
+	 * gettimeofday(2) and then assigning its values with
+	 * ut_tv.
+	 */
+	struct timeval tv_tmp;
 
 	memset(&utx, 0, sizeof utx);
+	memset(&tv_tmp, 0, sizeof tv_tmp);
 	strncpy(utx.ut_line, l->l_line + 5, sizeof utx.ut_line);
 	strncpy(utx.ut_user, pwd->pw_name, sizeof utx.ut_user);
 	utx.ut_pid = l->l_pid;
-	gettimeofday(&utx.ut_tv, NULL);
+	gettimeofday(&tv_tmp, NULL);
+	utx.ut_tv.tv_sec = tv_tmp.tv_sec;
+	utx.ut_tv.tv_usec = tv_tmp.tv_usec;
 	if ((id = strrchr(l->l_line, '/')) != NULL)
 		strncpy(utx.ut_id, id, sizeof utx.ut_id);
 	switch (action) {
