@@ -63,7 +63,7 @@ static void	RUBOUT(int);
 int
 main(int argc, char **argv)
 {
-	register int n, nw, inp, outp = -1;
+	int n, nw, inp, outp = -1;
 
 	progname = basename(argv[0]);
 	if (argc <=1 || argc > 3) {

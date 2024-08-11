@@ -8,7 +8,9 @@
  */
 
 #include <ctype.h>
+#include <math.h>
 #include <pfmt.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,10 +28,10 @@ static char *progname;
  * Make flags public since it will
  * be used by buildfmt().
  */
-static int fPicture = 0,
-	   fWadding = 0;
+static bool fPicture = false,
+	    fWadding = false;
 static char *picstr = "";
-static float start = 0,
+static double start = 0,
 	     stop = 0,
 	     step = 0;
 
@@ -43,21 +45,27 @@ void main(int argc, char *argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
-	register float count = 0;
+	register double count = 0;
 	char *format = "",
-		*separator = "";
-	
-	while ( (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
+	     *separator = "";
+
+	/* 
+	 * Stop searching for arguments in the moment
+	 * it finds a digit, also stop increasing
+	 * 'optind'.
+	 */
+	while (argv[optind] != NULL && !isdigit(argv[optind][1])
+		&& (option = getopt(argc, argv, ":p:s:w")) != -1 ) {
 		switch (option) {
 			case 'p':
-				fPicture = 1;
+				fPicture = true;
 				picstr = optarg;
 				break;
 			case 's':
 				separator = optarg;
 				break;
 			case 'w':
-				fWadding = 1;
+				fWadding = true;
 				break;
 			default:
 				usage();
@@ -65,7 +73,7 @@ void main(int argc, char *argv[]) {
 	}
 	argc -= optind;
 	argv += optind;
-	
+
 	if ( argc < 1 ) {
 		usage();
 	}
@@ -78,24 +86,33 @@ void main(int argc, char *argv[]) {
 	 * If argc is 3, stop will be defined as the third, start as the first and
 	 * step as the second.
 	 */
-	stop = ( argc == 1 )
+	stop = (argc == 1)
 		? atof(argv[0])
-		: ( argc == 3 )
+		: (argc == 3)
 		? atof(argv[2])
 		: atof(argv[1]);
-	start = ( argc == 1 )
+	start = (argc == 1)
 		? 1
 		: atof(argv[0]);
-	step = ( argc < 3 )
+	step = (argc < 3)
 		? 1
 		: atof(argv[1]);
-	
+
 	if (step == 0) {
 		pfmt(stderr, MM_ERROR,
 			"%s: increment can not be zero.\n",
 			progname);
 		exit(1);
 	}
+
+	/* 
+	 * If the stop is smaller than
+	 * the start, it will be
+	 * decreasing, not increasing.
+	 */
+	step = (stop < start)
+		? (step * (-1))
+		: step;
 
 	format = buildfmt();
 
@@ -104,12 +121,16 @@ void main(int argc, char *argv[]) {
 			? "\n"
 			: separator;
 
-	for (count = start; count <= stop; count += step) {
+	for (count = start; ((0 < step) ? count <= stop : count >= stop);
+							count += step) {
 		/* 
-		 * If the count has come to the end or if the next sum is
-		 * larger than stop, default separator back to '\n'.
+		 * If the count has come to the end or if the next sum
+		 * is larger than stop, default separator back to '\n'.
+		 * Do not be preoccupied about performance, the abs(3)
+		 * family of functions is optimized at new processors
+		 * and the overhead isn't so large anyway.
 		 */
-		separator = (count == stop || (count + step) > stop)
+		separator = (fabs(count + step) > fabs(stop))
 				? "\n" : separator;
 		printf(format, count, separator);
 	}
@@ -121,7 +142,7 @@ void main(int argc, char *argv[]) {
 char *buildfmt(void) {
 	char *picture = "",
 	     *fmtbuf = ""; 
-	
+
 	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
 			"array of %d elements, each one "
@@ -135,11 +156,11 @@ char *buildfmt(void) {
 		snprintf(fmtbuf, sizeof(fmtbuf), "%s", "%g%s");
 		return fmtbuf;
 	} 
-	
+
 	if (fPicture || fWadding) { 
 		long int precision = 0;
 		unsigned long int natural = 0;
-			      
+
 		char strnum[32] = "",
 			/* 
 			 * Unlike the default,
@@ -176,7 +197,9 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			snprintf(strnum, sizeof(strnum), "%.0f", stop);
+			snprintf(strnum, sizeof(strnum), "%.0f", ((start < stop || 0 < start)
+									? stop
+									: start));
 		} else {
 			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
@@ -192,7 +215,7 @@ char *buildfmt(void) {
 		if (!fPicture && fWadding) {
 			free(picture);
 		}
-	
+
 		/* 
 		 * If there are decimal values, add it to
 		 * "natural" plus one, since "natural" in
@@ -209,7 +232,7 @@ char *buildfmt(void) {
 		snprintf(buf, sizeof(buf), "%%%d%ld.%ldf%%s",
 					0, natural, precision);
 		fmtbuf = strdup(buf);
-		
+
 		return fmtbuf;
 	}
 
@@ -219,6 +242,8 @@ char *buildfmt(void) {
 char *getlgstr(void) {
 	char strflt[32] = "",
 	     *lgstnum = "";
+	double fstn = 0.0F,
+	       stepn = 0.0F;
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -239,10 +264,16 @@ char *getlgstr(void) {
 	 * big enough to be converted by
 	 * 'printf("%g", ...)' into scientific notation,
 	 * which can not be parsed by afterdecsep().
+	 * Also have a metric if the start isn't actually
+	 * the stop (sequence done in decrescent order).
 	 */
-	snprintf(strflt, sizeof(strflt), "%g", (start - step));
+	fstn = (start < stop) 
+		? fabs(start)
+		: fabs(stop);
+	stepn = fabs(step);
+	snprintf(strflt, sizeof(strflt), "%g", (fstn - stepn));
 	lgstnum = strdup(strflt);
-		
+
 	return lgstnum;
 }
 
@@ -263,11 +294,15 @@ int afterdecsep(char *s) {
 	 */
 	if (strchr(s, '.') != NULL) {
 		for (c = 0; s[c]; c++) {
-		       if (s[c] == '.') {
-				fracpart = &s[(c + 1)];
-				s[c] = '\0';
-				break;
-		       }
+			switch (s[c]) {
+				case '.':
+					fracpart = &s[(c + 1)];
+					s[c] = '\0';
+					break;
+				default:
+					continue;
+			}
+			break;
 		}
 		fraclen = strlen(fracpart);
 	}

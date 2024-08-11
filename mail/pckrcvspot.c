@@ -24,7 +24,7 @@ int
 pckrcvspot(void)
 {
 	static char pn[] = "pckrcvspot";
-	register int	rc = 0;
+	int	rc = 0;
 
 	if (hdrlines[H_RECEIVED].head == (struct hdrs *)NULL) {
 		rc = -1;

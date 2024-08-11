@@ -90,8 +90,7 @@ Lets suppose you need to check if your system
 is connected to the Internet and that it can
 successfully connect to a server in less than
 5 seconds, you can use timeout along with nc(1):
-.LP
-.RS
+.RS 2
 .sp
 .nf
 % timeout -p 5 nc -vz pindorama.dob.jp 80
@@ -124,13 +123,13 @@ An abideable approach for solving this problem
 could be an small check/wrapper for the
 timeout command in case of utilizing the \-f or
 the \-p options in its long format.
-.RS
+.RS 2
 .sp
 .nf
 if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220; then
-     timeout \-p \-k\fItime\fR \fItime\fR \fIcommand\fR
+     timeout \-p \-k\fI$time\fR \fI$time\fR \fI"$command"\fR
 else
-     timeout \-\-preserve\-duration \-\-kill\-after \fItime\fR \fItime\fR \fIcommand\fR
+     timeout \-\-preserve\-duration \-\-kill\-after \fI$time\fR \fI$time\fR \fI"$command"\fR
 fi
 .fi
 .sp

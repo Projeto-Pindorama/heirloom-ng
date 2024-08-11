@@ -126,7 +126,7 @@ static int
 e3(void)
 {
 	int	p1;
-	register unsigned char	*a;
+	unsigned char	*a;
 	unsigned char	*p2;
 	long long	ll_1, ll_2;
 
