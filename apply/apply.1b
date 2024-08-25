@@ -148,7 +148,7 @@ bottles of beer", taking advantage
 of the fact that
 .I apply
 calls \fBsh(1)\fR per default:
-.RS
+.RS 2
 .nf
 .eo
 % apply "s=''; [ %1 -ne 1 ] && s='s'; \
@@ -163,7 +163,6 @@ fi" `seq 99 -1 1`
 .ec
 .fi
 .RE
-
 .SH "ENVIRONMENT VARIABLES"
 .TP
 .B SHELL

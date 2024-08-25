@@ -1,10 +1,13 @@
 # Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
 # SPDX-Licence-Identifier: Zlib
+#
+# Honorable mention to Nosomy for help given in the
+# AWK section of this script.
 
 fGlob=false
 main() {
 	while getopts ':f' c; do
-		case $c in
+		case "$c" in
 			f) fGlob=true
 				break ;;
 			\?) # ignore
@@ -25,6 +28,10 @@ main() {
 			break ;;
 	esac
 
+	# Set echo as a boilerplate for
+	# printq() if $fGlob is true.
+	$fGlob && echo() { printq "$@"; }
+
 	for input do
 		question "$input" || break
 	done
@@ -39,7 +46,7 @@ question() {
 	# having headaches with std.in.
 	read r </dev/tty
 	case "$r" in
-		'y') puts "$1"
+		'y') echo "$1"
 			break ;;
 		'q') ec=1
 			break ;;
@@ -50,9 +57,8 @@ question() {
 	return $ec
 }
 
-puts() {
-	if [ "x$fGlob" \= "xtrue" ]; then
-		echo "$@" | nawk -v RS='' \
+printq() {
+	printf '%s' "$@" | nawk -v RS='' \
 		'BEGIN {
 			# Partial escape table,
 			# not implemented 1-per-1
@@ -80,9 +86,6 @@ puts() {
 			}
 			printf("'\''%s'\''\n", $0);
 		}'
-	else
-		echo "$@"
-	fi
 }
 
 eprintf() {

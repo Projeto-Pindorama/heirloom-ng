@@ -21,11 +21,11 @@
  * istext(line, size) - check for text characters
  */
 int 
-istext(register unsigned char *s, int size)
+istext(unsigned char *s, int size)
 {
-	register unsigned char *ep;
+	unsigned char *ep;
 	wchar_t	wc;
-	register int c;
+	int c;
 	int	n;
 
 	for (ep = s; ep < &s[size]; ep += n) {

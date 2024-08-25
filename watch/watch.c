@@ -19,15 +19,14 @@
 #include <curses.h>
 #include <errno.h>
 #include <pfmt.h>
-#include <prerror.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/utsname.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <wait.h>
 
 static char *progname;
 int main(int argc, char *argv[]);
@@ -60,7 +59,9 @@ int main(int argc, char *argv[]) {
 	struct tm *timeinfo;
 	struct utsname u;
 	if (uname(&u) == -1) {
-		prerror(errno);
+		pfmt(stderr, MM_ERROR,
+			"%s: failed to get system info: %s",
+			progname, strerror(errno));
 		exit(-1);
 	}
 
@@ -77,6 +78,7 @@ int main(int argc, char *argv[]) {
 
 			size_t point = 0;
 			for (; arg[point]; point++) {
+				/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
 				if (arg[point] == '.' || arg[point] == ',') {
 					arg[point] = '\0';
 					afterpoint = &arg[point + 1];
@@ -137,8 +139,9 @@ int main(int argc, char *argv[]) {
 	 * copying using a for loop.
 	 */
 	if ((commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL) {
-		/* Should I use prerror? */
-		perror("couldn't callocate");
+		pfmt(stderr, MM_ERROR,
+			"%s: couldn't calloc(): %s",
+			progname, strerror(errno));
 		exit(-1);
 	}
 	
@@ -152,6 +155,7 @@ int main(int argc, char *argv[]) {
 	 */
 	newterm(getenv("TERM"), stdout, stdin);
 	start_color();
+	use_default_colors();
 	init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
 	/*
@@ -212,7 +216,9 @@ int main(int argc, char *argv[]) {
 			 * C library implementation having a faulty snprintf().
 			 */
 			if (left_len <= 0 || right_len <= 0) {
-				perror("please try to execute it without the information header.\n");
+				pfmt(stderr, MM_ERROR,
+					"%s: please try to execute it without the information header.\n",
+					progname);
 				exit(255);
 			}
 		
@@ -245,7 +251,9 @@ int main(int argc, char *argv[]) {
 
 		if ((exec_pid = fork()) == 0) {
 			if ((execvp(commandv[0], commandv)) == -1) {
-				prerror(errno);
+				pfmt(stderr, MM_ERROR,
+					"%s: couldn't exec(): %s\n",
+					progname, strerror(errno));
 				exit(-1);
 			}
 		}

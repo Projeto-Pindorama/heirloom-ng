@@ -143,7 +143,7 @@ ib_seek.o: iblok.h
 iblok.o: iblok.h
 oblok.o: oblok.h
 sfile.o: sfile.h
-basename.o: basename.h
+basename.o: strmenta.h
 getdir.o: getdir.h
 regexpr.o: regexpr.h regexp.h
 pfmt.o: pfmt.h

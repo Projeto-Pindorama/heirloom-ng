@@ -6,7 +6,7 @@ INSTALL=/usr/ucb/install
 	cat $< > $@
 	chmod 755 $@
 
-all: math hanoi sokoban
+all: math hanoi sokoban sedtris
 
 install: all
 	$(INSTALL) -c math $(DST)/math
@@ -14,4 +14,4 @@ install: all
 	$(INSTALL) -c sokoban $(DST)/sokoban
 
 clean:
-	rm -f math hanoi sokoban core log *~
+	rm -f math hanoi sokoban sedtris core log *~

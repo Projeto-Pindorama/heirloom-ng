@@ -54,7 +54,7 @@ static void growbuf(char **, int *, int, char **, const char *);
 void
 run(void)
 {
-	register int i;
+	int i;
 
 	execute(winner);
 
@@ -66,7 +66,7 @@ run(void)
 
 obj execute(node *u)
 {
-	register obj (*proc)(node **, int);
+	obj (*proc)(node **, int);
 	obj x;
 	node *a;
 
@@ -670,7 +670,7 @@ obj split(node **a,int nnn)
 {
 	obj x;
 	cell *ap;
-	register char *s, *fs;
+	char *s, *fs;
 	char *t, temp, num[25];
 	wchar_t sep, wc;
 	int n, m;
@@ -886,7 +886,7 @@ obj fncn(node **a,int n)
 
 obj print(node **a,int n)
 {
-	register node *x;
+	node *x;
 	obj y;
 	char	*p, *q, *sp;
 	static char *s;
@@ -940,7 +940,7 @@ obj nodetoobj(node *a)
 void
 redirprint(const char *s, int a, node *b)
 {
-	register int i;
+	int i;
 	obj x;
 
 	x = execute(b);

@@ -20,6 +20,9 @@
 #include	<blank.h>
 #include	"tabspec.h"
 
+/* globals moved here from tabspec.h to prevent duplicated definitions */
+enum _taberrno taberrno;
+
 static const struct {
 	const char	*c_nam;
 	const char	*c_str;

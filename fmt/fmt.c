@@ -92,8 +92,8 @@ static void	growobuf(void);
 int
 main(int argc, char **argv)
 {
-	register struct iblok *fi;
-	register int errs = 0, i;
+	struct iblok *fi;
+	int errs = 0, i;
 
 	progname = basename(argv[0]);
 	setlocale(LC_CTYPE, "");
@@ -206,9 +206,9 @@ static wchar_t	*canonb;
 static void
 fmt(struct iblok *fi)
 {
-	register int p, p2;
+	int p, p2;
 	wint_t c;
-	register long col;
+	long col;
 	char	*mp;
 	int m;
 	char	b;
@@ -299,10 +299,10 @@ fmt(struct iblok *fi)
 static void
 prefix(const wchar_t *line)
 {
-	register const wchar_t *cp;
-	register const char **hp;
-	register long np;
-	register int h;
+	const wchar_t *cp;
+	const char **hp;
+	long np;
+	int h;
 	static int	nlpp;	/* number of lines on current paragraph */
 
 	if (wcslen(line) == 0) {
@@ -356,8 +356,8 @@ static wchar_t	*word;
 static void
 split(const wchar_t *line)
 {
-	register const wchar_t *cp;
-	register wchar_t *cp2;
+	const wchar_t *cp;
+	wchar_t *cp2;
 
 	cp = line;
 	while (*cp) {
@@ -426,8 +426,8 @@ setout(void)
 static void
 pack(const wchar_t *word)
 {
-	register const wchar_t *cp;
-	register long s, t;
+	const wchar_t *cp;
+	long s, t;
 
 	if (outp == NULL)
 		leadin();
@@ -483,8 +483,8 @@ oflush(void)
 static void
 tabulate(wchar_t *line)
 {
-	register wchar_t *cp;
-	register int b, t;
+	wchar_t *cp;
+	int b, t;
 
 	/*
 	 * Toss trailing blanks in the output line.
@@ -534,7 +534,7 @@ tabulate(wchar_t *line)
 static void
 leadin(void)
 {
-	register long b;
+	long b;
 
 	if (outbuf == 0)
 		growobuf();
@@ -551,7 +551,7 @@ leadin(void)
  */
 
 static int
-chkhead(register const char *s1, register const wchar_t *s2)
+chkhead(const char *s1, const wchar_t *s2)
 {
 
 	while (*s1 && *s1++ == *s2++);
