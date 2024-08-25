@@ -211,7 +211,7 @@ short int magiac(void) {
 	 * Count the number of magic characters
 	 * on the command string.
 	 */
-	for (c = 0; cmd[c]; c++) {
+	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
 			if (!isalpha(cmd[(c + 1)]))
