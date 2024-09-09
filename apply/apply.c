@@ -214,9 +214,13 @@ short int magiac(void) {
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
-			if (!isalpha(cmd[(c + 1)]))
-				m = (cmd[(c + 1)] - '0');
-				if (m > maxms) maxms = m;
+			switch (isalpha(cmd[(c + 1)])) {
+				case 0: /* Integer */
+					m = (cmd[(c + 1)] - '0');
+					if (m > maxms) maxms = m;
+				default:
+					break;
+			}
 			c++;
 		}
 	}
