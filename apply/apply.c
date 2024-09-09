@@ -27,17 +27,16 @@
 #define ENOTNO         (SHRT_MIN >> 11)
 
 static char *progname;
+static bool enamo = false;
 static short int mstep = 0,
-	     maxmstep = 0,
 	     magias[10] = { };
-static char magia = '%',
-	    *cmd = "";
+static char magia = '%';
 
 void main(int argc, char *argv[]);
 short int crargs(char *s);
 bool ncontains(short int array[], int elem, int dsize);
-short int magiac(void);
-char *buildcmd(char *arg[], int carg);
+short int magiac(char cmd[]);
+char *buildcmd(char cmd[], char *arg[], int carg);
 int eXec(const char command[]);
 void usage(void);
 
@@ -45,6 +44,7 @@ void main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
+	short int maxmstep = 0;
 	unsigned int opt = 0,
 		     c = 0,
 		     i = 0;
@@ -52,6 +52,7 @@ void main(int argc, char *argv[]) {
 	    eoargs = 0,
 	    estatus = 0;
 	char **arg,
+	     *cmd = "",
 	     *cmdl = "";
 	bool fVerbose = false,
 	     fDry = false,
@@ -154,7 +155,7 @@ void main(int argc, char *argv[]) {
 	 */
 	memset(magias, -1, (10 * (sizeof(short int))));
 
-	maxmstep = magiac();
+	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
 	 * number, set it as one. */
 	mstep = (maxmstep == 0)
@@ -162,6 +163,16 @@ void main(int argc, char *argv[]) {
 			? 1
 			: mstep
 		: maxmstep;
+	/*
+	 * Case in which there's not a
+	 * magical character on the string.
+	 * Just a clearer expression than
+	 * checking if maxmstep is
+	 * different from zero.
+	 */
+	enamo = (maxmstep != 0)
+		? false
+		: true;
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
@@ -171,7 +182,7 @@ void main(int argc, char *argv[]) {
 		}
 
 		/* Set command to be run. */
-		cmdl = buildcmd(arg, i);
+		cmdl = buildcmd(cmd, arg, i);
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry) estatus = eXec(cmdl);
 	}
@@ -219,7 +230,7 @@ bool ncontains(short int array[], int elem, int dsize) {
  * characters on the command
  * string.
  */
-short int magiac(void) {
+short int magiac(char cmd[]) {
 	/*
 	 * 'm' is the magic number found,
 	 * 'maxms' is the largest magic
@@ -230,10 +241,6 @@ short int magiac(void) {
 	unsigned int c = 0;
 	char ch = '\0';
 
-	/*
-	 * Count the number of magic characters
-	 * on the command string.
-	 */
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
@@ -241,9 +248,9 @@ short int magiac(void) {
 				case 0: /* Integer */
 					m = (cmd[(c + 1)] - '0');
 
-					/* Store magic character location */
+					/* Store magic character location. */
 					if (0 < m || m <= 9) magias[m] = c;
-					/* Set largest argument */
+					/* Set largest argument. */
 					if (m > maxms) maxms = m;
 				default:
 					break;
@@ -255,7 +262,7 @@ short int magiac(void) {
 	return maxms;
 }
 
-char *buildcmd(char *arg[], int carg) {
+char *buildcmd(char cmd[], char *arg[], int carg) {
 	unsigned int c = 0,
 		 l = 0;
 	int m = 0,
@@ -280,34 +287,34 @@ char *buildcmd(char *arg[], int carg) {
 	cmdbufp = cmdbuf;
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
-		switch (ncontains(magias, c, 10)) {
+		switch (enamo) {
 			case true:
-				m = (cmd[(c + 1)] - '0');
-				n = (carg + (m - 1));
-				c++;
-				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-				continue;
-			default:
-				*cmdbufp++ = ch;
+				/*
+				 * Enamorated: payload for cases
+				 * where a magic character in the
+				 * string is not present.
+				 * In this case, it will just copy
+				 * the string verbatim and append
+				 * arguments later as per 'mstep'.
+				 */
 				break;
+			default:
+				switch (ncontains(magias, c, 10)) {
+					case true:
+						m = (cmd[(c + 1)] - '0');
+						n = (carg + (m - 1));
+						c++;
+						cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
+						continue;
+					default:
+						break;
+				}
 		}
+		*cmdbufp++ = ch;
 	}
 
-	/*
-	 * Enamorated: payload for cases
-	 * where a magic character in the
-	 * string is not present; in this
-	 * case, just append what 'mstep'
-	 * says.
-	 */
-	switch (maxmstep) {
-		/*
-		 * This is checked if the
-		 * 'maxmstep', which indicates
-		 * the maximum magic number on
-		 * the string, is zero.
-		 */
-		case 0:
+	switch (enamo) {
+		case true:
 			short int i = 0;
 			for (i = 0; i < mstep; i++) {
 				n = (carg + i);
