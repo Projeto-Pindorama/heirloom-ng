@@ -263,11 +263,9 @@ short int magiac(char cmd[]) {
 }
 
 char *buildcmd(char cmd[], char *arg[], int carg) {
-	unsigned int c = 0,
-		 l = 0;
-	int m = 0,
-	    n = 0,
-	    cmdlen = 0;
+	unsigned short int n = 0;
+	unsigned int l = 0;
+	int cmdlen = 0;
 	char ch = '\0',
 	     *cmdbuf = "",
 	     *cmdbufp = "";
@@ -285,43 +283,44 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	/* Allocate the command buffer. */
 	cmdbuf = calloc((size_t)(cmdlen + 1), sizeof(char *));
 	cmdbufp = cmdbuf;
-	for (c = 0; cmd[c] != '\0'; c++) {
-		ch = cmd[c];
-		switch (enamo) {
-			case true:
-				/*
-				 * Enamorated: payload for cases
-				 * where a magic character in the
-				 * string is not present.
-				 * In this case, it will just copy
-				 * the string verbatim and append
-				 * arguments later as per 'mstep'.
-				 */
-				break;
-			default:
-				switch (ncontains(magias, c, 10)) {
-					case true:
-						m = (cmd[(c + 1)] - '0');
-						n = (carg + (m - 1));
-						c++;
-						cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-						continue;
-					default:
-						break;
-				}
-		}
-		*cmdbufp++ = ch;
-	}
-
 	switch (enamo) {
 		case true:
-			short int i = 0;
+			/*
+			 * Enamorated: payload for cases
+			 * where a magic character in the
+			 * string is not present.
+			 * In this case, it will just copy
+			 * the string verbatim and append
+			 * arguments later as per 'mstep'.
+			 */
+			unsigned short int i = 0;
+
+			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
 			for (i = 0; i < mstep; i++) {
 				n = (carg + i);
 				cmdbufp += sprintf(cmdbufp, "%c%s",
 						' ', arg[n]);
 			}
+			break;
 		default:
+			unsigned short int m = 0;
+			unsigned int c = 0;
+
+			for (c = 0; cmd[c] != '\0'; c++) {
+				ch = cmd[c];
+				switch (ncontains(magias, c, 10)) {
+					case true:
+						m = (cmd[(c + 1)] - '0');
+						n = (carg + (m - 1));
+						c++;
+						cmdbufp += sprintf(cmdbufp,
+								"%s", arg[n]);
+						continue;
+					default:
+						*cmdbufp++ = ch;
+						break;
+				}
+			}
 			break;
 	}
 
