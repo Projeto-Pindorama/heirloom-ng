@@ -27,12 +27,15 @@
 #define ENOTNO         (SHRT_MIN >> 11)
 
 static char *progname;
-static short int mstep = 0;
+static short int mstep = 0,
+	     maxmstep = 0,
+	     magias[9] = { };
 static char magia = '%',
 	    *cmd = "";
 
 void main(int argc, char *argv[]);
 short int crargs(char *s);
+bool ncontains(short int array[], int elem, int dsize);
 short int magiac(void);
 char *buildcmd(char *arg[], int carg);
 int eXec(const char command[]);
@@ -45,7 +48,7 @@ void main(int argc, char *argv[]) {
 	unsigned int opt = 0,
 		     c = 0,
 		     i = 0;
-	short int maxmstep = 0;
+/*	short int maxmstep = 0; */
 	int cmdc = 0,
 	    eoargs = 0,
 	    estatus = 0;
@@ -144,6 +147,14 @@ void main(int argc, char *argv[]) {
 	cmd = strdup(arg[0]);
 	shift(arg, cmdc);
 
+	/* 
+	 * Initialize the magias[] array
+	 * with invalid magic numbers, so
+	 * we will avoid false-positives
+	 * for c=0.
+	 */	
+	memset(magias, -1, (9 * (sizeof(short int))));
+
 	maxmstep = magiac();
 	/* If nothing defined a magic
 	 * number, set it as one. */
@@ -191,6 +202,19 @@ short int crargs(char *s) {
 	return (short int)n;
 }
 
+/* 
+ * Check if an integer array
+ * contains an integer.
+ */
+bool ncontains(short int array[], int elem, int dsize) {
+	int asize = dsize;
+
+	for (; asize--;) {
+		if (array[asize] == elem) return true;
+	}
+	return false;
+}
+
 /*
  * Count the number of magic
  * characters on the command
@@ -217,7 +241,12 @@ short int magiac(void) {
 			switch (isalpha(cmd[(c + 1)])) {
 				case 0: /* Integer */
 					m = (cmd[(c + 1)] - '0');
+
+					/* Store magic character location */
+					if (0 < m || m <= 9) magias[m] = c;
+					/* Set largest argument */
 					if (m > maxms) maxms = m;
+
 				default:
 					break;
 			}
@@ -254,23 +283,32 @@ char *buildcmd(char *arg[], int carg) {
 	cmdbufp = cmdbuf;
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
-		if (ch == magia) {
-			m = (cmd[(c + 1)] - '0');
-			n = (carg + (m - 1));
-			c++;
-			if (m <= 0 || 9 < m) {
-				/* It will be doing the reverse of
-				 * 'm' per adding '0'. */
-				cmdbufp += sprintf(cmdbufp, "%c%c",
-						ch, (m + '0'));
-				continue;
-			} else {
+		switch (ncontains(magias, c, 9)) {
+			case true:
+				m = (cmd[(c + 1)] - '0');
+				n = (carg + (m - 1));
+				c++;
 				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-				enamo = true;
-			}
-		} else {
-			*cmdbufp++ = ch;
+			/*	enamo = true; */
+				continue;
+			default:
+				*cmdbufp++ = ch;
+				break;
 		}
+
+/*		ch = cmd[c]; */
+/* 		if (ch == magia) { */
+/* 			m = (cmd[(c + 1)] - '0'); */
+/* 			n = (carg + (m - 1)); */
+/* 			c++; */
+/* 			if (m <= 0 || 9 < m) { */
+/* 			} else { */
+/* 				cmdbufp += sprintf(cmdbufp, "%s", arg[n]); */
+/* 				enamo = true; */
+/* 			} */
+/* 		} else { */
+/* 			*cmdbufp++ = ch; */
+/* 		} */
 	}
 
 	/*
@@ -278,7 +316,10 @@ char *buildcmd(char *arg[], int carg) {
 	 * in the string is not present. It can be
 	 * checked if 'enamo' is false.
 	 */
-	if (mstep != 0 && !enamo) {
+/*	if (mstep != 0 && !enamo) { */
+	/* Enamorated: it has no magic number;
+	 * just append what mstep says. */
+	if (!maxmstep) {
 		short int i = 0;
 		for (i = 0; i < mstep; i++) {
 			n = (carg + i);
