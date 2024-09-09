@@ -1,7 +1,7 @@
 all: apply pick
 
 apply.o: apply.c
-	$(CC) $(CFLAGS2) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -std=c99 -c apply.c 
+	$(CC) $(CFLAGS2) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -c apply.c 
 
 apply: apply.o
 	$(LD) $(LDFLAGS) apply.o $(LIBS) $(LCOMMON) -o apply

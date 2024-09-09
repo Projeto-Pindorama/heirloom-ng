@@ -263,8 +263,11 @@ short int magiac(char cmd[]) {
 }
 
 char *buildcmd(char cmd[], char *arg[], int carg) {
-	unsigned short int n = 0;
-	unsigned int l = 0;
+	unsigned short int i = 0,
+		       m = 0,
+		       n = 0;
+	unsigned int c = 0,
+		     l = 0;
 	int cmdlen = 0;
 	char ch = '\0',
 	     *cmdbuf = "",
@@ -290,12 +293,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			 * where a magic character in the
 			 * string is not present.
 			 * In this case, it will just copy
-			 * the string verbatim and append
-			 * arguments later as per 'mstep'.
+			 * the string verbatim and then
+			 * amend arguments as per 'mstep'.
 			 */
-			unsigned short int i = 0;
-
-			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
+			cmdbufp = stpncpy(cmdbufp, cmd, (size_t)cmdlen);
 			for (i = 0; i < mstep; i++) {
 				n = (carg + i);
 				cmdbufp += sprintf(cmdbufp, "%c%s",
@@ -303,9 +304,6 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			}
 			break;
 		default:
-			unsigned short int m = 0;
-			unsigned int c = 0;
-
 			for (c = 0; cmd[c] != '\0'; c++) {
 				ch = cmd[c];
 				switch (ncontains(magias, c, 10)) {
