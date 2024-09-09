@@ -249,7 +249,8 @@ short int magiac(char cmd[]) {
 					m = (cmd[(c + 1)] - '0');
 
 					/* Store magic character location. */
-					if (0 < m || m <= 9) magias[m] = c;
+					magias[m] = c;
+
 					/* Set largest argument. */
 					if (m > maxms) maxms = m;
 				default:
