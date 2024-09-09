@@ -29,7 +29,7 @@
 static char *progname;
 static short int mstep = 0,
 	     maxmstep = 0,
-	     magias[9] = { };
+	     magias[10] = { };
 static char magia = '%',
 	    *cmd = "";
 
@@ -48,7 +48,6 @@ void main(int argc, char *argv[]) {
 	unsigned int opt = 0,
 		     c = 0,
 		     i = 0;
-/*	short int maxmstep = 0; */
 	int cmdc = 0,
 	    eoargs = 0,
 	    estatus = 0;
@@ -147,18 +146,18 @@ void main(int argc, char *argv[]) {
 	cmd = strdup(arg[0]);
 	shift(arg, cmdc);
 
-	/* 
+	/*
 	 * Initialize the magias[] array
 	 * with invalid magic numbers, so
 	 * we will avoid false-positives
 	 * for c=0.
-	 */	
-	memset(magias, -1, (9 * (sizeof(short int))));
+	 */
+	memset(magias, -1, (10 * (sizeof(short int))));
 
 	maxmstep = magiac();
 	/* If nothing defined a magic
 	 * number, set it as one. */
-	mstep = (maxmstep == 0) 
+	mstep = (maxmstep == 0)
 		? (mstep == 0 && !fMagia)
 			? 1
 			: mstep
@@ -202,9 +201,9 @@ short int crargs(char *s) {
 	return (short int)n;
 }
 
-/* 
+/*
  * Check if an integer array
- * contains an integer.
+ * contains a value.
  */
 bool ncontains(short int array[], int elem, int dsize) {
 	int asize = dsize;
@@ -246,7 +245,6 @@ short int magiac(void) {
 					if (0 < m || m <= 9) magias[m] = c;
 					/* Set largest argument */
 					if (m > maxms) maxms = m;
-
 				default:
 					break;
 			}
@@ -266,7 +264,6 @@ char *buildcmd(char *arg[], int carg) {
 	char ch = '\0',
 	     *cmdbuf = "",
 	     *cmdbufp = "";
-	bool enamo = false;
 
 	/*
 	 * Count the actual size needed
@@ -283,50 +280,44 @@ char *buildcmd(char *arg[], int carg) {
 	cmdbufp = cmdbuf;
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
-		switch (ncontains(magias, c, 9)) {
+		switch (ncontains(magias, c, 10)) {
 			case true:
 				m = (cmd[(c + 1)] - '0');
 				n = (carg + (m - 1));
 				c++;
 				cmdbufp += sprintf(cmdbufp, "%s", arg[n]);
-			/*	enamo = true; */
 				continue;
 			default:
 				*cmdbufp++ = ch;
 				break;
 		}
-
-/*		ch = cmd[c]; */
-/* 		if (ch == magia) { */
-/* 			m = (cmd[(c + 1)] - '0'); */
-/* 			n = (carg + (m - 1)); */
-/* 			c++; */
-/* 			if (m <= 0 || 9 < m) { */
-/* 			} else { */
-/* 				cmdbufp += sprintf(cmdbufp, "%s", arg[n]); */
-/* 				enamo = true; */
-/* 			} */
-/* 		} else { */
-/* 			*cmdbufp++ = ch; */
-/* 		} */
 	}
 
 	/*
-	 * Payload for cases where a magic character
-	 * in the string is not present. It can be
-	 * checked if 'enamo' is false.
+	 * Enamorated: payload for cases
+	 * where a magic character in the
+	 * string is not present; in this
+	 * case, just append what 'mstep'
+	 * says.
 	 */
-/*	if (mstep != 0 && !enamo) { */
-	/* Enamorated: it has no magic number;
-	 * just append what mstep says. */
-	if (!maxmstep) {
-		short int i = 0;
-		for (i = 0; i < mstep; i++) {
-			n = (carg + i);
-			cmdbufp += sprintf(cmdbufp, "%c%s",
-					' ', arg[n]);
-		}
+	switch (maxmstep) {
+		/*
+		 * This is checked if the
+		 * 'maxmstep', which indicates
+		 * the maximum magic number on
+		 * the string, is zero.
+		 */
+		case 0:
+			short int i = 0;
+			for (i = 0; i < mstep; i++) {
+				n = (carg + i);
+				cmdbufp += sprintf(cmdbufp, "%c%s",
+						' ', arg[n]);
+			}
+		default:
+			break;
 	}
+
 	/* Close the string. */
 	*cmdbufp = '\0';
 
