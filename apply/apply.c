@@ -267,9 +267,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	unsigned short int i = 0,
 		       m = 0,
 		       n = 0;
-	unsigned int c = 0,
+	unsigned int cmdlen = 0,
+		     arglen = 0,
+		     c = 0,
 		     l = 0;
-	int cmdlen = 0;
 	char ch = '\0',
 	     *cmdbuf = "",
 	     *cmdbufp = "";
@@ -278,14 +279,16 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * Count the actual size needed
 	 * to make the command string.
 	 */
-	for (cmdlen = strlen(cmd), l=0; l < mstep; l++) {
+	cmdlen = strlen(cmd);
+	for (l=0; l < mstep; l++) {
 		n = (carg + l);
-	       	cmdlen += strlen(arg[n]);
+		arglen += strlen(arg[n]);
 		n = 0;
 	}
 
 	/* Allocate the command buffer. */
-	cmdbuf = calloc((size_t)(cmdlen + 1), sizeof(char *));
+	cmdbuf = calloc((size_t)((cmdlen + arglen) + 1),
+			sizeof(char *));
 	cmdbufp = cmdbuf;
 	switch (enamo) {
 		case true:
