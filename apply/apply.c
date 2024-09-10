@@ -9,8 +9,8 @@
 
 #include <ctype.h>
 #include <errno.h>
-#include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,19 +23,19 @@
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
 /* Error codes for crargs(). */
-#define EOUTRANGE      (SHRT_MIN >> 10)
-#define ENOTNO         (SHRT_MIN >> 11)
+#define EOUTRANGE      (INT8_MIN >> 1)
+#define ENOTNO         (INT8_MIN >> 2)
 
 static char *progname;
 static bool enamo = false;
-static short int mstep = 0,
-	     magias[10] = { };
+static int8_t mstep = 0,
+	      magias[10];
 static char magia = '%';
 
 void main(int argc, char *argv[]);
-short int crargs(char *s);
-bool ncontains(short int array[], int elem, int dsize);
-short int magiac(char cmd[]);
+int8_t crargs(char *s);
+bool ncontains(int8_t array[], uint8_t elem, int dsize);
+uint8_t magiac(char cmd[]);
 char *buildcmd(char cmd[], char *arg[], int carg);
 int eXec(const char command[]);
 void usage(void);
@@ -44,7 +44,7 @@ void main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
-	short int maxmstep = 0;
+	uint8_t maxmstep = 0;
 	unsigned int opt = 0,
 		     c = 0,
 		     i = 0;
@@ -153,7 +153,7 @@ void main(int argc, char *argv[]) {
 	 * we will avoid false-positives
 	 * for c=0.
 	 */
-	memset(magias, -1, (10 * (sizeof(short int))));
+	memset(magias, -1, (10 * (sizeof(uint8_t))));
 
 	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
@@ -192,7 +192,7 @@ void main(int argc, char *argv[]) {
 }
 
 /* Parses -# into #, with # being an integer. */
-short int crargs(char *s) {
+int8_t crargs(char *s) {
 	long int n = 0;
 	char *r = "";
 
@@ -209,18 +209,16 @@ short int crargs(char *s) {
 		n = EOUTRANGE;
 	}
 
-	return (short int)n;
+	return (int8_t)n;
 }
 
 /*
  * Check if an integer array
  * contains a value.
  */
-bool ncontains(short int array[], int elem, int dsize) {
-	int asize = dsize;
-
-	for (; asize--;) {
-		if (array[asize] == elem) return true;
+bool ncontains(int8_t array[], uint8_t elem, int dsize) {
+	for (; dsize--;) {
+		if (array[dsize] == elem) return true;
 	}
 	return false;
 }
@@ -230,13 +228,13 @@ bool ncontains(short int array[], int elem, int dsize) {
  * characters on the command
  * string.
  */
-short int magiac(char cmd[]) {
+uint8_t magiac(char cmd[]) {
 	/*
 	 * 'm' is the magic number found,
 	 * 'maxms' is the largest magic
 	 * number on the string.
 	 */
-	short int m = 0,
+	uint8_t m = 0,
 	 	maxms = 0;
 	unsigned int c = 0;
 	char ch = '\0';
@@ -264,9 +262,9 @@ short int magiac(char cmd[]) {
 }
 
 char *buildcmd(char cmd[], char *arg[], int carg) {
-	unsigned short int i = 0,
-		       m = 0,
-		       n = 0;
+	uint8_t i = 0,
+	       m = 0,
+	       n = 0;
 	unsigned int c = 0,
 		     l = 0;
 	int cmdlen = 0;
