@@ -36,13 +36,13 @@
 #endif
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
-char	mesg[3000];
+char	mesg[3000] = "",
+	who[MAXNAMLEN] = "???",
+	sterm[PATH_MAX] = "";
 int	msize = 0;
 char	*strcpy();
 char	*strcat();
 pid_t	fork();
-char who[MAXNAMLEN] = "???",
-     sterm[PATH_MAX] = "";
 void main(int argc, char *argv[]);
 void sendmes(struct utmpx *u);
 
@@ -51,7 +51,7 @@ void main(int argc, char *argv[]) {
 	char c = '\0';
 	struct utmpx *utmp;
 	struct passwd *pw;
-	FILE *f;
+	FILE *f = NULL;
 
 	if ((utmp = getutxent()) == NULL) {
 		fprintf(stderr, "failed to open utmpx database: %s\n",
@@ -99,16 +99,17 @@ void main(int argc, char *argv[]) {
 		}
 		break;
 	}
-
 	/* Close utmpx file. */
 	endutxent();
+
 	exit(0);
 }
 
 void sendmes(struct utmpx *u) {
-	register int i;
-	char t[50], buf[BUFSIZ];
-	FILE *f;
+	pid_t i = 0;
+	char t[50] = "",
+		buf[BUFSIZ] = "";
+	FILE *f = NULL;
 
 	i = fork();
 	if(i == -1) {
@@ -126,10 +127,10 @@ void sendmes(struct utmpx *u) {
 	}
 
 	setbuf(f, buf);
-	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
+	fprintf(f, "\7\7\7Broadcast Message from %s (%s) ...\n\n",
 			who, sterm);
 	fwrite(mesg, msize, 1, f);
-
 	fclose(f);
+
 	_exit(0);
 }
