@@ -107,8 +107,8 @@ void sendmes(struct utmpx *u) {
 	strncat(t, u->ut_line, strlen(u->ut_line));
 
 	if((f = fopen(t, "w")) == NULL) {
-		fprintf(stderr, "cannot open %s: %s\n",
-				t, strerror(errno));
+		fprintf(stderr, "cannot send to %s on %s: %s\n",
+				u->ut_user, t, strerror(errno));
 		_exit(1);
 	}
 
