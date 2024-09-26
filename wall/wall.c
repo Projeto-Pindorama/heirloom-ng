@@ -26,7 +26,6 @@
 
 char	mesg[3000];
 int	msize = 0;
-struct	utmpx *utmp;
 char	*strcpy();
 char	*strcat();
 pid_t	fork();
@@ -38,7 +37,7 @@ void sendmes(struct utmpx *u);
 void main(int argc, char *argv[]) {
 	int i = 0;
 	char c = '\0';
-	struct utmpx *p;
+	struct utmpx *utmp;
 	struct passwd *pw;
 	FILE *f;
 
@@ -58,7 +57,7 @@ void main(int argc, char *argv[]) {
 	}
 
 	/* Cache the text in the mesg[] array */
-	while((i = getc(f)) != EOF) mesg[msize++] = i;
+	for (; ((i = getc(f)) != EOF); ) mesg[msize++] = i;
 	fclose(f);
 
 	/* Get the username */
@@ -78,8 +77,8 @@ void main(int argc, char *argv[]) {
 	for (; utmp = getutxent(); ) {
 		switch (utmp->ut_type) {
 			case USER_PROCESS:
-				sleep(1);
 				if (utmp != NULL) {
+					sleep(1);
 					sendmes(utmp);
 				} else {
 					break;
@@ -104,8 +103,8 @@ void sendmes(struct utmpx *u) {
 		return;
 	}
 	if(i) return;
-	strcpy(t, "/dev/");
-	strcat(t, u->ut_line);
+	strncpy(t, "/dev/", 5);
+	strncat(t, u->ut_line, strlen(u->ut_line));
 
 	if((f = fopen(t, "w")) == NULL) {
 		fprintf(stderr, "cannot open %s: %s\n",
