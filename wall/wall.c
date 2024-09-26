@@ -22,19 +22,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <utmpx.h>
-/* That needs to be fixed... */
-#define	USERS	50
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 char	mesg[3000];
-int	msize = 0,
-	sline = 0;
+int	msize = 0;
 struct	utmpx *utmp;
 char	*strcpy();
 char	*strcat();
 pid_t	fork();
 char who[MAXNAMLEN] = "???",
-     term[PATH_MAX] = "";
+     sterm[PATH_MAX] = "";
 void main(int argc, char *argv[]);
 void sendmes(struct utmpx *u);
 
@@ -64,6 +61,7 @@ void main(int argc, char *argv[]) {
 	while((i = getc(f)) != EOF) mesg[msize++] = i;
 	fclose(f);
 
+	/* Get the username */
 	pw = getpwuid(geteuid());
 	if (pw) {
 		for (i = 0; c = pw->pw_name[i]; i++)
@@ -71,27 +69,27 @@ void main(int argc, char *argv[]) {
 		who[i] = '\0'; /* sender initials */
 	}
 
-	puts(who);
+	/* Get the current terminal */
+	strncpy(sterm, ttyname(fileno(stderr)), sizeof(sterm));
 
-	/* Rewind utmpx file to its start. */
+	/* Rewind utmpx file to its start,
+	 * like a cassete tape. */
 	setutxent();
 	for (; utmp = getutxent(); ) {
-		if (utmp != NULL) {
-			sendmes(utmp);
-		} else {
-			break;
+		switch (utmp->ut_type) {
+			case USER_PROCESS:
+				sleep(1);
+				if (utmp != NULL) {
+					sendmes(utmp);
+				} else {
+					break;
+				}
+			default:
+				continue;
 		}
+		break;
 	}
 	endutxent();
-
-	/* I mean, this. Godon. */
-//	for(i=0; i < USERS; i++) {
-//		p = &utmp[i];
-//		if(p->ut_user[0] == 0)
-//			continue;
-//		sleep(1);
-//		sendmes(p->ut_line);
-//	}
 	exit(0);
 }
 
@@ -105,19 +103,21 @@ void sendmes(struct utmpx *u) {
 		fprintf(stderr, "Try again\n");
 		return;
 	}
-	if(i)
-		return;
-//	strcpy(t, "/dev/");
-//	strcat(t, tty);
-	puts(u->ut_line);
+	if(i) return;
+	strcpy(t, "/dev/");
+	strcat(t, u->ut_line);
 
-//	if((f = fopen(t, "w")) == NULL) {
-//		fprintf(stderr,"cannot open %s\n", t);
-//		exit(1);
-//	}
-//	setbuf(f, buf);
-//	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
-//			who, utmp[sline].ut_line);
-//	fwrite(mesg, msize, 1, f);
-	exit(0);
+	if((f = fopen(t, "w")) == NULL) {
+		fprintf(stderr, "cannot open %s: %s\n",
+				t, strerror(errno));
+		_exit(1);
+	}
+
+	setbuf(f, buf);
+	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
+			who, sterm);
+	fwrite(mesg, msize, 1, f);
+
+	fclose(f);
+	_exit(0);
 }
