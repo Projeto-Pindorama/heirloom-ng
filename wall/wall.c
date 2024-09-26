@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,19 +33,21 @@ struct	utmpx *utmp;
 char	*strcpy();
 char	*strcat();
 pid_t	fork();
-char who[MAXNAMLEN] = "???";
+char who[MAXNAMLEN] = "???",
+     term[PATH_MAX] = "";
 void main(int argc, char *argv[]);
-void sendmes(char* tty);
+void sendmes(struct utmpx *u);
 
 void main(int argc, char *argv[]) {
-	register int i;
-	register char c;
-	register struct utmpx *p;
+	int i = 0;
+	char c = '\0';
+	struct utmpx *p;
+	struct passwd *pw;
 	FILE *f;
 
-	if((utmp = getutxent()) == NULL) {
+	if ((utmp = getutxent()) == NULL) {
 		fprintf(stderr, "failed to open utmpx database: %s\n",
-				strerror(errno));
+			strerror(errno));
 		exit(1);
 	}
 
@@ -52,31 +55,47 @@ void main(int argc, char *argv[]) {
 	if(argc >= 2) {
 		/* take message from unix file instead of standard input */
 		if((f = fopen(argv[1], "r")) == NULL) {
-			fprintf(stderr,"Cannot open %s\n", argv[1]);
+			fprintf(stderr, "Cannot open %s\n", argv[1]);
 			exit(1);
 		}
 	}
 
+	/* Cache the text in the mesg[] array */
 	while((i = getc(f)) != EOF) mesg[msize++] = i;
 	fclose(f);
-	sline = ttyslot(); /* 'utmp' slot no. of sender */
-	if (sline) {
-		for (i=0;c=utmp[sline].ut_user[i];i++)
+
+	pw = getpwuid(geteuid());
+	if (pw) {
+		for (i = 0; c = pw->pw_name[i]; i++)
 			who[i]=c;
 		who[i] = '\0'; /* sender initials */
-		}
-	/* I mean, this. Godon. */
-	for(i=0; i < USERS; i++) {
-		p = &utmp[i];
-		if(p->ut_user[0] == 0)
-			continue;
-		sleep(1);
-		sendmes(p->ut_line);
 	}
+
+	puts(who);
+
+	/* Rewind utmpx file to its start. */
+	setutxent();
+	for (; utmp = getutxent(); ) {
+		if (utmp != NULL) {
+			sendmes(utmp);
+		} else {
+			break;
+		}
+	}
+	endutxent();
+
+	/* I mean, this. Godon. */
+//	for(i=0; i < USERS; i++) {
+//		p = &utmp[i];
+//		if(p->ut_user[0] == 0)
+//			continue;
+//		sleep(1);
+//		sendmes(p->ut_line);
+//	}
 	exit(0);
 }
 
-void sendmes(char* tty) {
+void sendmes(struct utmpx *u) {
 	register int i;
 	char t[50], buf[BUFSIZ];
 	FILE *f;
@@ -88,16 +107,17 @@ void sendmes(char* tty) {
 	}
 	if(i)
 		return;
-	strcpy(t, "/dev/");
-	strcat(t, tty);
+//	strcpy(t, "/dev/");
+//	strcat(t, tty);
+	puts(u->ut_line);
 
-	if((f = fopen(t, "w")) == NULL) {
-		fprintf(stderr,"cannot open %s\n", t);
-		exit(1);
-	}
-	setbuf(f, buf);
-	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",who,
-		utmp[sline].ut_line);
-	fwrite(mesg, msize, 1, f);
+//	if((f = fopen(t, "w")) == NULL) {
+//		fprintf(stderr,"cannot open %s\n", t);
+//		exit(1);
+//	}
+//	setbuf(f, buf);
+//	fprintf(f, "Broadcast Message from %s (%s) ...\n\n",
+//			who, utmp[sline].ut_line);
+//	fwrite(mesg, msize, 1, f);
 	exit(0);
 }
