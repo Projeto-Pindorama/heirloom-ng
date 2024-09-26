@@ -9,7 +9,7 @@ wall.o: wall.c
 install: all
 	$(UCBINST) -c wall $(ROOT)$(DEFSBIN)/wall
 	$(STRIP) $(ROOT)$(DEFSBIN)/wall
-	$(MANINST) -c -m 644 wall.1m $(ROOT)$(MANDIR)/man1/wall.1m
+	$(MANINST) -c -m 644 wall.1m $(ROOT)$(MANDIR)/man1m/wall.1m
 
 clean:
 	rm -f wall wall.o core log *~
