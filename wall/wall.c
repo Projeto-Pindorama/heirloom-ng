@@ -15,6 +15,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,14 +23,16 @@
 #include <utmpx.h>
 /* That needs to be fixed... */
 #define	USERS	50
+#define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 char	mesg[3000];
-int	msize, sline;
+int	msize = 0,
+	sline = 0;
 struct	utmpx *utmp;
 char	*strcpy();
 char	*strcat();
 pid_t	fork();
-char who[9] = "???";
+char who[MAXNAMLEN] = "???";
 void main(int argc, char *argv[]);
 void sendmes(char* tty);
 
