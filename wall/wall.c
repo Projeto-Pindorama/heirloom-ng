@@ -5,7 +5,7 @@
  *
  * SPDX-Licence-Identifier: Zlib
  *
- *	from Unix 32V /usr/src/cmd/wall.c	
+ *	from Unix 32V /usr/src/cmd/wall.c
  *	December 19th, 1978.
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
@@ -14,14 +14,26 @@
  */
 
 #include <errno.h>
-#include <fcntl.h>
 #include <limits.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <utmpx.h>
+
+/*
+ * Compatibility for (struct utmpx *)ut_line
+ * and UNIX username length.
+ * Note: UT_LINESIZE as 12 is from Solaris.
+ */
+#ifndef UT_LINESIZE
+#ifndef __UT_LINESIZE
+#define __UT_LINESIZE 12
+#endif
+#define UT_LINESIZE __UT_LINESIZE
+#endif
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 char	mesg[3000];
@@ -60,11 +72,10 @@ void main(int argc, char *argv[]) {
 	for (; ((i = getc(f)) != EOF); ) mesg[msize++] = i;
 	fclose(f);
 
-	/* Get the username */
+	/* Get sender's username */
 	pw = getpwuid(geteuid());
 	if (pw) {
-		for (i = 0; c = pw->pw_name[i]; i++)
-			who[i]=c;
+		for (i = 0; c = pw->pw_name[i]; i++) who[i]=c;
 		who[i] = '\0'; /* sender initials */
 	}
 
@@ -88,6 +99,8 @@ void main(int argc, char *argv[]) {
 		}
 		break;
 	}
+
+	/* Close utmpx file. */
 	endutxent();
 	exit(0);
 }
@@ -104,7 +117,7 @@ void sendmes(struct utmpx *u) {
 	}
 	if(i) return;
 	strncpy(t, "/dev/", 5);
-	strncat(t, u->ut_line, strlen(u->ut_line));
+	strncat(t, u->ut_line, UT_LINESIZE);
 
 	if((f = fopen(t, "w")) == NULL) {
 		fprintf(stderr, "cannot send to %s on %s: %s\n",
