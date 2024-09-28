@@ -71,3 +71,16 @@ extern int		utmpxname(const char *);
 extern void		updwtmpx(const char *, const struct utmpx *);
 #endif	/* __FreeBSD__ || __dietlibc__ || __NetBSD__ || __UCLIBC__ ||
 	 	__OpenBSD__ || __DragonFly__ || __APPLE__ */
+
+/*
+ * Compatibility for (struct utmpx *)ut_line
+ * and UNIX username length.
+ * Note: UT_LINESIZE as 12 is from Solaris.
+ */
+#ifndef UT_LINESIZE
+#ifndef __UT_LINESIZE
+#define __UT_LINESIZE 12
+#endif
+#define UT_LINESIZE __UT_LINESIZE
+#endif
+#define MAXNAMLEN _POSIX_LOGIN_NAME_MAX

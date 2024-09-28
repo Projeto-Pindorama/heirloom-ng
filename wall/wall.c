@@ -23,26 +23,10 @@
 #include <unistd.h>
 #include <utmpx.h>
 
-/*
- * Compatibility for (struct utmpx *)ut_line
- * and UNIX username length.
- * Note: UT_LINESIZE as 12 is from Solaris.
- */
-#ifndef UT_LINESIZE
-#ifndef __UT_LINESIZE
-#define __UT_LINESIZE 12
-#endif
-#define UT_LINESIZE __UT_LINESIZE
-#endif
-#define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
-
 char	mesg[3000] = "",
 	who[MAXNAMLEN] = "???",
 	sterm[PATH_MAX] = "";
 int	msize = 0;
-char	*strcpy();
-char	*strcat();
-pid_t	fork();
 void main(int argc, char *argv[]);
 void sendmes(struct utmpx *u);
 
