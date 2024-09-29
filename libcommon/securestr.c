@@ -32,25 +32,28 @@ char *ssafe(char *s) {
 	     *ssafe = "";
 
 	for (i = 0; s[i]; i++) {
-		if (iscntrl(s[i])) {
-			switch (s[i]) {
-				case '\n':
-				case '\t':
-				case '\r':
-				case ' ':
-					goto normal;
-				default:
-					safe[j] = '^';
-					safe[(j + 1)] = (s[i] == '\177')
-							? '?'
-							: (s[i] ^ 0100);
-					i++;
-					j++;
-					break;
-			}
-		} else {
-normal:
-			safe[j] = s[i];
+		switch (iscntrl(s[i])) {
+			default:
+				switch (s[i]) {
+					case '\n':
+					case '\t':
+					case '\r':
+					case ' ':
+						goto normal;
+					default:
+						safe[j] = '^';
+						safe[(j + 1)] = (s[i] == '\177')
+								? '?'
+								: (s[i] ^ 0100);
+						i++;
+						j+=2;
+						continue;
+					}
+				break;
+			case 0:
+			normal:
+				safe[j] = s[i];
+				break;
 		}
 		j++;
 	}
