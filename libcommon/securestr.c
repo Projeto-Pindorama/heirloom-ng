@@ -1,5 +1,5 @@
 /*
- * safeify.c - Make strings safe for printing and beat CVE-2024-28085.
+ * securestr.c - Make strings safe for printing and beat CVE-2024-28085.
  */
 /*
  * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
