@@ -19,13 +19,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <utmp.h>
 #include <utmpx.h>
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
-char	mesg[3000] = "",
+char	*mesg = "",
 	who[MAXNAMLEN] = "???",
 	sterm[32] = "";
 int	msize = 0;
@@ -34,7 +35,8 @@ void sendmes(struct utmpx *u);
 
 void main(int argc, char *argv[]) {
 	int i = 0;
-	char c = '\0';
+	char c = '\0',
+	     smesg[3000] = "";
 	struct utmpx *utmp;
 	struct passwd *pw;
 	FILE *f = NULL;
@@ -53,12 +55,11 @@ void main(int argc, char *argv[]) {
 			exit(1);
 		}
 	}
-
-	/* Cache the text in the mesg[] array */
-	for (; ((i = getc(f)) != EOF); ) mesg[msize++] = i;
+	
+	for (; ((i = getc(f)) != EOF); ) smesg[msize++] = i;
 	fclose(f);
-
-	/* Get sender's username */
+	mesg = ssafe(smesg);
+	
 	pw = getpwuid(geteuid());
 	if (pw) {
 		for (i = 0; c = pw->pw_name[i]; i++) who[i]=c;

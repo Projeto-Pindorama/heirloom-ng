@@ -15,13 +15,14 @@
 
 #include <limits.h>
 #include <pwd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <utmp.h>
 #include <utmpx.h>
@@ -46,7 +47,7 @@ void main(int argc, char *argv[]) {
 	char me[MAXNAMLEN] = "???",
 		*mytty = "",
 		*him = "",
-		histty[32] = "",
+		histty[(UT_LINESIZE + 1)] = "",
 		*histtya = "",
 		*otherplaces[20];
 	struct passwd *passw;
@@ -144,8 +145,11 @@ void main(int argc, char *argv[]) {
 	fprintf(tf, "%s %s...\n\7\7\7", me, mytty);
 	fflush(tf);
 	for(;;) {
-		char buf[128] = "";
-		i = read(0, buf, 128);
+		char *buf = "";
+		char sbuf[128] = "";
+		i = read(0, sbuf, 128);
+		buf = ssafe(sbuf);
+
 		if (i <= 0)
 			eof();
 		switch (buf[0]) {
