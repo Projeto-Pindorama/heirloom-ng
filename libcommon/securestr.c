@@ -5,7 +5,7 @@
  * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
- * 
+ *
  * Sections of the CVE-2024-28085 mitigation borrowed from 4.3BSD
  * Net/2's cat(1) implementation for the '-v' option. It differs
  * from Heirloom native/UNIX 7th's cat(1) per not being so dependent
@@ -32,24 +32,32 @@ char *ssafe(char *s) {
 	     *ssafe = "";
 
 	for (i = 0; s[i]; i++) {
-            if (iscntrl(s[i]) && s[i] != '\n'
-		&& s[i] != '\t' && s[i] != '\r'
-		&& s[i] != ' ') {
-		    safe[j] = '^';
-		    safe[(j + 1)] = (s[i] == '\177')
-			    ? '?'
-			    : (s[i] ^ 0100);
-		    i++;
-		    j++;
-	    } else {
-		    safe[j] = s[i];
-	    }
-	    j++;
+		if (iscntrl(s[i])) {
+			switch (s[i]) {
+				case '\n':
+				case '\t':
+				case '\r':
+				case ' ':
+					goto normal;
+				default:
+					safe[j] = '^';
+					safe[(j + 1)] = (s[i] == '\177')
+							? '?'
+							: (s[i] ^ 0100);
+					i++;
+					j++;
+					break;
+			}
+		} else {
+normal:
+			safe[j] = s[i];
+		}
+		j++;
 	}
 
 	if ((ssafe = calloc(BUFSIZ, sizeof(char *))) == NULL) {
-		fprintf(stderr, "Couldn't allocate string of length %d\n",
-				BUFSIZ);
+		fprintf(stderr, "%s: Couldn't allocate string of length %d\n",
+				__func__, BUFSIZ);
 		exit(1);
 	}
 	ssafe = strdup(safe);
