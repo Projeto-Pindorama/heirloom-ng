@@ -1,4 +1,7 @@
 Release ...
+* [NEW] wall, write: New implementation ported from UNIX 7th (a.k.a. 32V),
+  bulletproofed against buffer overflows and the CVE-2024-28085, which is
+  available as the ssafe() function at libcommon.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
 * rev: UTF-8 support, borrowed from suckless sbase. In varietate concordia.
@@ -59,9 +62,9 @@ Release 240220
 * [NEW] seq: Stone-simple implementation; needs some improvement yet.
 * [NEW] watch: Complete, simple and stable implementation.
 * [NEW] timeout: Complete implementation with extended payloads.
-* readlink: Different help messages for both UCB and default variants. 
+* readlink: Different help messages for both UCB and default variants.
 
-Release 230503 
+Release 230503
 * chroot: "docs: Update date at chroot.8 manual page."
 * chroot: "chore: Remove comment, will move to GitHub"
 * chroot: "docs: Rewrote chroot(8) manual page"
@@ -83,7 +86,7 @@ Release 230305
 
 Release 230228
 * [NEW] readlink: New implementation, extensively based on OpenBSD's.
-* readlink: It's installed at /usr/ucb per default and symbolic/hard linked to /usr/5bin. 
+* readlink: It's installed at /usr/ucb per default and symbolic/hard linked to /usr/5bin.
 
 Release 230120
 * Notes for the library directories if linking against the GNU C library.
