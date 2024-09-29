@@ -5,7 +5,7 @@
 .\"
 .\" SPDX-Licence-Identifier: Caldera
 .\"
-.TH WRITE 1 "01/24/2023" "Heirloom Toolchest" "User Commands" 
+.TH WRITE 1 "09/29/2024" "Heirloom Toolchest" "User Commands" 
 .SH NAME
 write  \-  write to another user
 .SH SYNOPSIS
@@ -61,8 +61,8 @@ for `over' is conventional\(emthat the other may reply.
 for `over and out' is suggested when conversation
 is about to be terminated.
 .SH FILES
-/etc/utmp	to find user
+utmp(5) 	to find user
 .br
-/bin/sh		to execute `!'
+/bin/sh 	to execute `!'
 .SH "SEE ALSO"
-mesg(1), who(1), mail(1)
+mesg(1), who(1), mail(1), wall(1m), utmp(5)
