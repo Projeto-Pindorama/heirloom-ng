@@ -28,11 +28,6 @@
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 int	signum[] = {SIGHUP, SIGINT, SIGQUIT, 0};
-char	me[MAXNAMLEN]	= "???",
-	*mytty = "",
-	*him = "",
-	histty[32] = "",
-	*histtya = "";
 FILE	*tf;
 
 void	main(int argc, char *argv[]);
@@ -46,7 +41,14 @@ void main(int argc, char *argv[]) {
 	int i = 0,
 	    c = 0,
 	    tfd = 0,
-	    logcnt = 0;
+	    logcnt = 0,
+	    places = 0;
+	char me[MAXNAMLEN] = "???",
+		*mytty = "",
+		*him = "",
+		histty[32] = "",
+		*histtya = "",
+		*otherplaces[20];
 	struct passwd *passw;
 	struct utmpx *u;
 	struct stat stbuf;
@@ -72,7 +74,7 @@ void main(int argc, char *argv[]) {
 	/* Get everything after /dev. */
 	for (i = 1; mytty[i] != '/'; i++);
 	mytty += (i + 1);
-	if (histtya[0]!='\0') {
+	if (histtya[0] != '\0') {
 		strncpy(histty, "/dev/", 5);
 		strncat(histty, histtya, UT_LINESIZE);
 	}
@@ -81,33 +83,35 @@ void main(int argc, char *argv[]) {
 		if(him[0] != '-' || him[1] != 0)
 		switch (strncmp(him, u->ut_user, MAXNAMLEN)) {
 			case 0:
+				if (logcnt == 0 && histty[0]=='\0') {
+					strncpy(histty, "/dev/", 5);
+					strncat(histty, u->ut_line,
+							UT_LINESIZE);
+				} else {
+					otherplaces[places] = strdup(u->ut_line);
+					places++;
+				}
 				break;
 			default:
 				continue; /* nomat */
-
 		}
 		logcnt++;
-		switch (histty[0]) {
-			case '\0':
-				strncpy(histty, "/dev/", 5);
-				strncat(histty, u->ut_line, UT_LINESIZE);
-			default:
-				break;
-		}
 	}
 	endutxent();
-cont:
-	if (logcnt==0 && histty[0]=='\0') {
+/* cont */
+	if (logcnt == 0 && histty[0] == '\0') {
 		fprintf(stderr, "%s not logged in.\n", him);
 		exit(1);
 	}
-	if (histtya[0]=='\0' && logcnt > 1) {
-		fprintf(stderr, "%s logged more than once\nwriting to %s\n",
-					him, histty);
+	if (histtya[0] == '\0' && logcnt > 1) {
+		fprintf(stderr, "%s logged more than once\nwriting to %s\nother places where %s is at:\n",
+					him, histty, him);
+		for (i=0; i < places; i++)
+			fprintf(stderr, "%s\n", otherplaces[i]);
 	}
-	if(histty[0] == '\0') {
+	if (histty[0] == '\0') {
 		fprintf(stderr, him);
-		if(logcnt)
+		if (logcnt)
 			fprintf(stderr, " not on that tty\n");
 		else
 			fprintf(stderr, " not logged in\n");
@@ -137,12 +141,12 @@ cont:
 #ifdef interdata
 	fprintf(tf, "(Interdata) " );
 #endif
-	fprintf(tf, "%s %s...\n", me, mytty);
+	fprintf(tf, "%s %s...\n\7\7\7", me, mytty);
 	fflush(tf);
 	for(;;) {
 		char buf[128] = "";
 		i = read(0, buf, 128);
-		if(i <= 0)
+		if (i <= 0)
 			eof();
 		switch (buf[0]) {
 			case '!':
@@ -175,11 +179,11 @@ int ex(char *bp) {
 
 	sigs(SIG_IGN);
 	i = fork();
-	if(i < 0) {
+	if (i < 0) {
 		fprintf(stderr, "Try again\n");
 		goto out;
 	}
-	if(i == 0) {
+	if (i == 0) {
 		sigs((int (*)())0);
 		execl(SHELL, "sh", "-c", bp+1, 0);
 		exit(0);
