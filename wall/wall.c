@@ -21,11 +21,13 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <utmp.h>
 #include <utmpx.h>
+#define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 char	mesg[3000] = "",
 	who[MAXNAMLEN] = "???",
-	sterm[PATH_MAX] = "";
+	sterm[32] = "";
 int	msize = 0;
 void main(int argc, char *argv[]);
 void sendmes(struct utmpx *u);
@@ -65,6 +67,8 @@ void main(int argc, char *argv[]) {
 
 	/* Get the current terminal */
 	strncpy(sterm, ttyname(fileno(stderr)), sizeof(sterm));
+	for (i = 1; sterm[i] != '/'; i++);
+	strncpy(sterm, &sterm[(i + 1)], UT_LINESIZE);
 
 	/* Rewind utmpx file to its start,
 	 * like a cassete tape. */
