@@ -13,7 +13,7 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
-#include <fcntl.h>
+#include <limits.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,13 +21,14 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <strings.h>
 #include <string.h>
 #include <unistd.h>
+#include <utmp.h>
 #include <utmpx.h>
+#define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
 int	signum[] = {SIGHUP, SIGINT, SIGQUIT, 0};
-char	me[10]	= "???",
+char	me[MAXNAMLEN]	= "???",
 	*mytty = "",
 	*him = "",
 	histty[32] = "",
@@ -68,19 +69,17 @@ void main(int argc, char *argv[]) {
 		fprintf(stderr, "Can't find your tty\n");
 		exit(1);
 	}
-
 	/* Get everything after /dev. */
 	for (i = 1; mytty[i] != '/'; i++);
 	mytty += (i + 1);
 	if (histtya[0]!='\0') {
-		strcpy(histty, "/dev/");
-		strcat(histty, histtya);
+		strncpy(histty, "/dev/", 5);
+		strncat(histty, histtya, UT_LINESIZE);
 	}
-
 	setutxent();
 	while ((u = getutxent()) != NULL) {
 		if(him[0] != '-' || him[1] != 0)
-		switch (strncmp(him, u->ut_user, 9)) {
+		switch (strncmp(him, u->ut_user, MAXNAMLEN)) {
 			case 0:
 				break;
 			default:
@@ -88,9 +87,12 @@ void main(int argc, char *argv[]) {
 
 		}
 		logcnt++;
-		if (histty[0] == '\0') {
-			strcpy(histty, "/dev/");
-			strcat(histty, u->ut_line);
+		switch (histty[0]) {
+			case '\0':
+				strncpy(histty, "/dev/", 5);
+				strncat(histty, u->ut_line, UT_LINESIZE);
+			default:
+				break;
 		}
 	}
 	endutxent();
@@ -99,7 +101,7 @@ cont:
 		fprintf(stderr, "%s not logged in.\n", him);
 		exit(1);
 	}
-	if (histtya==0 && logcnt > 1) {
+	if (histtya[0]=='\0' && logcnt > 1) {
 		fprintf(stderr, "%s logged more than once\nwriting to %s\n",
 					him, histty);
 	}
@@ -123,12 +125,12 @@ cont:
 	}
 	if (fstat(tfd, &stbuf) < 0)
 		goto perm;
-	/* 
+	/*
 	 * Check if the sender user's group (as per S_IWGRP)
 	 * or everyone (as per S_IWOTH) can write to
 	 * receiver's terminal.
 	 */
-	if (!(stbuf.st_mode & (S_IWGRP|S_IWOTH)))
+	if ((stbuf.st_mode & (S_IWGRP|S_IWOTH)) == 0)
 		goto perm;
 	sigs(eof);
 	fprintf(tf, "Message from ");
@@ -142,10 +144,13 @@ cont:
 		i = read(0, buf, 128);
 		if(i <= 0)
 			eof();
-		if(buf[0] == '!') {
-			buf[i] = 0;
-			ex(buf);
-			continue;
+		switch (buf[0]) {
+			case '!':
+				buf[i] = 0;
+				ex(buf);
+				continue;
+			default:
+				break;
 		}
 		write(tfd, buf, i);
 	}
