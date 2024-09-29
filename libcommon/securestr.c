@@ -39,7 +39,7 @@ char *ssafe(char *s) {
 					case '\t':
 					case '\r':
 					case ' ':
-						goto normal;
+						break; /* go to normal */
 					default:
 						safe[j] = '^';
 						safe[(j + 1)] = (s[i] == '\177')
@@ -49,9 +49,7 @@ char *ssafe(char *s) {
 						j+=2;
 						continue;
 					}
-				break;
-			case 0:
-			normal:
+			case 0: /* normal */
 				safe[j] = s[i];
 				break;
 		}
