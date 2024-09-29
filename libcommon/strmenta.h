@@ -10,3 +10,4 @@
 #define shift(p, d)	p++; d--
 
 extern char *basename(const char *path);
+extern char *ssafe(char *s);
