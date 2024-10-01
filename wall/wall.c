@@ -31,7 +31,7 @@ char	*mesg = "",
 	sterm[32] = "";
 int	msize = 0;
 void main(int argc, char *argv[]);
-void sendmes(struct utmpx *u);
+void sendmes(char *tty);
 
 void main(int argc, char *argv[]) {
 	int i = 0;
@@ -79,7 +79,7 @@ void main(int argc, char *argv[]) {
 			case USER_PROCESS:
 				if (utmp != NULL) {
 					sleep(1);
-					sendmes(utmp);
+					sendmes(utmp->ut_line);
 				} else {
 					break;
 				}
@@ -94,7 +94,7 @@ void main(int argc, char *argv[]) {
 	exit(0);
 }
 
-void sendmes(struct utmpx *u) {
+void sendmes(char *tty) {
 	pid_t i = 0;
 	char t[50] = "",
 		buf[BUFSIZ] = "";
@@ -107,11 +107,11 @@ void sendmes(struct utmpx *u) {
 	}
 	if(i) return;
 	strncpy(t, "/dev/", 5);
-	strncat(t, u->ut_line, UT_LINESIZE);
+	strncat(t, tty, UT_LINESIZE);
 
 	if((f = fopen(t, "w")) == NULL) {
-		fprintf(stderr, "cannot send to %s on %s: %s\n",
-				u->ut_user, t, strerror(errno));
+		fprintf(stderr, "cannot send to %s: %s\n",
+				tty, strerror(errno));
 		_exit(1);
 	}
 
