@@ -6,6 +6,8 @@
  * SPDX-Licence-Identifier: Zlib
  */
 
+#include "sputs.h"
+
 /* Boilerplate for 'pointer++; pointerc--;' */
 #define shift(p, d)	p++; d--
 
