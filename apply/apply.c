@@ -247,6 +247,7 @@ uint8_t magiac(char cmd[]) {
 					m = (cmd[(c + 1)] - '0');
 
 					/* Store magic character location. */
+					if (m == 0 || m > 9) break;
 					magias[m] = c;
 
 					/* Set largest argument. */
@@ -268,6 +269,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	unsigned int cmdlen = 0,
 		     arglen = 0,
 		     c = 0,
+		     d = 0,
 		     l = 0;
 	char ch = '\0',
 	     *cmdbuf = "",
@@ -301,8 +303,9 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			cmdbufp = stpncpy(cmdbufp, cmd, (size_t)cmdlen);
 			for (i = 0; i < mstep; i++) {
 				n = (carg + i);
-				cmdbufp += sprintf(cmdbufp, "%c%s",
-						' ', arg[n]);
+				sputchar(cmdbufp, ' ');
+				for (d = 0; arg[n][d]; d++)
+					sputchar(cmdbufp, arg[n][d]);
 			}
 			break;
 		default:
@@ -313,11 +316,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 						m = (cmd[(c + 1)] - '0');
 						n = (carg + (m - 1));
 						c++;
-						cmdbufp += sprintf(cmdbufp,
-								"%s", arg[n]);
+						for (d = 0; arg[n][d]; d++)
+							sputchar(cmdbufp, arg[n][d]);
 						continue;
 					default:
-						*cmdbufp++ = ch;
+						sputchar(cmdbufp, ch);
 						break;
 				}
 			}
@@ -330,7 +333,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	return cmdbuf;
 }
 
-/* What tha name says: it executes a command. */
+/* What the name says: it executes a command. */
 int eXec(const char command[]) {
 	int st = 0;
 	char *shell = "",

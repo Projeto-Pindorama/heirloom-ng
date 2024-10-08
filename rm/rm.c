@@ -285,9 +285,9 @@ rm(size_t pend, const char *base, const int olddir, int ssub, int level)
 		/* Latter priority than rflag. */
 		} else if (dflag) {
 			if (rmfile(base, &st) < 0) {
-				/* 
+				/*
 				 * rmfile() will print a error
-				 * message per si if needed 
+				 * message per si if needed.
 				 */
 				errcnt |= 1;
 			}
@@ -390,7 +390,7 @@ main(int argc, char **argv)
 #if defined(SUS) || defined(SYSV3)
 	options = "fiRr";
 #else
-	options = "dfiRre";
+	options = "dfiRrev";
 #endif
 
 	while ((i = getopt(argc, argv, options)) != EOF) {
@@ -416,6 +416,7 @@ main(int argc, char **argv)
 			dflag = 1;
 			break;
 		case 'e':
+		case 'v':
 			eflag = 1;
 			break;
 #endif

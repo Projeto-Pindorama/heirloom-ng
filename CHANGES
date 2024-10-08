@@ -1,4 +1,5 @@
 Release ...
+* rm: Alias '-e' flag to more known '-v' for verbose.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
 * rev: UTF-8 support, borrowed from suckless sbase. In varietate concordia.
