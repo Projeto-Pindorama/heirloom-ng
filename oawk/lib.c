@@ -93,10 +93,10 @@ fldinit(void)
 int
 getrec(void)
 {
-	register char *rr;
+	char *rr;
 	extern int svargc;
 	extern char **svargv;
-	register int c, sep, k, m, n;
+	int c, sep, k, m, n;
 	wchar_t wc;
 
 	dprintf("**RS=%o, **FS=%o\n", **RS, **FS);
@@ -203,7 +203,7 @@ setclvar(char *s)	/* set var=value from s */
 void
 fldbld(void)
 {
-	register char *r, *fr;
+	char *r, *fr;
 	wchar_t wc, sep;
 	int i, j, n;
 
@@ -279,7 +279,7 @@ void
 recbld(void)
 {
 	int i;
-	register char *r, *p;
+	char *r, *p;
 
 	if (donefld == 0 || donerec == 1)
 		return;
@@ -345,9 +345,9 @@ PUTS(const char *s) {
 #define	MAXEXPON	38	/* maximum exponenet for fp number */
 
 int
-isanumber(register const char *s)
+isanumber(const char *s)
 {
-	register int d1, d2;
+	int d1, d2;
 	int point;
 	const char *es;
 

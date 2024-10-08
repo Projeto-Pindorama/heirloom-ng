@@ -18,7 +18,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)whodo.sl	1.42 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)whodo.sl	1.44 (gritter) 1/1/10";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -77,6 +77,10 @@ static const char sccsid[] USED = "@(#)whodo.sl	1.42 (gritter) 1/12/07";
 
 #ifndef	PRNODEV
 #define	PRNODEV		0
+#endif
+
+#ifndef _POSIX_PATH_MAX
+#define	_POSIX_PATH_MAX	255
 #endif
 
 #define	next(wc, s, n)	(mb_cur_max > 1 && *(s) & 0200 ? \
@@ -998,6 +1002,9 @@ getproc(char *pname)
 	wchar_t	wc;
 	int	n;
 	
+	strtol(pname, &ep, 10);
+	if (*ep != '\0')
+		return NULL;
 	strcpy(fn, "/proc/");
 	strcat(fn, pname);
 	if (lstat(fn, &st) < 0) {
@@ -1005,9 +1012,6 @@ getproc(char *pname)
 		return NULL;
 	}
 	if (!S_ISDIR(st.st_mode))
-		return NULL;
-	strtol(pname, &ep, 10);
-	if (*ep != '\0')
 		return NULL;
 	if ((p = readproc(fn)) != NULL) {
 		ep = p->p_cmdline;

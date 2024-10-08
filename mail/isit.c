@@ -32,9 +32,9 @@
  *  Execpt for H_FORM type, matching is case insensitive (bug 1173101)
  */
 int 
-isit(register char *lp, register int type)
+isit(char *lp, int type)
 {
-	register char	*p;
+	char	*p;
 
 	switch (type) {
 	case H_FROM:

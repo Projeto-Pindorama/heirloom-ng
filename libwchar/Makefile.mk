@@ -13,6 +13,8 @@ fake:
 		ar r libwchar.a $(OBJ); \
 	fi
 
+.NO_PARALLEL: fake
+
 install:
 
 clean:

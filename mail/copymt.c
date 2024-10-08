@@ -27,7 +27,7 @@
 #include "mail.h"
 
 void
-copymt(register FILE *f1, register FILE *f2)
+copymt(FILE *f1, FILE *f2)
 {
 	static char pn[] = "copymt";
 	long nextadr;

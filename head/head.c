@@ -53,7 +53,7 @@ head(const char *fn, int putheader)
 	struct iblok	*ip;
 	static int	printed;
 	const char	*errfn;
-	register int	c;
+	int	c;
 	unsigned long long	n = 1;
 
 	if (fn[0] == '-' && fn[1] == '\0') {

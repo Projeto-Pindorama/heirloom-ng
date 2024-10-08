@@ -20,7 +20,7 @@
 int 
 parse(int argc, char **argv)
 {
-	register int	 	c;
+	int	 	c;
 	static char		pn[] UNUSED = "parse";
 
 	/*

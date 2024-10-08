@@ -40,7 +40,7 @@ static char *MTAerrors[] = {
 void
 mta_ercode(FILE *outfile)
 {
-	register int mtacode;
+	int mtacode;
 	switch (error) {
 	case E_FROM:	/* too many From lines */
 		mtacode = 1;

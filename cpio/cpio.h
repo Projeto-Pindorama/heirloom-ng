@@ -1,3 +1,6 @@
+#ifndef CPIO_H
+#define CPIO_H
+
 /*
  * cpio - copy file archives in and out
  *
@@ -15,7 +18,7 @@
 #include <sys/stat.h>
 #include <inttypes.h>
 
-enum	{
+enum _fmttype {
 	FMT_NONE	= 00000000,	/* no format chosen yet */
 
 	TYP_PAX		= 00000010,	/* uses pax-like extended headers */
@@ -54,7 +57,9 @@ enum	{
 	FMT_BAR		= 00400001,	/* bar format type */
 
 	FMT_ZIP		= 01000000	/* zip format */
-} fmttype;
+};
+
+extern enum _fmttype fmttype;
 
 /*
  * Zip compression method.
@@ -157,11 +162,13 @@ extern int		printsev;
 extern char		*progname;
 extern struct glist	*patterns;
 
-enum {			/* type of pax command this is */
+enum _pax {			/* type of pax command this is */
 	PAX_TYPE_CPIO		= 0,	/* not a pax command */
 	PAX_TYPE_PAX1992	= 1,	/* POSIX.2 pax command */
 	PAX_TYPE_PAX2001	= 2	/* POSIX.1-2001 pax command */
-} pax;
+};
+extern enum _pax pax;
+
 extern int		pax_dflag;
 extern int		pax_kflag;
 extern int		pax_nflag;
@@ -169,14 +176,16 @@ extern int		pax_sflag;
 extern int		pax_uflag;
 extern int		pax_Xflag;
 
-enum {
+enum _pax_preserve {
 	PAX_P_NONE	= 0000,
 	PAX_P_ATIME	= 0001,
 	PAX_P_MTIME	= 0004,
 	PAX_P_OWNER	= 0010,
 	PAX_P_MODE	= 0020,
 	PAX_P_EVERY	= 0400
-} pax_preserve;
+};
+
+extern enum _pax_preserve pax_preserve;
 
 extern size_t		(*ofiles)(char **, size_t *);
 extern void		(*prtime)(time_t);
@@ -214,3 +223,6 @@ extern int	pax_track(const char *, time_t);
 extern void	pax_prlink(struct file *);
 extern int	pax_sname(char **, size_t *);
 extern void	pax_onexit(void);
+
+#endif
+

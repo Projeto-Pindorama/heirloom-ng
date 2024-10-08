@@ -34,7 +34,7 @@ links:
 		rm -f $(ROOT)$(DEFBIN)/$$i; \
 		sh build/crossln $(ROOT)$(UCBBIN)/$$i $(ROOT)$(DEFBIN)/$$i $(ROOT); \
 	done
-	for i in basename chmod cp date du echo file id ln mkdir mv nohup pr ps rm rmdir sort test touch tr wc who; \
+	for i in basename chmod cp date du echo file id ln mkdir mv nohup pr ps rmdir sort test touch tr wc who; \
 	do \
 		rm -f $(ROOT)$(SU3BIN)/$$i; \
 		sh build/crossln $(ROOT)$(SUSBIN)/$$i $(ROOT)$(SU3BIN)/$$i $(ROOT); \
@@ -44,7 +44,7 @@ links:
 		rm -f $(ROOT)$(S42BIN)/$$i; \
 		sh build/crossln $(ROOT)$(SUSBIN)/$$i $(ROOT)$(S42BIN)/$$i $(ROOT); \
 	done
-	for i in basename chmod du echo file lc ls more nohup od page pax pr rm rmdir sort test touch tr who; \
+	for i in basename chmod du echo file lc ls more nohup od page pax pr rmdir sort test touch tr who; \
 	do \
 		rm -f $(ROOT)$(S42BIN)/$$i; \
 		sh build/crossln $(ROOT)$(SV3BIN)/$$i $(ROOT)$(S42BIN)/$$i $(ROOT); \

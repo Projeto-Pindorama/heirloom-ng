@@ -4,7 +4,7 @@
  * Gunnar Ritter, Freiburg i. Br., Germany, March 2002.
  */
 
-/*	Sccsid @(#)getopt.c	1.5 (gritter) 4/2/07	*/
+/*	Sccsid @(#)getopt.c	1.6 (gritter) 12/16/07	*/
 
 #include	<sys/types.h>
 #include	<alloca.h>
@@ -123,3 +123,19 @@ getopt(int argc, char *const argv[], const char *optstring)
 	optarg = 0;
 	return '?';
 }
+
+#ifdef __APPLE__
+/*
+ * Starting with Mac OS 10.5 Leopard, <unistd.h> turns getopt()
+ * into getopt$UNIX2003() by default. Consequently, this function
+ * is called instead of the one defined above. However, optind is
+ * still taken from this file, so in effect, options are not
+ * properly handled. Defining an own getopt$UNIX2003() function
+ * works around this issue.
+ */
+int
+getopt$UNIX2003(int argc, char *const argv[], const char *optstring)
+{
+	return getopt(argc, argv, optstring);
+}
+#endif	/* __APPLE__ */

@@ -169,7 +169,7 @@ nextch(void)
 void
 outline(struct iblok *ip, char *last, size_t moff)
 {
-	register char *sol, *eol;	/* start and end of line */
+	char *sol, *eol;	/* start and end of line */
 
 	if (qflag == 0) {
 		if (status == 1)

@@ -115,7 +115,7 @@ static void grownc(void);
 int
 main(int argc,char **argv)
 {
-	register int i,m,n;
+	int i,m,n;
         eflag=0; oflag=0;
 	if(argc > 1 && *argv[1]=='-') {
 		switch(argv[1][1]) {
@@ -170,7 +170,7 @@ main(int argc,char **argv)
 static int
 readin(const char *name,int n)
 {
-	register int i;
+	int i;
 	int a,b,c,d;
 	char kind;
 	const char *p;
@@ -217,7 +217,7 @@ readin(const char *name,int n)
 static int
 number(const char **lc)
 {
-	register int nn;
+	int nn;
 	nn = 0;
 	while(isdigit(**lc & 0377))
 		nn = nn*10 + *(*lc)++ - '0';
@@ -236,7 +236,7 @@ getchange(FILE *b)
 static int
 getline(FILE *b)
 {
-	register int i, c;
+	int i, c;
 	for(i=0; ;i++) {
 		c = getc(b);
 		if (i >= linesize - 1)
@@ -257,7 +257,7 @@ getline(FILE *b)
 static void
 merge(int m1,int m2)
 {
-	register struct diff *d1, *d2, *d3;
+	struct diff *d1, *d2, *d3;
 	int dupl;
 	int j;
 	int t1,t2;
@@ -403,7 +403,7 @@ prange(struct range *rold)
 static void
 keep(int i,struct range *rnew)
 {
-	register int delta;
+	int delta;
 	struct range trange;
 	delta = last[3] - last[i];
 	trange.from = rnew->from - delta;
@@ -418,7 +418,7 @@ keep(int i,struct range *rnew)
 static int
 skip(int i,int from,const char *pr)
 {
-	register int j,n;
+	int j,n;
 	for(n=0;cline[i]<from-1;n+=j) {
 		if((j=getline(fp[i]))==0)
 			trouble();
@@ -436,8 +436,8 @@ skip(int i,int from,const char *pr)
 static int
 duplicate(struct range *r1,struct range *r2)
 {
-	register int c,d;
-	register int nchar;
+	int c,d;
+	int nchar;
 	int nline;
 	if(r1->to-r1->from != r2->to-r2->from)
 		return(0);
@@ -464,7 +464,7 @@ duplicate(struct range *r1,struct range *r2)
 static void
 repos(int nchar)
 {
-	register int i;
+	int i;
 	for(i=0;i<2;i++) 
 		fseek(fp[i], -nchar, SEEK_CUR);
 }
@@ -499,7 +499,7 @@ edit(struct diff *diff,int dupl,int j)
 static void
 edscript(int n)
 {
-	register int j,k;
+	int j,k;
 	char block[BUFSIZ];
 	for(n=n;n>0;n--) {
                 if (!oflag || !overlap[n]) 
