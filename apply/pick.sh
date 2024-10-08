@@ -27,6 +27,7 @@ main() {
 		*) # argv
 			break ;;
 	esac
+
 	# Set echo as a boilerplate for
 	# printq() if $fGlob is true.
 	$fGlob && echo() { printq "$@"; }
