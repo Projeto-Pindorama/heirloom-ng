@@ -22,16 +22,14 @@
 
 #include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-char *ssafe(char *s) {
+char *ssafe(const char *s) {
 	int i = 0,
 	    j = 0;
-	char safe[BUFSIZ] = "",
-	     *ssafe = "";
+	char safe[BUFSIZ] = "";
 
-	for (i = 0; s[i]; i++) {
+	for (i = 0, j = 0; s[i]; i++, j++) {
 		switch (iscntrl(s[i])) {
 			default:
 				switch (s[i]) {
@@ -46,22 +44,14 @@ char *ssafe(char *s) {
 								? '?'
 								: (s[i] ^ 0100);
 						i++;
-						j+=2;
+						j++;
 						continue;
 					}
 			case 0: /* normal */
 				safe[j] = s[i];
 				break;
 		}
-		j++;
 	}
 
-	if ((ssafe = calloc(BUFSIZ, sizeof(char *))) == NULL) {
-		fprintf(stderr, "%s: Couldn't allocate string of length %d\n",
-				__func__, BUFSIZ);
-		exit(1);
-	}
-	ssafe = strdup(safe);
-
-	return ssafe;
+	return strdup(safe);
 }
