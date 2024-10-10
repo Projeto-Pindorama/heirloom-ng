@@ -13,6 +13,7 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
+#pragma clang diagnostic ignored "-Wmain-return-type"
 #include <errno.h>
 #include <limits.h>
 #include <pwd.h>
@@ -61,7 +62,7 @@ void main(int argc, char *argv[]) {
 
 	pw = getpwuid(geteuid());
 	if(pw) {
-		for (i = 0; c = pw->pw_name[i]; i++) who[i]=c;
+		for (i = 0; (c = pw->pw_name[i]); i++) who[i]=c;
 		who[i] = '\0'; /* sender initials */
 	}
 
@@ -69,24 +70,23 @@ void main(int argc, char *argv[]) {
 	strncpy(sterm, ttyname(fileno(stderr)), sizeof(sterm));
 	for (i = 1; i < sizeof(sterm) && sterm[i] != '/'; i++);
 	strncpy(sterm, &sterm[(i + 1)], UT_LINESIZE);
-	sterm[(UT_LINESIZE + 1)] = '\0';
+	sterm[(UT_LINESIZE - 1)] = '\0';
 
 	/* Rewind utmpx file to its start,
 	 * like a cassete tape. */
 	setutxent();
-	for (; utmp = getutxent(); ) {
-		switch (utmp->ut_type) {
-			case USER_PROCESS:
-				if(utmp != NULL) {
+	for (; (utmp = getutxent());) {
+		if(utmp != NULL) {
+			switch (utmp->ut_type) {
+				case USER_PROCESS:
 					sleep(1);
 					sendmes(utmp->ut_line);
-				} else {
-					break;
-				}
-			default:
-				continue;
+				default:
+					continue;
+			}
+		} else {
+			break;
 		}
-		break;
 	}
 	/* Close utmpx file. */
 	endutxent();

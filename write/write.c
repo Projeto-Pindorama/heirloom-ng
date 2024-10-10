@@ -13,6 +13,7 @@
  * SPDX-Licence-Identifier: Caldera
  */
 
+#pragma clang diagnostic ignored "-Wmain-return-type"
 #include <limits.h>
 #include <pwd.h>
 #include <signal.h>
@@ -35,7 +36,7 @@ void	main(int argc, char *argv[]);
 void	eof(void);
 void	timout(void);
 int	ex(char* bp);
-int	sigs(void (*sig)(int));
+void	sigs(void (*sig)(int));
 void	usage(void);
 
 void main(int argc, char *argv[]) {
@@ -61,7 +62,7 @@ void main(int argc, char *argv[]) {
 		histtya = argv[2];
 	passw = getpwuid(geteuid());
 	if (passw) {
-		for (i = 0; c = passw->pw_name[i]; i++) me[i]=c;
+		for (i = 0; (c = passw->pw_name[i]); i++) me[i]=c;
 		me[(i + 1)] = '\0'; /* sender initials */
 	} else {
 		fprintf(stderr, "Can't open password database file\n");
@@ -111,7 +112,7 @@ void main(int argc, char *argv[]) {
 			fprintf(stderr, "%s\n", otherplaces[i]);
 	}
 	if (histty[0] == '\0') {
-		fprintf(stderr, him);
+		fprintf(stderr, "%s", him);
 		if (logcnt)
 			fprintf(stderr, " not on that tty\n");
 		else
@@ -189,7 +190,7 @@ int ex(char *bp) {
 	}
 	if (i == 0) {
 		sigs((void (*)(int))0);
-		execl(SHELL, "sh", "-c", bp+1, 0);
+		execl(SHELL, "sh", "-c", bp+1, (char *)0);
 		exit(0);
 	}
 	while(wait((int *)NULL) != i)
@@ -197,9 +198,10 @@ int ex(char *bp) {
 	printf("!\n");
 out:
 	sigs((void (*)(int))eof);
+	return 0;
 }
 
-int sigs(void (*sig)(int)) {
+void sigs(void (*sig)(int)) {
 	int i = 0;
 
 	for(i=0; signum[i]; i++)
