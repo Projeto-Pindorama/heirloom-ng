@@ -39,15 +39,14 @@ void main(int argc, char *argv[]) {
 	     smesg[3000] = "";
 	struct utmpx *utmp;
 	struct passwd *pw;
-	FILE *f = NULL;
+	FILE *f = stdin;
 
-	if ((utmp = getutxent()) == NULL) {
+	if((utmp = getutxent()) == NULL) {
 		fprintf(stderr, "failed to open utmpx database: %s\n",
 			strerror(errno));
 		exit(1);
 	}
 
-	f = stdin;
 	if(argc >= 2) {
 		/* take message from unix file instead of standard input */
 		if((f = fopen(argv[1], "r")) == NULL) {
@@ -55,13 +54,13 @@ void main(int argc, char *argv[]) {
 			exit(1);
 		}
 	}
-	
-	for (; ((i = getc(f)) != EOF); ) smesg[msize++] = i;
+
+	while ((c = getc(f)) != EOF) smesg[msize++] = c;
 	fclose(f);
 	mesg = ssafe(smesg);
-	
+
 	pw = getpwuid(geteuid());
-	if (pw) {
+	if(pw) {
 		for (i = 0; c = pw->pw_name[i]; i++) who[i]=c;
 		who[i] = '\0'; /* sender initials */
 	}
@@ -70,6 +69,7 @@ void main(int argc, char *argv[]) {
 	strncpy(sterm, ttyname(fileno(stderr)), sizeof(sterm));
 	for (i = 1; sterm[i] != '/'; i++);
 	strncpy(sterm, &sterm[(i + 1)], UT_LINESIZE);
+	sterm[(UT_LINESIZE + 1)] = '\0';
 
 	/* Rewind utmpx file to its start,
 	 * like a cassete tape. */
@@ -77,7 +77,7 @@ void main(int argc, char *argv[]) {
 	for (; utmp = getutxent(); ) {
 		switch (utmp->ut_type) {
 			case USER_PROCESS:
-				if (utmp != NULL) {
+				if(utmp != NULL) {
 					sleep(1);
 					sendmes(utmp->ut_line);
 				} else {
