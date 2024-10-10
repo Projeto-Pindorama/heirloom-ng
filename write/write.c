@@ -118,7 +118,7 @@ void main(int argc, char *argv[]) {
 			fprintf(stderr, " not logged in\n");
 		exit(1);
 	}
-	signal(SIGALRM, timout);
+	signal(SIGALRM, (void (*)(int))timout);
 	alarm(5);
 	if ((tf = fopen(histty, "w")) == NULL)
 		goto perm;
@@ -137,7 +137,7 @@ void main(int argc, char *argv[]) {
 	 */
 	if ((stbuf.st_mode & (S_IWGRP|S_IWOTH)) == 0)
 		goto perm;
-	sigs(eof);
+	sigs((void (*)(int))eof);
 	fprintf(tf, "Message from ");
 #ifdef interdata
 	fprintf(tf, "(Interdata) " );
@@ -188,7 +188,7 @@ int ex(char *bp) {
 		goto out;
 	}
 	if (i == 0) {
-		sigs((int (*)())0);
+		sigs((void (*)(int))0);
 		execl(SHELL, "sh", "-c", bp+1, 0);
 		exit(0);
 	}
@@ -196,7 +196,7 @@ int ex(char *bp) {
 		;
 	printf("!\n");
 out:
-	sigs(eof);
+	sigs((void (*)(int))eof);
 }
 
 int sigs(void (*sig)(int)) {

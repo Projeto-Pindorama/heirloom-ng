@@ -4,7 +4,7 @@ write: write.o
 	$(LD) $(LDFLAGS) write.o $(LCOMMON) $(LWCHAR) $(LIBS) -o write
 
 write.o: write.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -std=c89 -c write.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -DSHELL='"$(SHELL)"' -c write.c
 
 install: all
 	$(UCBINST) -c write $(ROOT)$(DEFBIN)/write
