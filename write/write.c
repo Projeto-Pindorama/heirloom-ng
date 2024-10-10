@@ -73,7 +73,7 @@ void main(int argc, char *argv[]) {
 		exit(1);
 	}
 	/* Get everything after /dev. */
-	for (i = 1; mytty[i] != '/'; i++);
+	for (i = 1; i < sizeof(mytty) && mytty[i] != '/'; i++);
 	mytty += (i + 1);
 	if (histtya[0] != '\0') {
 		strncpy(histty, "/dev/", 5);

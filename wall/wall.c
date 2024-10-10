@@ -67,7 +67,7 @@ void main(int argc, char *argv[]) {
 
 	/* Get the current terminal */
 	strncpy(sterm, ttyname(fileno(stderr)), sizeof(sterm));
-	for (i = 1; sterm[i] != '/'; i++);
+	for (i = 1; i < sizeof(sterm) && sterm[i] != '/'; i++);
 	strncpy(sterm, &sterm[(i + 1)], UT_LINESIZE);
 	sterm[(UT_LINESIZE + 1)] = '\0';
 
