@@ -33,10 +33,10 @@ asciitype.o: asciitype.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c asciitype.c
 
 basename.o: basename.c
-	$(CC) $(CFLAGSS) $(CPPFLAGS) -I. -c basename.c
+	$(CC) $(CFLAGS2) $(CPPFLAGS) -I. -c basename.c
 
 securestr.o: securestr.c
-	$(CC) -std=c99 $(CFLAGSS) $(CPPFLAGS) -I. -c securestr.c
+	$(CC) -std=c99 $(CFLAGS2) $(CPPFLAGS) -I. -c securestr.c
 
 getdir.o: getdir.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c getdir.c
