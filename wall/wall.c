@@ -75,17 +75,14 @@ void main(int argc, char *argv[]) {
 	/* Rewind utmpx file to its start,
 	 * like a cassete tape. */
 	setutxent();
-	for (; (utmp = getutxent());) {
-		if(utmp != NULL) {
-			switch (utmp->ut_type) {
-				case USER_PROCESS:
-					sleep(1);
-					sendmes(utmp->ut_line);
-				default:
-					continue;
-			}
-		} else {
-			break;
+	for (; utmp != NULL; utmp = getutxent()) {
+		switch (utmp->ut_type) {
+			case USER_PROCESS:
+				sleep(1);
+				sendmes(utmp->ut_line);
+				break; /* A simple formality. */
+			default:
+				continue;
 		}
 	}
 	/* Close utmpx file. */
