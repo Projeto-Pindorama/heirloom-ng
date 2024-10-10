@@ -52,6 +52,7 @@ char *ssafe(const char *s) {
 				break;
 		}
 	}
+	safe[(j + 1)] = '\0';
 
 	return strdup(safe);
 }
