@@ -58,7 +58,9 @@ void main(int argc, char *argv[]) {
 
 	while ((c = getc(f)) != EOF) smesg[msize++] = c;
 	fclose(f);
+	/* get purified string with new length */
 	mesg = ssafe(smesg);
+	msize = strlen(mesg);
 
 	pw = getpwuid(geteuid());
 	if(pw) {

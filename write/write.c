@@ -149,10 +149,13 @@ void main(int argc, char *argv[]) {
 		char *buf = "";
 		char sbuf[128] = "";
 		i = read(0, sbuf, 128);
-		buf = ssafe(sbuf);
-
 		if (i <= 0)
 			eof();
+
+		/* Purified string. */
+		buf = ssafe(sbuf);
+		i = strlen(buf);
+
 		switch (buf[0]) {
 			case '!':
 				buf[i] = 0;
