@@ -18,7 +18,7 @@
 char *ssafe(const char *s) {
 	const char *const whitespace_chars = "\n\t\r ";
 
-	char safe[BUFSIZ];
+	char safe[BUFSIZ] = "";
 	size_t i = 0;
 
 	for (; *s; s++) {

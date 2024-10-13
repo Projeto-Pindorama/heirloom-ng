@@ -27,7 +27,7 @@
 #include <utmpx.h>
 #define MAXNAMLEN _POSIX_LOGIN_NAME_MAX
 
-char	*mesg = "",
+char	*mesg = NULL,
 	who[MAXNAMLEN] = "???",
 	sterm[PATH_MAX] = "";
 int	msize = 0;
@@ -35,7 +35,7 @@ void main(int argc, char *argv[]);
 void sendmes(char *tty);
 
 void main(int argc, char *argv[]) {
-	int i = 0;
+	unsigned int i = 0;
 	char c = '\0',
 	     smesg[3000] = "";
 	struct utmpx *utmp;

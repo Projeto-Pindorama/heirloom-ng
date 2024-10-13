@@ -46,10 +46,10 @@ void main(int argc, char *argv[]) {
 	    logcnt = 0,
 	    places = 0;
 	char me[MAXNAMLEN] = "???",
-		*mytty = "",
-		*him = "",
+		*mytty = NULL,
+		*him = NULL,
 		histty[(UT_LINESIZE + 1)] = "",
-		*histtya = "",
+		*histtya = NULL,
 		*otherplaces[20];
 	struct passwd *passw;
 	struct utmpx *u;
