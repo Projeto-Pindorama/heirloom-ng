@@ -20,7 +20,7 @@
 /*
  * istext(line, size) - check for text characters
  */
-int 
+int
 istext(unsigned char *s, int size)
 {
 	unsigned char *ep;

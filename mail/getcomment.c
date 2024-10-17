@@ -21,7 +21,7 @@
  *     -1 ==> no closing (terminating) paren found for comment.
  */
 
-int 
+int
 getcomment (
     char *s,
     char *q	/* Copy comment, if found, to here */
@@ -29,7 +29,7 @@ getcomment (
 {
 	char	*p, *sav_q;
 	int	depth = 0;
-	
+
 	if ((p = strchr(s, '(')) == (char *)NULL) {
 		/* no comment found */
 		return (0);

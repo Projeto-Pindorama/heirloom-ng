@@ -34,7 +34,7 @@
  */
 
 #include "mail.h"
-int 
+int
 legal(char *file)
 {
 	char *sp;

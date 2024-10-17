@@ -9,22 +9,22 @@
 
 /*
  * Copyright (c) 1987,1997, Prentice Hall All rights reserved.
- * 
+ *
  * Redistribution and use of the MINIX operating system in source and binary
  * forms, with or without modification, are permitted provided that the
  * following conditions are met:
- * 
+ *
  * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
- * 
+ *
  * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * Neither the name of Prentice Hall nor the names of the software authors or
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, AUTHORS, AND CONTRIBUTORS
  * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -743,7 +743,7 @@ dotflag(char *name)
 	if (*name++ != '.')
 		return 0;
 	switch (*name++) {
-	case 0:	
+	case 0:
 		return 'a';			/* "." */
 	case '.':
 		if (*name == 0)
@@ -1735,7 +1735,7 @@ main(int argc, char **argv)
 	if (present('f')) {
 		field &= ~(FL_LONG|FL_BYTIME|FL_BLOCKS|FL_MODE|FL_MARK|FL_DIR);
 		flags['o'] = flags['g'] = flags['l'] = flags['t'] = flags['s'] =
-			flags['r'] = flags['d'] = flags['F'] = flags['R'] = 
+			flags['r'] = flags['d'] = flags['F'] = flags['R'] =
 			flags['p'] = 0;
 		flags['a'] = flags['A'] = 1;
 		field |= FL_STATUS;

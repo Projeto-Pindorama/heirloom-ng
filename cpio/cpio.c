@@ -4763,7 +4763,7 @@ mstat(void)
 		 * disk sector with direct i/o. This enables signals
 		 * after each block is written instead of being ~40
 		 * seconds in uninterruptible sleep when calling close()
-		 * later. For block devices other than floppies, use the 
+		 * later. For block devices other than floppies, use the
 		 * kernel defined i/o block size. For floppies, use direct
 		 * i/o even when reading since it is faster.
 		 */
@@ -7088,7 +7088,7 @@ getproto(char *np, struct prototype *pp)
 		np++;
 	else {
 		tp = nextfield(np, "type");
-		if (np[1]) 
+		if (np[1])
 			goto notype;
 		switch (np[0]) {
 		case 'b':

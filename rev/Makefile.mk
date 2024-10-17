@@ -4,7 +4,7 @@ rev: rev.o
 	$(LD) $(LDFLAGS) rev.o $(LCOMMON) $(LWCHAR) $(LIBS) -o rev
 
 rev.o: rev.c
-	$(CC) $(CFLAGSU) $(CPPFLAGS) $(ICOMMON) $(IWCHAR) -c rev.c 
+	$(CC) $(CFLAGSU) $(CPPFLAGS) $(ICOMMON) $(IWCHAR) -c rev.c
 
 install: all
 	$(UCBINST) -c rev $(ROOT)$(DEFBIN)/rev

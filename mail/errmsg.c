@@ -25,7 +25,7 @@
 	that is taken as the text for the message, otherwise the
 	text for the err_val message is gotten from the errlist[] array.
 */
-void 
+void
 errmsg(int err_val, char *err_txt)
 {
 	static char pn[] = "errmsg";

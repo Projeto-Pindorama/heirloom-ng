@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -51,7 +51,7 @@
  *	on the hash (called ``value''). In particular, this
  *	collects the equivalence classes in file1 together.
  *	Subroutine equiv replaces the value of each line in
- *	file0 by the index of the first element of its 
+ *	file0 by the index of the first element of its
  *	matching equivalence in (the reordered) file1.
  *	To save space equiv squeezes file1 into a single
  *	array member in which the equivalence classes
@@ -66,15 +66,15 @@
  *	of "k-candidates". At step i a k-candidate is a matched
  *	pair of lines x,y (x in file0 y in file1) such that
  *	there is a common subsequence of length k
- *	between the first i lines of file0 and the first y 
+ *	between the first i lines of file0 and the first y
  *	lines of file1, but there is no such subsequence for
  *	any smaller y. x is the earliest possible mate to y
  *	that occurs in such a subsequence.
  *
  *	Whenever any of the members of the equivalence class of
- *	lines in file1 matable to a line in file0 has serial number 
- *	less than the y of some k-candidate, that k-candidate 
- *	with the smallest such y is replaced. The new 
+ *	lines in file1 matable to a line in file0 has serial number
+ *	less than the y of some k-candidate, that k-candidate
+ *	with the smallest such y is replaced. The new
  *	k-candidate is chained (via pred) to the current
  *	k-1 candidate so that the actual subsequence can
  *	be recovered. When a member has serial number greater
@@ -96,7 +96,7 @@
  *	The core requirements for problems larger than somewhat
  *	are (in words) 2*length(file0) + length(file1) +
  *	3*(number of k-candidates installed),  typically about
- *	6n words for files of length n. 
+ *	6n words for files of length n.
  */
 
 #define	prints(s)	fputs(s,stdout)
@@ -524,7 +524,7 @@ search(long *c, long k, long y)
 	j = k+1;
 	while (1) {
 		l = i + j;
-		if ((l >>= 1) <= i) 
+		if ((l >>= 1) <= i)
 			break;
 		t = clist[c[l]].y;
 		if(t > y)
@@ -1141,7 +1141,7 @@ fetch(off_t *f,long a,long b,FILE *lb,const char *s,int oldfile)
 /*
  * hashing has the effect of
  * arranging line in 7-bit bytes and then
- * summing 1-s complement in 16-bit hunks 
+ * summing 1-s complement in 16-bit hunks
  */
 static int
 readhash(int f)
@@ -1380,7 +1380,7 @@ dump_context_vec(void)
 				do_output++;
 				break;
 			}
-	
+
 		if ( do_output ) {
 			while (cvp <= context_vec_ptr) {
 				a = cvp->a; b = cvp->b; c = cvp->c; d = cvp->d;
@@ -1416,7 +1416,7 @@ dump_context_vec(void)
 				do_output++;
 				break;
 			}
-	
+
 		if (do_output) {
 			while (cvp <= context_vec_ptr) {
 				a = cvp->a; b = cvp->b; c = cvp->c; d = cvp->d;

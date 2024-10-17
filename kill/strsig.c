@@ -144,7 +144,7 @@ static const struct sig_strlist {
 	{ -1,		NULL	}
 };
 
-int 
+int
 str_2_sig(const char *str, int *signum)
 {
 	int	i;
@@ -164,7 +164,7 @@ str_2_sig(const char *str, int *signum)
 	return 0;
 }
 
-int 
+int
 sig_2_str(int signum, char *str)
 {
 	int	i;

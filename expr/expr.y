@@ -5,7 +5,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * SPDX-Licence-Identifier: Caldera 
+ * SPDX-Licence-Identifier: Caldera
  */
 
 %{

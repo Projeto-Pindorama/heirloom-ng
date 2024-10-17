@@ -16,15 +16,16 @@
 
 #if _POSIX_VERSION < 200112L
 #include <string.h>
+#include "strmenta.h"
 /*
  * A basename() function first appeared in
  * POSIX.1-2001, before that it had to be
  * made manually.
  */
-char *basename(const char *s) {
-	register char *name = "",
-		 *token = "";
-	char *ss = "";
+char *basename(const char s[]) {
+	register char *name = NULL,
+		 *token = NULL;
+	char *ss = NULL;
 
 	/*
 	 * Always strdup() 's', since executing
@@ -37,22 +38,13 @@ char *basename(const char *s) {
 	ss = strdup(s);
 #elif defined(_WIN16) || defined(_WIN32) \
 	|| defined(__DOS__) || defined(__OS2__)
-	register int i = 0;
+	unsigned int drvltrpos = 0;
 	char *dirsep = "\\";
 
 	/* Remove "<Drive letter>:" before the path. */
-	for (; s[i]; i++) {
-		switch (s[i]) {
-			case ':':
-				ss = strdup(&s[i + 1]);
-				break;
-			default:
-				continue;
-		}
-		break;
-	}
+	drvltrpos = afterchar(s, ':');
+	ss = strdup(&s[drvltlpos + 1]);
 #endif
-
 	for (token = strtok(ss, dirsep), name = token;
 		token = strtok(NULL, dirsep);) {
 		if (token == NULL) {

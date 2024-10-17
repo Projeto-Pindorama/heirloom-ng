@@ -30,7 +30,7 @@
 
 #include "mail.h"
 
-void 
+void
 clr_hinfo(void)
 {
 	int	i;
@@ -50,7 +50,7 @@ clr_hinfo(void)
 	return;
 }
 
-void 
+void
 clrhdr(int hdrtype)
 {
 	while (hdrlines[hdrtype].head != (struct hdrs *)NULL) {

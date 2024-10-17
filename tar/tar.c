@@ -374,7 +374,7 @@ main(int argc, char *argv[])
 	defaults();
 	argv[argc] = 0;
 	argv++;
-	for (cp = *argv++; *cp; cp++) 
+	for (cp = *argv++; *cp; cp++)
 		switch(*cp) {
 		case 'f':
 			usefile = *argv++;

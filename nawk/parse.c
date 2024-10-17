@@ -1,13 +1,13 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)parse.c	1.7 (gritter) 12/4/04>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
-   SPDX-Licence-Identifier: GPL-2.0+ 
+
+   SPDX-Licence-Identifier: GPL-2.0+
 */
 /*		copyright	"%c%" 	*/
 

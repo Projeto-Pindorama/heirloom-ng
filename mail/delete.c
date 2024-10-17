@@ -18,7 +18,7 @@
 	exit on other signals
 		i	-> signal #
 */
-void 
+void
 delete(int i)
 {
 	static char pn[] = "delete";

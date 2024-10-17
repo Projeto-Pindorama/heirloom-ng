@@ -17,7 +17,7 @@ main() {
 		sleep 1
 	done
 	sleep $take
-	return 3 
+	return 3
 }
 
 handle_signal() { # function input: string signal

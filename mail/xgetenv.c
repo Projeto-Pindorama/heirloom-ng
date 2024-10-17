@@ -131,7 +131,7 @@ xgetenv(char *env)
 {
 	extern char **environ;
 	char *ret, **svenviron;
-	
+
 	if (xenv != NULL) {
 		svenviron = environ;
 		environ = xenv;

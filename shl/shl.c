@@ -307,7 +307,7 @@ doutmp(int action, struct layer *l)
 	struct passwd *pwd = getpwuid(myuid);
 	struct utmpx utx;
 	char *id;
-	/* 
+	/*
 	 * In short, it's not guaranteed that (struct utmpx).ut_tv
 	 * will be of type timeval, so it's necessary to create a
 	 * temporary struct of the correct type for using with

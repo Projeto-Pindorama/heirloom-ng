@@ -98,7 +98,7 @@ usage(void)
 static void
 badlist(void)
 {
-	error(method == 'b' ? "bad list for b/c/f option" : 
+	error(method == 'b' ? "bad list for b/c/f option" :
 			"bad list for c/f option");
 }
 

@@ -51,7 +51,7 @@ static struct prefix
 {
 	double	factor;
 	char	*pname;
-} prefix[] = 
+} prefix[] =
 {
 	{ 1e-18,	"atto" },
 	{ 1e-15,	"femto" },

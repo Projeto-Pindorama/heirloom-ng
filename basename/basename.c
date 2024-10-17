@@ -41,7 +41,7 @@ static char	*progname;
 static void
 usage(void)
 {
-	fprintf(stderr, 
+	fprintf(stderr,
 #ifdef	SUS
 			"Usage:  %s [ path [ suffix ] ]\n",
 #else

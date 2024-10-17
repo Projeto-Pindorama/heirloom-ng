@@ -16,7 +16,7 @@
 #include "mail.h"
 #include <sys/wait.h>
 
-int 
+int
 dowait(pid_t pidval)
 {
 	pid_t w;
@@ -24,7 +24,7 @@ dowait(pid_t pidval)
 	void (*istat)(int), (*qstat)(int);
 
 	/*
-		Parent temporarily ignores signals so it will remain 
+		Parent temporarily ignores signals so it will remain
 		around for command to finish
 	*/
 	istat = sigset(SIGINT, SIG_IGN);
@@ -50,14 +50,14 @@ dowait(pid_t pidval)
 	return:
 		status	-> command exit status
 */
-int 
+int
 systm(char *s)
 {
 	pid_t	pid;
 
 	/*
-		Spawn the shell to execute command, however, since the 
-		mail command runs setgid mode reset the effective group 
+		Spawn the shell to execute command, however, since the
+		mail command runs setgid mode reset the effective group
 		id to the real group id so that the command does not
 		acquire any special privileges
 	*/

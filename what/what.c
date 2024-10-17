@@ -52,7 +52,7 @@ static void	dowhat(FILE *);
 static int	trypat(FILE *,char *);
 
 
-int 
+int
 main(int argc, char **argv)
 {
 	int i;

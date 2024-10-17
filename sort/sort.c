@@ -1202,7 +1202,7 @@ loop:	if (mb_cur_max > 1) {
 		if(*p != '\n')
 			p++;
 		else goto ret;
-	} 
+	}
 	if (fp->posix && fp->n[j] == 0 && j == 1 && runs++ == 0) {
 		i = 1;
 		goto loop;

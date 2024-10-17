@@ -23,7 +23,7 @@
  * remap the bin/mail exit code to sendmail recognizable
  * exit code when in deliver mode.
  */
-static int 
+static int
 maperrno(int err)
 {
 	int rc;
@@ -54,7 +54,7 @@ maperrno(int err)
 }
 
 /* Fix for bug 1207994 */
-void 
+void
 sig_done(int needtmp)
 {
 	static char pn[] = "sig_done";
@@ -63,7 +63,7 @@ sig_done(int needtmp)
 }
 
 
-void 
+void
 done(int needtmp)
 {
 	static char pn[] = "done";

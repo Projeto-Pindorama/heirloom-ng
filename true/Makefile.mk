@@ -5,7 +5,7 @@ true: truther.c
 
 false: truther.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) truther.c -DFALSE -o false
-	
+
 install: all
 	$(UCBINST) -c true $(ROOT)$(DEFBIN)/true
 	$(UCBINST) -c false $(ROOT)$(DEFBIN)/false

@@ -1,12 +1,12 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)run.c	1.33 (gritter) 12/25/06>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*	copyright	"%c%"	*/
@@ -273,7 +273,7 @@ Cell *call(Node **a, int n)
 		return y;
 	tempfree(y, "fcn ret");		/* this can free twice! */
 	z = fp->retval;			/* return value */
-	dprintf( ("%s returns %g |%s| %o\n", s, getfval(z), 
+	dprintf( ("%s returns %g |%s| %o\n", s, getfval(z),
 		getsval(z), z->tval) );
 	fp--;
 	return(z);
@@ -1885,7 +1885,7 @@ again:	va_start(ap, fmt);
 		*target = &(*whole)[diff];
 		goto again;
 	}
-	
+
 	while (**target)	/* NUL characters might have been printed; */
 		(*target)++;	/* don't skip past them. */
 	return ret;

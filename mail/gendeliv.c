@@ -149,12 +149,12 @@ gendeliv(FILE *fp, int rc, char *name)
 	if ((hptr = hdrlines[H_MSVC].head) != (struct hdrs *)NULL) {
 		if ((strlen(hptr->value) != 4) ||
 		    (casncmp("mail", hptr->value, 4) != 0)) {
-			fprintf(outfile,"Original-%s %s\n", 
+			fprintf(outfile,"Original-%s %s\n",
 					header[H_MSVC].tag, hptr->value);
 		}
 	}
 	if ((hptr = hdrlines[H_MTSID].head) != (struct hdrs *)NULL) {
-		fprintf(outfile,"Confirming-%s <%s>\n", 
+		fprintf(outfile,"Confirming-%s <%s>\n",
 				header[H_MTSID].tag, hptr->value);
 	}
 	if ((hptr = hdrlines[H_UAID].head) != (struct hdrs *)NULL) {

@@ -1,7 +1,7 @@
 /*
- * readlink.c - displays the target of a symbolic link 
+ * readlink.c - displays the target of a symbolic link
  */
-/* 
+/*
  * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 #if !defined(UCB)
 		printf("%s", resolve(argv[file], name_size));
 
-		/* 
+		/*
 		 * GNU readlink says:
 		 * 'ignoring --no-newline with multiple arguments',
 		 * so it will print with new lines anyway.
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 	printf("%s", resolve(argv[0], name_size));
 
 	if (!fNo_newline) {
-#endif	
+#endif
 		printf("%c", '\n');
 	}
 

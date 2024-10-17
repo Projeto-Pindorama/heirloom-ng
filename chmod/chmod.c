@@ -5,7 +5,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * SPDX-Licence-Identifier: Caldera 
+ * SPDX-Licence-Identifier: Caldera
  */
 #if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
 #define	USED	__attribute__ ((used))

@@ -19,10 +19,10 @@
 
 #include "mail.h"
 /*
-	If mail file does not exist create it 
+	If mail file does not exist create it
 */
 #ifdef OLD
-void 
+void
 createmf(uid_t uid, char *file)
 {
 	int fd;
@@ -50,18 +50,18 @@ createmf(uid_t uid, char *file)
 #include <fcntl.h>
 #include <stdio.h>
 
-int 
+int
 accessmf(char *path)
 {
 
 struct stat fsb,sb;
 int mbfd;
 tryagain:
-	if (lstat(path, &sb)) { 
+	if (lstat(path, &sb)) {
 		/* file/symlink does not exist, so create one */
 		mbfd = open(path,
 		    O_APPEND|O_CREAT|O_EXCL|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
-		chmod(path, 0660); 
+		chmod(path, 0660);
 		/* if someone create a symlink/file just ahead */
 		/* of us, the create will failed with EEXIST   */
 		/* This is what we want, because we do not     */
@@ -70,11 +70,11 @@ tryagain:
 		if (mbfd == -1) {
 			if (errno == EEXIST)
 				goto tryagain;
-		} 
+		}
 
 	/* file/symlink  exist, make sure it is not linked */
 	} else if (sb.st_nlink != 1 || S_ISLNK(sb.st_mode)) {
-		fprintf(stderr, 
+		fprintf(stderr,
 "%s: security violation, '%s' should not be linked to other file\n", program, path);
 		sav_errno = errno;
 		return -1;
@@ -85,7 +85,7 @@ tryagain:
 		/* we lstat() before...                          */
 		/* this is to guard against someone deleting the */
 		/* old file and creat a new symlink in its place */
-		/* We are not createing a new file here, but we  */	
+		/* We are not createing a new file here, but we  */
 		/* do not want append to the worng file either   */
 		mbfd = open(path, O_APPEND|O_WRONLY, 0);
 		if (mbfd != -1 &&
@@ -103,7 +103,7 @@ tryagain:
 		sav_errno = errno;
 		return -1;
 	}
-	
+
 	return mbfd;
 }
 #endif

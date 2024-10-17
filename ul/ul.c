@@ -14,7 +14,7 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 
 /*	from 4.3BSD ul.c	5.1 (Berkeley) 5/31/85	*/
