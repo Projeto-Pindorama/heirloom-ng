@@ -20,7 +20,7 @@
  * and fills fromU and fromS global strings appropriately.
  */
 
-void 
+void
 pickFrom(char *lineptr)
 {
 	char *p;

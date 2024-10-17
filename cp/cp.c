@@ -203,7 +203,7 @@ static void
 freedslots(void)
 {
 	struct dslot *dp, *dn;
-	
+
 	for (dp = d0; dp; dp = dn) {
 		dn = dp->d_nxt;
 		freeislots(dp->d_isl);

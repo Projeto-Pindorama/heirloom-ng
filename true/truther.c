@@ -1,8 +1,8 @@
-/* truther.c - provide truth values 
+/* truther.c - provide truth values
  * This file contain code for both true(1) and false(1).
- */ 
+ */
 /* Copyright (C) 2022: Luiz Antônio (takusuman)
- * 
+ *
  * SPDX-Licence-Identifier: Zlib
  */
 

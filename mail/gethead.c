@@ -188,7 +188,7 @@ gethead(int current, int all)
 	Return (0);
 }
 
-void 
+void
 tmperr(void)
 {
 	fclose(tmpf);
@@ -200,7 +200,7 @@ tmperr(void)
  *	Write a string out to tmp file, with error checking.
  *	Return 1 on success, else 0
  */
-int 
+int
 wtmpf(char *str, int length)
 {
 	if (fwrite(str, 1, length, tmpf) != length) {
@@ -228,7 +228,7 @@ getline(char **ptr2line, size_t *max, FILE *f)
 /*
  *	Make temporary file for letter
  */
-void 
+void
 mktmp(void)
 {
 	static char tmpl[] = "/var/tmp/mailXXXXXX";
@@ -245,7 +245,7 @@ mktmp(void)
  * Get a number from user's reply,
  * return its value or zero if none present, -1 on error
  */
-int 
+int
 getnumbr(char *s)
 {
 	int	k = 0;
@@ -271,7 +271,7 @@ getnumbr(char *s)
  *	If valid msgnum return 1,
  *		else print message and return 0
  */
-int 
+int
 validmsg(int i)
 {
 	if ((i < 0) || (i > nlet)) {
@@ -284,7 +284,7 @@ validmsg(int i)
 /*
  *	Set letter to passed status, and adjust changed as necessary
  */
-void 
+void
 setletr(int letter, int status)
 {
 	if (status == ' ') {

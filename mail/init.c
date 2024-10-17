@@ -165,7 +165,7 @@ char		*home;		/* pointer to $HOME */
 time_t		iop;
 int		interactive = 0;	/* 1 says user is interactive */
 int		ismail = TRUE;		/* default to program=mail */
-int             deliverflag = FALSE;    /* -d flag, skip sendmail 
+int             deliverflag = FALSE;    /* -d flag, skip sendmail
 					 * deliver directly to mailbox
 					 */
 int             fromflag = FALSE;   /* -f from_user, set a user
@@ -254,7 +254,7 @@ char		uval[1024];
 char		*savefile;
 size_t		savefilesize;
 
-int 
+int
 init(void)
 {
 	utims.actime = utims.modtime = -1;

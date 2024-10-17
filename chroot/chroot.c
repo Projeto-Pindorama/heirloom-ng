@@ -1,4 +1,4 @@
-/* 
+/*
  * chroot.c - change the root directory for a command
  */
 /*
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]);
 void usage(void);
 
 int main(int argc, char *argv[]) {
-	progname = argv[0];	
+	progname = argv[0];
 
 	if (argc < 3) {
 		usage();

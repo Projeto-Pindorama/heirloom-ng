@@ -367,7 +367,7 @@ skip:;
 	if ((p->nset = dp->nset) > dp->avail) /* need more */
 	{
 		if ((n = p->nset << 1) < dp->nposn)
-			n = dp->nposn;	
+			n = dp->nposn;
 		dp->avail += n;
 		if ((fp = realloc(dp->posfoll,
 			sizeof(size_t) * (dp->avail + dp->used))) == 0)
