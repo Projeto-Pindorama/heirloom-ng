@@ -1,5 +1,5 @@
-/* 
- * timeout.c - execute a command with a time limit 
+/*
+ * timeout.c - execute a command with a time limit
  */
 /*
  * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
@@ -26,10 +26,11 @@
 #include <errno.h>
 #include <pfmt.h>
 #include <signal.h>
-#include <sigtable.h>
+#include "sigtable.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
 	    fOnemoretime = 0,
 	    fPreserve_status = 0,
 	    killer_sig = SIGTERM, /* Default killer signal is SIGTERM. */
-			/* 
+			/*
 			 * -1 can be replaced by another signal
 			 * if the user sets the -s flag.
 			 */
@@ -77,10 +78,10 @@ int main(int argc, char *argv[]) {
 	    execerr = 0, /* Command execution error code. */
 	    ecmd = 0, /* Command exit code. */
 	    eprog = 0; /* Program exit code. */
-	
+
 	char **commandv,
 	     *fst_commandv = NULL;
-	/* 
+	/*
 	 * atr note: it might be better to have other integers
 	 * replaced by booleans, since it makes it a lot easier
 	 * to tell what is being acomplished.
@@ -122,12 +123,12 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
-	/* 
+	/*
 	 * atr note: if one wants to use malloc he must be sure that the last
 	 * element of commandv is set to NULL
 	 */
 	/* Allocate commandv[], where argv[] will be copied to. */
-	if ( (commandv = calloc((size_t)argc, sizeof(char *))) == NULL ) { 
+	if ( (commandv = calloc((size_t)argc, sizeof(char *))) == NULL ) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an array of "
 		                       "%d elements, each one being %lu "
 				       "bytes large.\n", progname,
@@ -153,7 +154,7 @@ int main(int argc, char *argv[]) {
 	free(fst_commandv);
 
 	if (! fForeground) {
-		/* 
+		/*
 		 * setpgid(pid, pgid)
 		 * If both the 'pid' and 'pgid' are equal to zero, setpgid(2)
 		 * assumes that both the child process pid and pgid shall be the
@@ -167,14 +168,14 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	/* 
+	/*
 	 * The list of signals masked (blocked) during the execution of the
 	 * handler (which is present at sigaction.sa_handler/sa_sigaction)
 	 * must be initialized per excluding the current list at sa_mask.
 	 */
 	sigemptyset(&sa.sa_mask);
-	
-	/* 
+
+	/*
 	 * Since these two signals can not be caught nor ignored (using
 	 * sa_mask), its inclusion at the signal ignore array must avoided.
 	 * It will not cause any error, though, just be ignored.
@@ -220,7 +221,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	/* 
+	/*
 	 * This is meant to ignore stop signals that could come from the
 	 * terminal on the parent process.
 	 */
@@ -234,7 +235,7 @@ int main(int argc, char *argv[]) {
 		pfmt(stderr, MM_ERROR, "%s: failed to fork: %s.\n",
         	    progname, strerror(errno));
 	} else if (exec_pid == 0) {
-		/* 
+		/*
 		 * On the child process, signals sent by the terminal mustn't
 		 * be ignored anymore and that the default action --- without
 		 * involving the handler --- have to be taken by the system.
@@ -253,14 +254,14 @@ int main(int argc, char *argv[]) {
 		 *
 		 *  126    if COMMAND is found but cannot be invoked
 		 *  127    if COMMAND cannot be found
-		 * 
+		 *
 		 *  ENOENT stands for "error no entity/entry", so it
 		 *  means, in this context, no such file or directory.
 		 */
 		execerr = (errno == ENOENT) ? 127 : 126;
 		_exit(execerr);
 	}
-	
+
 	/* The command string will not be necessary after exec(). */
 	for (i = 0; commandv[i]; i++) {
 		/* atr: frees the strduped strings */
@@ -268,7 +269,7 @@ int main(int argc, char *argv[]) {
 	}
 	free(commandv);
 
-	/* 
+	/*
 	 * Add signals from the sa_mask set to the SIG_BLOCK set,
 	 * blocking it after the execution of the commmand.
 	 */
@@ -281,11 +282,11 @@ int main(int argc, char *argv[]) {
 	settimeout(&first_interval);
 
 	for (;;) {
-		/* 
+		/*
 		 * The sa_mask will be empty again, but we will
 		 * also be using sigsuspend() to prevent the
 		 * function assigned to sa_handler of
-		 * interrupting this section. 
+		 * interrupting this section.
 		 */
 		sigemptyset(&sa.sa_mask);
 		sigsuspend(&sa.sa_mask);
@@ -293,7 +294,7 @@ int main(int argc, char *argv[]) {
 		if (siglist.sig_chld) {
 			siglist.sig_chld = 0;
 
-			/* 
+			/*
 			 * taks note: This code looks a little confusing for
 			 * people who never worked with signals in C, so there's
 			 * my explanation:
@@ -355,7 +356,7 @@ int main(int argc, char *argv[]) {
 	if (timesout && !fPreserve_status) {
 		eprog = 124;
 	}
-	
+
 	return eprog;
 }
 
@@ -363,7 +364,7 @@ void settimeout(struct TClock *duration) {
 	timer_t tid;
 	struct itimerspec its;
 
-	/* 
+	/*
 	 * Since the second value, sevp on the prototype of
 	 * timer_create(2), is defined as NULL, every
 	 * expiration of this timer will sent an SIGALRM.
@@ -376,10 +377,10 @@ void settimeout(struct TClock *duration) {
 		exit(1);
 	}
 
-	/* Timer expiration. */	
+	/* Timer expiration. */
 	its.it_value.tv_sec = duration->sec;
 	its.it_value.tv_nsec = duration->nsec;
-	/* 
+	/*
 	 * Timer period betwixt expirations.
 	 * taks note: This must be all zeroed,
 	 * ergo option '-k' can work properly.
@@ -401,7 +402,7 @@ void settimeout(struct TClock *duration) {
 int validate_signal(char *str) {
 	register int i;
 
-	/* 
+	/*
 	 * Check if the first character of the input
 	 * string is a letter, so it can be parsed
 	 * into a signal name.
@@ -422,7 +423,7 @@ int validate_signal(char *str) {
 					progname,          str);
 		exit(1);
 	} else {
-		i = atoi(str);	
+		i = atoi(str);
 
 		if (i < 0 || i > SIGRTMAX) {
 			pfmt(stderr, MM_ERROR, "%s: invalid signal %d.\n",
@@ -456,12 +457,12 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	     *afterpoint = NULL,
 	     *decsep = NULL,
 	     *tunit = NULL;
-	/* 'double' for the converted time per unit. */ 
+	/* 'double' for the converted time per unit. */
 	double ftime = 0;
-	register size_t i = 0;
-	size_t afterpoint_len = 0;
+	size_t i = 0,
+	       afterpoint_len = 0;
 
-	/* 
+	/*
 	 * Support both Anglo and European decimal separators.
 	 * taks note: In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧
 	 */
@@ -490,21 +491,31 @@ int parse_interval(const char *ss, struct TClock *interval) {
 					progname, tunit);
 			exit(1);
 	}
-	
+
 	/* Copy the time value to 's'. */
 	snprintf(s, 32, "%g", ftime);
-	
+
 	for (i = 0; s[i]; i++) {
-		if (s[i] == '.') {
-			if (afterpoint == NULL) {
-				afterpoint = &s[i + 1];
-				s[i] = '\0';
-			} else {
+		switch (isdigit(s[i])) {
+			case 0:
+				switch (s[i]) {
+					case '.':
+						continue;
+					default:
+						break;
+				}
 				return -1;
-			}
-		} else if (!isdigit(s[i])) {
-			return -1;
+			default:
+				continue;
 		}
+	}
+
+	i = afterchar(s, '.');
+	if (afterpoint == NULL) {
+		afterpoint = &s[i + 1];
+		s[i] = '\0';
+	} else {
+		return -1;
 	}
 
 	interval->sec = strlen(s)
@@ -529,7 +540,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	return 0;
 }
 
-/* 
+/*
  * This is just a function that sets variables --- which
  * indicates which signals where enabled or not ---, so it
  * does not return anything. I wish these could be returned

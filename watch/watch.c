@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <sys/wait.h>
@@ -71,19 +72,21 @@ int main(int argc, char *argv[]) {
 			if (!optarg) {
 			       	break;
 			}
-			char arg[128];
-			char *afterpoint = NULL;
+			char arg[128] = "",
+			     *afterpoint = NULL,
+			     *decsep = NULL;
 			strncpy(arg, optarg, 128);
 			arg[127] = '\0';
 
+			/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
+			decsep = strchr(arg, ',');
+			if (decsep)
+				*decsep = '.';
 			size_t point = 0;
-			for (; arg[point]; point++) {
-				/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
-				if (arg[point] == '.' || arg[point] == ',') {
-					arg[point] = '\0';
-					afterpoint = &arg[point + 1];
-					break;
-				}
+			point = afterchar(arg, '.');
+			if (point != 0 || arg[0] == '.') {
+				arg[point] = '\0';
+				afterpoint = &arg[point + 1];
 			}
 			
 			if (strlen(arg) == 0) {
