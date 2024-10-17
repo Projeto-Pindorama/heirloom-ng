@@ -22,11 +22,11 @@
  * SPDX-Licence-Identifier: BSD-2-Clause
  */
 
+#include "sigtable.h"
 #include <ctype.h>
 #include <errno.h>
 #include <pfmt.h>
 #include <signal.h>
-#include "sigtable.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
