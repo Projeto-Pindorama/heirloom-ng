@@ -29,20 +29,22 @@ int main(int argc, char *argv[]) {
 		usage();
 	}
 
-	// chroot(8) will only run if the user is root, according to the
-	// specification.
+	/*
+	 * chroot(8) will only run if the user is root,
+	 * according to the specification.
+	 */
 	if (geteuid() != ROOTUID) {
 		pfmt(stderr, MM_ERROR, "not running as superuser.\n");
 		exit(2);
 	}
 
-	// chroot(newroot) and execv(command)
+	/* chroot(newroot) and execv(command) */
 	if (
 		chroot(argv[1]) < 0 ||
 		chdir("/") < 0 ||
 		execv(argv[2], &argv[2]) < 0
 	) {
-		// Boilerplate for using pfmt() with errno
+		/* Boilerplate for using pfmt() with errno */
 		prerror(errno);
 		exit(-1);
 	}
