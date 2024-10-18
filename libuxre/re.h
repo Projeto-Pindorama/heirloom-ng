@@ -9,7 +9,7 @@
  *
  *  Copyright (C) 2001 Caldera International, Inc.
  *
- *  SPDX-Licence-Identifier: LGPL-2.1+ 
+ *  SPDX-Licence-Identifier: LGPL-2.1+
  */
 
 #ifndef	LIBUXRE_RE_H

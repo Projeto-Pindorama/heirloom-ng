@@ -1,12 +1,12 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)awk.g.y	1.9 (gritter) 5/14/06>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*		copyright	"%c%" 	*/
@@ -51,7 +51,7 @@ extern int	yylex(void);
 %token	<i>	MATCH NOTMATCH MATCHOP
 %token	<i>	FINAL DOT ALL CCL NCCL CHAR MCHAR OR STAR QUEST PLUS
 %token	<i>	AND BOR APPEND EQ GE GT LE LT NE IN
-%token	<i>	ARG BLTIN BREAK CONTINUE DELETE DO EXIT FOR FUNC 
+%token	<i>	ARG BLTIN BREAK CONTINUE DELETE DO EXIT FOR FUNC
 %token	<i>	SUB GSUB IF INDEX LSUBSTR MATCHFCN NEXT
 %token	<i>	ADD MINUS MULT DIVIDE MOD
 %token	<i>	ASSIGN ASGNOP ADDEQ SUBEQ MULTEQ DIVEQ MODEQ POWEQ
@@ -77,7 +77,7 @@ extern int	yylex(void);
 %left	AND
 %left	GETLINE
 %nonassoc APPEND EQ GE GT LE LT NE MATCHOP IN '|'
-%left	ARG BLTIN BREAK CALL CONTINUE DELETE DO EXIT FOR FIELD FUNC 
+%left	ARG BLTIN BREAK CALL CONTINUE DELETE DO EXIT FOR FIELD FUNC
 %left	GSUB IF INDEX LSUBSTR MATCHFCN NEXT NUMBER
 %left	PRINT PRINTF RETURN SPLIT SPRINTF STRING SUB SUBSTR
 %left	REGEXPR VAR VARNF IVAR WHILE '('
@@ -404,7 +404,7 @@ var:
 	| FIELD				{ $$ = valtonode($1, CFLD); }
 	| IVAR				{ $$ = op1(INDIRECT, valtonode($1, CVAR)); }
 	| INDIRECT term	 		{ $$ = op1(INDIRECT, $2); }
-	;	
+	;
 
 varlist:
 	  /* nothing */		{ arglist = $$ = 0; }

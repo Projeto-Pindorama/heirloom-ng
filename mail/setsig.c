@@ -15,7 +15,7 @@
 #include "mail.h"
 /*
 	Signal reset
-	signals that are not being ignored will be 
+	signals that are not being ignored will be
 	caught by function f
 		i	-> signal number
 		f	-> signal routine

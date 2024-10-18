@@ -1,12 +1,12 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)tran.c	1.16 (gritter) 2/4/05>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*		copyright	"%c%" 	*/
@@ -189,7 +189,7 @@ void freeelem(Cell *ap, unsigned char *s)
 	Array *tp;
 	Cell *p, *prev = NULL;
 	int h;
-	
+
 	tp = (Array *) ap->sval;
 	h = hash(s, tp->size);
 	for (p = tp->tab[h]; p != NULL; prev = p, p = p->cnext)
@@ -285,7 +285,7 @@ Cell *slookup(unsigned char *s, Array *tp)	/* look for s in tp */
 
 Awkfloat setfval(Cell *vp, Awkfloat f)
 {
-	if ((vp->tval & (NUM | STR)) == 0) 
+	if ((vp->tval & (NUM | STR)) == 0)
 		funnyvar(vp, (char *)gettxt(assigntovid, assigntov));
 	if (vp->tval & FLD) {
 		int n;
@@ -442,7 +442,7 @@ unsigned char *qstring(unsigned char *s, int delim)
 			vyyerror(nlstring, cbuf);
 		else if (c != '\\')
 			*q++ = c;
-		else	/* \something */	
+		else	/* \something */
 			switch (c = *++s) {
 			case '\\':	*q++ = '\\'; break;
 			case 'n':	*q++ = '\n'; break;
