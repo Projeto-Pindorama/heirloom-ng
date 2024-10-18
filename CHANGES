@@ -1,4 +1,6 @@
 Release ...
+* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
+  glibc and making changes to adhere to C standards (patch by Gabriel Souza).
 * [NEW] wall, write: New implementation ported from UNIX 7th (a.k.a. 32V),
   bulletproofed against buffer overflows and the CVE-2024-28085, which is
   available as the ssafe() function at libcommon.

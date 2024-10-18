@@ -215,7 +215,7 @@ fmt(struct iblok *fi)
 
 	get(mp, fi, c, m, b);
 	while (c != (wint_t)EOF) {
-		
+
 		/*
 		 * Collect a line, doing ^H processing.
 		 * Leave tabs for now.
@@ -247,7 +247,7 @@ fmt(struct iblok *fi)
 
 		while (c != '\n' && c != (wint_t)EOF)
 			get(mp, fi, c, m, b);
-		
+
 		/*
 		 * Expand tabs on the way to canonb.
 		 */
@@ -434,7 +434,7 @@ pack(const wchar_t *word)
 	t = colwidth(word);
 	s = colwidthn(outbuf, outp);
 	if (t+s <= width) {
-		
+
 		/*
 		 * In like flint!
 		 */
@@ -494,7 +494,7 @@ tabulate(wchar_t *line)
 	while (cp >= line && *cp == ' ')
 		cp--;
 	*++cp = '\0';
-	
+
 	/*
 	 * Count the leading blank space and tabulate.
 	 */

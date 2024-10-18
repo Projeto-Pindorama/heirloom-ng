@@ -1,5 +1,5 @@
 /*
- * rev.c - reverse lines of a file 
+ * rev.c - reverse lines of a file
  *
  * A little bit based on Luiz' implementation
  */
@@ -8,10 +8,10 @@
  * Copyright (C) 2024: Samuel Brederodes (callsamu)
  *
  * SPDX-Licence-Identifier: Zlib
- * 
+ *
  * UTF-8 support borrowed from suckless sbase implementation.
  * Copyright (C) 2016 Mattias Andrée (maandree@kth.se)
- * SPDX-Licence-Identifier: MIT 
+ * SPDX-Licence-Identifier: MIT
  */
 
 #include <errno.h>
@@ -63,7 +63,7 @@ void reverse_string(char *string) {
 	int len = strlen(string),
 	    i = 0,
 	    lf = 0;
-	
+
 	lf = len && string[(len - 1)] == '\n';
 	len -= lf;
 	i = len;

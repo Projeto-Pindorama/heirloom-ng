@@ -73,7 +73,7 @@ static const char sccsid[] USED = "@(#)/usr/ucb/deroff.sl	1.13 (gritter) 12/25/0
 #  define C1	C1get
 #endif /* not DEBUG */
 
-#define SKIP while(C != '\n') 
+#define SKIP while(C != '\n')
 #define SKIP_TO_COM SKIP; SKIP; pc=c; while(C != '.' || pc != '\n' || C > 'Z')pc=c
 
 #define	YES 1
@@ -373,9 +373,9 @@ static void
 getfname(void)
 {
 	int i;
-	struct chain { 
-		struct chain *nextp; 
-		char *datap; 
+	struct chain {
+		struct chain *nextp;
+		char *datap;
 	} *chainblock;
 	struct chain *q;
 	static struct chain *namechain	= NULL;
@@ -482,8 +482,8 @@ static void
 macro(void)
 {
 	if(msflag){
-		do { 
-			SKIP; 
+		do {
+			SKIP;
 		}		while(C!='.' || C!='.' || C=='.');	/* look for  .. */
 		if(c != '\n')SKIP;
 		return;
@@ -536,8 +536,8 @@ eqn(void)
 					putchar('x');
 					putchar(' ');
 					if(last){
-						putchar(last); 
-						putchar('\n'); 
+						putchar(last);
+						putchar('\n');
 					}
 				}
 				return;
@@ -563,7 +563,7 @@ eqn(void)
 			dflg = 0;
 		}
 
-		if(c != '\n') while(C1 != '\n'){ 
+		if(c != '\n') while(C1 != '\n'){
 			if(chars[c] == PUNCT)last = c;
 			else if(c != ' ')last = 0;
 		}
@@ -575,7 +575,7 @@ backsl(void)	/* skip over a complete backslash construction */
 {
 	int bdelim;
 
-sw:  
+sw:
 	switch(C)
 	{
 	case '"':
@@ -1036,7 +1036,7 @@ noblock(char a1, char a2)
 		else if(c1 == 'E' && c2 == 'Q'){
 			if (   (mac == ME && a1 == ')')
 			    || (mac != ME && a1 == 'D') ) {
-				eqn(); 
+				eqn();
 				eqnf=0;
 			}
 		}
@@ -1094,10 +1094,10 @@ skip(void)
 static int
 intbl(void)
 {
-	if(msflag){ 
-		stbl(); 
+	if(msflag){
+		stbl();
 	}
-	else tbl(); 
+	else tbl();
 	return(0);
 }
 
@@ -1135,7 +1135,7 @@ static int
 PP(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 	printf(".%c%c",c1,c2);
 	while(C != '\n')putchar(c);
@@ -1157,7 +1157,7 @@ static int
 SH(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 
 	if(parag){
@@ -1194,7 +1194,7 @@ static int
 MMHU(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 	if(parag){
 		printf(".%c%c",c1,c2);
@@ -1210,7 +1210,7 @@ static int
 mesnblock(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 	noblock(')',c2);
 	return(0);
@@ -1219,11 +1219,11 @@ static int
 mssnblock(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 	noblock(c1,'E');
 	return(0);
-}	
+}
 static int
 nf(void)
 {
@@ -1259,7 +1259,7 @@ mepp(pacmac c12)
 	PP(c12);		/* eats the line */
 	return(0);
 }
-/* 
+/*
  *	Start of a section heading; output the section name if doing words
  */
 static int
@@ -1300,7 +1300,7 @@ static void
 defcomline(pacmac c12)
 {
 	int	c1, c2;
-	
+
 	frommac(c12, c1, c2);
 	if(msflag && mac==MM && c2=='L'){
 		if(disp || c1 == 'R') {

@@ -8,6 +8,6 @@
 static const char sccsid[] USED = "@(#)dc.sl	2.12 (gritter) 12/25/06";
 /* SLIST */
 /*
-dc.c:	Sccsid @(#)dc.c	1.21 (gritter) 12/25/06>	
-dc.h:	Sccsid @(#)dc.h	1.9 (gritter) 2/4/05>	
+dc.c:	Sccsid @(#)dc.c	1.21 (gritter) 12/25/06>
+dc.h:	Sccsid @(#)dc.h	1.9 (gritter) 2/4/05>
 */

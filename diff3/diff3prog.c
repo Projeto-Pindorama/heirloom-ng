@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -143,7 +143,7 @@ main(int argc,char **argv)
 		fprintf(stderr,"diff3: arg count\n");
 		exit(2);
 	}
-        if (oflag) { 
+        if (oflag) {
 		f1mark = mark("<<<<<<<",argc>=7?argv[6]:argv[3]);
 		f3mark = mark(">>>>>>>",argc>=8?argv[7]:argv[5]);
         }
@@ -465,7 +465,7 @@ static void
 repos(int nchar)
 {
 	int i;
-	for(i=0;i<2;i++) 
+	for(i=0;i<2;i++)
 		fseek(fp[i], -nchar, SEEK_CUR);
 }
 
@@ -502,7 +502,7 @@ edscript(int n)
 	int j,k;
 	char block[BUFSIZ];
 	for(n=n;n>0;n--) {
-                if (!oflag || !overlap[n]) 
+                if (!oflag || !overlap[n])
                         prange(&de[n].old);
                 else
                         printf("%da\n=======\n", de[n].old.to -1);
@@ -513,7 +513,7 @@ edscript(int n)
 				trouble();
 			fwrite(block, 1, j, stdout);
 		}
-                if (!oflag || !overlap[n]) 
+                if (!oflag || !overlap[n])
                         printf(".\nw\nq\n");
                 else {
                         printf("%s\n.\n",f3mark);

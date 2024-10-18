@@ -319,7 +319,7 @@ rd:	in = read(ifile, buf, sizeof buf);
 		while(buf[i++] != '\n'){
 			if(i - j > 255){
 				if (!utf8(NULL))
-					printf("data\n"); 
+					printf("data\n");
 				goto out;
 			}
 			if(i >= in)goto notc;
@@ -337,8 +337,8 @@ isc:		printf("c program text");
 		if(buf[i] <= 0)
 			goto notas;
 		if(buf[i] == ';'){
-			i++; 
-			goto check; 
+			i++;
+			goto check;
 		}
 		if(buf[i++] == '\n')
 			if(nl++ > 6)goto notc;
@@ -372,7 +372,7 @@ notfort:
 	if(buf[i] == '.'){
 		i++;
 		if(lookup(as) == 1){
-			printf("assembler program text"); 
+			printf("assembler program text");
 			goto outa;
 		}
 		else if(j>=0 && buf[j] == '\n' && (alphachar(buf[j+2]&0377) ||
@@ -390,8 +390,8 @@ notfort:
 		if(buf[i] == '.'){
 			i++;
 			if(lookup(as) == 1){
-				printf("assembler program text"); 
-				goto outa; 
+				printf("assembler program text");
+				goto outa;
 			}
 			else if(buf[j] == '\n' && (alphachar(buf[j+2]&0377) ||
 					buf[j+2] == '\\' && buf[j+3] == '"')){
@@ -409,8 +409,8 @@ notas:
 			goto out;
 		}
 		if (!utf8(NULL))
-			printf("data\n"); 
-		goto out; 
+			printf("data\n");
+		goto out;
 	}
 	if (mbuf.st_mode&0111)
 		printf("commands text");
@@ -496,12 +496,12 @@ english (const char *bp, int n)
 			ct[bp[j]|040]++;
 		switch (bp[j])
 		{
-		case '.': 
-		case ',': 
-		case ')': 
+		case '.':
+		case ',':
+		case ')':
 		case '%':
-		case ';': 
-		case ':': 
+		case ';':
+		case ':':
 		case '?':
 			punct++;
 			if ( j < n-1 &&

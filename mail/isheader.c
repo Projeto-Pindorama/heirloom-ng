@@ -24,7 +24,7 @@
  *	FALSE	->	not header line
  *	H_*     ->	type of header line found.
  */
-int 
+int
 isheader(char *lp, int *ctfp)
 {
 	char	*p, *q;

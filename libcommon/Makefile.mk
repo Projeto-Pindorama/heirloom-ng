@@ -2,9 +2,10 @@ all: libcommon.a
 
 OBJ = asciitype.o ib_alloc.o ib_close.o ib_free.o ib_getlin.o ib_getw.o \
 	ib_open.o ib_popen.o ib_read.o ib_seek.o oblok.o sfile.o strtol.o \
-	basename.o securestr.o getdir.o regexpr.o gmatch.o utmpx.o memalign.o pathconf.o \
-	sigset.o signal.o sigrelse.o sighold.o sigignore.o sigpause.o \
-	getopt.o pfmt.o vpfmt.o prerror.o setlabel.o setuxlabel.o pfmt_label.o sysv3.o
+	afterchar.o basename.o securestr.o getdir.o regexpr.o gmatch.o utmpx.o \
+  memalign.o pathconf.o sigset.o signal.o sigrelse.o sighold.o sigignore.o \
+  sigpause.o getopt.o pfmt.o vpfmt.o prerror.o setlabel.o setuxlabel.o \
+  pfmt_label.o sysv3.o
 libcommon.a: headers $(OBJ)
 	$(AR) -rv $@ $(OBJ)
 	$(RANLIB) $@
@@ -31,6 +32,9 @@ clean:
 
 asciitype.o: asciitype.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c asciitype.c
+
+afterchar.o: afterchar.c
+	$(CC) $(CFLAGS2) $(CPPFLAGS) -I. -c afterchar.c
 
 basename.o: basename.c
 	$(CC) $(CFLAGS2) $(CPPFLAGS) -I. -c basename.c
@@ -146,6 +150,7 @@ ib_seek.o: iblok.h
 iblok.o: iblok.h
 oblok.o: oblok.h
 sfile.o: sfile.h
+afterchar.o: strmenta.h
 basename.o: strmenta.h
 securestr.o: strmenta.h
 getdir.o: getdir.h
