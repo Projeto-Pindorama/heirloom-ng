@@ -2078,8 +2078,8 @@ namecmp(const void *a, const void *b)
 static int
 getconf(struct sctab *scp, int argc, char *name, char *file)
 {
-	register size_t len;
-	register char *buffer;
+	size_t len;
+	char *buffer;
 	long value;
 
 	switch (scp->type) {
@@ -2186,7 +2186,7 @@ getconf(struct sctab *scp, int argc, char *name, char *file)
 int
 main(int argc, char **argv)
 {
-	register struct sctab *scp;
+	struct sctab *scp;
 	int c;
 	int exstat = 0;
 

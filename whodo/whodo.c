@@ -18,7 +18,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)whodo.sl	1.42 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)whodo.sl	1.44 (gritter) 1/1/10";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -77,6 +77,10 @@ static const char sccsid[] USED = "@(#)whodo.sl	1.42 (gritter) 1/12/07";
 
 #ifndef	PRNODEV
 #define	PRNODEV		0
+#endif
+
+#ifndef _POSIX_PATH_MAX
+#define	_POSIX_PATH_MAX	255
 #endif
 
 #define	next(wc, s, n)	(mb_cur_max > 1 && *(s) & 0200 ? \
@@ -292,7 +296,7 @@ uptime(void)
 	FILE *fp;
 	union value	*v;
 	const char upfile[] = "/proc/uptime";
-	
+
 	if ((fp = fopen(upfile, "r")) == NULL) {
 		pnerror(errno, upfile);
 		return unknown;
@@ -542,7 +546,7 @@ pcpu(struct pslot *p0, char *buf, size_t buflen)
 	struct pslot *p;
 	long acc = 0;
 
-	for (p = p0; p; p = p->p_next) 
+	for (p = p0; p; p = p->p_next)
 		acc += p->p_time;
 	return jifftime(acc, buf, buflen, 0, 6);
 }
@@ -997,7 +1001,10 @@ getproc(char *pname)
 	struct pslot	*p;
 	wchar_t	wc;
 	int	n;
-	
+
+	strtol(pname, &ep, 10);
+	if (*ep != '\0')
+		return NULL;
 	strcpy(fn, "/proc/");
 	strcat(fn, pname);
 	if (lstat(fn, &st) < 0) {
@@ -1005,9 +1012,6 @@ getproc(char *pname)
 		return NULL;
 	}
 	if (!S_ISDIR(st.st_mode))
-		return NULL;
-	strtol(pname, &ep, 10);
-	if (*ep != '\0')
 		return NULL;
 	if ((p = readproc(fn)) != NULL) {
 		ep = p->p_cmdline;
@@ -1400,7 +1404,7 @@ readproc(struct kinfo_proc *kp)
 		strncpy(p->p_cmdline, p->p_name, sizeof p->p_name);
 		p->p_cmdline[sizeof p->p_cmdline - 1] = '\0';
 	}
-	
+
 	/* now try to fetch the times out of mach structures */
 	pid = kp->kp_proc.p_pid;
 	error = task_for_pid(mach_task_self(), pid, &task);
@@ -1423,7 +1427,7 @@ readproc(struct kinfo_proc *kp)
 	time_value_add(&total_time, &task_binfo.system_time);
 	p->p_ctime = tv2sec(&total_time, 1);
 
-DONE:	mach_port_deallocate(mach_task_self(), task);	
+DONE:	mach_port_deallocate(mach_task_self(), task);
 	return p;
 }
 
@@ -1443,7 +1447,7 @@ findprocs(struct tslot *t0) {
 		queueproc(t0, p);
 	}
 	/* free the memory allocated by GetBSDProcessList */
-	free(kp);	
+	free(kp);
 }
 
 #endif	/* all */

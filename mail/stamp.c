@@ -20,7 +20,7 @@
 	mailfile does not make shell think that NEW mail has arrived
 	(by having the file times change).
 */
-void 
+void
 stamp(void)
 {
 	if ((access(mailfile, A_EXIST) == A_OK) && (utimep->modtime != -1))

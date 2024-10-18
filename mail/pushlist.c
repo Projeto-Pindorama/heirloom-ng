@@ -18,8 +18,8 @@
  * If contflg == TRUE, link this line to the end of the continuation lines
  * for the headerline specified (head or tail of type hdrtype).
  */
-void 
-pushlist(register int hdrtype, register int where, register char *s, int contflg)
+void
+pushlist(int hdrtype, int where, char *s, int contflg)
 {
 	static char pn[] = "pushlist";
 	char		*p;

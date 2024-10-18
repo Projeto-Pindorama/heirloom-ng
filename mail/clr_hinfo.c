@@ -30,10 +30,10 @@
 
 #include "mail.h"
 
-void 
+void
 clr_hinfo(void)
 {
-	register	int	i;
+	int	i;
 	static		int	firsttime = 1;
 	static char		pn[] = "clr_hinfo";
 
@@ -50,7 +50,7 @@ clr_hinfo(void)
 	return;
 }
 
-void 
+void
 clrhdr(int hdrtype)
 {
 	while (hdrlines[hdrtype].head != (struct hdrs *)NULL) {

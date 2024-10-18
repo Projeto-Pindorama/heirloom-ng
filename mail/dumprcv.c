@@ -20,11 +20,11 @@
  */
 void
 dumprcv(
-	register int	type,
-	register int	htype,
-	register int	*didrcvlines,
-	register int	*suppress,
-	register FILE	*f
+	int	type,
+	int	htype,
+	int	*didrcvlines,
+	int	*suppress,
+	FILE	*f
 )
 {
 	int		rcvspot;	/* Place to put H_RECEIVED lines */
@@ -53,8 +53,8 @@ dumprcv(
 	}
 
 	*didrcvlines = TRUE;
-	for (hptr = hdrlines[H_RECEIVED].head; 
-	     hptr != (struct hdrs *)NULL; 
+	for (hptr = hdrlines[H_RECEIVED].head;
+	     hptr != (struct hdrs *)NULL;
 	     hptr = hptr->next) {
 		printhdr(type, H_RECEIVED, hptr, f);
 	}

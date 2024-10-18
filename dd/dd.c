@@ -248,7 +248,7 @@ expr(const char *ap)
 	d_type	val;
 	char	*x;
 	int	c;
-	
+
 	if (*ap == '-' || *ap == '+')
 		badnumeric(ap);
 	val = strtoull(ap, &x, 10);

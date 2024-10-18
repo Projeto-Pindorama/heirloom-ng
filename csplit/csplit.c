@@ -36,7 +36,7 @@ static const char sccsid[] USED = "@(#)csplit.sl	1.10 (gritter) 5/29/05";
 #include "sigset.h"
 #include "atoll.h"
 
-#if defined (__GLIBC__) 
+#if defined (__GLIBC__)
 #if defined (_IO_getc_unlocked)
 #undef	getc
 #define	getc(f)		_IO_getc_unlocked(f)

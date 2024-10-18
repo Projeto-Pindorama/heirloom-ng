@@ -1,3 +1,6 @@
+#ifndef UNZIP_H
+#define UNZIP_H
+
 /*
  * Changes by Gunnar Ritter, Freiburg i. Br., Germany, May 2003.
  *
@@ -119,3 +122,6 @@ extern int	huft_build(const unsigned *b, unsigned n, unsigned s,
 			struct huft **t, int *m,
 			int bits, int nob, int eob);
 extern void	huft_free(struct huft *);
+
+#endif
+

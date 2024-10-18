@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -60,14 +60,14 @@ static size_t	titlesize;
 static char	procself[40];
 
 static void	setfile(char **, char **, const char *);
-static void	scanpr(register struct dir *, int, const char *, const char *,
+static void	scanpr(struct dir *, int, const char *, const char *,
 			const char *, const char *, const char *);
 static void	only(struct dir *, int);
 static struct dir	*setupdir(const char *);
 static int	entcmp(const struct dir *, const struct dir *);
 static void	compare(struct dir *, char **);
 static void	calldiff(const char *, char **);
-static int	useless(register const char *);
+static int	useless(const char *);
 static const char	*mtof(mode_t mode);
 static void	putN(const char *, const char *, const char *, int);
 static void	putNreg(const char *, const char *, time_t, int);
@@ -91,9 +91,9 @@ static int	xclude(const char *);
 void
 diffdir(char **argv)
 {
-	register struct dir *d1, *d2;
+	struct dir *d1, *d2;
 	struct dir *dir1, *dir2;
-	register int i, n;
+	int i, n;
 	int cmp;
 
 	if (opt == D_IFDEF) {
@@ -205,7 +205,7 @@ diffdir(char **argv)
 static void
 setfile(char **fpp, char **epp, const char *file)
 {
-	register char *cp;
+	char *cp;
 	int	n;
 
 	if ((n = pathconf(file, _PC_PATH_MAX)) < 1024)
@@ -224,7 +224,7 @@ setfile(char **fpp, char **epp, const char *file)
 }
 
 static void
-scanpr(register struct dir *dp, int test, const char *title,
+scanpr(struct dir *dp, int test, const char *title,
 		const char *file1, const char *efile1,
 		const char *file2, const char *efile2)
 {
@@ -273,9 +273,9 @@ only(struct dir *dp, int which)
 static struct dir *
 setupdir(const char *cp)
 {
-	register struct dir *dp = 0, *ep;
-	register struct dirent *rp;
-	register int nitems;
+	struct dir *dp = 0, *ep;
+	struct dirent *rp;
+	int nitems;
 	DIR *dirp;
 
 	dirp = opendir(cp);
@@ -321,7 +321,7 @@ entcmp(const struct dir *d1, const struct dir *d2)
 static void
 compare(struct dir *dp, char **argv)
 {
-	register int i, j;
+	int i, j;
 	int f1 = -1, f2 = -1;
 	mode_t fmt1, fmt2;
 	struct stat stb1, stb2;
@@ -572,8 +572,8 @@ int
 ascii(int f)
 {
 	char buf[BUFSIZ];
-	register int cnt;
-	register char *cp;
+	int cnt;
+	char *cp;
 
 	lseek(f, 0, 0);
 	cnt = read(f, buf, BUFSIZ);
@@ -588,7 +588,7 @@ ascii(int f)
  * THIS IS CRUDE.
  */
 static int
-useless(register const char *cp)
+useless(const char *cp)
 {
 
 	if (cp[0] == '.') {

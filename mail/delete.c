@@ -18,8 +18,8 @@
 	exit on other signals
 		i	-> signal #
 */
-void 
-delete(register int i)
+void
+delete(int i)
 {
 	static char pn[] = "delete";
 

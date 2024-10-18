@@ -63,7 +63,7 @@ dodiffs() {
 			continue
         	;;
 	esac
-	#   
+	#
 	# If either is a "large file" use bdiff (LF aware),
 	# else use diff.
 	#
@@ -83,8 +83,8 @@ dodiffs() {
 while getopts dsw: i
 do
 	case $i in
-	d)	Dflag=1;; 
-	s)	Sflag=1;; 
+	d)	Dflag=1;;
+	s)	Sflag=1;;
 	w)	width=`expr $OPTARG + 0 2>/dev/null`
 		if [ $? = 2 ]
 		then echo "$progname: numeric argument required"
@@ -192,7 +192,7 @@ while read <&3 tmp tmp tmp fsize1 tmp tmp tmp a &&
 	     then echo "directory	$a"
 	     fi
 	elif [ -f "$D1/$a" ]
-	then 
+	then
 	     #
 	     # If the file sizes are different, then we can skip the run
 	     # of "cmp" which is only used to determine 'same' or 'different'.

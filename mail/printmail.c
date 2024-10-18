@@ -25,7 +25,7 @@ char	*lockfile;
 /*
  *	Print mail entries
  */
-void 
+void
 printmail(void)
 {
 	static char pn[] = "printmail";

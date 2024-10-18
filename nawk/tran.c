@@ -1,12 +1,12 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)tran.c	1.16 (gritter) 2/4/05>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*		copyright	"%c%" 	*/
@@ -60,7 +60,7 @@ Cell	*nullloc;
 Node	*nullnode;	/* zero&null, converted into a node for comparisons */
 
 extern Cell **fldtab;
-static int hash(register unsigned char *s, int n);
+static int hash(unsigned char *s, int n);
 static void rehash(Array *tp);
 
 static	const	char
@@ -189,7 +189,7 @@ void freeelem(Cell *ap, unsigned char *s)
 	Array *tp;
 	Cell *p, *prev = NULL;
 	int h;
-	
+
 	tp = (Array *) ap->sval;
 	h = hash(s, tp->size);
 	for (p = tp->tab[h]; p != NULL; prev = p, p = p->cnext)
@@ -210,8 +210,8 @@ void freeelem(Cell *ap, unsigned char *s)
 Cell *ssetsymtab(unsigned char *n, unsigned char *s, Awkfloat f,
 		unsigned t, Array *tp)
 {
-	register int h;
-	register Cell *p;
+	int h;
+	Cell *p;
 
 	if (n != NULL && (p = lookup(n, tp)) != NULL) {
 		dprintf( ("setsymtab found %lo: n=%s", (long)p, p->nval) );
@@ -239,10 +239,10 @@ Cell *ssetsymtab(unsigned char *n, unsigned char *s, Awkfloat f,
 	return(p);
 }
 
-static int hash(register unsigned char *s, int n)
+static int hash(unsigned char *s, int n)
 	/* form hash value for string s */
 {
-	register unsigned hashval;
+	unsigned hashval;
 
 	for (hashval = 0; *s != '\0'; s++)
 		hashval = (*s + 31 * hashval);
@@ -271,9 +271,9 @@ static void rehash(Array *tp)	/* rehash items in small table into big one */
 	tp->size = nsz;
 }
 
-Cell *slookup(register unsigned char *s, Array *tp)	/* look for s in tp */
+Cell *slookup(unsigned char *s, Array *tp)	/* look for s in tp */
 {
-	register Cell *p, *prev = NULL;
+	Cell *p, *prev = NULL;
 	int h;
 
 	h = hash(s, tp->size);
@@ -283,9 +283,9 @@ Cell *slookup(register unsigned char *s, Array *tp)	/* look for s in tp */
 	return(NULL);			/* not found */
 }
 
-Awkfloat setfval(register Cell *vp, Awkfloat f)
+Awkfloat setfval(Cell *vp, Awkfloat f)
 {
-	if ((vp->tval & (NUM | STR)) == 0) 
+	if ((vp->tval & (NUM | STR)) == 0)
 		funnyvar(vp, (char *)gettxt(assigntovid, assigntov));
 	if (vp->tval & FLD) {
 		int n;
@@ -316,7 +316,7 @@ void funnyvar(Cell *vp, char *rw)
 		vp, vp->nval, vp->sval, vp->fval, vp->tval);
 }
 
-unsigned char *setsval(register Cell *vp, unsigned char *s)
+unsigned char *setsval(Cell *vp, unsigned char *s)
 {
 	if ((vp->tval & (NUM | STR)) == 0)
 		funnyvar(vp, (char *)gettxt(assigntovid, assigntov));
@@ -359,7 +359,7 @@ unsigned char *setsval(register Cell *vp, unsigned char *s)
 	return(vp->sval = s);
 }
 
-Awkfloat r_getfval(register Cell *vp)
+Awkfloat r_getfval(Cell *vp)
 {
 	/* if (vp->tval & ARR)
 		ERROR "Illegal reference to array %s", vp->nval FATAL;
@@ -379,7 +379,7 @@ Awkfloat r_getfval(register Cell *vp)
 	return(vp->fval);
 }
 
-unsigned char *r_getsval(register Cell *vp)
+unsigned char *r_getsval(Cell *vp)
 {
 	unsigned char s[100];
 
@@ -418,9 +418,9 @@ unsigned char *r_getsval(register Cell *vp)
 	return(vp->sval);
 }
 
-unsigned char *stostring(register const unsigned char *s)
+unsigned char *stostring(const unsigned char *s)
 {
-	register unsigned char *p;
+	unsigned char *p;
 
 	p = malloc(strlen((char *) s)+1);
 	if (p == NULL)
@@ -442,7 +442,7 @@ unsigned char *qstring(unsigned char *s, int delim)
 			vyyerror(nlstring, cbuf);
 		else if (c != '\\')
 			*q++ = c;
-		else	/* \something */	
+		else	/* \something */
 			switch (c = *++s) {
 			case '\\':	*q++ = '\\'; break;
 			case 'n':	*q++ = '\n'; break;

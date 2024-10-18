@@ -21,7 +21,7 @@
 #include "asciitype.h"
 
 /*
- * isit(lp, type) --  match "name" portion of 
+ * isit(lp, type) --  match "name" portion of
  *		"name: value" pair
  *	lp	->	pointer to line to check
  *	type	->	type of header line to match
@@ -31,10 +31,10 @@
  *
  *  Execpt for H_FORM type, matching is case insensitive (bug 1173101)
  */
-int 
-isit(register char *lp, register int type)
+int
+isit(char *lp, int type)
 {
-	register char	*p;
+	char	*p;
 
 	switch (type) {
 	case H_FROM:

@@ -617,7 +617,7 @@ do
 		fi
 	done
 	if test "$gotcha" = ,
-	then	
+	then
 		if test -n "$dflag"
 		then
 			echo "$name not found."

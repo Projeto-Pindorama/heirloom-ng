@@ -1,0 +1,244 @@
+.\"
+.\" Copyright (c) 2024 Luiz Antônio Rangel
+.\"
+.\" SPDX-Licence-Identifier: Zlib
+.\"
+.\" Some snippets borrowed from UNIX v10's manual page
+.\" for apply and pick:
+.\" Copyright (c) 1989, 1990 AT&T Bell Laboratories --- All Rights Reserved.
+.\" Copyright (c) 1990 Saunders College Publishing --- All Rights Reserved. 
+.\"
+.TH APPLY 1B "07/20/24" "Heirloom Toolchest" "BSD System Compatibility"
+.SH NAME
+apply, pick \- repeatedly apply a command to
+a group of arguments; select arguments
+.SH SYNOPSIS
+.B apply
+[
+.B \-v
+|
+.B \-d
+]
+[
+.B \-a
+.I m
+]
+[
+.B \-\fI#\fR
+]
+.I command args ...
+.PP
+.B pick
+[
+\fB\-f\fR
+]
+[
+.I args ...
+]
+.SH DESCRIPTION
+.I Apply
+applies a 
+.I command 
+on specified \fIargs\fR, each one
+at a turn. Normally, arguments are
+permutated per one, but one can
+change this per utilizing the
+.B \-#
+option, which specifies the number
+of arguments that will be passed
+to
+.I command
+at once. If the number is zero,
+.I command
+will be executed with no
+arguments, but for the same number
+of times as there are \fIargs\fR.
+Character sequences of the form
+"%#" in \fIcommand\fR, where # is
+also a number, this time limited
+betwixt 1 and 9, are replaced per
+its correspondent argument. If
+such sequences occur, the number
+indicated per the
+.B \-#
+option shall be ignored and the
+maximum number of arguments
+passed to
+.I command
+will be the largest value of "%#".
+The magic character "%" can be
+changed per the
+.B \-a
+option.
+.PP
+.I Pick
+writes each argument to the
+standard error output and reads a
+reply. If the reply is "y",
+.I pick
+will echo it to the standard
+output; if the reply is "q",
+.I pick
+exists without reading any more
+arguments; there is no error
+output for other replies, it
+just skips the current argument.
+If there are no arguments, lines
+of the standard input are taken 
+instead, which can be particularly
+useful for using in pipes. The
+.B \-f
+option can be useful for dealing
+with not-so standard filenames
+which contain spaces and/or
+non-alphanumeric symbols that are
+also reserved by the shell such as
+brackets, square brackets, braces
+and chevrons.
+.SH EXAMPLES
+.br
+A time-consuming alternative to
+.B ls(1)
+with the
+.B \-1
+option:
+.IP \& 2
+.BI "% apply echo *"
+.LP
+Same as before, this time
+globbing-safe:
+.IP \& 2
+.BI "% apply \[dq]echo '%1'\[dq] *"
+.LP
+Compare pairs of files:
+.IP \& 2
+.BI "% apply -2 cmp a1 a2 b1 b2"
+.LP
+Pick some songs from a folder and 
+enqueue on the playlist in
+Qt-based Multimedia Player:
+.IP \& 2
+.BI "% find \[dq]/usr/home/luiz/Music/Cauby Peixoto\[dq] -type f -print | pick -f | xargs qmmp -e"
+.LP
+Move commits from one branch to
+another, from the oldest to the
+newest, on the git(1) RCS
+utilizing the git-cherry-pick(1)
+utility.
+.IP \& 2
+.BI "% git log --oneline | pick | cut -d' ' -f1 > /tmp/to-cherrypick.txt"
+.br
+.BI "% git checkout mala # Another branch"
+.br
+.BI "% apply 'git cherry-pick' `tail -r /tmp/to-cherrypick.txt`"
+.LP
+Pick '.c' and '.h' files and count
+the lines from each: 
+.IP \& 2
+.BI "% wc -l `pick *.[ch]`"
+.LP
+Same as before, with different
+processes for each file:
+.IP \& 2
+.BI "% apply 'wc -l' `pick *.[ch]`"
+.LP
+Far from useful, but a really fun
+way of writing the lyrics for "99
+bottles of beer", taking advantage
+of the fact that
+.I apply
+calls \fBsh(1)\fR per default:
+.RS 2
+.nf
+.eo
+% apply "s=''; [ %1 -ne 1 ] && s='s'; \
+printf '%d bottle%c of beer on the wall, %d bottle%c of beer.\n' \
+%1 \"$s\" %1 \"$s\"; \
+printf 'Take one down and pass around,'; \
+if [ -n $s ]; then \
+printf ' %d bottle%c of beer on the wall.\n' `expr %1 - 1` \"$s\"; \
+else \
+printf ' no more bottles of beer on the wall!\n'; \
+fi" `seq 99 -1 1` 
+.ec
+.fi
+.RE
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B SHELL
+Path name to an alternative shell
+program to be used.
+.SH "SEE ALSO"
+sh(1), xargs(1)
+.SH NOTES
+Because of the algorithm for applying
+every argument from 
+.I args
+into the
+.I command
+string and then executing it via a
+\fBsystem(3)\fR\-oid, it is
+slightly slower than something
+that could be crudely made as a
+.B sh(1)
+native function, but one shall not
+be bothered since the difference
+is pretty much negligible.
+.PP
+.I Pick
+is implemented, albeit it has a 
+\-f option as an extension to deal
+with not-so portable file names,
+intensively following its historical
+description at the AT&T Research
+Unix v10 manual page, which is the
+reason to it being extremely simple.
+Since nothing about it besides the
+description at the manual could be
+found, this implementation is just
+a reconstruction of the original
+concept and maybe differ in some
+small aspects.
+.SH BUGS
+Use special shell metacharacters
+at the
+.I command
+string with care, enclosing it in
+single quotes when needed; if not,
+one can get some bizarre results.
+.PP
+This could be seen more like a
+technical limitation of the way
+characters and strings work in
+the C programming language than a
+bug per se, but only plain ASCII
+magic characters are supported.
+.SH HISTORY
+An
+.I apply
+command first appeared in 4.2BSD.
+.br
+Then, via 4.2BSD, it got into
+Bell Labs' CSRC for the 8th
+edition of Research Unix and
+stayed there until the 10th
+edition, when it became
+accompanied by a
+.I pick
+command, which is very shady since
+an 10th edition of the Research
+Unix never existed uniformly and,
+just as other utilities, it's
+mentioned in the manual but
+neither its source nor binaries
+are present.
+.br
+Per the 4.2BSD manual page for
+\fIapply\fR, the authorship is
+attributed to Rob Pike; just
+some guy who made part of small
+and fairly niche projects such as
+the Blit terminal, UTF-8, Plan 9,
+acme and sam editors, Limbo,
+Inferno and the Go Programming
+Language.

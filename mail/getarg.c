@@ -23,7 +23,7 @@
 		NULL	-> no token
 */
 char *
-getarg(register char *s, register char *p)
+getarg(char *s, char *p)
 {
 	while (*p == ' ' || *p == '\t') p++;
 	if (*p == '\n' || *p == '\0') return(NULL);

@@ -14,7 +14,7 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 
 /*	from 4.3BSD ul.c	5.1 (Berkeley) 5/31/85	*/
@@ -310,8 +310,8 @@ filtr(struct iblok *f)
 static void
 flushln(void)
 {
-	register int lastmode;
-	register int i;
+	int lastmode;
+	int i;
 	int hadmodes = 0;
 
 	lastmode = NORMAL;
@@ -353,9 +353,9 @@ flushln(void)
 static void
 overstrike(void)
 {
-	register int i;
+	int i;
 	char *lbuf;
-	register char c, *cp;
+	char c, *cp;
 	int hadbold=0;
 
 	if ((lbuf = malloc((maxcol+1) * sizeof *lbuf)) == NULL) {
@@ -404,9 +404,9 @@ overstrike(void)
 static void
 iattr(void)
 {
-	register int i;
+	int i;
 	char *lbuf;
-	register char c, *cp;
+	char c, *cp;
 
 	if ((lbuf = malloc((maxcol+1) * sizeof *lbuf)) == NULL) {
 		write(2, "no memory\n", 10);
@@ -451,7 +451,7 @@ initbuf(void)
 static void
 fwd(void)
 {
-	register int oldcol, oldmax;
+	int oldcol, oldmax;
 
 	oldcol = col;
 	oldmax = maxcol;

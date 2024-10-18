@@ -56,7 +56,7 @@ lock(char *user)
 	done(0);
 }
 
-void 
+void
 unlock(void) {
 	mailunlock();
 }

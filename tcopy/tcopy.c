@@ -14,7 +14,7 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 
 /*	from 4.3BSD tcopy.c	1.2 (Berkeley) 12/11/85	*/
@@ -63,7 +63,7 @@ static void	RUBOUT(int);
 int
 main(int argc, char **argv)
 {
-	register int n, nw, inp, outp = -1;
+	int n, nw, inp, outp = -1;
 
 	progname = basename(argv[0]);
 	if (argc <=1 || argc > 3) {

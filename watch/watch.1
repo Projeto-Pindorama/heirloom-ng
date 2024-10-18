@@ -7,41 +7,54 @@
 .SH NAME
 watch \- Keep an eye on a command output.
 .SH SYNOPSIS
-\fBwatch\fR \fB\-n\fR [\fIseconds\fR] [\fB\-bt\fR] [\fBcommand\fR [\fIargs\fR...]]
+\fBwatch\fR [\fB\-n\fR \fIseconds\fR] [\fB\-bt\fR] \fBcommand\fR [\fIargs\fR...]
 .SH DESCRIPTION
 The
 .B watch 
-utility executes a command repeatedly every "user-defined" seconds.
-This allows you to watch a program output change over the time.
+utility executes a command repeatedly every
+\fIseconds\fR seconds. This allows you to watch
+a program output change over the time.
 .PP
 It accepts the following options:
 .TP
 .B \-n
-Specifies the interval to refresh the output. Per default, the
-interval is of 2 seconds.
+Specifies the interval to refresh the output.
+By default, the interval is of 2 seconds.
 .TP
 .B \-b
-Beeps if the program being run returns a non-zero exit status.
+Beeps if the program being run returns a non-zero
+exit status.
 .TP
 .B \-t
-Turns off the information header, letting just the verbatim program
-output being refreshed every time on the screen \(em equivalent to a \fIksh\fR(1)
+Turns off the information header, letting just the
+verbatim program output being refreshed every time
+on the screen \(em equivalent to a \fIksh\fR(1)
 \fIfor ((;;))\fR accompanied by \fIsleep\fR(1).
 .br
-Not recommended, unless you're using \fItmux\fR(1) or another terminal multiplexer
-that shows you information that would originally be shown by that header.
+Not recommended, unless you're using \fItmux\fR(1)
+or another terminal multiplexer that shows you
+information that would originally be shown by that
+header.
 .SH EXAMPLES
-It can be very useful when backuping some disc and needing to see how many files
-were already copied.
+It can be very useful when backing up a disk and
+you need to see how many files were already copied.
 .br
-Lets suppose you're copying a disc from a terminal and, in another, you want to
-keep an eye at \fIdu\fR(1) output to see every minute if the file size matches
-with what you're expecting.
+Let's suppose you're copying a disk from a terminal
+and, in another, you want to keep an eye at
+\fIdu\fR(1) output to see every minute if the file
+size matches with what you're expecting.
 .IP \& 2
 .BI "% watch -n 60 -b du -sh /dsk/1"
 .LP
 .SH NOTES
-This implementation does not support the "\fIWATCH_INTERVAL\fR" environment
+.PP
+This implementation supports intervals using
+both European or Anglo decimal separators,
+although sleeping in fractionated seconds does
+not make a lot of sense.
+.PP
+This implementation does not support the
+"\fIWATCH_INTERVAL\fR" environment
 variable.
 .SH "SEE ALSO"
 execvp(3),
@@ -51,21 +64,29 @@ curses(3X)
 The
 .B watch(1)
 utility has a hazy history.
-Nobody seems to be actually sure of where it has appeared
-first.
+Nobody seems to be actually sure of where
+it appeared first.
 .br
-According to procps 010114's watch C source code, where it first
-appeared in that package, it was written from scratch by Tony Rems
-in 1991, and later recieved many modifications and corrections by
-Francois Pinard.
+According to procps 010114's watch
+C source code, where it first appeared in
+that package, it was written from scratch
+by Tony Rems in 1991, and later recieved
+many modifications and corrections by
+François Pinard.
 .br
-However, according to Internet Initiative Japan Inc.'s iwatch
-manual page, the watch utility came first from BSDI Inc. BSD/OS 3.1
-and their code is slightly derived from it; he/she \(em who wrote the
-manual page and comments at the original source code \(em also
-speculated that its existence was earlier than BSD/OS 3.1, from some
-another free distribution, but there's no further information that
-supports this.
+However, according to
+Internet Initiative Japan Inc.'s iwatch
+manual page, the watch utility came first
+from BSDi's BSD/OS 3.1 and their code
+is slightly derived from it; he/she
+who wrote the manual page and comments
+at the original source code also
+speculated that its existence was earlier
+than BSD/OS 3.1, from some another free
+distribution, but there's no further
+information that supports this.
 .PP
-This implementation mimicks some of the basic behavior of procps-ng's
-watch, just the necessary to have a useful, simple and stable program.
+This implementation mimics some of the basic
+behavior of procps-ng's watch, but only the
+necessary behavior to have a useful, simple 
+and stable program.

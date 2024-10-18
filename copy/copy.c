@@ -496,7 +496,7 @@ getpath(const char *path, char **file, char **filend, size_t *sz, size_t *slen)
 	if (path[0] == '/' && path[1] == '\0')
 		*(*filend)++ = '/';
 	else {
-		register const char *cp = path;
+		const char *cp = path;
 		while ((*(*filend)++ = *cp++) != '\0');
 		(*filend)[-1] = '/';
 	}

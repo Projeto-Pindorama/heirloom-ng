@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -80,7 +80,7 @@ static void *lrealloc(void *, size_t);
 static char *
 getl(int f, long long n)
 {
-	register int delta, nt;
+	int delta, nt;
 	size_t	len;
 
 	delta = n - lineno[f];
@@ -109,7 +109,7 @@ getl(int f, long long n)
 static void
 clrl(int f,long long n)
 {
-	register long long i,j;
+	long long i,j;
 	j = n-lineno[f]+1;
 	for(i=0;i+j<ntext[f];i++)
 		movstr(f, i+j, i);
@@ -118,7 +118,7 @@ clrl(int f,long long n)
 }
 
 static void
-movstr(register int f, register int i, register int j)
+movstr(int f, int i, int j)
 {
 	free(text[f][j]);
 	text[f][j] = text[f][i];
@@ -131,7 +131,7 @@ int
 main(int argc,char **argv)
 {
 	char *s0,*s1;
-	register int c, status = 0;
+	int c, status = 0;
 
 	setlocale(LC_CTYPE, "");
 	mb_cur_max = MB_CUR_MAX;
@@ -174,7 +174,7 @@ static int
 easysynch(void)
 {
 	int i,j;
-	register int k,m;
+	int k,m;
 	char *s0,*s1;
 	for(i=j=1;i<RANGE&&j<RANGE;i++,j++) {
 		s0 = getl(0,n0+i);
@@ -206,7 +206,7 @@ cont2:			;
 static int
 output(int a,int b)
 {
-	register int i;
+	int i;
 	char *s;
 	if(a<0)
 		change(n0-1,0,n1,b,"a");

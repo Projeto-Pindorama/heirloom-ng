@@ -20,10 +20,10 @@
  * and fills fromU and fromS global strings appropriately.
  */
 
-void 
-pickFrom(register char *lineptr)
+void
+pickFrom(char *lineptr)
 {
-	register char *p;
+	char *p;
 	static char rf[] = "remote from ";
 	int rfl;
 

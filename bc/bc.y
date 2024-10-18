@@ -85,7 +85,7 @@ static char *numb[15] = {
 static intptr_t *pre, *post;
 %}
 %%
-start	: 
+start	:
 	|  start stat tail
 		{ output( (intptr_t *)$2 );}
 	|  start def dargs ')' '{' dlist slist '}'
@@ -101,9 +101,9 @@ dlist	:  tail
 	| dlist _AUTO dlets tail
 	;
 
-stat	:  e 
+stat	:  e
 		{ bundle(2, $1, "ps." ); }
-	| 
+	|
 		{ bundle(1, "" ); }
 	|  QSTR
 		{ bundle(3,"[",$1,"]P");}
@@ -482,7 +482,7 @@ restart:
 		return( cpeek( '=', EQREM, '%' ) );
 	case '^':
 		return( cpeek( '=', EQEXP, '^' ) );
-	case '"':	
+	case '"':
 		 yylval = (intptr_t)str;
 		 while((c=getch()) != '"'){*str++ = c;
 			if(str >= &string[sizeof string - 1]){yyerror("string space exceeded");

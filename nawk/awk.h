@@ -1,13 +1,13 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)awk.h	1.23 (gritter) 12/25/04>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
-   SPDX-Licence-Identifier: GPL-2.0+ 
+
+   SPDX-Licence-Identifier: GPL-2.0+
 */
 /*	copyright	"%c%"	*/
 
@@ -197,7 +197,7 @@ extern Node	*nullnode;
 #define CCOPY	6
 #define CCON	5
 #define CTEMP	4
-#define CNAME	3 
+#define CNAME	3
 #define CVAR	2
 #define CFLD	1
 

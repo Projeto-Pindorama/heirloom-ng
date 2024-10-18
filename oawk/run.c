@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -54,7 +54,7 @@ static void growbuf(char **, int *, int, char **, const char *);
 void
 run(void)
 {
-	register int i;
+	int i;
 
 	execute(winner);
 
@@ -66,7 +66,7 @@ run(void)
 
 obj execute(node *u)
 {
-	register obj (*proc)(node **, int);
+	obj (*proc)(node **, int);
 	obj x;
 	node *a;
 
@@ -670,7 +670,7 @@ obj split(node **a,int nnn)
 {
 	obj x;
 	cell *ap;
-	register char *s, *fs;
+	char *s, *fs;
 	char *t, temp, num[25];
 	wchar_t sep, wc;
 	int n, m;
@@ -886,7 +886,7 @@ obj fncn(node **a,int n)
 
 obj print(node **a,int n)
 {
-	register node *x;
+	node *x;
 	obj y;
 	char	*p, *q, *sp;
 	static char *s;
@@ -940,7 +940,7 @@ obj nodetoobj(node *a)
 void
 redirprint(const char *s, int a, node *b)
 {
-	register int i;
+	int i;
 	obj x;
 
 	x = execute(b);
@@ -1034,7 +1034,7 @@ again:	va_start(ap, fmt);
 		*target = &(*whole)[diff];
 		goto again;
 	}
-	
+
 	while (**target)	/* NUL characters might have been printed; */
 		(*target)++;	/* don't skip past them. */
 	return ret;

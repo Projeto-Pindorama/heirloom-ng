@@ -26,7 +26,7 @@
 	Free the space used by a recipient list.
 */
 
-void 
+void
 del_reciplist(reciplist *plist)
 {
 	static char	pn[] = "del_reciplist";

@@ -30,10 +30,10 @@
 		if ((i) >= *(tosize)) \
 			*(to) = srealloc(*(to), *(tosize) += 32); \
 		(*(to))[(i)++]
-	
-void 
+
+void
 cat(char **to, size_t *tosize,
-		register const char *from1, register const char *from2)
+		const char *from1, const char *from2)
 {
 	size_t	i = 0;
 

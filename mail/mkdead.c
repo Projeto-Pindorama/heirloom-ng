@@ -17,7 +17,7 @@
 /*
 	Routine creates dead.letter
 */
-void 
+void
 mkdead(void)
 {
 	static char pn[] = "mkdead";

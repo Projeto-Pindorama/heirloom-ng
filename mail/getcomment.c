@@ -21,15 +21,15 @@
  *     -1 ==> no closing (terminating) paren found for comment.
  */
 
-int 
+int
 getcomment (
-    register char *s,
-    register char *q	/* Copy comment, if found, to here */
+    char *s,
+    char *q	/* Copy comment, if found, to here */
 )
 {
-	register char	*p, *sav_q;
-	register int	depth = 0;
-	
+	char	*p, *sav_q;
+	int	depth = 0;
+
 	if ((p = strchr(s, '(')) == (char *)NULL) {
 		/* no comment found */
 		return (0);

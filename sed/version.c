@@ -16,7 +16,7 @@ static const char sccsid[] USED = "@(#)sed.sl	2.34 (gritter) 6/26/05";
 #endif	/* !SUS, !SU3, !S42 */
 /* SLIST */
 /*
-sed.h:	Sccsid @(#)sed.h	1.32 (gritter) 2/6/05	
-sed0.c:	Sccsid @(#)sed0.c	1.64 (gritter) 3/12/05>	
-sed1.c:	Sccsid @(#)sed1.c	1.42 (gritter) 2/6/05>	
+sed.h:	Sccsid @(#)sed.h	1.32 (gritter) 2/6/05
+sed0.c:	Sccsid @(#)sed0.c	1.64 (gritter) 3/12/05>
+sed1.c:	Sccsid @(#)sed1.c	1.42 (gritter) 2/6/05>
 */

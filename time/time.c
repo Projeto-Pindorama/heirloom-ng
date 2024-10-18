@@ -17,9 +17,9 @@
 #define	USED
 #endif
 #ifdef	PTIME
-static const char sccsid[] USED = "@(#)ptime.sl	1.28 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)ptime.sl	1.30 (gritter) 12/19/08";
 #else
-static const char sccsid[] USED = "@(#)time.sl	1.28 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)time.sl	1.30 (gritter) 12/19/08";
 #endif
 
 #include	<sys/types.h>
@@ -36,6 +36,7 @@ static const char sccsid[] USED = "@(#)time.sl	1.28 (gritter) 5/29/05";
 #include	<ctype.h>
 #ifdef	PTIME
 #include	<limits.h>
+#include	<setjmp.h>
 #endif
 #include	<locale.h>
 
@@ -287,6 +288,18 @@ child(char **av)
 	_exit(err == ENOENT ? 0177 : 0176);
 }
 
+#ifdef PTIME
+sigjmp_buf	jmpbuf;
+
+/*
+ * SIGCHLD signal handler.
+ */
+void onchld(int signo)
+{
+	siglongjmp(jmpbuf, 1);
+}
+#endif
+
 /*
  * Time a command.
  */
@@ -306,6 +319,10 @@ timecmd(char **av)
 
 	oldint = sigset(SIGINT, SIG_IGN);
 	oldquit = sigset(SIGQUIT, SIG_IGN);
+#ifdef PTIME
+	sigset(SIGCHLD, onchld);
+	sighold(SIGCHLD);
+#endif
 	t1 = times(&tp);
 	switch (pid = fork()) {
 	case 0:
@@ -318,26 +335,27 @@ timecmd(char **av)
 		return 1;
 	}
 #ifdef	PTIME
-	/*
-	 * Changing to the child's /proc entry will keep it in zombie status
-	 * even after it has been waited for.
-	 */
 	snprintf(pdir, sizeof pdir, "/proc/%lu", (long)pid);
 	if (chdir(pdir) < 0) {
 		pnerror(errno, pdir);
 		return 1;
 	}
-	/*
-	 * Starting with Linux 2.4.5, the stat file has to be opened to
-	 * make it persistent.
-	 */
 	if ((fp = fopen(stfn, "r")) == NULL) {
 		pnerror(errno, stfn);
 		return 1;
 	}
-#endif
-	while (wait(&status) != pid);
+	if (sigsetjmp(jmpbuf, 0) == 0) {
+		sigrelse(SIGCHLD);
+		pause();
+	}
 	t2 = times(&tp);
+	if (ptimes(&tp, fp, stfn) < 0)
+		return 1;
+#endif
+	while (waitpid(pid, &status, 0) != pid);
+#ifndef PTIME
+	t2 = times(&tp);
+#endif
 	sigset(SIGINT, oldint);
 	sigset(SIGQUIT, oldquit);
 	if (WIFSIGNALED(status))
@@ -345,10 +363,6 @@ timecmd(char **av)
 				progname);
 	else
 		fprintf(stderr, "\n");
-#ifdef	PTIME
-	if (ptimes(&tp, fp, stfn) < 0)
-		return 1;
-#endif
 	out("real", t2 - t1);
 	out("user", tp.tms_cutime);
 	out("sys", tp.tms_cstime);

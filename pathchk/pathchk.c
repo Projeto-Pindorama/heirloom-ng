@@ -63,7 +63,7 @@ pathchk(char *name)
 							"\"%.*s\" of name "
 							"\"%s\" is not "
 							"searchable\n",
-						progname, 
+						progname,
 						np - name, name,
 						name);
 					status |= 1;
