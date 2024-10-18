@@ -53,7 +53,7 @@ int	mb_cur_max;	/* MB_CUR_MAX, for acceleration */
 
 extern const char badopen[];
 
-int main(int argc, unsigned char *argv[], unsigned char *envp[])
+int main(int argc, char *argv[], char *envp[])
 {
 	unsigned char *fs = NULL;
 	char label[MAXLABEL+1];	/* Space for the catalogue label */

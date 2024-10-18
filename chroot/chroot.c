@@ -22,6 +22,11 @@ char *progname;
 int main(int argc, char *argv[]);
 void usage(void);
 
+void usage(void) {
+	pfmt(stderr, MM_NOSTD, "usage: %s newroot [command]\n", progname);
+	exit(1);
+}
+
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 
@@ -48,9 +53,4 @@ int main(int argc, char *argv[]) {
 		prerror(errno);
 		exit(-1);
 	}
-}
-
-void usage(void) {
-	pfmt(stderr, MM_NOSTD, "usage: %s newroot [command]\n", progname);
-	exit(1);
 }

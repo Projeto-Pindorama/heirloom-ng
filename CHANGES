@@ -1,4 +1,6 @@
 Release ...
+* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
+  glibc and making changes to adhere to C standards (patch by Gabriel Souza).
 * rm: Alias '-e' flag to more known '-v' for verbose.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
@@ -60,7 +62,7 @@ Release 240220
 * [NEW] seq: Stone-simple implementation; needs some improvement yet.
 * [NEW] watch: Complete, simple and stable implementation.
 * [NEW] timeout: Complete implementation with extended payloads.
-* readlink: Different help messages for both UCB and default variants. 
+* readlink: Different help messages for both UCB and default variants.
 
 Release 230503 
 * chroot: "docs: Update date at chroot.8 manual page."
