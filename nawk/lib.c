@@ -1,12 +1,12 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)lib.c	1.27 (gritter) 12/25/06>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
-   
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*	copyright	"%c%"	*/
@@ -198,9 +198,9 @@ int getrec(unsigned char **buf, int *bufsize)
 int readrec(unsigned char **buf, int *bufsize, FILE *inf)
 	/* read one record into buf */
 {
-	register int sep, c, k, m, n;
+	int sep, c, k, m, n;
 	unsigned char *rr;
-	register int nrr;
+	int nrr;
 	wchar_t wc;
 
 	next(wc, *RS, n);
@@ -287,7 +287,7 @@ static int	refldbld(unsigned char *rec, unsigned char *fs);
 void
 fldbld(void)
 {
-	register unsigned char *r, *fr;
+	unsigned char *r, *fr;
 	Cell **p;
 	wchar_t wc, sep;
 	int i, n;
@@ -361,14 +361,14 @@ fldbld(void)
 	setfval(nfloc, (Awkfloat) maxfld);
 	if (dbg)
 		for (p = &fldtab[0]; p <= &fldtab[0]+maxfld; p++)
-			pfmt(stdout, MM_INFO, ":14:field %d: |%s|\n", p-&fldtab[0], 
+			pfmt(stdout, MM_INFO, ":14:field %d: |%s|\n", p-&fldtab[0],
 				(*p)->sval);
 }
 
 static void cleanfld(int n1, int n2)	/* clean out fields n1..n2 inclusive */
 {
 	static unsigned char *nullstat = (unsigned char *) "";
-	register Cell **p, **q;
+	Cell **p, **q;
 
 	for (p = &fldtab[n2], q = &fldtab[n1]; p > q; p--) {
 		if (!((*p)->tval & DONTFREE))
@@ -414,7 +414,7 @@ static int refldbld(unsigned char *rec,
 		dprintf( ("refldbld: i=%d\n", i) );
 		if (nematch(pfa, rec)) {
 			pfa->notbol = REG_NOTBOL;
-			dprintf( ("match %s (%d chars\n", 
+			dprintf( ("match %s (%d chars\n",
 				patbeg, patlen) );
 			strncpy((char*) fr, (char*) rec, patbeg-rec);
 			fr += patbeg - rec + 1;
@@ -427,7 +427,7 @@ static int refldbld(unsigned char *rec,
 			break;
 		}
 	}
-	return i;		
+	return i;
 }
 
 void recbld(void)
@@ -456,11 +456,11 @@ void recbld(void)
 			}
 	}
 	*r = '\0';
-	dprintf( ("in recbld FS=%o, recloc=%lo\n", **FS, 
+	dprintf( ("in recbld FS=%o, recloc=%lo\n", **FS,
 		(long)recloc) );
 	recloc->tval = REC | STR | DONTFREE;
 	recloc->sval = record = recdata;
-	dprintf( ("in recbld FS=%o, recloc=%lo\n", **FS, 
+	dprintf( ("in recbld FS=%o, recloc=%lo\n", **FS,
 		(long)recloc) );
 	dprintf( ("recbld = |%s|\n", record) );
 	donerec = 1;
@@ -502,7 +502,7 @@ vyyerror(const char *msg, ...)
 
 	va_end(args);
 }
-	
+
 void
 yyerror(char *s)
 {
@@ -677,7 +677,7 @@ int isclvar(unsigned char *s)	/* is s of form var=something? */
 	return *s == '=' && s > os && *(s+1) != '=' && !digitchar(*os);
 }
 
-int is2number(register unsigned char *s, Cell *p)
+int is2number(unsigned char *s, Cell *p)
 {
 	unsigned char *after;
 	Awkfloat val;

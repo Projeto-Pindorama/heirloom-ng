@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
 */
 
@@ -62,7 +62,7 @@ struct fa *makedfa(const char *p)	/* returns dfa for re pointed to by p */
 }
 
 int
-match(void *v, register const char *p)
+match(void *v, const char *p)
 {
 	struct fa *pfa = v;
 	int i;
@@ -73,7 +73,7 @@ match(void *v, register const char *p)
 }
 
 int
-member(register char c, register const char *s)	/* is c in s? */
+member(char c, const char *s)	/* is c in s? */
 {
 	while (*s)
 		if (c == *s++)

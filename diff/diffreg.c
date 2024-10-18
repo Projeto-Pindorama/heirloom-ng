@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -51,7 +51,7 @@
  *	on the hash (called ``value''). In particular, this
  *	collects the equivalence classes in file1 together.
  *	Subroutine equiv replaces the value of each line in
- *	file0 by the index of the first element of its 
+ *	file0 by the index of the first element of its
  *	matching equivalence in (the reordered) file1.
  *	To save space equiv squeezes file1 into a single
  *	array member in which the equivalence classes
@@ -66,15 +66,15 @@
  *	of "k-candidates". At step i a k-candidate is a matched
  *	pair of lines x,y (x in file0 y in file1) such that
  *	there is a common subsequence of length k
- *	between the first i lines of file0 and the first y 
+ *	between the first i lines of file0 and the first y
  *	lines of file1, but there is no such subsequence for
  *	any smaller y. x is the earliest possible mate to y
  *	that occurs in such a subsequence.
  *
  *	Whenever any of the members of the equivalence class of
- *	lines in file1 matable to a line in file0 has serial number 
- *	less than the y of some k-candidate, that k-candidate 
- *	with the smallest such y is replaced. The new 
+ *	lines in file1 matable to a line in file0 has serial number
+ *	less than the y of some k-candidate, that k-candidate
+ *	with the smallest such y is replaced. The new
  *	k-candidate is chained (via pred) to the current
  *	k-1 candidate so that the actual subsequence can
  *	be recovered. When a member has serial number greater
@@ -96,7 +96,7 @@
  *	The core requirements for problems larger than somewhat
  *	are (in words) 2*length(file0) + length(file1) +
  *	3*(number of k-candidates installed),  typically about
- *	6n words for files of length n. 
+ *	6n words for files of length n.
  */
 
 #define	prints(s)	fputs(s,stdout)
@@ -190,7 +190,7 @@ static void	pdump(long);
 void
 diffreg(void)
 {
-	register long i, j;
+	long i, j;
 	char buf1[BUFSIZ], buf2[BUFSIZ];
 
 	if (hflag) {
@@ -344,7 +344,7 @@ copytemp(char **tf, const char *fn)
 {
 	const char	templ[] = "/tmp/dXXXXXX";
 	char buf[BUFSIZ];
-	register int i, f, sfd;
+	int i, f, sfd;
 
 	if (*tf) {
 		unlink(*tf);
@@ -401,9 +401,9 @@ splice(const char *dir, char *file)
 static void
 prepare(int i)
 {
-	register struct line *p;
-	register long j;
-	register long h;
+	struct line *p;
+	long j;
+	long h;
 
 	fseeko(input[i], 0, SEEK_SET);
 	mcur[i] = mend[i] = NULL;
@@ -419,8 +419,8 @@ prepare(int i)
 static void
 prune(void)
 {
-	register long i;
-	register int j;
+	long i;
+	int j;
 	for(pref=0;pref<len[0]&&pref<len[1]&&
 		file[0][pref+1].value==file[1][pref+1].value;
 		pref++ ) ;
@@ -438,7 +438,7 @@ prune(void)
 static void
 equiv(struct line *a,long n,struct line *b,long m,long *c)
 {
-	register long i, j;
+	long i, j;
 	i = j = 1;
 	while(i<=n && j<=m) {
 		if(a[i].value <b[j].value)
@@ -463,9 +463,9 @@ equiv(struct line *a,long n,struct line *b,long m,long *c)
 }
 
 static long
-stone(long *a,long n,long *b,register long *c)
+stone(long *a,long n,long *b,long *c)
 {
-	register long i, k,y;
+	long i, k,y;
 	long j, l;
 	long oldc, tc;
 	long oldl;
@@ -504,7 +504,7 @@ stone(long *a,long n,long *b,register long *c)
 static long
 newcand(long x,long y,long pred)
 {
-	register struct cand *q;
+	struct cand *q;
 	clist = ralloc(clist,++clen*sizeof(cand));
 	q = clist + clen -1;
 	q->x = x;
@@ -516,7 +516,7 @@ newcand(long x,long y,long pred)
 static long
 search(long *c, long k, long y)
 {
-	register long i, j, l;
+	long i, j, l;
 	long t;
 	if(clist[c[k]].y<y)	/*quick look for typical case*/
 		return(k+1);
@@ -524,7 +524,7 @@ search(long *c, long k, long y)
 	j = k+1;
 	while (1) {
 		l = i + j;
-		if ((l >>= 1) <= i) 
+		if ((l >>= 1) <= i)
 			break;
 		t = clist[c[l]].y;
 		if(t > y)
@@ -540,8 +540,8 @@ search(long *c, long k, long y)
 static void
 unravel(long p)
 {
-	register long i;
-	register struct cand *q;
+	long i;
+	struct cand *q;
 	for(i=0; i<=len[0]; i++)
 		J[i] =	i<=pref ? i:
 			i>len[0]-suff ? i+len[1]-len[0]:
@@ -558,10 +558,10 @@ to confounding by hashing (which result in "jackpot")
 static void
 check_sb(void)
 {
-	register long i, j;
+	long i, j;
 	long jackpot;
 	off_t ctold, ctnew;
-	register int c,d;
+	int c,d;
 
 	if ((input[0] = fopen(file1,"r")) == NULL) {
 		perror(file1);
@@ -659,7 +659,7 @@ check_sb(void)
 static void
 check_mb(void)
 {
-	register long i, j;
+	long i, j;
 	long jackpot;
 	off_t ctold, ctnew;
 	wint_t	wc, wd;
@@ -781,9 +781,9 @@ static void
 sort(struct line *a,long n)	/*shellsort CACM #201*/
 {
 	struct line w;
-	register long j,m = 0;
+	long j,m = 0;
 	struct line *ai;
-	register struct line *aim;
+	struct line *aim;
 	long k;
 
 	if (n == 0)
@@ -815,8 +815,8 @@ sort(struct line *a,long n)	/*shellsort CACM #201*/
 static void
 unsort(struct line *f, long l, long *b)
 {
-	register long *a;
-	register long i;
+	long *a;
+	long i;
 	a = talloc((l+1)*sizeof(*a));
 	for(i=1;i<=l;i++)
 		a[f[i].serial] = f[i].value;
@@ -828,8 +828,8 @@ unsort(struct line *f, long l, long *b)
 static long
 skipline(int f)
 {
-	register long i;
-	register int c;
+	long i;
+	int c;
 
 	for(i=1;(c=getc(input[f]))!='\n';i++)
 		if (c == EOF)
@@ -855,7 +855,7 @@ static void
 output(void)
 {
 	long m;
-	register long i0, i1, j1;
+	long i0, i1, j1;
 	long j0;
 	if ((input[0] = fopen(file1,"r")) == NULL) {
 		perror(file1);
@@ -1058,10 +1058,10 @@ range(long a,long b,const char *separator)
 static void
 fetch(off_t *f,long a,long b,FILE *lb,const char *s,int oldfile)
 {
-	register long i, j;
-	register int c;
-	register long col;
-	register long nc;
+	long i, j;
+	int c;
+	long col;
+	long nc;
 	int oneflag = (*ifdef1!='\0') != (*ifdef2!='\0');
 
 	/*
@@ -1141,15 +1141,15 @@ fetch(off_t *f,long a,long b,FILE *lb,const char *s,int oldfile)
 /*
  * hashing has the effect of
  * arranging line in 7-bit bytes and then
- * summing 1-s complement in 16-bit hunks 
+ * summing 1-s complement in 16-bit hunks
  */
 static int
-readhash(register int f)
+readhash(int f)
 {
-	register int32_t sum;
-	register unsigned shift;
-	register int t;
-	register int space;
+	int32_t sum;
+	unsigned shift;
+	int t;
+	int space;
 	int	content;
 	wint_t	wt;
 	int	n;
@@ -1290,8 +1290,8 @@ static int
 asciifile(FILE *f)
 {
 	char buf[BUFSIZ];
-	register int cnt;
-	register char *cp;
+	int cnt;
+	char *cp;
 
 	fseeko(f, 0, SEEK_SET);
 	cnt = fread(buf, 1, BUFSIZ, f);
@@ -1307,11 +1307,11 @@ asciifile(FILE *f)
 static void
 dump_context_vec(void)
 {
-	register long	a, b = 0, c, d = 0;
-	register char	ch;
-	register struct	context_vec *cvp = context_vec_start;
-	register long	lowa, upb, lowc, upd;
-	register int	do_output;
+	long	a, b = 0, c, d = 0;
+	char	ch;
+	struct	context_vec *cvp = context_vec_start;
+	long	lowa, upb, lowc, upd;
+	int	do_output;
 
 	if ( cvp > context_vec_ptr )
 		return;
@@ -1380,7 +1380,7 @@ dump_context_vec(void)
 				do_output++;
 				break;
 			}
-	
+
 		if ( do_output ) {
 			while (cvp <= context_vec_ptr) {
 				a = cvp->a; b = cvp->b; c = cvp->c; d = cvp->d;
@@ -1416,7 +1416,7 @@ dump_context_vec(void)
 				do_output++;
 				break;
 			}
-	
+
 		if (do_output) {
 			while (cvp <= context_vec_ptr) {
 				a = cvp->a; b = cvp->b; c = cvp->c; d = cvp->d;

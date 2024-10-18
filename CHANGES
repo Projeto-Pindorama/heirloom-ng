@@ -1,6 +1,68 @@
 Release ...
-* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with glibc
-  and making changes to adhere to C standards (patch by Gabriel Souza).
+* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
+  glibc and making changes to adhere to C standards (patch by Gabriel Souza).
+* rm: Alias '-e' flag to more known '-v' for verbose.
+* date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
+  of type 'timeval'.
+* rev: UTF-8 support, borrowed from suckless sbase. In varietate concordia.
+* [NEW] apply, pick: Complete implementation for both apply and pick, from
+  Research UNIX 8th and 10th respectively; extended payloads for pick in
+  comparison with the original implementation.
+* seq: Support for counting from negative numbers to positive or making a
+  negative sequence.
+* rev: Full refactor (made by Samuel Brederodes).
+* Fixes for building dynamically on Arch Linux and other GNU C
+  Library-based Linux systems which ships exclusively dynamic versions
+  of its libraries, also remove `readlink_ucb' object file at `readlink/'
+  build directory when executing `make clean' (patch by Molly A. McCollum).
+* Remove `register's from legacy code that was living unchanged since at
+  least the 80's, since modern linters started complying about it and it
+  is not used as much on most common architectures such as x86
+  (patch by Samuel Brederodes).
+* watch: `use_default_colors()', do not force black and white.
+* [NEW] rev: New implementation, not capable of UTF-8 yet.
+* cpio, diff, tabs: Fix duplicated definitions (made/reported by crumbtoo,
+  merged by me, Luiz Antônio Rangel). Thanks! --- or better: Merci!
+* rm: Added real support for the POSIX 1003.1(2008) standard, implemented
+  IBM AIX(R)-style verbosing and 4.4BSD's '-d' option for directories ---
+  rmdir(1)-esque payload --- as extensions to the standard.
+* seq: Made its payload similar to UNIX v8's implementation, but with some
+  extensions such as a fast algorithm for -w or -s --- which was already
+  present before the (almost) full rewrite.
+* timeout: avoid buffer overrun, also did some changes at the source code,
+  such as cleaning up comments and initializing 'commandv' and 'fst_commandv'.
+* watch: Used esr's deheader for removing unnecessary headers, also use
+  pfmt(stderr, MM_ERROR, ...)  instead of prerror().
+* watch, timeout: Some small corrections at the manual page.
+* cpio: Skip over zip extra headers with fewer than four bytes (the minimum
+  length for them to contain any information) instead of reporting a bad
+  header and terminating.
+* pg: Handle cases where standard output is a terminal but not open for
+  reading (bug reported by Keith Doyle).
+* cpio, tar: If an archive contains a file that is a hardlink to itself on
+  extraction, do nothing at all instead of discarding its data. This mainly
+  happens if a file with more than one link is included under the same name
+  in an archive twice. Since special situations on extraction such as bind
+  mounts on Linux may lead to this scenario even in cases where both link
+  names are different, this is now treated like a successful link() step
+  (bugreport by Thomas Graf).
+* Made the getopt() substitute work with the getopt$UNIX2003() function
+  redirection mechanism on Mac OS X Leopard.
+* mknod, pgrep, ps: Mac OS X Leopard compilation fixes.
+* w, whodo: On a 32-bit system where /proc/kcore is larger than 2 GB,
+  avoid a harmless error message (bug reported by Pierre Gentile).
+* ptime: Works on recent Linux kernels again.
+* col: The behavior of the -x flag has been inverted to actually match
+  the documentation, i.e. to suppress conversion of spaces to tabs (patch
+  by Markus Schnalke).
+* cut: With "-s", print the last field of a line that was also the last
+  field specified with "-f" (bugreport by Pierre Gentile).
+
+Release 240220
+* [NEW] seq: Stone-simple implementation; needs some improvement yet.
+* [NEW] watch: Complete, simple and stable implementation.
+* [NEW] timeout: Complete implementation with extended payloads.
+* readlink: Different help messages for both UCB and default variants.
 
 Release 230503 
 * chroot: "docs: Update date at chroot.8 manual page."
@@ -16,7 +78,6 @@ Release 230503
 * readlink: "fix: Made ``name_size`` private again, so ``pfmt()`` won't go segmentation fault."
 * readlink: "feat: First step, start modularizing the code."
 * libcommon: "fix: getdirentries replacement for OBSD >5.4"
-
 * fix-me: For new releases, finish porting for OpenBSD and implement watch(1) and timeout(1).
 
 Release 230305

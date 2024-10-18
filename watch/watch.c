@@ -19,15 +19,15 @@
 #include <curses.h>
 #include <errno.h>
 #include <pfmt.h>
-#include <prerror.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
+#include <sys/types.h>
 #include <sys/utsname.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <wait.h>
 
 static char *progname;
 int main(int argc, char *argv[]);
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	char **commandv;
 	pid_t exec_pid;
 	struct timespec interval;
-	
+
 	/*
 	 * Default interval of 2 seconds, as other major
 	 * implementations usually do.
@@ -60,7 +60,9 @@ int main(int argc, char *argv[]) {
 	struct tm *timeinfo;
 	struct utsname u;
 	if (uname(&u) == -1) {
-		prerror(errno);
+		pfmt(stderr, MM_ERROR,
+			"%s: failed to get system info: %s",
+			progname, strerror(errno));
 		exit(-1);
 	}
 
@@ -70,20 +72,23 @@ int main(int argc, char *argv[]) {
 			if (!optarg) {
 			       	break;
 			}
-			char arg[128];
-			char *afterpoint = NULL;
+			char arg[128] = "",
+			     *afterpoint = NULL,
+			     *decsep = NULL;
 			strncpy(arg, optarg, 128);
 			arg[127] = '\0';
 
+			/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
+			decsep = strchr(arg, ',');
+			if (decsep)
+				*decsep = '.';
 			size_t point = 0;
-			for (; arg[point]; point++) {
-				if (arg[point] == '.' || arg[point] == ',') {
-					arg[point] = '\0';
-					afterpoint = &arg[point + 1];
-					break;
-				}
+			point = afterchar(arg, '.');
+			if (point != 0 || arg[0] == '.') {
+				arg[point] = '\0';
+				afterpoint = &arg[point + 1];
 			}
-			
+
 			if (strlen(arg) == 0) {
 			       	interval.tv_sec = 0;
 			} else {
@@ -101,7 +106,7 @@ int main(int argc, char *argv[]) {
 
 				for (size_t i = 0; i < 9 - afterpointlen; i++)
 					integer *= 10;
-				
+
 				interval.tv_nsec = integer;
 			}
 
@@ -125,7 +130,7 @@ int main(int argc, char *argv[]) {
 	/* FIXME: Not a good practice. */
 	argc -= optind;
 	argv += optind;
-	
+
 	/* Missing operand. */
 	if (argc < 1) {
 		usage();
@@ -137,11 +142,12 @@ int main(int argc, char *argv[]) {
 	 * copying using a for loop.
 	 */
 	if ((commandv = calloc((unsigned long)(argc + 1), sizeof(char *))) == NULL) {
-		/* Should I use prerror? */
-		perror("couldn't callocate");
+		pfmt(stderr, MM_ERROR,
+			"%s: couldn't calloc(): %s",
+			progname, strerror(errno));
 		exit(-1);
 	}
-	
+
 	for (c = 0; c < argc; c++) {
 		commandv[c] = argv[c];
 	}
@@ -152,6 +158,7 @@ int main(int argc, char *argv[]) {
 	 */
 	newterm(getenv("TERM"), stdout, stdin);
 	start_color();
+	use_default_colors();
 	init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
 	/*
@@ -166,7 +173,7 @@ int main(int argc, char *argv[]) {
 	left[0] = '\0';
 	if (!fNo_title) {
 		/*
-		 * FIXME: When one uses "-n 0.1", it actually prints 
+		 * FIXME: When one uses "-n 0.1", it actually prints
 		 * "0.100000000" instead of 0.1 or even 0.10.
 		 */
 		left_len = snprintf(
@@ -175,7 +182,7 @@ int main(int argc, char *argv[]) {
 			argv[0]
 		);
 	}
-	
+
 	for (;;) {
 		/* Clear terminal for the next cycle. */
 		clear();
@@ -192,7 +199,7 @@ int main(int argc, char *argv[]) {
 			char right[256], time[256]; /* "left[256]" declared above. */
 
 			attron(COLOR_PAIR(1) | A_BOLD);
-		
+
 			/*
 			 * This is done because ctime returns
 			 * a string with '\n'.
@@ -212,10 +219,12 @@ int main(int argc, char *argv[]) {
 			 * C library implementation having a faulty snprintf().
 			 */
 			if (left_len <= 0 || right_len <= 0) {
-				perror("please try to execute it without the information header.\n");
+				pfmt(stderr, MM_ERROR,
+					"%s: please try to execute it without the information header.\n",
+					progname);
 				exit(255);
 			}
-		
+
 			if (left_len <= term_x && right_len <= term_x) {
 				/*
 				 * If the sum of the text on left and right
@@ -245,12 +254,14 @@ int main(int argc, char *argv[]) {
 
 		if ((exec_pid = fork()) == 0) {
 			if ((execvp(commandv[0], commandv)) == -1) {
-				prerror(errno);
+				pfmt(stderr, MM_ERROR,
+					"%s: couldn't exec(): %s\n",
+					progname, strerror(errno));
 				exit(-1);
 			}
 		}
 		waitpid(exec_pid, &ec, 0);
-	
+
 		/*
 		 * execvp'd command hasn't exit with success and we have
 		 * fBeep_on_error activated.
@@ -258,7 +269,7 @@ int main(int argc, char *argv[]) {
 		if (ec != 0 && fBeep_on_error) {
 			beep();
 		}
-		
+
 		nanosleep(&interval, NULL);
 	}
 }

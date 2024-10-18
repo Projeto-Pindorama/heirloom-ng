@@ -21,4 +21,4 @@ install: all
 	$(MANINST) -c -m 644 readlink.1b $(ROOT)$(MANDIR)/man1b/readlink.1b
 
 clean:
-	rm -f readlink readlink.o core log *~
+	rm -f readlink readlink.o readlink_ucb readlink_ucb.o core log *~

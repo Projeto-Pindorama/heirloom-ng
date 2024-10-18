@@ -14,7 +14,7 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 
 /*	from 4.3BSD more.c	5.4 (Berkeley) 4/3/86	*/
@@ -177,44 +177,44 @@ ctrl-L			Redraw screen\n\
 -------------------------------------------------------------------------------\n";
 
 static void	argscan(const char *);
-static FILE	*checkf(register const char *, int *);
+static FILE	*checkf(const char *, int *);
 static int	putch(int);
-static void	screen(register FILE *, register int);
+static void	screen(FILE *, int);
 static void	onquit(int);
 static void	chgwinsz(int);
 static void	end_it(int);
-static void	copy_file(register FILE *);
+static void	copy_file(FILE *);
 static int	printd(int);
 static void	scanstr(int, char *);
 static void	Sprintf(int);
 static void	prompt(const char *);
-static int	getline(register FILE *, int *);
-static void	eras(register int);
+static int	getline(FILE *, int *);
+static void	eras(int);
 static void	kill_line(void);
 static void	cleareol(void);
 static void	clreos(void);
 static int	pr(const char *);
-static void	prbuf(register const char *, register int);
+static void	prbuf(const char *, int);
 static void	doclear(void);
 static void	home(void);
-static int	command(const char *, register FILE *);
+static int	command(const char *, FILE *);
 static int	colon(const char *, int, int);
 static int	number(char *);
 static void	do_shell(const char *);
-static void	search(char *, FILE *, register int);
+static void	search(char *, FILE *, int);
 static void	execute(const char *, const char *, const char *, const char *,
 			const char *, const char *);
-static void	skiplns(register int, register FILE *);
-static void	skipf(register int);
+static void	skiplns(int, FILE *);
+static void	skipf(int);
 static void	initterm(void);
 static char	readch(void);
-static void	ttyin(char **, register int *, char);
+static void	ttyin(char **, int *, char);
 static int	expand(char **, size_t *, const char *);
-static void	show(register char);
+static void	show(char);
 static void	error(const char *);
 static void	set_tty(void);
 static void	reset_tty(void);
-static void	rdline(register FILE *);
+static void	rdline(FILE *);
 static void	onsusp(int);
 static void	*srealloc(void *, size_t);
 static void	*smalloc(size_t);
@@ -475,10 +475,10 @@ argscan(const char *s)
 */
 
 static FILE *
-checkf (register const char *fs, int *clearfirst)
+checkf (const char *fs, int *clearfirst)
 {
     struct stat stbuf;
-    register FILE *f;
+    FILE *f;
     char b[8];
     int	n;
 
@@ -560,10 +560,10 @@ putch (int ch)
 #define STOP -10
 
 static void
-screen (register FILE *f, register int num_lines)
+screen (FILE *f, int num_lines)
 {
-    register int c;
-    register int nchars;
+    int c;
+    int nchars;
     int length;			/* length of current line */
     static int prev_len = 1;	/* length of previous line */
 
@@ -706,9 +706,9 @@ end_it (int signo)
 }
 
 static void
-copy_file(register FILE *f)
+copy_file(FILE *f)
 {
-    register int c;
+    int c;
 
     while ((c = getc(f)) != EOF)
 	putchar(c);
@@ -796,10 +796,10 @@ prompt (const char *filename)
 */
 
 static int
-getline(register FILE *f, int *length)
+getline(FILE *f, int *length)
 {
-    register int	c, i = 0;
-    register int	column;
+    int	c, i = 0;
+    int	column;
     static int		colflg;
     mbstate_t state;
 
@@ -903,7 +903,7 @@ getline(register FILE *f, int *length)
 */
 
 static void
-eras (register int col)
+eras (int col)
 {
 
     if (promptlen == 0)
@@ -956,8 +956,8 @@ clreos(void)
 static int
 pr(const char *s1)
 {
-    register const char	*s;
-    register char	c;
+    const char	*s;
+    char	c;
 
     for (s = s1; c = *s++; )
 	putchar(c);
@@ -968,10 +968,10 @@ pr(const char *s1)
 /* Print a buffer of n characters */
 
 static void
-prbuf (register const char *s, register int n)
+prbuf (const char *s, int n)
 {
-    register char c;			/* next output character */
-    register int state;			/* next output char's UL state */
+    char c;			/* next output character */
+    int state;			/* next output char's UL state */
 #define wouldul(s,n)	((n) >= 2 && (((s)[0] == '_' && (s)[1] == '\b') || ((s)[1] == '\b' && (s)[2] == '_')))
 
     while (--n >= 0)
@@ -1052,11 +1052,11 @@ static size_t shell_size;
 */
 
 static int
-command (const char *filename, register FILE *f)
+command (const char *filename, FILE *f)
 {
-    register int nlines;
-    register int retval = 0;
-    register int c;
+    int nlines;
+    int retval = 0;
+    int c;
     char colonch;
     int done;
     char comchar;
@@ -1096,7 +1096,7 @@ command (const char *filename, register FILE *f)
 	case 'b':
 	case ctrl('B'):
 	    {
-		register int initline;
+		int initline;
 
 		if (no_intty) {
 		    write(2, &bel, 1);
@@ -1341,7 +1341,7 @@ colon (const char *filename, int cmd, int nlines)
 static int
 number(char *cmd)
 {
-	register int i;
+	int i;
 
 	i = 0; ch = otty.c_cc[VKILL];
 	for (;;) {
@@ -1389,13 +1389,13 @@ do_shell (const char *filename)
 */
 
 static void
-search (char *buf, FILE *file, register int n)
+search (char *buf, FILE *file, int n)
 {
     off_t startline = Ftell (file);
-    register off_t line1 = startline;
-    register off_t line2 = startline;
-    register off_t line3 = startline;
-    register int lncount;
+    off_t line1 = startline;
+    off_t line2 = startline;
+    off_t line3 = startline;
+    int lncount;
     int saveln;
     static int used;
     static regex_t s;
@@ -1510,9 +1510,9 @@ execute (const char *filename, const char *cmd, const char *arg0,
 */
 
 static void
-skiplns (register int n, register FILE *f)
+skiplns (int n, FILE *f)
 {
-    register int c;
+    int c;
 
     while (n > 0) {
 	while ((c = Getc (f)) != '\n')
@@ -1529,7 +1529,7 @@ skiplns (register int n, register FILE *f)
 */
 
 static void
-skipf (register int nskip)
+skipf (int nskip)
 {
     if (nskip == 0) return;
     if (nskip > 0) {
@@ -1732,8 +1732,8 @@ previous(const char *mb, const char *bottom, wchar_t *wp)
 static void
 ttyin (char **buf, int *nmax, char pchar)
 {
-    register char ch;
-    register int slash = 0, i, n, w;
+    char ch;
+    int slash = 0, i, n, w;
     int	maxlen;
     char cbuf;
     wchar_t wc;
@@ -1818,9 +1818,9 @@ ttyin (char **buf, int *nmax, char pchar)
 static int
 expand (char **outbuf, size_t *outsize, const char *inbuf)
 {
-    register const char *instr;
-    register int n, o;
-    register char ch;
+    const char *instr;
+    int n, o;
+    char ch;
     char *temp = NULL;
     int size = 0;
     int changed = 0;
@@ -1878,7 +1878,7 @@ expand (char **outbuf, size_t *outsize, const char *inbuf)
 }
 
 static void
-show (register char ch)
+show (char ch)
 {
     char cbuf;
 
@@ -1940,12 +1940,12 @@ reset_tty (void)
 
 /* Since this is used for searches only, filter backspace sequences */
 static void
-rdline (register FILE *f)
+rdline (FILE *f)
 {
-    register int c;
+    int c;
     wint_t wc, lastwc = '\b';
     wchar_t wb;
-    register int i = 0, m, n, lastn = 0;
+    int i = 0, m, n, lastn = 0;
     mbstate_t state;
 
     memset(&state, 0, sizeof state);
