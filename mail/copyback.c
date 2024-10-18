@@ -26,7 +26,7 @@
  */
 
 #include "mail.h"
-void 
+void
 copyback(void)
 {
 	int	i, n;

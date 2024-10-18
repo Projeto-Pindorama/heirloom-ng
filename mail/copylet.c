@@ -40,14 +40,14 @@
 static int	xxxcopylet(int letnum, FILE *f, int type);
 
 int
-copylet(int letnum, FILE *f, int type) 
+copylet(int letnum, FILE *f, int type)
 {
 	int		pos = ftell(f);
 	int		rc  = xxxcopylet(letnum, f, type);
 
 	if (fflush(f) != 0)
 		rc = FALSE;
-	
+
 	/*
 	 * On error, truncate the file to its original position so that a
 	 * partial message is not left in the mailbox.
@@ -61,7 +61,7 @@ copylet(int letnum, FILE *f, int type)
 #define	Return	free(buf); return
 
 static int
-xxxcopylet(int letnum, FILE *f, int type) 
+xxxcopylet(int letnum, FILE *f, int type)
 {
 	static char	pn[] = "copylet";
 	char	lastc;
@@ -147,7 +147,7 @@ xxxcopylet(int letnum, FILE *f, int type)
 					sav_errno = errno;
 					Return(FALSE);
 				}
-				
+
 				break;
 
 			case TTY:
@@ -217,7 +217,7 @@ xxxcopylet(int letnum, FILE *f, int type)
 			sav_errno = errno;
 			Return(FALSE);
 		}
-		
+
 		break;
 	}
 	/* if not ZAP, copy balance of header */

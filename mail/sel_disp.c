@@ -22,7 +22,7 @@
  * the default output mode will be listed in the seldisp[] array.
  * This can all be overridden via the 'P' command at the ? prompt.
  */
-int 
+int
 sel_disp(int type, int hdrtype, char *s)
 {
 	static char pn[] = "sel_disp";

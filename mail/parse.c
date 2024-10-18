@@ -17,7 +17,7 @@
 	Parse the command line.
 	Return index of first non-option field (i.e. user)
 */
-int 
+int
 parse(int argc, char **argv)
 {
 	int	 	c;
@@ -56,7 +56,7 @@ parse(int argc, char **argv)
 		case 's':
 			/* ignore this option */
 			break;
-                /* 
+                /*
 		 * Deliver directly to a mailbox. Do Not go to sendmail
 		 */
 		case 'd':
@@ -110,7 +110,7 @@ parse(int argc, char **argv)
 			optcnt++;
 			break;
 
-		/* 
+		/*
 			print without prompting
 		*/
 		case 'p':
@@ -133,7 +133,7 @@ parse(int argc, char **argv)
 			optcnt++;
 			break;
 
-		/* 
+		/*
 			terminate on deletes
 		*/
 		case 'q':
@@ -145,7 +145,7 @@ parse(int argc, char **argv)
 			optcnt++;
 			break;
 
-		/* 
+		/*
 			print by first in, first out order
 		*/
 		case 'r':

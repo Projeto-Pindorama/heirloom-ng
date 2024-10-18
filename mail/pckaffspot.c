@@ -21,7 +21,7 @@
  *	> 0 ==> Header line type after (before) which to place H_AFWDFROM
  *              lines and H_AFWDCNT
  */
-int 
+int
 pckaffspot(void)
 {
 	static char pn[] = "pckaffspot";

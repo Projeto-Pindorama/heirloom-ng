@@ -51,7 +51,7 @@ struct dlvopts {
 static void getopts(char *, struct dlvopts *);
 static void mergeopts(struct dlvopts *, struct dlvopts *);
 
-int 
+int
 ckdlivopts(int tcopy_hdr, int *svopts)
 {
 	static char	pn[] = "ckdlivopts";
@@ -102,7 +102,7 @@ ckdlivopts(int tcopy_hdr, int *svopts)
  * Pick transport options off of header line.
  * If conflicting options found, use MOST demanding; i.e. - /delivery/return.
  */
-static void 
+static void
 getopts(char *s, struct dlvopts *optr)
 {
 	char	*op;
@@ -136,7 +136,7 @@ getopts(char *s, struct dlvopts *optr)
  * Merge options between 2 sets. Higher set has precedence.
  * Results left in lower set.
  */
-static void 
+static void
 mergeopts(struct dlvopts *higher, struct dlvopts *lower)
 {
 	if (higher->deliv == 1) {
