@@ -1,3 +1,7 @@
+Release ...
+* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with glibc
+  and making changes to adhere to C standards (patch by Gabriel Souza).
+
 Release 230503 
 * chroot: "docs: Update date at chroot.8 manual page."
 * chroot: "chore: Remove comment, will move to GitHub"
