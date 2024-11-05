@@ -256,7 +256,7 @@ brka:
 	}
 	if (cnt->c_typ != 'l') {
 		k = n <= i ? i - n :
-			partial ? 0 : 
+			partial ? 0 :
 			n >= spcsize ? i + 1 :
 			i - n + spcsize;
 		k--;

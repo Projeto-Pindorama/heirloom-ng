@@ -4,7 +4,7 @@ seq: seq.o
 	$(LD) $(LDFLAGS) seq.o $(LCOMMON) $(LIBS) -o seq
 
 seq.o: seq.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -c seq.c
+	$(CC) $(CFLAGSU) $(CPPFLAGS) $(ICOMMON) -c seq.c
 
 install: all
 	$(UCBINST) -c seq $(ROOT)$(DEFBIN)/seq

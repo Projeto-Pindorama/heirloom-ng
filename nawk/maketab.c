@@ -1,13 +1,13 @@
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)maketab.c	1.11 (gritter) 12/4/04>
  */
 /* UNIX(R) Regular Expression Tools
 
    Copyright (C) 2001 Caldera International, Inc.
 
-   SPDX-Licence-Identifier: GPL-2.0+   
+   SPDX-Licence-Identifier: GPL-2.0+
 */
 /*		copyright	"%c%" 	*/
 

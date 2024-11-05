@@ -27,7 +27,7 @@
 	Initialize a recipient list to have no recipients.
 */
 
-void 
+void
 new_reciplist(reciplist *plist)
 {
 	static char	pn[] = "new_reciplist";

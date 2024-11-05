@@ -2,7 +2,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * SPDX-Licence-Identifier: Caldera 
+ * SPDX-Licence-Identifier: Caldera
  */
 
 #if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
@@ -26,7 +26,7 @@ static const char sccsid[] USED = "@(#)cal.sl	1.12 (gritter) 5/29/05";
 #include	<limits.h>
 
 static wchar_t	dayw[] = {
-	' ', 'S', ' ', ' ', 'M', ' ', 'T', 'u', ' ', ' ', 
+	' ', 'S', ' ', ' ', 'M', ' ', 'T', 'u', ' ', ' ',
 	'W', ' ', 'T', 'h', ' ', ' ', 'F', ' ', ' ', 'S', 0
 };
 static char	*smon[]= {
@@ -54,7 +54,7 @@ static void	wput(const wchar_t *);
 int
 main(int argc, char **argv)
 {
-	register int y = 1, i, j;
+	int y = 1, i, j;
 	int m = 1;
 
 	progname = basename(argv[0]);
@@ -128,8 +128,8 @@ xlong:
 static int
 number(const char *str)
 {
-	register int n, c;
-	register const char *s;
+	int n, c;
+	const char *s;
 
 	n = 0;
 	s = str;
@@ -144,8 +144,8 @@ number(const char *str)
 static void
 pstr(char *str, int n)
 {
-	register int i;
-	register char *s;
+	int i;
+	char *s;
 
 	s = str;
 	i = n;
@@ -170,8 +170,8 @@ char	mon[] = {
 static void
 cal(int m, int y, char *p, int w)
 {
-	register int d, i;
-	register char *s;
+	int d, i;
+	char *s;
 
 	s = p;
 	d = jan1(y);
@@ -230,7 +230,7 @@ cal(int m, int y, char *p, int w)
 static int
 jan1(int yr)
 {
-	register int y, d;
+	int y, d;
 
 /*
  *	normal gregorian calendar

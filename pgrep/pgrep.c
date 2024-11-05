@@ -1195,7 +1195,7 @@ collectprocs(void)
 		argproc(p, &kp[i]);
 	}
 	/* free the memory allocated by GetBSDProcessList */
-	free(kp);	
+	free(kp);
 }
 #endif	/* all */
 

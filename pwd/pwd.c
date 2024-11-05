@@ -43,6 +43,6 @@ int main(void) {
 	puts(cwd);
 
 	/* Not needed to free the allocated buf since the program ends here */
-	
+
 	return 0;
 }

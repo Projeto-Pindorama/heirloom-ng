@@ -10,7 +10,7 @@
 	defined (__DragonFly__) || defined (__APPLE__)
 /*
  * FreeBSD malloc(3) promises to page-align the return of malloc() calls
- * if size is at least a page. This serves for a poor man's memalign() 
+ * if size is at least a page. This serves for a poor man's memalign()
  * implementation that matches our needs.
  */
 #include <unistd.h>

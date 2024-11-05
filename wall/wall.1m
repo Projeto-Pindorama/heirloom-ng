@@ -1,0 +1,32 @@
+.\"
+.\" Sccsid @(#)wall.1m	0.1 (takusuman) 9/26/24
+.\" Parts taken from wall(1m), Unix 32V:
+.\" Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+.\"
+.\" SPDX-Licence-Identifier: Caldera
+.\"
+.TH WALL 1M "09/26/24" "Heirloom Toolchest" "Maintenance Commands"
+.SH NAME
+wall  \-  write to all users
+.SH SYNOPSIS
+.B wall
+[\fIfile\fR]
+.SH DESCRIPTION
+.I Wall
+reads its standard input until an end-of-file.
+It then sends this message,
+preceded by
+`Broadcast Message ...',
+to all logged in users.
+.PP
+The sender should be super-user to override
+any protections the users may have invoked.
+.SH FILES
+/dev/tty?
+.br
+/var/adm/utmp
+.SH "SEE ALSO"
+mesg(1), write(1), utmp(5)
+.SH DIAGNOSTICS
+`Cannot send to ...' when the open on
+a user's tty file fails.

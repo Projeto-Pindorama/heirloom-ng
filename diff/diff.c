@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -344,7 +344,7 @@ dalloc(size_t n)
 void *
 talloc(size_t n)
 {
-	register void *p;
+	void *p;
 
 	if ((p = dalloc(n)) == NULL)
 		noroom();

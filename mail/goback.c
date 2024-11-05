@@ -26,7 +26,7 @@
 
 #define	Return	free(buf); free(work); free(wuser); return
 
-void 
+void
 goback(int letnum)
 {
 	static char pn[] = "goback";

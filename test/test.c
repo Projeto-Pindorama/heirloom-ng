@@ -40,7 +40,7 @@ static int fsizep(const unsigned char *);
 static void bfailed(const unsigned char *, const unsigned char *,
 		const unsigned char *);
 
-int 
+int
 test(int argn, unsigned char *com[])
 {
 	ac = argn;
@@ -78,7 +78,7 @@ nxtarg(int mt)
 	return(av[ap++]);
 }
 
-static int 
+static int
 sexp(void)
 {
 	int	p1;
@@ -98,7 +98,7 @@ sexp(void)
 	return(p1);
 }
 
-static int 
+static int
 e1(void)
 {
 	int	p1;
@@ -113,7 +113,7 @@ e1(void)
 	return(p1);
 }
 
-static int 
+static int
 e2(void)
 {
 	if (eq(nxtarg(0), "!"))
@@ -122,11 +122,11 @@ e2(void)
 	return(e3());
 }
 
-static int 
+static int
 e3(void)
 {
 	int	p1;
-	register unsigned char	*a;
+	unsigned char	*a;
 	unsigned char	*p2;
 	long long	ll_1, ll_2;
 
@@ -165,7 +165,7 @@ e3(void)
 		if (eq(a, "-f"))
 			if (ucb_builtins) {
 				struct stat statb;
-			
+
 				return(stat((char *)nxtarg(0), &statb) >= 0 &&
 					(statb.st_mode & S_IFMT) != S_IFDIR);
 			}
@@ -234,7 +234,7 @@ e3(void)
 }
 
 
-static int 
+static int
 ftype(const unsigned char *f, int field)
 {
 	struct stat statb;
@@ -246,7 +246,7 @@ ftype(const unsigned char *f, int field)
 	return(0);
 }
 
-static int 
+static int
 filtyp(const unsigned char *f, int field)
 {
 	struct stat statb;
@@ -263,7 +263,7 @@ filtyp(const unsigned char *f, int field)
 
 
 
-static int 
+static int
 fsizep(const unsigned char *f)
 {
 	struct stat statb;
