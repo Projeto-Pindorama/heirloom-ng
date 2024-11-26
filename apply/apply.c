@@ -28,13 +28,13 @@
 
 static char *progname;
 static bool enamo = false;
+static unsigned int cmdlen = 0;
 static int8_t mstep = 0,
-	      magias[10];
+	      *magias = NULL;
 static char magia = '%';
 
 void main(int argc, char *argv[]);
 int8_t crargs(char *s);
-bool ncontains(int8_t array[], uint8_t elem, int dsize);
 uint8_t magiac(char cmd[]);
 char *buildcmd(char cmd[], char *arg[], int carg);
 int eXec(const char command[]);
@@ -146,6 +146,7 @@ void main(int argc, char *argv[]) {
 	/* Declare the command string. */
 	cmd = strdup(arg[0]);
 	shift(arg, cmdc);
+	cmdlen = strlen(cmd);
 
 	/*
 	 * Initialize the magias[] array
@@ -153,7 +154,8 @@ void main(int argc, char *argv[]) {
 	 * we will avoid false-positives
 	 * for c=0.
 	 */
-	memset(magias, -1, (10 * (sizeof(uint8_t))));
+	magias = calloc(cmdlen, sizeof(uint8_t));
+	memset(magias, -1, cmdlen);
 
 	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
@@ -186,6 +188,7 @@ void main(int argc, char *argv[]) {
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry) estatus = eXec(cmdl);
 	}
+	free(magias);
 	free(cmdl);
 
 	exit(estatus);
@@ -213,17 +216,6 @@ int8_t crargs(char *s) {
 }
 
 /*
- * Check if an integer array
- * contains a value.
- */
-bool ncontains(int8_t array[], uint8_t elem, int dsize) {
-	for (; dsize--;) {
-		if (array[dsize] == elem) return true;
-	}
-	return false;
-}
-
-/*
  * Count the number of magic
  * characters on the command
  * string.
@@ -248,7 +240,7 @@ uint8_t magiac(char cmd[]) {
 
 					/* Store magic character location. */
 					if (m == 0 || m > 9) break;
-					magias[m] = c;
+					magias[c] = m;
 
 					/* Set largest argument. */
 					if (m > maxms) maxms = m;
@@ -266,20 +258,18 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	uint8_t i = 0,
 	       m = 0,
 	       n = 0;
-	unsigned int cmdlen = 0,
-		     arglen = 0,
+	unsigned int arglen = 0,
 		     c = 0,
 		     d = 0,
 		     l = 0;
 	char ch = '\0',
-	     *cmdbuf = "",
-	     *cmdbufp = "";
+	     *cmdbuf = NULL,
+	     *cmdbufp = NULL;
 
 	/*
 	 * Count the actual size needed
 	 * to make the command string.
 	 */
-	cmdlen = strlen(cmd);
 	for (l=0; l < mstep; l++) {
 		n = (carg + l);
 		arglen += strlen(arg[n]);
@@ -293,7 +283,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	switch (enamo) {
 		case true:
 			/*
-			 * Enamorated: payload for cases
+			 * Enamoured: payload for cases
 			 * where a magic character in the
 			 * string is not present.
 			 * In this case, it will just copy
@@ -311,17 +301,17 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		default:
 			for (c = 0; cmd[c] != '\0'; c++) {
 				ch = cmd[c];
-				switch (ncontains(magias, c, 10)) {
-					case true:
+				switch (magias[c]) {
+					case -1:
+						sputchar(cmdbufp, ch);
+						break;
+					default: /* Magic! */
 						m = (cmd[(c + 1)] - '0');
 						n = (carg + (m - 1));
 						c++;
 						for (d = 0; arg[n][d]; d++)
 							sputchar(cmdbufp, arg[n][d]);
 						continue;
-					default:
-						sputchar(cmdbufp, ch);
-						break;
 				}
 			}
 			break;
