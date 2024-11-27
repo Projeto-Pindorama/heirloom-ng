@@ -157,7 +157,6 @@ void main(int argc, char *argv[]) {
 	magias = malloc(cmdlen);
 	for (size_t i = 0; i < cmdlen; i++)
 		magias[i] = -1;
-	
 
 	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
