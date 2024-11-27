@@ -28,7 +28,7 @@
 
 static char *progname;
 static bool enamo = false;
-static unsigned int cmdlen = 0;
+static size_t cmdlen = 0;
 static int8_t mstep = 0,
 	      *magias = NULL;
 static char magia = '%';
@@ -154,8 +154,10 @@ void main(int argc, char *argv[]) {
 	 * we will avoid false-positives
 	 * for c=0.
 	 */
-	magias = calloc(cmdlen, sizeof(uint8_t));
-	memset(magias, -1, cmdlen);
+	magias = malloc(cmdlen);
+	for (size_t i = 0; i < cmdlen; i++)
+		magias[i] = -1;
+	
 
 	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
