@@ -155,18 +155,18 @@ int main(int argc, char *argv[], char *envp[])
 	}
 	/* hold leading name=val arguments until just after BEGIN */
 	if (posix && argc > 1 && isclvar(argv[1])) {
-		start_delayed = &argv[0];
+		start_delayed = (unsigned char **)&argv[0];
 		do {
 			argv[0] = argv[1];
 			argv++;
 		} while (--argc > 1 && isclvar(argv[1]));
-		after_delayed = &argv[0];
+		after_delayed = (unsigned char **)&argv[0];
 	}
 	compile_time = 1;
 	argv[0] = cmdname;	/* put prog name at front of arglist */
 	dprintf( ("argc=%d, argv[0]=%s\n", argc, argv[0]) );
-	arginit(argc, argv);
-	envinit(envp);
+	arginit(argc, (unsigned char **)argv);
+	envinit((unsigned char **)envp);
 	yyparse();
 	if (fs)
 		*FS = tostring(qstring(fs, '\0'));
