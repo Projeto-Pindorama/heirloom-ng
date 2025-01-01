@@ -10,8 +10,7 @@
 .\"
 .TH APPLY 1B "07/20/24" "Heirloom Toolchest" "BSD System Compatibility"
 .SH NAME
-apply, pick \- repeatedly apply a command to
-a group of arguments; select arguments
+apply, pick \- repeatedly apply a command to a group of arguments; select arguments
 .SH SYNOPSIS
 .B apply
 [
