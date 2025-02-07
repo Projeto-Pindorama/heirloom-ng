@@ -1,7 +1,7 @@
 /*
  * write.c - write to another user
  *
- * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  *
@@ -146,7 +146,7 @@ void main(int argc, char *argv[]) {
 	fprintf(tf, "%s %s...\n\7\7\7", me, mytty);
 	fflush(tf);
 	for(;;) {
-		char *buf = "";
+		char *buf = NULL;
 		char sbuf[128] = "";
 		i = read(0, sbuf, 128);
 		if (i <= 0)

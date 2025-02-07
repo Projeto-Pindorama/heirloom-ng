@@ -2,7 +2,7 @@
  * apply.c - apply a command to a group of arguments
  */
 /*
- * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -52,8 +52,8 @@ void main(int argc, char *argv[]) {
 	    eoargs = 0,
 	    estatus = 0;
 	char **arg,
-	     *cmd = "",
-	     *cmdl = "";
+	     *cmd = NULL,
+	     *cmdl = NULL;
 	bool fVerbose = false,
 	     fDry = false,
 	     fMagia = false;
@@ -198,7 +198,7 @@ void main(int argc, char *argv[]) {
 /* Parses -# into #, with # being an integer. */
 int8_t crargs(char *s) {
 	long int n = 0;
-	char *r = "";
+	char *r = NULL;
 
 	/*
 	 * Shift the first character
@@ -327,9 +327,9 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 /* What the name says: it executes a command. */
 int eXec(const char command[]) {
 	int st = 0;
-	char *shell = "",
-	     *shpath = "",
-	     *name = "";
+	char *shell = NULL,
+	     *shpath = NULL,
+	     *name = NULL;
 	pid_t pid = 0;
 
 	shell = (getenv("SHELL") != NULL)
