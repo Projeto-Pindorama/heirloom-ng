@@ -47,7 +47,7 @@ compile(const char *instring, char *ep, char *endbuf)
 	return sz ? ep : cp;
 }
 
-#define	INIT			register char *sp = instring;
+#define	INIT			char *sp = instring;
 #define	GETC()			(*sp++)
 #define	PEEKC()			(*sp)
 #define	UNGETC(c)		(--sp)

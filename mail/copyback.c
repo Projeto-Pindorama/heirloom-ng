@@ -26,10 +26,10 @@
  */
 
 #include "mail.h"
-void 
+void
 copyback(void)
 {
-	register int	i, n;
+	int	i, n;
 	int		new = 0;
 	mode_t		mailmode, omask;
 	struct stat	stbuf;

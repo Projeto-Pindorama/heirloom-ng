@@ -28,29 +28,29 @@ specified to take advantage of raw physical I/O.
 .I values
 .br
 .ns
-.TP 
+.TP
 if=
 input file name; standard input is default
 .br
 .ns
-.TP 
+.TP
 of=
 output file name; standard output is default
 .br
 .ns
-.TP 
+.TP
 .RI ibs= n
 input block size
 .I n
 bytes (default 512)
 .br
 .ns
-.TP 
+.TP
 .RI obs= n
 output block size (default 512)
 .br
 .ns
-.TP 
+.TP
 .RI bs= n
 set both input and output block size,
 superseding
@@ -61,19 +61,19 @@ also, if no conversion is specified,
 it is particularly efficient since no copy need be done
 .br
 .ns
-.TP 
+.TP
 .RI cbs= n
 conversion buffer size
 .br
 .ns
-.TP 
+.TP
 .RI skip= n
 skip
 .IR n ""
 input records before starting copy
 .br
 .ns
-.TP 
+.TP
 .RI iseek= n
 seek
 .IR n ""
@@ -87,26 +87,26 @@ copy
 files from (tape) input
 .br
 .ns
-.TP 
+.TP
 .RI seek= n
 seek
 .I n
 records from beginning of output file before copying
 .br
 .ns
-.TP 
+.TP
 .RI oseek= n
 same as seek
 .br
 .ns
-.TP 
+.TP
 count=\fIn\fR
 copy only
 .IR n ""
 input records
 .br
 .ns
-.TP 
+.TP
 conv=ascii
 .ds h \h'\w'conv='u'
 convert EBCDIC to ASCII

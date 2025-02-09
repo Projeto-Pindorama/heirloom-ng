@@ -1,6 +1,3 @@
-CFLAGS += $(C_SEMANTICS_LIKE_ITS_89)
-LDFLAGS += $(L_SEMANTICS_LIKE_ITS_89)
-
 all: tabs newform
 
 tabs: tabs.o tabspec.o

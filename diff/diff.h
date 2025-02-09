@@ -9,13 +9,16 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
+
+#ifndef DIFF_H
+#define DIFF_H
 
 /*	Sccsid @(#)diff.h	1.15 (gritter) 3/26/05>	*/
 /*	from 4.3BSD diff.h	4.7	85/08/16	*/
@@ -52,7 +55,7 @@
 /*
  * Output format options
  */
-int	opt;
+extern int	opt;
 
 #define	D_NORMAL	0	/* Normal output */
 #define	D_EDIT		-1	/* Editor script out */
@@ -63,66 +66,69 @@ int	opt;
 				   lines and no trailing . */
 #define	D_UNIFIED	5	/* Unified diff */
 
-int	aflag;			/* diff binary files */
-int	tflag;			/* expand tabs on output */
-int	pflag;			/* show surrounding C function */
+extern int	aflag;			/* diff binary files */
+extern int	tflag;			/* expand tabs on output */
+extern int	pflag;			/* show surrounding C function */
 
 /*
  * Algorithm related options
  */
-int	hflag;			/* -h, use halfhearted DIFFH */
-int	bflag;			/* ignore blanks in comparisons */
-int	wflag;			/* totally ignore blanks in comparisons */
-int	iflag;			/* ignore case in comparisons */
-int	Bflag;			/* ignore changes that consist of blank lines */
+extern int	hflag;			/* -h, use halfhearted DIFFH */
+extern int	bflag;			/* ignore blanks in comparisons */
+extern int	wflag;			/* totally ignore blanks in comparisons */
+extern int	iflag;			/* ignore case in comparisons */
+extern int	Bflag;			/* ignore changes that consist of blank lines */
 
 /*
  * Options on hierarchical diffs.
  */
-int	lflag;			/* long output format with header */
-int	rflag;			/* recursively trace directories */
-int	sflag;			/* announce files which are same */
-int	Nflag;			/* write text of nonexistant files */
-const char	*start;		/* do file only if name >= this */
+extern int	lflag;			/* long output format with header */
+extern int	rflag;			/* recursively trace directories */
+extern int	sflag;			/* announce files which are same */
+extern int	Nflag;			/* write text of nonexistant files */
+extern const char	*start;		/* do file only if name >= this */
 
 struct xclusion {
 	struct xclusion	*x_nxt;
 	const char	*x_pat;
-}	*xflag;			/* patterns to exclude from comparison */
+};			/* patterns to exclude from comparison */
+
+extern struct xclusion *xflag;
 
 /*
  * Variables for -I D_IFDEF option.
  */
-int	wantelses;		/* -E */
-char	*ifdef1;		/* String for -1 */
-char	*ifdef2;		/* String for -2 */
-char	*endifname;		/* What we will print on next #endif */
-int	inifdef;
+extern int	wantelses;		/* -E */
+extern char	*ifdef1;		/* String for -1 */
+extern char	*ifdef2;		/* String for -2 */
+extern char	*endifname;		/* What we will print on next #endif */
+extern int	inifdef;
 
 /*
  * Variables for -c context option.
  */
-int	context;		/* lines of context to be printed */
+extern int	context;		/* lines of context to be printed */
 
 /*
  * State for exit status.
  */
-int	status;
-int	anychange;
-char	*tempfile1;		/* used when comparing against std input */
-char	*tempfile2;		/* used when comparing against std input */
+extern int	status;
+extern int	anychange;
+extern char	*tempfile1;		/* used when comparing against std input */
+extern char	*tempfile2;		/* used when comparing against std input */
 
 /*
  * Variables for diffdir.
  */
-char	**diffargv;		/* option list to pass to recursive diffs */
-int	recdepth;		/* recursion depth */
-jmp_buf	recenv;			/* jump stack on error */
+extern char	**diffargv;		/* option list to pass to recursive diffs */
+extern int	recdepth;		/* recursion depth */
+extern jmp_buf	recenv;			/* jump stack on error */
 
 struct stackblk {
 	struct stackblk	*s_prev;
 	struct stackblk	*s_next;
-} *curstack;
+};
+extern struct stackblk *curstack;
 
 /*
  * Input file names.
@@ -130,13 +136,13 @@ struct stackblk {
  * and padded with a '/', and then efile0 and efile1 point after
  * the '/'.
  */
-char	*file1, *file2, *efile1, *efile2;
-struct	stat stb1, stb2;
+extern char	*file1, *file2, *efile1, *efile2;
+extern struct	stat stb1, stb2;
 
 extern	const char diffh[], diff[], pr[];
 extern	const char *argv0;
 extern	const char *progname;
-int	mb_cur_max;
+extern int	mb_cur_max;
 extern int	sysv3;
 
 /* diff.c */
@@ -155,3 +161,6 @@ void	diffdir(char **);
 int	ascii(int);
 /* diffreg.c */
 void	diffreg(void);
+
+#endif DIFF_H
+

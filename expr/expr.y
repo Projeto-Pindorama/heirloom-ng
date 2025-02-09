@@ -5,7 +5,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * SPDX-Licence-Identifier: Caldera 
+ * SPDX-Licence-Identifier: Caldera
  */
 
 %{
@@ -58,11 +58,11 @@ extern int	sysv3;
 static char	*Mstring[1];
 
 int		yylex(void);
-static char	*_rel(int op, register char *r1, register char *r2);
+static char	*_rel(int op, char *r1, char *r2);
 static char	*_arith(int op, char *r1, char *r2);
 static char	*_conj(int op, char *r1, char *r2);
 static char	*match(char *s, char *p);
-static int	ematch(char *s, register char *p);
+static int	ematch(char *s, char *p);
 static void	errxx(int c);
 static int	yyerror(const char *s);
 static int	numeric(const char *s);
@@ -181,8 +181,8 @@ static int op[] = {
 int
 yylex(void)
 {
-	register char *p;
-	register int i;
+	char *p;
+	int i;
 
 	if(Argi >= Ac) return NOARG;
 
@@ -199,9 +199,9 @@ yylex(void)
 }
 
 static char *
-_rel(int op, register char *r1, register char *r2)
+_rel(int op, char *r1, char *r2)
 {
-	register int64_t i;
+	int64_t i;
 
 	if (numeric(r1) && numeric(r2))
 		i = atoll(r1) - atoll(r2);
@@ -222,7 +222,7 @@ static char *
 _arith(int op, char *r1, char *r2)
 {
 	int64_t i1, i2;
-	register char *rv;
+	char *rv;
 
 	if (!numeric(r1) || !numeric(r2))
 		yyerror("non-numeric argument");
@@ -245,7 +245,7 @@ _arith(int op, char *r1, char *r2)
 static char *
 _conj(int op, char *r1, char *r2)
 {
-	register char *rv = NULL;
+	char *rv = NULL;
 
 	switch(op) {
 
@@ -277,7 +277,7 @@ _conj(int op, char *r1, char *r2)
 static char *
 match(char *s, char *p)
 {
-	register char *rv;
+	char *rv;
 	int	gotcha;
 
 	gotcha = ematch(s, p);
@@ -294,10 +294,10 @@ match(char *s, char *p)
 
 #if defined (SUS) || defined (SU3) || defined (S42)
 static int
-ematch(char *s, register char *p)
+ematch(char *s, char *p)
 {
 	regex_t	re;
-	register int	num;
+	int	num;
 	regmatch_t	bralist[2];
 	int	reflags = 0, val;
 
@@ -325,10 +325,10 @@ ematch(char *s, register char *p)
 }
 #else	/* !SUS, !SU3, !S42 */
 static int
-ematch(char *s, register char *p)
+ematch(char *s, char *p)
 {
 	char *expbuf;
-	register int num, val;
+	int num, val;
 
 	if ((expbuf = compile(p, NULL, NULL)) == NULL)
 		errxx(regerrno);

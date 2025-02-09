@@ -109,8 +109,8 @@ report(unsigned long long count)
 static int
 sbwc(struct iblok *ip)
 {
-	register long long hadspace = 1;
-	register int c, i;
+	long long hadspace = 1;
+	int c, i;
 	size_t sz;
 #ifndef	SUS
 	/*
@@ -141,7 +141,7 @@ sbwc(struct iblok *ip)
 static int
 mbwc(struct iblok *ip)
 {
-	register long long hadspace = 1;
+	long long hadspace = 1;
 	char	mb[MB_LEN_MAX];
 	wint_t	c;
 	int	i, k, n;

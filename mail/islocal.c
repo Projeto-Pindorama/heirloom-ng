@@ -18,7 +18,7 @@
 /*
  * islocal (char *user, uid_t *puid) - see if user exists on this system
  */
-int 
+int
 islocal(char *user, uid_t *puid)
 {
 	char	fname[MAXPATHLEN];

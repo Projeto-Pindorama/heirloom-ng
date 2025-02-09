@@ -2,8 +2,8 @@
 .\" Copyright (c) 2004 Gunnar Ritter
 .\"
 .\" SPDX-Licence-Identifier: Zlib
-.\" Sccsid @(#)pax.1	1.37 (gritter) 9/5/05
-.TH PAX 1 "9/5/05" "Heirloom Toolchest" "User Commands"
+.\" Sccsid @(#)pax.1	1.38 (gritter) 8/13/09
+.TH PAX 1 "8/13/09" "Heirloom Toolchest" "User Commands"
 .SH NAME
 pax \- portable archive interchange
 .SH SYNOPSIS
@@ -309,6 +309,8 @@ Any character can be used as delimiter instead of
 .RI ` / '.
 If a file name is empty after the replacement is done,
 the file is ignored.
+This option can be specified multiple times
+to execute multiple substitutions in the order specified.
 .TP
 .B \-t
 Resets the access times of files
@@ -342,8 +344,8 @@ Specifies the archive header format to be one of:
 .in +6
 .TS
 lfB l.
-\fBnewc\fR	SVR4 ASCII cpio format;\ 
-\fBcrc\fR	SVR4 ASCII cpio format with checksum;\ 
+\fBnewc\fR	SVR4 ASCII cpio format;\
+\fBcrc\fR	SVR4 ASCII cpio format with checksum;\
 \fBsco\fR	T{
 SCO UnixWare 7.1 ASCII cpio format;
 T}
@@ -395,7 +397,7 @@ This option must be used with care
 since many implementations are unable
 to read the resulting archive.
 .ti 0
-.br                                                                            
+.br
 \fBtimes\fR
 .br
 Causes the times of last access and last modification
@@ -652,7 +654,7 @@ an extended header is written.
 Unless the size of an entry is greater than 8\ GB,
 a
 .I pax
-archive should be readable by any implementation                               
+archive should be readable by any implementation
 capable of reading
 .I ustar
 archives,

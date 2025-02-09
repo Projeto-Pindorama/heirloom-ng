@@ -411,7 +411,7 @@ libuxre_regnfacomp(regex_t *ep, Tree *tp, Lex *lxp)
 	np->avail = 0;
 	np->allcp = 0;
 	ep->re_nfa = np;
-	np->beg = firstop(tp); 
+	np->beg = firstop(tp);
 	return 0;
 err:;
 	if (np != 0)

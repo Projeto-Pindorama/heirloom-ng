@@ -10,11 +10,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -59,7 +59,7 @@ extern char	*lexprog;
 #undef	input
 int	input(void)
 {
-	register int c;
+	int c;
 	extern char	*lexprog;
 
 	if (yysptr > yysbuf)

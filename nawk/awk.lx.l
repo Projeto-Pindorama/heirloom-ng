@@ -1,13 +1,13 @@
 %{
 /*
    Changes by Gunnar Ritter, Freiburg i. Br., Germany, December 2002.
-  
+
    Sccsid @(#)awk.lx.l	1.13 (gritter) 11/22/05>
  */
 /* UNIX(R) Regular Expression Tools
- 
+
    Copyright (C) 2001 Caldera International, Inc.
- 
+
    SPDX-Licence-Identifier: GPL-2.0+
 */
 /*
@@ -15,7 +15,7 @@
  *
  * Copyright (c) 1991
  * 	The Regents of the University of California.  All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 /*		copyright	"%c%"	*/
@@ -269,7 +269,7 @@ unsigned char	*ep = ebuf;
 int
 awk_input(void)
 {
-	register int c;
+	int c;
 	extern unsigned char *lexprog;
 
 	if (lexprog != NULL) {	/* awk '...' */
@@ -297,7 +297,7 @@ awk_unput(int c)
 int
 input(void)
 {
-	register int c;
+	int c;
 	extern unsigned char *lexprog;
 
 	if (yysptr > yysbuf)

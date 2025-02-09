@@ -52,11 +52,11 @@ static void	dowhat(FILE *);
 static int	trypat(FILE *,char *);
 
 
-int 
-main(int argc, register char **argv)
+int
+main(int argc, char **argv)
 {
-	register int i;
-	register FILE *iop;
+	int i;
+	FILE *iop;
 	int current_optind, c;
 
 	if (argc < 2)
@@ -125,9 +125,9 @@ main(int argc, register char **argv)
 
 
 static void
-dowhat(register FILE *iop)
+dowhat(FILE *iop)
 {
-	register int c;
+	int c;
 
 	while ((c = getc(iop)) != EOF) {
 		if (c == pattern[0])
@@ -138,9 +138,9 @@ dowhat(register FILE *iop)
 
 
 static int
-trypat(register FILE *iop,register char *pat)
+trypat(FILE *iop,char *pat)
 {
-	register int c = 0;
+	int c = 0;
 
 	for (; *pat; pat++)
 		if ((c = getc(iop)) != *pat)

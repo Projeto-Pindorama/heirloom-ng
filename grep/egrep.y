@@ -146,7 +146,7 @@ r:	r OR r
 		{ $$ = unary(QUEST, $1); }
 	| '(' r ')'
 		{ $$ = $2; }
-	| error 
+	| error
 	;
 
 %%
@@ -215,7 +215,7 @@ more_positions(unsigned need)
 static int
 yylex(void) {
 	int cclcnt, x;
-	register int c;
+	int c;
 	switch(c = nextch()) {
 		case '$':
 		case '^': c = '\n';
@@ -230,7 +230,7 @@ yylex(void) {
 		case EOF: return (0);
 		case '\0': return (0);
 		case '\n': return (OR);
-		case '[': 
+		case '[':
 			x = CCL;
 			cclcnt = 0;
 			count = nxtchar++;
@@ -276,7 +276,7 @@ enter(int x) {
 
 static int
 cclenter(int x) {
-	register int linno;
+	int linno;
 	linno = enter(x);
 	right[linno] = count;
 	return (linno);
@@ -284,7 +284,7 @@ cclenter(int x) {
 
 static int
 menter(int x) {
-	register int linno;
+	int linno;
 	linno = enter(MCHAR);
 	right[linno] = x;
 	return (linno);
@@ -313,7 +313,7 @@ unary(int x, int d) {
 
 static void
 cfoll(int v) {
-	register int i;
+	int i;
 	if (left[v] == 0) {
 		count = 0;
 		for (i=1; i<=line; i++) tmpstat[i] = 0;
@@ -330,7 +330,7 @@ cfoll(int v) {
 static int
 cgotofn(int s, int c)
 {
-	register int cc, i, k;
+	int cc, i, k;
 	int n, pos;
 	int st;
 	int curpos, num;
@@ -414,7 +414,7 @@ igotofn(void)
 
 static int
 cstate(int v) {
-	register int b;
+	int b;
 	if (left[v] == 0) {
 		if (tmpstat[v] != 1) {
 			tmpstat[v] = 1;
@@ -440,7 +440,7 @@ cstate(int v) {
 
 static int
 member(int symb, int set, int torf) {
-	register int num, pos, lastc = WEOF;
+	int num, pos, lastc = WEOF;
 	num = chars[set];
 	pos = set + 1;
 	num += pos;
@@ -459,7 +459,7 @@ member(int symb, int set, int torf) {
 
 static int
 notin(int n) {
-	register int i, j, pos;
+	int i, j, pos;
 	for (i=0; i<=n; i++) {
 		if (positions[state[i]] == count) {
 			pos = state[i] + 1;
@@ -475,7 +475,7 @@ notin(int n) {
 
 static void
 add(int *array, int n) {
-	register int i;
+	int i;
 	unsigned need;
 	if ((need = nxtpos + count) >= MAXPOS) more_positions(need);
 	array[n] = nxtpos;
@@ -536,8 +536,8 @@ eg_build(void)
 static int
 eg_matchw(const char *str, size_t sz)
 {
-	register const char *p;
-	register int cstat, nstat;
+	const char *p;
+	int cstat, nstat;
 	wint_t wc;
 	int n;
 
@@ -565,8 +565,8 @@ eg_matchw(const char *str, size_t sz)
 static int
 eg_match(const char *str, size_t sz)
 {
-	register const char *p;
-	register int cstat, nstat;
+	const char *p;
+	int cstat, nstat;
 
 	p = str;
 	cstat = gotofn[0]['\n']-1;
@@ -583,8 +583,8 @@ eg_match(const char *str, size_t sz)
 static int
 eg_range(struct iblok *ip, char *last)
 {
-	register char *p;
-	register int cstat, nstat;
+	char *p;
+	int cstat, nstat;
 	int istat;
 
 	p = ip->ib_cur;
@@ -629,8 +629,8 @@ eg_range(struct iblok *ip, char *last)
 static int
 eg_rangew(struct iblok *ip, char *last)
 {
-	register char *p;
-	register int cstat, nstat;
+	char *p;
+	int cstat, nstat;
 	int istat;
 	wint_t	wc;
 	int	n;

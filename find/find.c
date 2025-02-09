@@ -237,7 +237,7 @@ main(int argc, char **argv)
 	struct anode *exlist;
 	struct anode nlist = { null, { 0 }, { 0 } };
 	int paths;
-	register char *sp = 0;
+	char *sp = 0;
 	int	i, j;
 
 	time(&Now);
@@ -307,7 +307,7 @@ brk:	if (HLflag == 'L')
 
 /*ARGSUSED*/
 static struct anode *expr(void) { /* parse ALTERNATION (-o)  */
-	register struct anode * p1;
+	struct anode * p1;
 	struct anode n = { 0, { 0 }, { 0 } };
 
 	p1 = e1() /* get left operand */ ;
@@ -321,8 +321,8 @@ static struct anode *expr(void) { /* parse ALTERNATION (-o)  */
 	return(p1);
 }
 static struct anode *e1(void) { /* parse CONCATENATION (formerly -a) */
-	register struct anode * p1;
-	register char *a;
+	struct anode * p1;
+	char *a;
 	struct anode n = { 0, { 0 }, { 0 } };
 
 	p1 = e2();
@@ -354,7 +354,7 @@ static struct anode *e3(void) { /* parse parens and predicates */
 	struct anode *p1;
 	struct anode n = { 0, { 0 }, { 0 } };
 	long i, k;
-	register char *a, *b, s, *p, *q;
+	char *a, *b, s, *p, *q;
 
 	a = nxtarg(0);
 	if(EQ(a, "(")) {
@@ -528,26 +528,26 @@ static char *nxtarg(int must) { /* get next arg from command line */
 }
 
 /* execution time functions */
-static int and(register struct anode *p)
+static int and(struct anode *p)
 {
 	return(((*p->l.L->F)(p->l.L)) && ((*p->r.R->F)(p->r.R))?1:0);
 }
-static int or(register struct anode *p)
+static int or(struct anode *p)
 {
 	 return(((*p->l.L->F)(p->l.L)) || ((*p->r.R->F)(p->r.R))?1:0);
 }
-static int not(register struct anode *p)
+static int not(struct anode *p)
 {
 	return( !((*p->l.L->F)(p->l.L)));
 }
 #if !defined(SUS) && !defined(SU3)
-static int glob(register struct anode *p)
+static int glob(struct anode *p)
 {
 	extern int gmatch(const char *, const char *);
 	return(gmatch(Fname, p->l.pat));
 }
 #else	/* SUS, SU3 */
-static int glob(register struct anode *p)
+static int glob(struct anode *p)
 {
 	int	val;
 #ifdef	__GLIBC__
@@ -565,78 +565,78 @@ static int glob(register struct anode *p)
 }
 #endif	/* SUS, SU3 */
 /*ARGSUSED*/
-static int print(register struct anode *p)
+static int print(struct anode *p)
 {
 	puts(Pathname);
 	return(1);
 }
 /*ARGSUSED*/
-static int prune(register struct anode *p)
+static int prune(struct anode *p)
 {
 	if (!depth)
 		Prune = 1;
 	return(1);
 }
 /*ARGSUSED*/
-static int null(register struct anode *p)
+static int null(struct anode *p)
 {
 	return(1);
 }
-static int mtime(register struct anode *p)
+static int mtime(struct anode *p)
 {
 	return(scomp((Now - Statb.st_mtime) / A_DAY, p->l.t, p->r.s));
 }
-static int atime(register struct anode *p)
+static int atime(struct anode *p)
 {
 	return(scomp((Now - Statb.st_atime) / A_DAY, p->l.t, p->r.s));
 }
-static int ctime(register struct anode *p)
+static int ctime(struct anode *p)
 {
 	return(scomp((Now - Statb.st_ctime) / A_DAY, p->l.t, p->r.s));
 }
-static int user(register struct anode *p)
+static int user(struct anode *p)
 {
 	return(scomp(Statb.st_uid, p->l.u, p->r.s));
 }
-static int ino(register struct anode *p)
+static int ino(struct anode *p)
 {
 	return(scomp(Statb.st_ino, p->l.u, p->r.s));
 }
-static int group(register struct anode *p)
+static int group(struct anode *p)
 {
 	return(p->l.u == Statb.st_gid);
 }
-static int nogroup(register struct anode *p)
+static int nogroup(struct anode *p)
 {
 	return(getgroup(Statb.st_gid) == NULL);
 }
-static int nouser(register struct anode *p)
+static int nouser(struct anode *p)
 {
 	return(getuser(Statb.st_uid) == NULL);
 }
-static int links(register struct anode *p)
+static int links(struct anode *p)
 {
 	return(scomp(Statb.st_nlink, p->l.link, p->r.s));
 }
-static int size(register struct anode *p)
+static int size(struct anode *p)
 {
 	return(scomp(Statb.st_size?(Statb.st_size+511)>>9:0, p->l.sz, p->r.s));
 }
-static int sizec(register struct anode *p)
+static int sizec(struct anode *p)
 {
 	return(scomp(Statb.st_size, p->l.sz, p->r.s));
 }
-static int perm(register struct anode *p)
+static int perm(struct anode *p)
 {
-	register int i;
+	int i;
 	i = (p->r.s=='-') ? p->l.per : 07777; /* '-' means only arg bits */
 	return((Statb.st_mode & i & 07777) == p->l.per);
 }
-static int type(register struct anode *p)
+static int type(struct anode *p)
 {
 	return((Statb.st_mode&S_IFMT)==p->l.per);
 }
-static int exeq(register struct anode *p)
+static int exeq(struct anode *p)
 {
 	if (p->r.a) {
 		if (Pathname) {
@@ -695,19 +695,19 @@ static int cpio(struct anode *p)
 		fprintf(p->l.fp, "%s\n", Pathname);
 	return(1);
 }
-static int newer(register struct anode *p)
+static int newer(struct anode *p)
 {
 	return Statb.st_mtime > p->l.t;
 }
-static int anewer(register struct anode *p)
+static int anewer(struct anode *p)
 {
 	return Statb.st_atime > p->l.t;
 }
-static int cnewer(register struct anode *p)
+static int cnewer(struct anode *p)
 {
 	return Statb.st_ctime > p->l.t;
 }
-static int fstype(register struct anode *p)
+static int fstype(struct anode *p)
 {
 #if defined(__linux__) || defined(_AIX) || defined(__hpux)
 	return(EQ(fscur->fstype, p->l.fstype));
@@ -718,7 +718,7 @@ static int fstype(register struct anode *p)
 	return(EQ(Statb.st_fstype, p->l.fstype));
 #endif
 }
-static int local(register struct anode *p)
+static int local(struct anode *p)
 {
 #if defined(__linux__) || defined(_AIX) || defined(__hpux)
 	return(strcmp(fscur->fstype, "nfs") && strcmp(fscur->fstype, "smbfs"));
@@ -732,7 +732,7 @@ static int local(register struct anode *p)
 
 /* support functions */
 /* funny signed compare */
-static int scomp(register long long a, register long long b, register char s)
+static int scomp(long long a, long long b, char s)
 {
 	if(s == '+')
 		return(a > b);
@@ -744,8 +744,8 @@ static int scomp(register long long a, register long long b, register char s)
 static int
 doex(int com, struct aggregate *a)
 {
-	register int np;
-	register char *na;
+	int np;
+	char *na;
 	char **oargv;
 	int oargc;
 	static char **nargv;
@@ -797,7 +797,7 @@ static struct aggregate *mkagg(long baselen)
 {
 	static size_t	envsz;
 	extern char	**environ;
-	register int	i;
+	int	i;
 	struct aggregate	*a;
 
 	a = srealloc(NULL, sizeof *a);
@@ -955,7 +955,7 @@ static void getfstypes(void)
 static int descend(char *fname, struct anode *exlist, int level)
 {
 	struct stat	ost;
-	register char *c1;
+	char *c1;
 	int i;
 	int rv = 0;
 
@@ -1049,9 +1049,9 @@ reg:
 static int descend1(char *fname, struct anode *exlist, int level)
 {
 	int	dir = 0; /* open directory */
-	register char *c1;
+	char *c1;
 	struct getdb *db;
-	register struct direc *dp;
+	struct direc *dp;
 	int endofname;
 	int err;
 	int oflags = O_RDONLY;
@@ -1265,7 +1265,7 @@ static void mkcpio(struct anode *p, const char *b, int ascii)
 }
 
 static void
-trailer(register struct anode *p, int termcpio)
+trailer(struct anode *p, int termcpio)
 {
 	char	*Opath = Pathname;
 	Pathname = 0;
@@ -1335,7 +1335,7 @@ static mode_t	where(const char **, mode_t, int *, int *, const mode_t);
 static mode_t
 newmode(const char *ms, const mode_t pm)
 {
-	register mode_t	o, m, b;
+	mode_t	o, m, b;
 	int	lock, setsgid = 0, cleared = 0, copy = 0;
 	mode_t	nm, om, mm;
 	const char *mo = ms;
@@ -1396,7 +1396,7 @@ out:	if (pm & S_IFDIR) {
 static mode_t
 absol(const char **ms)
 {
-	register int c, i;
+	int c, i;
 
 	i = 0;
 	while ((c = *(*ms)++) >= '0' && c <= '7')
@@ -1408,7 +1408,7 @@ absol(const char **ms)
 static mode_t
 who(const char **ms, mode_t *mp)
 {
-	register int m;
+	int m;
 
 	m = 0;
 	*mp = 0;
@@ -1450,7 +1450,7 @@ what(const char **ms)
 static mode_t
 where(const char **ms, mode_t om, int *lock, int *copy, const mode_t pm)
 {
-	register mode_t m;
+	mode_t m;
 
 	m = 0;
 	*copy = 0;

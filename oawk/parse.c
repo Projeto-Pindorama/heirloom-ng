@@ -9,11 +9,11 @@
  * Copyright (c) 1991
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  *
  *
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
- * 
+ *
  * SPDX-Licence-Identifier: Caldera
  */
 
@@ -25,7 +25,7 @@
 #include "stdio.h"
 node *ALLOC(int n)
 {
-	register node *x;
+	node *x;
 	x = (node *) malloc(sizeof(node) + (n-1)*sizeof(node *));
 	if (x == NULL)
 		error(FATAL, "out of space in ALLOC");
@@ -39,7 +39,7 @@ node *exptostat(node *a)
 node	*nullstat;
 node *node0(intptr_t a)
 {
-	register node *x;
+	node *x;
 	x=ALLOC(0);
 	x->nnext = NULL;
 	x->nobj=a;
@@ -47,7 +47,7 @@ node *node0(intptr_t a)
 }
 node *node1(intptr_t a,node *b)
 {
-	register node *x;
+	node *x;
 	x=ALLOC(1);
 	x->nnext = NULL;
 	x->nobj=a;
@@ -56,7 +56,7 @@ node *node1(intptr_t a,node *b)
 }
 node *node2(intptr_t a,node *b,node *c)
 {
-	register node *x;
+	node *x;
 	x = ALLOC(2);
 	x->nnext = NULL;
 	x->nobj = a;
@@ -66,7 +66,7 @@ node *node2(intptr_t a,node *b,node *c)
 }
 node *node3(intptr_t a,node *b,node *c,node *d)
 {
-	register node *x;
+	node *x;
 	x = ALLOC(3);
 	x->nnext = NULL;
 	x->nobj = a;
@@ -77,7 +77,7 @@ node *node3(intptr_t a,node *b,node *c,node *d)
 }
 node *node4(intptr_t a,node *b,node *c,node *d,node *e)
 {
-	register node *x;
+	node *x;
 	x = ALLOC(4);
 	x->nnext = NULL;
 	x->nobj = a;
@@ -89,56 +89,56 @@ node *node4(intptr_t a,node *b,node *c,node *d,node *e)
 }
 node *stat3(intptr_t a,node *b,node *c,node *d)
 {
-	register node *x;
+	node *x;
 	x = node3(a,b,c,d);
 	x->ntype = NSTAT;
 	return(x);
 }
 node *op2(intptr_t a,node *b,node *c)
 {
-	register node *x;
+	node *x;
 	x = node2(a,b,c);
 	x->ntype = NEXPR;
 	return(x);
 }
 node *op1(intptr_t a,node *b)
 {
-	register node *x;
+	node *x;
 	x = node1(a,b);
 	x->ntype = NEXPR;
 	return(x);
 }
 node *stat1(intptr_t a,node *b)
 {
-	register node *x;
+	node *x;
 	x = node1(a,b);
 	x->ntype = NSTAT;
 	return(x);
 }
 node *op3(intptr_t a,node *b,node *c,node *d)
 {
-	register node *x;
+	node *x;
 	x = node3(a,b,c,d);
 	x->ntype = NEXPR;
 	return(x);
 }
 node *stat2(intptr_t a,node *b,node *c)
 {
-	register node *x;
+	node *x;
 	x = node2(a,b,c);
 	x->ntype = NSTAT;
 	return(x);
 }
 node *stat4(intptr_t a,node *b,node *c,node *d,node *e)
 {
-	register node *x;
+	node *x;
 	x = node4(a,b,c,d,e);
 	x->ntype = NSTAT;
 	return(x);
 }
 node *valtonode(cell *a, int b)
 {
-	register node *x;
+	node *x;
 	x = node0((intptr_t)a);
 	x->ntype = NVALUE;
 	x->subtype = b;
@@ -146,14 +146,14 @@ node *valtonode(cell *a, int b)
 }
 node *pa2stat(node *a,node *b,node *c)
 {
-	register node *x;
+	node *x;
 	x = node3(paircnt++, a, b, c);
 	x->ntype = NPA2;
 	return(x);
 }
 node *linkum(node *a,node *b)
 {
-	register node *c;
+	node *c;
 	if(a == NULL) return(b);
 	else if(b == NULL) return(a);
 	for(c=a; c->nnext != NULL; c=c->nnext);
@@ -162,7 +162,7 @@ node *linkum(node *a,node *b)
 }
 node *genprint(void)
 {
-	register node *x;
+	node *x;
 	x = stat2(PRINT,valtonode(lookup("$record", symtab, 0), CFLD), nullstat);
 	return(x);
 }

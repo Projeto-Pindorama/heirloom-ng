@@ -20,11 +20,11 @@
  *	-1 ==> No H_RECEIVED lines to be printed.
  *	> 0 ==> Header line type after (before) which to place H_RECEIVED lines
  */
-int 
+int
 pckrcvspot(void)
 {
 	static char pn[] = "pckrcvspot";
-	register int	rc = 0;
+	int	rc = 0;
 
 	if (hdrlines[H_RECEIVED].head == (struct hdrs *)NULL) {
 		rc = -1;

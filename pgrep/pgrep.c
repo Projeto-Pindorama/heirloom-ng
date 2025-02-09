@@ -16,7 +16,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)pgrep.sl	1.24 (gritter) 1/12/07";
+static const char sccsid[] USED = "@(#)pgrep.sl	1.25 (gritter) 12/16/07";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -54,7 +54,9 @@ static const char sccsid[] USED = "@(#)pgrep.sl	1.24 (gritter) 1/12/07";
 #endif	/* !__linux__, !__NetBSD__, !__OpenBSD__ */
 
 #if defined (__NetBSD__) || defined (__OpenBSD__) || defined (__APPLE__)
+#ifndef __APPLE__
 #include <kvm.h>
+#endif
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #if defined (__APPLE__)
@@ -1193,7 +1195,7 @@ collectprocs(void)
 		argproc(p, &kp[i]);
 	}
 	/* free the memory allocated by GetBSDProcessList */
-	free(kp);	
+	free(kp);
 }
 #endif	/* all */
 
