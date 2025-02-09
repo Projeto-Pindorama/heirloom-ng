@@ -1,9 +1,12 @@
 Release ...
+* cpio: Fix manual page formatting.
+* apply: Fixed the command string magic character computation algorithm that
+  got garbled after a refactor made in the name of performance.
 * build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
   glibc and making changes to adhere to C standards (patch by Gabriel Souza).
 * [NEW] wall, write: New implementation ported from UNIX 7th (a.k.a. 32V),
   bulletproofed against buffer overflows and the CVE-2024-28085, which is
-  available as the ssafe() function at libcommon.
+  available as the 'ssafe()' function at libcommon.
 * rm: Alias '-e' flag to more known '-v' for verbose.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
@@ -19,8 +22,8 @@ Release ...
   of its libraries, also remove `readlink_ucb' object file at `readlink/'
   build directory when executing `make clean' (patch by Molly A. McCollum).
 * Remove `register's from legacy code that was living unchanged since at
-  least the 80's, since modern linters started complying about it and it
-  is not used as much on most common architectures such as x86
+  least the 80's, since modern linters started complaining about it and
+  it is not used as much on most common architectures such as x86
   (patch by Samuel Brederodes).
 * watch: `use_default_colors()', do not force black and white.
 * [NEW] rev: New implementation, not capable of UTF-8 yet.
