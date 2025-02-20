@@ -118,7 +118,7 @@ void main(int argc, char *argv[]) {
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
-	separator = (! *separator)
+	separator = (! separator)
 			? "\n"
 			: separator;
 
