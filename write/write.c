@@ -76,7 +76,7 @@ void main(int argc, char *argv[]) {
 	/* Get everything after /dev. */
 	for (i = 1; i < sizeof(mytty) && mytty[i] != '/'; i++);
 	mytty += (i + 1);
-	if (histtya[0] != '\0') {
+	if (histtya != NULL) {
 		strncpy(histty, "/dev/", 5);
 		strncat(histty, histtya, UT_LINESIZE);
 	}
@@ -105,7 +105,7 @@ void main(int argc, char *argv[]) {
 		fprintf(stderr, "%s not logged in.\n", him);
 		exit(1);
 	}
-	if (histtya[0] == '\0' && logcnt > 1) {
+	if (histtya == NULL && logcnt > 1) {
 		fprintf(stderr, "%s logged more than once\nwriting to %s\nother places where %s is at:\n",
 					him, histty, him);
 		for (i=0; i < places; i++)
