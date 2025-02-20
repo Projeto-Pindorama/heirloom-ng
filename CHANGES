@@ -1,3 +1,7 @@
+Release 250220
+* seq, write: Fix memory fault due to illegal pointer access.
+* cpio, pax: Fix manual page formatting.
+
 Release 250209
 * cpio: Fix manual page formatting.
 * apply: Fixed the command string magic character computation algorithm that
