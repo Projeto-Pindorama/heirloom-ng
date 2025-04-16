@@ -1,8 +1,8 @@
 /*
  * seq.c - print a sequence of numbers
  */
-/* 
- * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
+/*
+ * Copyright (C) 2023-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strmenta.h>
 #include <unistd.h>
 
 /* That's is for custom format at printf(3) via -p and -w. */
@@ -24,13 +25,13 @@
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
 static char *progname;
-/* 
+/*
  * Make flags public since it will
  * be used by buildfmt().
  */
 static bool fPicture = false,
 	    fWadding = false;
-static char *picstr = "";
+static char *picstr = NULL;
 static double start = 0,
 	     stop = 0,
 	     step = 0;
@@ -38,7 +39,7 @@ static double start = 0,
 void main(int argc, char *argv[]);
 char *buildfmt(void);
 char *getlgstr(void);
-int afterdecsep(char *s);
+int afterdecsep(char s[]);
 void usage(void);
 
 void main(int argc, char *argv[]) {
@@ -46,10 +47,10 @@ void main(int argc, char *argv[]) {
 	extern int optind;
 	int option = 0;
 	register double count = 0;
-	char *format = "",
-	     *separator = "";
+	char *format = NULL,
+	     *separator = NULL;
 
-	/* 
+	/*
 	 * Stop searching for arguments in the moment
 	 * it finds a digit, also stop increasing
 	 * 'optind'.
@@ -78,7 +79,7 @@ void main(int argc, char *argv[]) {
 		usage();
 	}
 
-	/* 
+	/*
 	 * If argc equals 1, stop will be defined as the first command line argument
 	 * and start and step will be defaulted to 1.
 	 * If argc is 2, stop will be defined as the second command line argument and
@@ -105,7 +106,7 @@ void main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * If the stop is smaller than
 	 * the start, it will be
 	 * decreasing, not increasing.
@@ -117,13 +118,13 @@ void main(int argc, char *argv[]) {
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
-	separator = (! *separator)
+	separator = (! separator)
 			? "\n"
 			: separator;
 
 	for (count = start; ((0 < step) ? count <= stop : count >= stop);
 							count += step) {
-		/* 
+		/*
 		 * If the count has come to the end or if the next sum
 		 * is larger than stop, default separator back to '\n'.
 		 * Do not be preoccupied about performance, the abs(3)
@@ -140,8 +141,8 @@ void main(int argc, char *argv[]) {
 }
 
 char *buildfmt(void) {
-	char *picture = "",
-	     *fmtbuf = ""; 
+	char *picture = NULL,
+	     *fmtbuf = NULL;
 
 	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -155,14 +156,14 @@ char *buildfmt(void) {
 	if (!fPicture && !fWadding) {
 		snprintf(fmtbuf, sizeof(fmtbuf), "%s", "%g%s");
 		return fmtbuf;
-	} 
+	}
 
-	if (fPicture || fWadding) { 
+	if (fPicture || fWadding) {
 		long int precision = 0;
 		unsigned long int natural = 0;
 
 		char strnum[32] = "",
-			/* 
+			/*
 			 * Unlike the default,
 			 * creating a buffer will
 			 * be needed for avoiding
@@ -170,7 +171,7 @@ char *buildfmt(void) {
 			 */
 		     buf[32] = "";
 
-		/* 
+		/*
 		 * Get how many digits after the
 		 * decimal separator the picture
 		 * have.
@@ -191,7 +192,7 @@ char *buildfmt(void) {
 			exit(1);
 		}
 
-		/* 
+		/*
 		 * Basically the procedement
 		 * that afterdecsep() does,
 		 * but as a one-liner.
@@ -205,7 +206,7 @@ char *buildfmt(void) {
 		}
 		natural = strlen(strnum);
 
-		/* 
+		/*
 		 * free() only if picture comes
 		 * from getlgstr(), since it had
 		 * been allocated in memory, in
@@ -216,13 +217,13 @@ char *buildfmt(void) {
 			free(picture);
 		}
 
-		/* 
+		/*
 		 * If there are decimal values, add it to
 		 * "natural" plus one, since "natural" in
 		 * printf(3) context means the total
 		 * number of characters that will be
 		 * printed.
-		 */	
+		 */
 		if (precision > 0) {
 			natural += (unsigned long int)precision;
 			natural += 1;
@@ -241,7 +242,7 @@ char *buildfmt(void) {
 
 char *getlgstr(void) {
 	char strflt[32] = "",
-	     *lgstnum = "";
+	     *lgstnum = NULL;
 	double fstn = 0.0F,
 	       stepn = 0.0F;
 
@@ -253,7 +254,7 @@ char *getlgstr(void) {
 		exit(1);
 	}
 
-	/* 
+	/*
 	 * This method, although not being precise
 	 * as the last, will get the most irregular
 	 * number in the count per subtracting 'step'
@@ -267,7 +268,7 @@ char *getlgstr(void) {
 	 * Also have a metric if the start isn't actually
 	 * the stop (sequence done in decrescent order).
 	 */
-	fstn = (start < stop) 
+	fstn = (start < stop)
 		? fabs(start)
 		: fabs(stop);
 	stepn = fabs(step);
@@ -277,33 +278,25 @@ char *getlgstr(void) {
 	return lgstnum;
 }
 
-int afterdecsep(char *s) {
-	register int c = 0;
+int afterdecsep(char s[]) {
+	unsigned int c = 0;
 	unsigned long fraclen = 0;
-	char *fracpart = "";
+	char *fracpart = NULL;
 
 	if (isalpha(s[0])) {
 		/* Panic. */
 		return -1;
 	}
 
-	/* 
+	/*
 	 * If there's not a decimal separator at *s,
 	 * it's an invalid picture, but seq(1) will
 	 * be not complaining about it.
 	 */
-	if (strchr(s, '.') != NULL) {
-		for (c = 0; s[c]; c++) {
-			switch (s[c]) {
-				case '.':
-					fracpart = &s[(c + 1)];
-					s[c] = '\0';
-					break;
-				default:
-					continue;
-			}
-			break;
-		}
+	if ((c = afterchar(s, '.')) != 0 || s[0] == '.') {
+		c = afterchar(s, '.');
+		fracpart = &s[(c + 1)];
+		s[c] = '\0';
 		fraclen = strlen(fracpart);
 	}
 

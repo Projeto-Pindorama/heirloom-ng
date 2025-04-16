@@ -22,7 +22,7 @@
 /*
 	 Send mail - High level sending routine
  */
-void 
+void
 sendmail(int argc, char **argv)
 {
 	char		**args;
@@ -34,7 +34,7 @@ sendmail(int argc, char **argv)
 	struct stat 	sbuf;
 	int		aret;
 	int		i, n;
-	int		oldn = 1;	
+	int		oldn = 1;
 	int		ttyf = 0;
 	int		pushrest = 0;
 	int		hdrtyp = 0;
@@ -89,10 +89,10 @@ sendmail(int argc, char **argv)
 		Write out the from line header for the letter
 	*/
 	if (fromflag && deliverflag && from_user[0] != '\0') {
-		snprintf(buf, bufsize, "%s%s %s\n", 
+		snprintf(buf, bufsize, "%s%s %s\n",
 			header[H_FROM].tag, from_user, datestring);
 	} else {
-		snprintf(buf, bufsize, "%s%s %s\n", 
+		snprintf(buf, bufsize, "%s%s %s\n",
 			header[H_FROM].tag, my_name, datestring);
 	}
 	if (!wtmpf(buf, strlen(buf))) {
@@ -117,7 +117,7 @@ sendmail(int argc, char **argv)
 
 	flgf = 1;	/* reset when first read of message body succeeds */
 	/*
-		Read mail message, allowing for lines of infinite 
+		Read mail message, allowing for lines of infinite
 		length. This is tricky, have to watch for newlines.
 	*/
 	saveint = setsig(SIGINT, savdead);
@@ -271,8 +271,8 @@ sendmail(int argc, char **argv)
 		Dout(pn, 0, "header scan complete, readahead %d = \"%s\"\n", n, buf);
 	}
 
-	/* 
-	 * Write out H_CTYPE line. This is used only as 
+	/*
+	 * Write out H_CTYPE line. This is used only as
 	 * placeholders in the tmp file. When the 'real' message is sent,
 	 * the proper value will be put out by copylet().
 	 */

@@ -34,7 +34,7 @@
 #define	Return	free(save); free(mail); return
 
 #include "mail.h"
-void 
+void
 cksaved(char *user)
 {
 	struct stat stbuf;

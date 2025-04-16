@@ -101,7 +101,7 @@ main(int argc,char **argv)
 			error("odd data",empty);
 		i = idx(precedes);
 		j = idx(follows);
-		if(i==j||present(i,j)) 
+		if(i==j||present(i,j))
 			continue;
 		t = malloc(sizeof(struct predlist));
 		t->nextpred = j->inedges;

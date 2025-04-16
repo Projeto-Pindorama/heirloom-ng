@@ -12,7 +12,7 @@ calendar \- reminder service
 .SH SYNOPSIS
 \fBcalendar\fR [\fB\-\fR]
 .SH DESCRIPTION
-.I Calendar 
+.I Calendar
 consults the file `calendar' in the current directory
 and prints out lines that contain today's or
 tomorrow's date anywhere in the line.
@@ -22,7 +22,7 @@ most reasonable month-day dates such as `Dec. 7,'
 `7 December' or `7/12'.
 On weekends `tomorrow' extends through Monday.
 .PP
-When 
+When
 an argument is present,
 .I calendar
 does its job for every user
@@ -32,14 +32,14 @@ and sends him any positive results by
 This can be done daily in the wee hours under control of
 .IR cron (1).
 .SH "ENVIRONMENT VARIABLES"
-.TP 
+.TP
 .BR LANG ,\  LC_ALL
 See locale(7).
-.TP 
+.TP
 .B LC_CTYPE
 Used to separate the first three characters
 for abbreviated month names.
-.TP 
+.TP
 .B LC_TIME
 Determines the abbreviated month names
 and the order of month and day.

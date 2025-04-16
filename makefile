@@ -9,13 +9,16 @@ SUBDIRS = build libwchar libcommon libuxre _install \
 	factor file find fmt fmtmsg fold \
 	getconf getopt grep groups hd head hostname id join \
 	kill line listusers ln logins logname ls \
-	mail man mesg mkdir mkfifo mknod more mvdir \
+	mail man $(TTYBC) mkdir mkfifo mknod more mvdir \
 	nawk news nice nl nohup oawk od \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
 	random readlink renice rev rm rmdir \
 	sdiff sed seq setpgrp shl sleep sort spell split stty su sum sync \
-	tabs tail tapecntl tar tcopy tee test time touch tr true tsort tty \
+	tabs tail tapecntl tar tcopy tee test time timeout touch tr true tsort tty \
 	ul uname uniq units users watch wc what who whoami whodo xargs yes
+
+# tty message broadcasting
+TTYBC = mesg wall write
 
 dummy: makefiles all
 

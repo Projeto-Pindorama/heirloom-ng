@@ -245,7 +245,7 @@ mcce(Mcce *mcp, const CollElem *cep, const unsigned char *s, int mb_cur_max,
 		else
 		{
 			nxt = libuxre_collmult(mcp->col, cep, wc);
-		} 
+		}
 		if (nxt != ELEM_BADCHAR)
 		{
 			/*
@@ -339,7 +339,7 @@ eqcls(Bracket *bp, const unsigned char *s, int n, w_type prev, int mb_cur_max)
 					bp->quiv[nq] = mcbuf.cep->weight[1];
 				else
 				{
-					if (nq % NQUIV == 0 && (bp->exquiv = 
+					if (nq % NQUIV == 0 && (bp->exquiv =
 						realloc(bp->exquiv,
 							nq * sizeof(wuchar_type)))
 						== 0)

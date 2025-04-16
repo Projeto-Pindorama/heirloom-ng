@@ -2,7 +2,7 @@
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
  *
- * SPDX-Licence-Identifier: Caldera 
+ * SPDX-Licence-Identifier: Caldera
  */
 
 #if __GNUC__ >= 3 && __GNUC_MINOR__ >= 4 || __GNUC__ >= 4
@@ -26,7 +26,7 @@ static const char sccsid[] USED = "@(#)cal.sl	1.12 (gritter) 5/29/05";
 #include	<limits.h>
 
 static wchar_t	dayw[] = {
-	' ', 'S', ' ', ' ', 'M', ' ', 'T', 'u', ' ', ' ', 
+	' ', 'S', ' ', ' ', 'M', ' ', 'T', 'u', ' ', ' ',
 	'W', ' ', 'T', 'h', ' ', ' ', 'F', ' ', ' ', 'S', 0
 };
 static char	*smon[]= {

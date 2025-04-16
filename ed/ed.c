@@ -756,7 +756,7 @@ address(void)
 		case ' ':
 		case '\t':
 			continue;
-	
+
 		case '+':
 			minus++;
 			if (a1==0)
@@ -769,7 +769,7 @@ address(void)
 			if (a1==0)
 				a1 = dot;
 			continue;
-	
+
 		case '?':
 		case '/':
 			compile(NULL, expbuf, &expbuf[ESIZE], c);
@@ -790,11 +790,11 @@ address(void)
 					error("search string not found");
 			}
 			break;
-	
+
 		case '$':
 			a1 = dol;
 			break;
-	
+
 		case '.':
 			a1 = dot;
 			break;
@@ -806,7 +806,7 @@ address(void)
 				if (names[c-'a'] == (*a1 & ~01))
 					break;
 			break;
-	
+
 		default:
 			peekc = c;
 			if (a1==0)
@@ -1423,7 +1423,7 @@ static char *
 getblock(long atl, long iof)
 {
 	long bno, off;
-	
+
 	bno = (atl>>8)&BLKMSK;
 	off = (atl<<1)&0774;
 	if (bno >= BLKMSK) {

@@ -17,7 +17,7 @@
  * Save info on each header line for possible generation
  * of MTA positive or negative delivery notification
  */
-void 
+void
 savehdrs(char *s, int hdrtype)
 {
 	char		*q;

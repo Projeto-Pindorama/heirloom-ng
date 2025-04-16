@@ -29,13 +29,13 @@
 #if OpenBSD >= 201311
 int
 getdirentries(int fd, char buf[], int nbytes, long basep[]) {
-	/* See: 
+	/* See:
 	 * 		https://man7.org/linux/man-pages/man3/getdirentries.3.html
 	 *		https://git.suckless.org/9base/file/lib9/dirread.c.html
 	 *		https://man.openbsd.org/getdents.2
 	 *		Above are docs for solutions chosen.
 	 */
-	
+
 	return getdents(fd, (void*)buf, nbytes);
 }
 #endif

@@ -53,7 +53,7 @@ in the copy have no effect on the file until a
 (write)\|
 command is given.
 The copy of the text being edited resides
-in a temporary file called the 
+in a temporary file called the
 .IR buffer .
 .PP
 The editor supports format specifications as defined in
@@ -94,7 +94,7 @@ These addresses specify one or more lines in the buffer.
 Missing addresses are supplied by default.
 .PP
 In general, only one command may appear on a line.
-Certain commands allow the 
+Certain commands allow the
 addition of text to the buffer.
 While
 .I ed
@@ -150,11 +150,11 @@ bracketed
 forms a \fIbracket expression\fR that
 matches any character in (or not in)
 .I s.
-In 
+In
 .I s,
 \e has no special meaning, and ] may only appear as
 the first letter.
-A substring 
+A substring
 \fIa\fB\-\fIb\fR,
 with
 .I a
@@ -197,7 +197,7 @@ matches what
 .I x
 matches.
 .IP 10.
-A \fB\e\fR followed by a digit 
+A \fB\e\fR followed by a digit
 .I n
 forms a \fIbackreference\fR and
 matches a copy of the string that the
@@ -362,7 +362,7 @@ line less 2.
 .TP
 10.
 To maintain compatibility with earlier versions of the editor,
-the character `\fB^\fR' in addresses is 
+the character `\fB^\fR' in addresses is
 equivalent to `\-'.
 .PP
 Commands may require zero, one, or two addresses.
@@ -608,7 +608,7 @@ The default prompt is a `*' character,
 but can be set with the
 .I \-p
 command line option (which also enables the prompt).
-Another 
+Another
 .I P
 disables the prompt.
 .TP 5
@@ -748,7 +748,7 @@ The write command writes the addressed lines onto
 the given file.
 If the file does not exist,
 it is created mode 666 (readable and writable by everyone)\|.
-The file name is remembered if there was no 
+The file name is remembered if there was no
 remembered file name already.
 If no file name is given,
 the remembered file name, if any, is used
@@ -968,7 +968,7 @@ to the US-ASCII character set,
 set the LC_CTYPE and LC_COLLATE variables to `C' or `POSIX',
 and use the constructs in the second column
 instead of the character class expressions as follows:
-.RS 
+.RS
 .sp
 .TS
 l l.

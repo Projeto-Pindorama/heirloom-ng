@@ -1,4 +1,16 @@
-Release ...
+Release 250220
+* seq, write: Fix memory fault due to illegal pointer access.
+* cpio, pax: Fix manual page formatting.
+
+Release 250209
+* cpio: Fix manual page formatting.
+* apply: Fixed the command string magic character computation algorithm that
+  got garbled after a refactor made in the name of performance.
+* build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
+  glibc and making changes to adhere to C standards (patch by Gabriel Souza).
+* [NEW] wall, write: New implementation ported from UNIX 7th (a.k.a. 32V),
+  bulletproofed against buffer overflows and the CVE-2024-28085, which is
+  available as the 'ssafe()' function at libcommon.
 * rm: Alias '-e' flag to more known '-v' for verbose.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
@@ -14,8 +26,8 @@ Release ...
   of its libraries, also remove `readlink_ucb' object file at `readlink/'
   build directory when executing `make clean' (patch by Molly A. McCollum).
 * Remove `register's from legacy code that was living unchanged since at
-  least the 80's, since modern linters started complying about it and it
-  is not used as much on most common architectures such as x86
+  least the 80's, since modern linters started complaining about it and
+  it is not used as much on most common architectures such as x86
   (patch by Samuel Brederodes).
 * watch: `use_default_colors()', do not force black and white.
 * [NEW] rev: New implementation, not capable of UTF-8 yet.
@@ -60,9 +72,9 @@ Release 240220
 * [NEW] seq: Stone-simple implementation; needs some improvement yet.
 * [NEW] watch: Complete, simple and stable implementation.
 * [NEW] timeout: Complete implementation with extended payloads.
-* readlink: Different help messages for both UCB and default variants. 
+* readlink: Different help messages for both UCB and default variants.
 
-Release 230503 
+Release 230503
 * chroot: "docs: Update date at chroot.8 manual page."
 * chroot: "chore: Remove comment, will move to GitHub"
 * chroot: "docs: Rewrote chroot(8) manual page"
@@ -84,7 +96,7 @@ Release 230305
 
 Release 230228
 * [NEW] readlink: New implementation, extensively based on OpenBSD's.
-* readlink: It's installed at /usr/ucb per default and symbolic/hard linked to /usr/5bin. 
+* readlink: It's installed at /usr/ucb per default and symbolic/hard linked to /usr/5bin.
 
 Release 230120
 * Notes for the library directories if linking against the GNU C library.
