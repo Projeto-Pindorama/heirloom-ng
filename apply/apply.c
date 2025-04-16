@@ -152,9 +152,15 @@ void main(int argc, char *argv[]) {
 	 * Initialize the magias[] array
 	 * with invalid magic numbers, so
 	 * we will avoid false-positives
-	 * for c=0.
+	 * such as c=0.
 	 */
 	magias = malloc(cmdlen);
+	if (magias == NULL) {
+		fprintf(stderr,
+			"%s: failed to allocate %lu bytes on memory: %s\n",
+			progname, (cmdlen * sizeof(int)), strerror(errno));
+		exit(1);
+	}
 	for (size_t i = 0; i < cmdlen; i++)
 		magias[i] = -1;
 
@@ -189,8 +195,9 @@ void main(int argc, char *argv[]) {
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry) estatus = eXec(cmdl);
 	}
-	free(magias);
+	free(cmd);
 	free(cmdl);
+	free(magias);
 
 	exit(estatus);
 }
@@ -278,8 +285,14 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	}
 
 	/* Allocate the command buffer. */
-	cmdbuf = calloc((size_t)((cmdlen + arglen) + 1),
-			sizeof(char *));
+	cmdbuf = calloc(((cmdlen + arglen) + 1), sizeof(char *));
+	if (cmdbuf == NULL) {
+		fprintf(stderr,
+			"%s: failed to allocate %lu bytes on memory: %s\n",
+			progname, (((cmdlen + arglen) + 1) * sizeof(char *)),
+			strerror(errno));
+		exit(1);
+	}
 	cmdbufp = cmdbuf;
 	switch (enamo) {
 		case true:
@@ -337,6 +350,7 @@ int eXec(const char command[]) {
 		: SHELL;
 	shpath = strdup(shell);
 	name = basename(shpath);
+	free(shpath); /* free() before this function can fail. */
 
 	pid = fork();
 	switch (pid) {
