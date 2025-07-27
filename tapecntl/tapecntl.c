@@ -16,7 +16,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)tapecntl.sl	1.38 (gritter) 1/22/06";
+static const char sccsid[] USED = "@(#)tapecntl.sl	1.39 (gritter) 7/26/25";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -820,7 +820,7 @@ main(int argc, char **argv)
 		exit(0);
 	for (i = 1; i <= 0177777; i <<= 1) {
 		if (operations & i && process(fd, i) < 0) {
-			const char	*msg = "";
+			const char	*msg = NULL;
 
 			switch (i) {
 			case OP_RESET:
