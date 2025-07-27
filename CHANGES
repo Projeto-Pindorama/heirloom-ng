@@ -1,9 +1,12 @@
 Release ...
 * build/mk.config, chroot, nawk: Adding -ltinfo for static compilation with
   glibc and making changes to adhere to C standards (patch by Gabriel Souza).
+<<<<<<< HEAD
 * [NEW] wall, write: New implementation ported from UNIX 7th (a.k.a. 32V),
   bulletproofed against buffer overflows and the CVE-2024-28085, which is
   available as the ssafe() function at libcommon.
+=======
+>>>>>>> refs/remotes/origin/master
 * rm: Alias '-e' flag to more known '-v' for verbose.
 * date, shl: Fix compilation on platforms where (struct utmpx).ut_tv is not
   of type 'timeval'.
