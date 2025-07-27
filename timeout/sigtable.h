@@ -1,8 +1,8 @@
 /*
- * sigtable.h - signal map-like struct.
+ * sigtable.h - declarations for a signal map-like struct.
  */
 /*
- * Derived from kill/strsig.c
+ * Partially derived from kill/strsig.c
  *
  * Copyright (c) 2005 Gunnar Ritter, Freiburg i. Br., Germany
  * Copyright (C) 2023, 2024: Luiz Antônio (takusuman)
