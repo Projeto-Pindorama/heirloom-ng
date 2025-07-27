@@ -32,7 +32,7 @@ per padding short numbers with leading decimal zeroes.
 It gets annulled if combined with \-p.
 .TP
 .B \-p \fIpicture\fR
-Defines the number of decimal places to be printed 
+Defines the number of decimal places to be printed
 after the decimal separator per using another number
 as a \fIpicture\fR.
 The default is full precision (see "%g" at \fBprintf(3)\fR).
@@ -53,14 +53,6 @@ pipeline.
 .BI "example% seq -s'+' 4 | bc"
 .LP
 .SH NOTES
-.PP
-If you need to count from a negative number
-to a positive one, you will need to do this
-maneuver below, at least for now:
-.IP \& 2
-.BI "example% seq -s' ' -- -5 10" 
-.LP
-.br
 .PP
 It does not implement the \-f option found
 in Plan 9 from Bell Labs' implementation,

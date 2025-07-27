@@ -47,7 +47,7 @@ static const char sccsid[] USED = "@(#)deroff.sl	1.9 (gritter) 9/23/06";
  * Deroff follows .so and .nx commands, removes contents of macro
  * definitions, equations (both .EQ ... .EN and $...$),
  * Tbl command sequences, and Troff backslash vconstructions.
- * 
+ *
  * All input is through the C macro; the most recently read character is in c.
  */
 
@@ -72,7 +72,7 @@ static const char sccsid[] USED = "@(#)deroff.sl	1.9 (gritter) 9/23/06";
 #define	C1	fC1()
 #define	U(c)	fU(c)
 
-#define	SKIP	while(C != '\n') 
+#define	SKIP	while(C != '\n')
 #define SKIP1	while(C1 != '\n')
 #define SKIP_TO_COM		SKIP;\
 				SKIP;\
@@ -291,7 +291,7 @@ skeqn(void)
 			c = C1;
 		else if(c == '"')
 			while(C1 != '"')
-				if(c == '\\') 
+				if(c == '\\')
 					C1;
 	if (msflag)
 		eqnflag = 1;
@@ -330,9 +330,9 @@ getfname(void)
 	int i;
 	char r;
 	struct chain
-	{ 
-		struct	chain	*nextp; 
-		char	*datap; 
+	{
+		struct	chain	*nextp;
+		char	*datap;
 	} *q;
 
 	static struct chain *namechain= 0;
@@ -596,7 +596,7 @@ comx:
 	else
 	if(filesp==files && c1=='T' && (c2=='S' || c2=='C' || c2=='&')) {
 		if(msflag)
-			stbl(); 
+			stbl();
 		else
 			tbl();
 	}
@@ -638,7 +638,7 @@ comx:
 		SKIP;
 	else
 	if(c1=='h' && c2=='w')
-		SKIP; 
+		SKIP;
 	else
 	if(xflag && c1=='d' && c2=='o') {
 		xflag = 3;
@@ -647,7 +647,7 @@ comx:
 	else
 	if(msflag && c1 == 'T' && c2 == 'L') {
 		SKIP_TO_COM;
-		goto comx; 
+		goto comx;
 	}
 	else
 	if(msflag && c1=='N' && c2 == 'R')
@@ -657,17 +657,17 @@ comx:
 		if(mac==MM)SKIP;
 		else {
 			SKIP_TO_COM;
-			goto comx; 
+			goto comx;
 		}
 	} else
 	if(msflag && c1=='F' && c2=='S') {
 		SKIP_TO_COM;
-		goto comx; 
+		goto comx;
 	}
 	else
 	if(msflag && (c1=='S' || c1=='N') && c2=='H') {
 		SKIP_TO_COM;
-		goto comx; 
+		goto comx;
 	} else
 	if(c1 == 'U' && c2 == 'X') {
 		if(wordflag)
@@ -677,7 +677,7 @@ comx:
 	} else
 	if(msflag && c1=='O' && c2=='K') {
 		SKIP_TO_COM;
-		goto comx; 
+		goto comx;
 	} else
 	if(msflag && c1=='N' && c2=='D')
 		SKIP;
@@ -696,11 +696,11 @@ comx:
 	if(!msflag && c1=='P' && c2=='S') {
 		inpic();
 	} else
-	if(msflag && (c1=='D' || c1=='N' || c1=='K'|| c1=='P') && c2=='S') { 
-		sdis(c1, 'E'); 
+	if(msflag && (c1=='D' || c1=='N' || c1=='K'|| c1=='P') && c2=='S') {
+		sdis(c1, 'E');
 	} else
-	if(msflag && (c1 == 'K' && c2 == 'F')) { 
-		sdis(c1,'E'); 
+	if(msflag && (c1 == 'K' && c2 == 'F')) {
+		sdis(c1,'E');
 	} else
 	if(msflag && c1=='n' && c2=='f')
 		sdis('f','i');
@@ -740,8 +740,8 @@ static void
 macro(void)
 {
 	if(msflag) {
-		do { 
-			SKIP1; 
+		do {
+			SKIP1;
 		} while(C1 != '.' || C1 != '.' || C1 == '.');
 		if(c != '\n')
 			SKIP;
@@ -799,7 +799,7 @@ sdis(char a1, char a2)
 			SKIP1;
 		} else
 		if(a1 == 'D' && c1 == 'E' && c2 == 'Q') {
-			eqn(); 
+			eqn();
 			eqnf = 0;
 		} else
 		if(a1 == 'f') {
@@ -883,7 +883,7 @@ eqn(void)
 			dflg = 0;
 		}
 		if(c != '\n')
-			while(C1 != '\n') { 
+			while(C1 != '\n') {
 				if(chars[c] == PUNCT)
 					last = c;
 				else
@@ -901,7 +901,7 @@ backsl(void)
 {
 	int bdelim;
 
-sw:  
+sw:
 	switch(C1)
 	{
 	case '"':

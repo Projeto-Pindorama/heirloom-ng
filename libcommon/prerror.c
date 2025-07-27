@@ -1,6 +1,6 @@
 /* prerror - wrapper function for pfmt.h */
 /* This basically prints both errno and string errors.
- * I hope my explanation isn't so confusing. 
+ * I hope my explanation isn't so confusing.
  */
 /* Copyright (C) 2022: Arthur Bacci (arthurbacci)
  *
@@ -8,7 +8,7 @@
  */
 
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 #include "pfmt.h"
 
 void prerror(int error) {

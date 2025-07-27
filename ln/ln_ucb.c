@@ -7,7 +7,7 @@
  * Copyright (c) 1980, 1993
  *      The Regents of the University of California.  All rights reserved.
  *
- * SPDX-Licence-Identifier: BSD-4-Clause-UC 
+ * SPDX-Licence-Identifier: BSD-4-Clause-UC
  */
 /*	from 4.3BSD  ln.c 4.6 11/15/85	*/
 
@@ -42,9 +42,9 @@ static int	linkit(const char *from, const char *to);
 static void	*srealloc(void *, size_t);
 
 int
-main(int argc, register char **argv)
+main(int argc, char **argv)
 {
-	register int i, r;
+	int i, r;
 
 	progname = basename(argv[0]);
 	argc--, argv++;
@@ -58,7 +58,7 @@ main(int argc, register char **argv)
 		argv++;
 		argc--;
 	}
-	if (argc == 0) 
+	if (argc == 0)
 		goto usage;
 	else if (argc == 1) {
 		argv[argc] = ".";
@@ -67,7 +67,7 @@ main(int argc, register char **argv)
 	if (sflag == 0 && argc > 2) {
 		if (stat(argv[argc-1], &stb) < 0)
 			goto usage;
-		if ((stb.st_mode&S_IFMT) != S_IFDIR) 
+		if ((stb.st_mode&S_IFMT) != S_IFDIR)
 			goto usage;
 	}
 	r = 0;

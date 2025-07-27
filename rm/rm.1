@@ -72,7 +72,7 @@ if removal of a file failed.
 For
 .B /usr/5bin/rm
 specifically,
-an error message will not printed 
+an error message will not printed
 if there's not a file being informed
 as a parameter. This payload has been
 introduced by POSIX.1-2008.
@@ -149,7 +149,7 @@ with different
 .B rm(1)
 implementations.
 An example:
-.RS
+.RS 2
 .sp
 .nf
 _rmv() {
@@ -159,7 +159,7 @@ _rmv() {
         rm \-rv "$@"
     else
         if test \-n "$1"; then
-            for file; do
+            for file do
                 if test \-L "$file" \-o \-f "$file"; then
                     rm "$file" \\
                     && printf \'rm: removed file %s\\n\' "$file"
@@ -201,10 +201,10 @@ commmands inside a loop. See
 for more information about the
 shell language structure itself.
 It can be said that the strict POSIX
-fallback is fairly slower than the
-other options, but it works even in
-the cruder UNIX-compatible environments.
+fallback is fairly slower than the other
+options, but it works even in the
+crudest UNIX-compatible environments.
 .br
-This is just an example that can
-(and must) be freely used and improved;
-I will not delve much into this merit.
+This is just an example that can be
+freely used and improved; I will not
+delve much into this merit.

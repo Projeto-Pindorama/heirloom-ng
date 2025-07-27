@@ -526,7 +526,7 @@ insert(const char *s)
 
 #define	nextc()		(cp = (mb_cur_max > 1 ? ib_getw(ip, &c, &n) : \
 		(c = ib_get(ip)) == (wint_t)EOF ? NULL : (b = c, n = 1, &b)))
-			
+
 #define	blankc(c)	(mb_cur_max > 1 ? iswblank(c):isblank(c))
 
 static char *

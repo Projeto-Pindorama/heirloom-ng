@@ -1,11 +1,11 @@
 .\"
 .\" Copyright(C) 2024 Luiz Antônio Rangel. All rights reserved.
 .\"
-.\" SPDX-Licence-Identifier: Zlib 
+.\" SPDX-Licence-Identifier: Zlib
 .\"
 .TH TIMEOUT 1 "2/20/24" "Heirloom Toolchest" "User Commands"
 .SH NAME
-timeout \- execute a command with a time limit 
+timeout \- execute a command with a time limit
 .SH SYNOPSIS
 \fBtimeout\fR [\fB\-k\fR \fItime\fR]
 [\fB\-s\fR \fIsignal\fR] [\-fp]
@@ -39,7 +39,7 @@ name (see kill(1) '\-l' option).
 .br
 If it's defined as 9 (SIGKILL), it
 has an immediate effect and annuls
-the '\-k' option. 
+the '\-k' option.
 .TP
 .B \-f
 Permits that \fIcommand\fR runs as
@@ -71,12 +71,12 @@ seconds
 .I m
 minutes
 .TP
-.I h 
+.I h
 hours
 .TP
 .I d
 days
-.SH DIAGNOSTICS 
+.SH DIAGNOSTICS
 Exit status is 124 if the timer expired
 and the \-p option was not set, 126 if
 the command could be found, but could not
@@ -90,8 +90,7 @@ Lets suppose you need to check if your system
 is connected to the Internet and that it can
 successfully connect to a server in less than
 5 seconds, you can use timeout along with nc(1):
-.LP
-.RS
+.RS 2
 .sp
 .nf
 % timeout -p 5 nc -vz pindorama.dob.jp 80
@@ -124,13 +123,13 @@ An abideable approach for solving this problem
 could be an small check/wrapper for the
 timeout command in case of utilizing the \-f or
 the \-p options in its long format.
-.RS
+.RS 2
 .sp
 .nf
 if test \`getconf HEIRLOOM_TOOLCHEST_VERSION\` \-ge 20240220; then
-     timeout \-p \-k\fItime\fR \fItime\fR \fIcommand\fR
+     timeout \-p \-k\fI$time\fR \fI$time\fR \fI"$command"\fR
 else
-     timeout \-\-preserve\-duration \-\-kill\-after \fItime\fR \fItime\fR \fIcommand\fR
+     timeout \-\-preserve\-duration \-\-kill\-after \fI$time\fR \fI$time\fR \fI"$command"\fR
 fi
 .fi
 .sp

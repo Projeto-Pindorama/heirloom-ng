@@ -51,7 +51,7 @@ static struct prefix
 {
 	double	factor;
 	char	*pname;
-} prefix[] = 
+} prefix[] =
 {
 	{ 1e-18,	"atto" },
 	{ 1e-15,	"femto" },
@@ -90,8 +90,8 @@ static void fperr(int);
 int
 main(int argc, char **argv)
 {
-	register int i;
-	register char *file;
+	int i;
+	char *file;
 	struct unit u1, u2;
 	double f;
 
@@ -147,8 +147,8 @@ fp:
 static void
 units(struct unit *up)
 {
-	register struct unit *p;
-	register int f, i;
+	struct unit *p;
+	int f, i;
 
 	p = up;
 	printf("\t%e ", p->factor);
@@ -186,9 +186,9 @@ pu(int u, int i, int f)
 static int
 convr(struct unit *up)
 {
-	register struct unit *p;
-	register int c;
-	register char *cp;
+	struct unit *p;
+	int c;
+	char *cp;
 	char name[LINE_MAX+1];
 	int den, err;
 
@@ -239,9 +239,9 @@ loop:
 static int
 lookup(char *name, struct unit *up, int den, int c)
 {
-	register struct unit *p;
-	register struct table *q;
-	register int i;
+	struct unit *p;
+	struct table *q;
+	int i;
 	char *cp1, *cp2;
 	double e;
 
@@ -292,7 +292,7 @@ loop:
 static int
 equal(const char *s1, const char *s2)
 {
-	register const char *c1, *c2;
+	const char *c1, *c2;
 
 	c1 = s1;
 	c2 = s2;
@@ -305,8 +305,8 @@ equal(const char *s1, const char *s2)
 static void
 init(void)
 {
-	register char *cp;
-	register struct table *tp, *lp;
+	char *cp;
+	struct table *tp, *lp;
 	int c, i, f, t;
 	char *np;
 
@@ -400,7 +400,7 @@ redef:
 static double
 getflt(void)
 {
-	register int c, i, dp;
+	int c, i, dp;
 	double d, e;
 	int f;
 
@@ -457,7 +457,7 @@ l1:
 static int
 get(void)
 {
-	register int c;
+	int c;
 
 	if(c=peekc) {
 		peekc = 0;
@@ -477,9 +477,9 @@ get(void)
 static struct table *
 hash(const char *name)
 {
-	register struct table *tp;
-	register const char *np;
-	register unsigned h;
+	struct table *tp;
+	const char *np;
+	unsigned h;
 
 	h = 0;
 	np = name;

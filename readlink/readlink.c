@@ -1,7 +1,7 @@
 /*
- * readlink.c - displays the target of a symbolic link 
+ * readlink.c - displays the target of a symbolic link
  */
-/* 
+/*
  * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
@@ -9,7 +9,7 @@
  * Heavly based (almost 1:1, although there's not so much to change) on OpenBSD's
  * readlink(1) implementation, but rewritten from scratch to work more like a
  * traditional UNIX(R) utility, with SVID4-style error reporting.
- * As per the copyright reader of OpenBSD's "usr.bin/readlink/readlink.c":
+ * As per the copyright header of OpenBSD's "usr.bin/readlink/readlink.c":
  * Copyright (c) 1997 Kenneth Stailey (hereinafter referred to as the author)
  *
  * The non-UCB variant differs in the fact that it can handle one or more files.
@@ -28,15 +28,10 @@ int main(int argc, char *argv[]);
 char *resolve(char *path, int name_size);
 
 int fFollow_link = 0;
-#if !defined(UCB)
-char personality[] = "file ...";
-#else /* BSD variant */
-char personality[] = "file";
-#endif
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
-	
+
 	extern int optind;
 	int option = 0,
 	    fNo_newline = 0,
@@ -80,19 +75,22 @@ int main(int argc, char *argv[]) {
 
 #if !defined(UCB)
 		printf("%s", resolve(argv[file], name_size));
-		
-		/* GNU readlink says: 'ignoring --no-newline with multiple arguments',
-		 * so it will print with new lines anyway. */
+
+		/*
+		 * GNU readlink says:
+		 * 'ignoring --no-newline with multiple arguments',
+		 * so it will print with new lines anyway.
+		 */
 		if (!fNo_newline || ( argc > 1 ))  {
 #else /* BSD variant */
 	printf("%s", resolve(argv[0], name_size));
 
 	if (!fNo_newline) {
-#endif	
+#endif
 		printf("%c", '\n');
 	}
 
-# if !defined(UCB) 
+# if !defined(UCB)
 	} /* End for() */
 #endif
 
@@ -123,6 +121,12 @@ char *resolve(char *path, int name_size) {
 }
 
 void usage(void) {
-	pfmt(stderr, MM_NOSTD, "usage: %s [-fn] [%s]\n", progname, personality);
+	pfmt(stderr, MM_NOSTD,
+#if !defined(UCB)
+		"usage: %s [-fn] file ...\n",
+#else /* BSD variant */
+		"usage: %s [-fn] file\n",
+#endif
+		progname);
 	exit(1);
 }

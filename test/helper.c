@@ -27,18 +27,18 @@
 /*
  * Determine if file given by name is accessible with permissions
  * given by mode.
- * Regflag argument non-zero means not to consider 
- * a non-regular file as executable. 
+ * Regflag argument non-zero means not to consider
+ * a non-regular file as executable.
  */
 
 int
 chk_access(const char *name, mode_t mode, int regflag)
-{	
+{
 	static int flag;
-	static uid_t euid; 
+	static uid_t euid;
 	struct stat statb;
 	mode_t ftype;
-	
+
 	if(flag == 0) {
 		euid = geteuid();
 		flag = 1;
@@ -52,7 +52,7 @@ chk_access(const char *name, mode_t mode, int regflag)
 			if(euid == 0) {
 				if (ftype != S_IFREG || mode != S_IEXEC)
 					return(0);
-		    		/* root can execute file as long as it has execute 
+		    		/* root can execute file as long as it has execute
 			   	permission for someone */
 				if (statb.st_mode & (S_IEXEC|(S_IEXEC>>3)|(S_IEXEC>>6)))
 					return(0);

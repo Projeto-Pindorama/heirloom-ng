@@ -20,13 +20,13 @@ void
 gendeliv(FILE *fp, int rc, char *name)
 {
 	static char pn[] = "gendeliv";
-	register char	*p;
+	char	*p;
 	char		*buf = NULL, cbuf[256], ybuf[10];
 	size_t		bufsize;
-	register int	i;
+	int	i;
 	int		didafflines = 0, didrcvlines = 0, suppress = 0, svopts = 0;
 	time_t		ltmp;
-	register struct hdrs	*hptr;
+	struct hdrs	*hptr;
 	FILE		*outfile;
 
 	Dout(pn, 0, "at entry, fp = o%lo, rc = %d,name = '%s'\n", (long)fp, rc, name);
@@ -149,12 +149,12 @@ gendeliv(FILE *fp, int rc, char *name)
 	if ((hptr = hdrlines[H_MSVC].head) != (struct hdrs *)NULL) {
 		if ((strlen(hptr->value) != 4) ||
 		    (casncmp("mail", hptr->value, 4) != 0)) {
-			fprintf(outfile,"Original-%s %s\n", 
+			fprintf(outfile,"Original-%s %s\n",
 					header[H_MSVC].tag, hptr->value);
 		}
 	}
 	if ((hptr = hdrlines[H_MTSID].head) != (struct hdrs *)NULL) {
-		fprintf(outfile,"Confirming-%s <%s>\n", 
+		fprintf(outfile,"Confirming-%s <%s>\n",
 				header[H_MTSID].tag, hptr->value);
 	}
 	if ((hptr = hdrlines[H_UAID].head) != (struct hdrs *)NULL) {

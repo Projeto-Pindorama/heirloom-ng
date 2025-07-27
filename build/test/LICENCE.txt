@@ -1,4 +1,5 @@
 Copyright (C) 2006, 2019 by Rob Landley <rob@landley.net>
+Copyright (C) 2024 by Heirloom NG Development Team <heirloom-ng.pindorama.dob.jp>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted.

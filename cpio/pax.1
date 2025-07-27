@@ -2,8 +2,8 @@
 .\" Copyright (c) 2004 Gunnar Ritter
 .\"
 .\" SPDX-Licence-Identifier: Zlib
-.\" Sccsid @(#)pax.1	1.37 (gritter) 9/5/05
-.TH PAX 1 "9/5/05" "Heirloom Toolchest" "User Commands"
+.\" Sccsid @(#)pax.1	1.38 (gritter) 8/13/09
+.TH PAX 1 "8/13/09" "Heirloom Toolchest" "User Commands"
 .SH NAME
 pax \- portable archive interchange
 .SH SYNOPSIS
@@ -344,8 +344,12 @@ Specifies the archive header format to be one of:
 .in +6
 .TS
 lfB l.
-\fBnewc\fR	SVR4 ASCII cpio format;\ 
-\fBcrc\fR	SVR4 ASCII cpio format with checksum;\ 
+\fBnewc\fR	T{
+SVR4 ASCII cpio format;
+T}
+\fBcrc\fR	T{
+SVR4 ASCII cpio format with checksum;
+T}
 \fBsco\fR	T{
 SCO UnixWare 7.1 ASCII cpio format;
 T}
@@ -385,10 +389,8 @@ l l.
 \&	T{
 IEEE Std. 1003.1, 2001 pax format.
 Format-specific \fIoptions\fR are:
-.in +2n
-.ti 0
 .br
-\fBlinkdata\fR
+\fBlinkdata\fR\ \ \ \ \ \ \ \ \ \ \ 
 .br
 For a regular file which has multiple hard links,
 the file data is stored once for each link in the archive,
@@ -396,9 +398,8 @@ instead of being stored for the first entry only.
 This option must be used with care
 since many implementations are unable
 to read the resulting archive.
-.ti 0
-.br                                                                            
-\fBtimes\fR
+.br
+\fBtimes\fR\ \ \ \ \ \ \ \ \ \ \ 
 .br
 Causes the times of last access and last modification
 of each archived file
@@ -406,7 +407,6 @@ to be stored in an extended \fIpax\fR header.
 This in particular allows the time of last access
 to be restored when the archive is read.
 .br
-.in -2n
 T}
 \fBsun\fR	T{
 Sun Solaris 7 extended tar format;
@@ -654,7 +654,7 @@ an extended header is written.
 Unless the size of an entry is greater than 8\ GB,
 a
 .I pax
-archive should be readable by any implementation                               
+archive should be readable by any implementation
 capable of reading
 .I ustar
 archives,

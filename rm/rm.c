@@ -2,11 +2,11 @@
  * rm - remove directory entries
  *
  * Gunnar Ritter, Freiburg i. Br., Germany, July 2002.
- * Luiz Antônio Rangel, Brazil, March 2024.
+ * Luiz Antônio Rangel, Brazil, February 2025.
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- * Copyright (c) 2022-2024: Luiz Antônio Rangel (takusuman)
+ * Copyright (c) 2022-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -285,9 +285,9 @@ rm(size_t pend, const char *base, const int olddir, int ssub, int level)
 		/* Latter priority than rflag. */
 		} else if (dflag) {
 			if (rmfile(base, &st) < 0) {
-				/* 
+				/*
 				 * rmfile() will print a error
-				 * message per si if needed 
+				 * message per si if needed.
 				 */
 				errcnt |= 1;
 			}
@@ -378,7 +378,7 @@ int
 main(int argc, char **argv)
 {
 	int i, startfd = -1, illegal = 0;
-	char *options = "";
+	char *options = NULL;
 
 #ifdef	__GLIBC__
 	putenv("POSIXLY_CORRECT=1");
@@ -390,7 +390,7 @@ main(int argc, char **argv)
 #if defined(SUS) || defined(SYSV3)
 	options = "fiRr";
 #else
-	options = "dfiRre";
+	options = "dfiRrev";
 #endif
 
 	while ((i = getopt(argc, argv, options)) != EOF) {
@@ -416,6 +416,7 @@ main(int argc, char **argv)
 			dflag = 1;
 			break;
 		case 'e':
+		case 'v':
 			eflag = 1;
 			break;
 #endif
