@@ -2,7 +2,7 @@
 .\" SPDX-Licence-Identifier: CDDL-1.0
 .\"  Copyright 1989 AT&T  Copyright (c) 1997, Sun Microsystems, Inc.  All Rights Reserved
 .\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
-.\"                                                                            
+.\"
 .\" Sccsid @(#)newform.1	1.8 (gritter) 2/3/07
 .\" from OpenSolaris newform 1 "21 Jul 1997" "SunOS 5.11" "User Commands"
 .TH NEWFORM 1 "2/3/07" "Heirloom Toolchest" "User Commands"
@@ -14,7 +14,7 @@ newform \- change the format of a text file
 .nh
 \fBnewform\fR [\fB\-s\fR]
 [\fB\-i\fR\fItabspec\fR] [\fB\-o\fR\fItabspec\fR]
-[\fB\-b\fR\fIn\fR] [\fB\-e\fR\fIn\fR] [\fB\-p\fR\fIn\fR] 
+[\fB\-b\fR\fIn\fR] [\fB\-e\fR\fIn\fR] [\fB\-p\fR\fIn\fR]
 [\fB\-a\fR\fIn\fR] [\fB\-f\fR] [\fB\-c\fR\fIchar\fR]
 [\fB\-l\fR\fIn\fR] [\fIfilename\fR]...
 .br
@@ -54,9 +54,9 @@ to column 72 (or truncated to column 72), and the leading digits placed starting
 .TP 10
 \fB\-i\fR\fItabspec\fR \fR
 Input tab specification: expands tabs to spaces, according to the tab specifications given.
-\fITabspec\fR recognizes all tab specification forms described in 
+\fITabspec\fR recognizes all tab specification forms described in
 .IR tabs (1).
-In addition, \fItabspec\fR may be \fB\-\fR, in which \fBnewform\fR assumes that the tab specification is to be found in the first line read from the standard input (see 
+In addition, \fItabspec\fR may be \fB\-\fR, in which \fBnewform\fR assumes that the tab specification is to be found in the first line read from the standard input (see
 .IR fspec (5)).
 If no \fItabspec\fR is given, \fItabspec\fR defaults to \fB\(mi8\fR\&.
 A \fItabspec\fR of \fB\(mi0\fR expects no tabs; if any are found, they are treated as \fB\(mi1\fR\&.

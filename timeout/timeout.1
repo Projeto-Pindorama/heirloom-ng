@@ -1,11 +1,11 @@
 .\"
 .\" Copyright(C) 2024 Luiz Antônio Rangel. All rights reserved.
 .\"
-.\" SPDX-Licence-Identifier: Zlib 
+.\" SPDX-Licence-Identifier: Zlib
 .\"
 .TH TIMEOUT 1 "2/20/24" "Heirloom Toolchest" "User Commands"
 .SH NAME
-timeout \- execute a command with a time limit 
+timeout \- execute a command with a time limit
 .SH SYNOPSIS
 \fBtimeout\fR [\fB\-k\fR \fItime\fR]
 [\fB\-s\fR \fIsignal\fR] [\-fp]
@@ -39,7 +39,7 @@ name (see kill(1) '\-l' option).
 .br
 If it's defined as 9 (SIGKILL), it
 has an immediate effect and annuls
-the '\-k' option. 
+the '\-k' option.
 .TP
 .B \-f
 Permits that \fIcommand\fR runs as
@@ -71,12 +71,12 @@ seconds
 .I m
 minutes
 .TP
-.I h 
+.I h
 hours
 .TP
 .I d
 days
-.SH DIAGNOSTICS 
+.SH DIAGNOSTICS
 Exit status is 124 if the timer expired
 and the \-p option was not set, 126 if
 the command could be found, but could not

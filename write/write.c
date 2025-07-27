@@ -1,7 +1,7 @@
 /*
  * write.c - write to another user
  *
- * Copyright (C) 2024: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  *
@@ -76,7 +76,7 @@ void main(int argc, char *argv[]) {
 	/* Get everything after /dev. */
 	for (i = 1; i < sizeof(mytty) && mytty[i] != '/'; i++);
 	mytty += (i + 1);
-	if (histtya[0] != '\0') {
+	if (histtya != NULL) {
 		strncpy(histty, "/dev/", 5);
 		strncat(histty, histtya, UT_LINESIZE);
 	}
@@ -105,7 +105,7 @@ void main(int argc, char *argv[]) {
 		fprintf(stderr, "%s not logged in.\n", him);
 		exit(1);
 	}
-	if (histtya[0] == '\0' && logcnt > 1) {
+	if (histtya == NULL && logcnt > 1) {
 		fprintf(stderr, "%s logged more than once\nwriting to %s\nother places where %s is at:\n",
 					him, histty, him);
 		for (i=0; i < places; i++)
@@ -146,7 +146,7 @@ void main(int argc, char *argv[]) {
 	fprintf(tf, "%s %s...\n\7\7\7", me, mytty);
 	fflush(tf);
 	for(;;) {
-		char *buf = "";
+		char *buf = NULL;
 		char sbuf[128] = "";
 		i = read(0, sbuf, 128);
 		if (i <= 0)

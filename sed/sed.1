@@ -73,7 +73,7 @@ one address selects each pattern space that matches the address.
 A command line with
 two addresses selects the inclusive range from the first
 pattern space that matches the first address through
-the next pattern space that matches 
+the next pattern space that matches
 the second.
 (If the second address is a number less than or equal
 to the line number first selected, only one
@@ -92,7 +92,7 @@ and basic regular expressions with
 and
 .BR /usr/5bin/s42/sed .
 .PP
-In the following list of functions the 
+In the following list of functions the
 maximum number of permissible addresses
 for each function is indicated in parentheses.
 .PP
@@ -154,7 +154,7 @@ Delete the pattern space.
 Start the next cycle.
 .TP 10
 (2)\|\fBD\fR
-Delete the initial segment of the 
+Delete the initial segment of the
 pattern space through the first newline.
 Start the next cycle.
 .TP 10
@@ -260,7 +260,7 @@ Branch to the `:' command bearing the
 if any
 substitutions have been made since the most recent
 reading of an input line or execution of a `t'.
-If 
+If
 .I label
 is empty, branch to the end of the script.
 .TP 10
@@ -319,13 +319,13 @@ which has the same effect as the \f2\-n\fP command line option.
 .BR LANG ", " LC_ALL
 See
 .IR locale (7).
-.TP 
+.TP
 .B LC_COLLATE
 Affects the collation order for range expressions,
 equivalence classes, and collation symbols
 in basic regular expressions.
 .TP
-.B LC_CTYPE 
+.B LC_CTYPE
 Determines the mapping of bytes to characters
 in both simple and basic regular expressions,
 for the

@@ -2,7 +2,7 @@
  * seq.c - print a sequence of numbers
  */
 /*
- * Copyright (C) 2023: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2023-2025: Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -31,7 +31,7 @@ static char *progname;
  */
 static bool fPicture = false,
 	    fWadding = false;
-static char *picstr = "";
+static char *picstr = NULL;
 static double start = 0,
 	     stop = 0,
 	     step = 0;
@@ -47,8 +47,8 @@ void main(int argc, char *argv[]) {
 	extern int optind;
 	int option = 0;
 	register double count = 0;
-	char *format = "",
-	     *separator = "";
+	char *format = NULL,
+	     *separator = NULL;
 
 	/*
 	 * Stop searching for arguments in the moment
@@ -118,7 +118,7 @@ void main(int argc, char *argv[]) {
 	format = buildfmt();
 
 	/* If there's no separator set, defaults to a line break (\n). */
-	separator = (! *separator)
+	separator = (! separator)
 			? "\n"
 			: separator;
 
@@ -141,8 +141,8 @@ void main(int argc, char *argv[]) {
 }
 
 char *buildfmt(void) {
-	char *picture = "",
-	     *fmtbuf = "";
+	char *picture = NULL,
+	     *fmtbuf = NULL;
 
 	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
 		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
@@ -242,7 +242,7 @@ char *buildfmt(void) {
 
 char *getlgstr(void) {
 	char strflt[32] = "",
-	     *lgstnum = "";
+	     *lgstnum = NULL;
 	double fstn = 0.0F,
 	       stepn = 0.0F;
 
@@ -281,7 +281,7 @@ char *getlgstr(void) {
 int afterdecsep(char s[]) {
 	unsigned int c = 0;
 	unsigned long fraclen = 0;
-	char *fracpart = "";
+	char *fracpart = NULL;
 
 	if (isalpha(s[0])) {
 		/* Panic. */
