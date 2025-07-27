@@ -4,6 +4,7 @@
 /*	from Unix 32V /usr/src/cmd/join.c	*/
 /*
  * Copyright(C) Caldera International Inc. 2001-2002. All rights reserved.
+ * Copyright(C) Luiz Antônio Rangel. 2025. All rights reserved.
  *
  * SPDX-Licence-Identifier: Caldera
  */
@@ -15,7 +16,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)join.sl	1.15 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)join.sl	1.16 (takusuman) 7/26/25";
 
 /*	join F1 F2 on stuff */
 
@@ -36,7 +37,8 @@ enum {
 	F2 = 1,
 	JF = -1
 };
-#define	ppi(f, j)	((j) >= 0 && (j) < ppisize[f] ? ppibuf[f][j] : null)
+#define s_null	(null == NULL? "" : null) /* safe "NULL" printing. */
+#define	ppi(f, j)	((j) >= 0 && (j) < ppisize[f] ? ppibuf[f][j] : s_null)
 #define comp() strcoll(ppi(F1, j1),ppi(F2, j2))
 
 #define	next(wc, s, n)	(*(s) & 0200 ? ((n) = mbtowi(&(wc), (s), mb_cur_max), \
@@ -56,7 +58,7 @@ static int	*olistf;	/* from these files */
 static long	no;		/* number of entries in olist */
 static wint_t	sep1	= ' ';	/* default field separator */
 static wint_t	sep2	= '\t';
-static const char*	null	= "";
+static const char*	null	= NULL;
 static int	aflg;
 static int	vflg;
 static char	*progname;
@@ -321,7 +323,7 @@ output(int on1, int on2)	/* print items from olist */
 	const char *temp;
 
 	if (no <= 0) {	/* default case */
-		printf("%s", on1? ppi(F1, j1): on2? ppi(F2, j2) : null);
+		printf("%s", on1? ppi(F1, j1): on2? ppi(F2, j2) : s_null);
 		for (i = 0; i < on1; i++)
 			if (i != j1) {
 				if (mb_cur_max > 1)
@@ -353,7 +355,7 @@ output(int on1, int on2)	/* print items from olist */
 			}
 			if (temp == 0 || *temp == 0)
 				temp = null;
-			printf("%s", temp ? temp : null);
+			printf("%s", temp ? temp : s_null);
 			if (i == no - 1)
 				printf("\n");
 			else if (mb_cur_max > 1)

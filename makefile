@@ -14,11 +14,8 @@ SUBDIRS = build libwchar libcommon libuxre _install \
 	paste pathchk pg pgrep pr printenv printf priocntl ps psrinfo pwd \
 	random readlink renice rev rm rmdir \
 	sdiff sed seq setpgrp shl sleep sort spell split stty su sum sync \
-	tabs tail tapecntl tar tcopy tee test time timeout touch tr true \
-	tsort tty ul uname uniq units users watch wc what who whoami whodo \
-       	xargs yes
-
-TESTSDIR = build/test
+	tabs tail tapecntl tar tcopy tee test time timeout touch tr true tsort tty \
+	ul uname uniq units users watch wc what who whoami whodo xargs yes
 
 # tty message broadcasting
 TTYBC = mesg wall write
@@ -36,7 +33,7 @@ dummy: makefiles all
 .mk:
 	cat build/mk.head build/mk.config $< build/mk.tail >$@
 
-makefiles: Makefile $(SUBDIRS:=/Makefile) $(TESTSDIR:=/Makefile)
+makefiles: Makefile $(SUBDIRS:=/Makefile)
 
 install:
 	$(MAKE) -f Makefile directories
@@ -58,9 +55,6 @@ casecheck: .foo .Foo
 
 .foo .Foo:
 	echo $@ > $@
-
-tests:
-	(cd $(TESTSDIR) && $(MAKE) -f Makefile)
 
 PKGROOT =	/var/tmp/heirloom-root
 PKGTEMP =	/var/tmp

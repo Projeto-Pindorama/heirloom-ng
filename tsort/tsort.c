@@ -15,7 +15,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)tsort.sl	1.6 (gritter) 5/29/05";
+static const char sccsid[] USED = "@(#)tsort.sl	1.7 (takusuman) 7/26/25";
 
 /*	topological sort
  *	input is sequence of pairs of items (blank-free strings)
@@ -56,7 +56,7 @@ struct predlist {
 	struct nodelist *pred;
 };
 
-static char *empty = "";
+static char empty[] = "";
 static char *progname;
 
 static int present(struct nodelist *, struct nodelist *);
