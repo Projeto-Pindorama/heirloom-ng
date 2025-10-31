@@ -1,0 +1,11 @@
+# Exclude Vim trash
+.*.un~
+*~
+.*~
+
+# Exclude clean/mrproper files
+Makefile
+intro.1
+heirloom.pkg
+core
+log
