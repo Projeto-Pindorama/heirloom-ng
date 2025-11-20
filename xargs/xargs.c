@@ -5,7 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
- * Copyright (c) 2025 Luiz Antônio Rangel (takusuman) 
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
