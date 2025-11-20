@@ -5,6 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman) 
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -56,6 +57,7 @@ static const char sccsid[] USED = "@(#)xargs.sl	1.15 (gritter) 6/21/05";
 
 static const char	*progname;
 static const char	*eflag = "_";
+static const char	*dflag = NULL;
 static const char	*iflag;
 static size_t		iflen;
 static long		lflag;
@@ -213,6 +215,14 @@ flags(int ac, char **av)
 
 	for (i = 1; i < ac && av[i][0] == '-'; i++) {
 	nxt:	switch (av[i][1]) {
+		case 'd':
+			if (av[i][2])
+				dflag = validate(&av[i][2], 'd');
+			else if (++i < ac)
+				dflag = validate(av[i], 'd');
+			else
+				missing('d');
+			continue;
 		case 'e':
 			eflag = validate(&av[i][2], 'e');
 			continue;
@@ -547,6 +557,7 @@ nextarg(struct iblok *ip, long *linecnt)
 	for (;;) {
 		nextc();
 		if (cp) {
+			if (c == dflag) fprintf(stderr, "That's the way you do it.\n");
 			if (c != WEOF && c == quote) {
 				quote = WEOF;
 				continue;
