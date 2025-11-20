@@ -542,12 +542,12 @@ nextarg(struct iblok *ip, long *linecnt)
 	static int	eof;
 	wint_t	c, quote = WEOF, lastc = WEOF;
 	char	*cp;
-	char	b, linebreak;
+	char	b, delimiter;
 	int	content = 0, i = 0, n;
 
-	linebreak = (!Nflag)
-			? '\n' /* Default. */
-			: '\0';
+	delimiter = (!Nflag)
+		? '\n' /* Default. */
+		: '\0';
 
 	if (eof)
 		return NULL;
@@ -570,12 +570,12 @@ nextarg(struct iblok *ip, long *linecnt)
 					content = 1;
 					continue;
 				}
-				if (c == linebreak || quote == WEOF &&
+				if (c == delimiter || quote == WEOF &&
 						(!Nflag && blankc(c)) &&
 						(iflag == NULL ||
 						 content == 0)) {
 					if (content) {
-						if (c == linebreak && !blankc(lastc))
+						if (c == delimiter && !blankc(lastc))
 							(*linecnt)++;
 						break;
 					} else
