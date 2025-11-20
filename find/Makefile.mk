@@ -6,6 +6,12 @@ find: find.o
 find.o: find.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) $(ICOMMON) $(GNUFL) -DGETDIR -c find.c
 
+find_sv3: find_sv3.o
+	$(LD) $(LDFLAGS) find_sv3.o $(LCOMMON) $(LWCHAR) $(LIBS) -o find_sv3
+
+find_sv3.o: find.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) $(ICOMMON) $(GNUFL) -DGETDIR -DSV3 -c find.c
+
 find_sus: find_sus.o
 	$(LD) $(LDFLAGS) find_sus.o $(LCOMMON) $(LWCHAR) $(LIBS) -o find_sus
 
@@ -19,7 +25,9 @@ find_su3.o: find.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) $(ICOMMON) $(GNUFL) -DGETDIR -DSU3 -c find.c -o find_su3.o
 
 install: all
-	$(UCBINST) -c find $(ROOT)$(SV3BIN)/find
+	$(UCBINST) -c find $(ROOT)$(DEFBIN)/find
+	$(STRIP) $(ROOT)$(DEFBIN)/find
+	$(UCBINST) -c find_sv3 $(ROOT)$(SV3BIN)/find
 	$(STRIP) $(ROOT)$(SV3BIN)/find
 	$(UCBINST) -c find_sus $(ROOT)$(SUSBIN)/find
 	$(STRIP) $(ROOT)$(SUSBIN)/find

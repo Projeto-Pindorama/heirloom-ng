@@ -20,8 +20,10 @@
 static const char sccsid[] USED = "@(#)find_su3.sl	1.45 (gritter) 5/8/06";
 #elif defined(SUS)
 static const char sccsid[] USED = "@(#)find_sus.sl	1.45 (gritter) 5/8/06";
+#elif defined(SV3)
+static const char sccsid[] USED = "@(#)find_sv3.sl	1.45 (gritter) 5/8/06";
 #else
-static const char sccsid[] USED = "@(#)find.sl	1.45 (gritter) 5/8/06";
+static const char sccsid[] USED = "@(#)find.sl	1.46 (takusuman) 11/20/25";
 #endif
 
 #include <stdio.h>
@@ -37,12 +39,16 @@ static const char sccsid[] USED = "@(#)find.sl	1.45 (gritter) 5/8/06";
 #include <time.h>
 #include <grp.h>
 #include <stdarg.h>
-#include <libgen.h>
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
 #if defined(SUS) || defined(SU3)
 #include <fnmatch.h>
+#endif
+#if !defined(SU3) && !defined(SUS) && !defined(SV3)
+#include <strmenta.h>
+#else
+#include <libgen.h>
 #endif
 #if defined(__linux__) || defined(_AIX) || defined(__hpux)
 #include <mntent.h>
@@ -183,6 +189,9 @@ static int	and(struct anode *);
 static int	or(struct anode *);
 static int	not(struct anode *);
 static int	glob(struct anode *);
+#if !defined(SU3) && !defined(SUS) && !defined(SV3)
+static int	print0(struct anode *);
+#endif
 static int	print(struct anode *);
 static int	prune(struct anode *);
 static int	null(struct anode *);
@@ -374,6 +383,11 @@ static struct anode *e3(void) { /* parse parens and predicates */
 	} else if(EQ(a, "-mount") || EQ(a, "-xdev")) {
 		Mount = 1;
 		n.F = null;
+#if !defined(SU3) && !defined(SUS) && !defined(SV3)
+	} else if(EQ(a, "-print0")) {
+		Print = 0;
+		n.F = print0;
+#endif
 	} else if(EQ(a, "-print")) {
 		Print = 0;
 		n.F = print;
@@ -565,6 +579,13 @@ static int glob(struct anode *p)
 }
 #endif	/* SUS, SU3 */
 /*ARGSUSED*/
+#if !defined(SU3) && !defined(SUS) && !defined(SV3)
+static int print0(struct anode *p)
+{
+	putz(Pathname);
+	return(1);
+}
+#endif
 static int print(struct anode *p)
 {
 	puts(Pathname);
