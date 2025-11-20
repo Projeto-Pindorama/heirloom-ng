@@ -14,3 +14,4 @@
 extern int afterchar(const char s[], int c);
 extern char *basename(const char path[]);
 extern char *ssafe(const char *s);
+extern int putz(char *restrict s);
