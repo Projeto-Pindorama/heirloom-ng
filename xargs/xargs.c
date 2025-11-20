@@ -57,11 +57,11 @@ static const char sccsid[] USED = "@(#)xargs.sl	1.15 (gritter) 6/21/05";
 
 static const char	*progname;
 static const char	*eflag = "_";
-static const char	*dflag = NULL;
 static const char	*iflag;
 static size_t		iflen;
 static long		lflag;
 static long		nflag;
+static int		Nflag;
 static int		pflag;
 static const char	*sflag;
 static int		tflag;
@@ -215,13 +215,8 @@ flags(int ac, char **av)
 
 	for (i = 1; i < ac && av[i][0] == '-'; i++) {
 	nxt:	switch (av[i][1]) {
-		case 'd':
-			if (av[i][2])
-				dflag = validate(&av[i][2], 'd');
-			else if (++i < ac)
-				dflag = validate(av[i], 'd');
-			else
-				missing('d');
+		case '0':
+			Nflag = 1; /* Separate arguments with \0. */
 			continue;
 		case 'e':
 			eflag = validate(&av[i][2], 'e');
@@ -547,8 +542,12 @@ nextarg(struct iblok *ip, long *linecnt)
 	static int	eof;
 	wint_t	c, quote = WEOF, lastc = WEOF;
 	char	*cp;
-	char	b;
+	char	b, linebreak;
 	int	content = 0, i = 0, n;
+
+	linebreak = (!Nflag)
+			? '\n' /* Default. */
+			: '\0';
 
 	if (eof)
 		return NULL;
@@ -557,7 +556,6 @@ nextarg(struct iblok *ip, long *linecnt)
 	for (;;) {
 		nextc();
 		if (cp) {
-			if (c == dflag) fprintf(stderr, "That's the way you do it.\n");
 			if (c != WEOF && c == quote) {
 				quote = WEOF;
 				continue;
@@ -572,12 +570,12 @@ nextarg(struct iblok *ip, long *linecnt)
 					content = 1;
 					continue;
 				}
-				if (c == '\n' || quote == WEOF &&
-						blankc(c) &&
+				if (c == linebreak || quote == WEOF &&
+						(!Nflag && blankc(c)) &&
 						(iflag == NULL ||
 						 content == 0)) {
 					if (content) {
-						if (c == '\n' && !blankc(lastc))
+						if (c == linebreak && !blankc(lastc))
 							(*linecnt)++;
 						break;
 					} else
