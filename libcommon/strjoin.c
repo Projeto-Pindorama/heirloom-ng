@@ -1,4 +1,15 @@
-#include <stdio.h>
+/*
+ * strjoin.c - concatenates strings from an array into a single one
+ *
+ * Mildly inspired by Go standard library's strings.Join function,
+ * but a little bit more rigorous to use since, well, this is C.
+ *
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
+ *
+ * SPDX-Licence-Identifier: Zlib
+ */
+
+#include <stdlib.h>
 #include <string.h>
 
 char *strjoin(char *elems[], char *sep) {
@@ -6,7 +17,7 @@ char *strjoin(char *elems[], char *sep) {
 	       joinlen = 0;
 	char *joinbuf = NULL,
 	     *joinbufp = NULL;
-	
+
 	/*
 	 * Count strings in the array using 'NULL' as a sentinel.
 	 * Also already compute the length of each string in
@@ -14,7 +25,6 @@ char *strjoin(char *elems[], char *sep) {
 	 */
 	for (; elems[en] != NULL; en++)
 		joinlen += strlen(elems[en]);
-	printf("%d\n", joinlen);
 	if (en == 1) return elems[0];
 
 	/*
@@ -24,14 +34,15 @@ char *strjoin(char *elems[], char *sep) {
 	 * Also have one more for '\0'.
 	 */
 	joinlen += ((strlen(sep) * (en - 1)) + 1);
-	printf("%d\n", joinlen);
 
-//	joinbuf = calloc(joinlen, sizeof(char *));
-//	joinbufp = joinbuf;
+	/* Populate the buffer. */
+	joinbuf = calloc(joinlen, sizeof(char *));
+	joinbufp = joinbuf;
 
 	for (size_t i = 0; i < en; i++) {
-		puts(elems[i]);
-		puts(sep);
+		strcat(joinbufp, elems[i]);
+		if (i < (en - 1)) strcat(joinbufp, sep);
 	}
-	return NULL;
+
+	return joinbuf;
 }

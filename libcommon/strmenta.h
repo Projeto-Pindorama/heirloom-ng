@@ -1,7 +1,7 @@
 /*
  * strmenta.h - header for string utilities
  *
- * Copyright (c) 2024 Luiz Antônio Rangel (takusuman)
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -14,3 +14,4 @@
 extern int afterchar(const char s[], int c);
 extern char *basename(const char path[]);
 extern char *ssafe(const char *s);
+extern char *strjoin(char *elems[], char *sep);
