@@ -36,7 +36,8 @@ void usage(void);
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
-	int fBeep_on_error = 0,
+	int fExec = 0,
+	    fBeep_on_error = 0,
 	    fNo_title = 0,
 	    c = 0, ec = 0,
 	    term_x = 0;
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
 		exit(-1);
 	}
 
-	while ((option = getopt(argc, argv, "n:bth")) != -1) {
+	while ((option = getopt(argc, argv, "n:bthx")) != -1) {
 		switch (option) {
 		case 'n':
 			if (!optarg) {
@@ -121,6 +122,9 @@ int main(int argc, char *argv[]) {
 		case 't':
 			fNo_title = 1;
 			break;
+		case 'x':
+			fExec = 1;
+			break;
 		case 'h':
 		default:
 			usage();
@@ -150,6 +154,11 @@ int main(int argc, char *argv[]) {
 
 	for (c = 0; c < argc; c++) {
 		commandv[c] = argv[c];
+	}
+
+	if (fExec) {
+		printf("%s\n", strjoin(commandv, " "));
+		exit(0);
 	}
 
 	/*
