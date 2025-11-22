@@ -3,6 +3,7 @@
  *
  */
 /*
+ * Copyright (C) 2025: Luiz Antônio Rangel (takusuman)
  * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
  * 			     Arthur Bacci	 (arthurbacci)
  *
@@ -31,6 +32,8 @@
 
 static char *progname;
 int main(int argc, char *argv[]);
+int _execvp(char *cmd[]);
+int _system(char *cmd[]);
 void usage(void);
 
 int main(int argc, char *argv[]) {
@@ -42,6 +45,7 @@ int main(int argc, char *argv[]) {
 	    c = 0, ec = 0,
 	    term_x = 0;
 	char **commandv;
+	int (*execute)(char **);
 	pid_t exec_pid;
 	struct timespec interval;
 
@@ -156,9 +160,13 @@ int main(int argc, char *argv[]) {
 		commandv[c] = argv[c];
 	}
 
-	if (fExec) {
-		printf("%s\n", strjoin(commandv, " "));
-		exit(0);
+	switch (fExec) {
+	case 1:
+		execute = _execvp;
+		break;
+	case 0:
+		execute = _system;
+		break;
 	}
 
 	/*
@@ -262,7 +270,7 @@ int main(int argc, char *argv[]) {
 		refresh();
 
 		if ((exec_pid = fork()) == 0) {
-			if ((execvp(commandv[0], commandv)) == -1) {
+			if ((execute(commandv)) == -1) {
 				pfmt(stderr, MM_ERROR,
 					"%s: couldn't exec(): %s\n",
 					progname, strerror(errno));
@@ -283,10 +291,31 @@ int main(int argc, char *argv[]) {
 	}
 }
 
+/*
+ * Boilerplate functions for the
+ * (*execute)(char **) function
+ * pointer.
+ */
+int _execvp(char *cmd[]) { return execvp(cmd[0], cmd); }
+
+int _system(char *cmd[]) {
+	/*
+	 * taks note: It may sound an overkill to
+	 * "recompile" the command string for every
+	 * run of system(), even more considering
+	 * that it's the same input but, since we're
+	 * already having the "overhead" of calling
+	 * /bin/sh, having some manipulations within
+	 * the memory shouldn't be a problem.
+	 */
+	char *command = strjoin(cmd, " ");
+	return system(command);
+}
+
 void usage(void) {
 	pfmt(
 		stderr, MM_NOSTD,
-		"usage: %s [-n seconds] [-bt] command [args...]\n",
+		"usage: %s [-n seconds] [-btx] command [args...]\n",
 		progname
 	);
 	exit(1);
