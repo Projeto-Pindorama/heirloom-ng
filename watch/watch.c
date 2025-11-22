@@ -39,13 +39,12 @@ void usage(void);
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
-	int fExec = 0,
-	    fBeep_on_error = 0,
+	int fBeep_on_error = 0,
 	    fNo_title = 0,
 	    c = 0, ec = 0,
 	    term_x = 0;
 	char **commandv;
-	int (*execute)(char **);
+	int (*execute)(char **) = _system;
 	pid_t exec_pid;
 	struct timespec interval;
 
@@ -127,7 +126,7 @@ int main(int argc, char *argv[]) {
 			fNo_title = 1;
 			break;
 		case 'x':
-			fExec = 1;
+			execute = _execvp;
 			break;
 		case 'h':
 		default:
@@ -158,15 +157,6 @@ int main(int argc, char *argv[]) {
 
 	for (c = 0; c < argc; c++) {
 		commandv[c] = argv[c];
-	}
-
-	switch (fExec) {
-	case 1:
-		execute = _execvp;
-		break;
-	case 0:
-		execute = _system;
-		break;
 	}
 
 	/*
