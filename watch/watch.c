@@ -32,8 +32,6 @@
 
 static char *progname;
 int main(int argc, char *argv[]);
-int _execvp(char *cmd[]);
-int _system(char *cmd[]);
 void usage(void);
 
 int main(int argc, char *argv[]) {
@@ -45,7 +43,6 @@ int main(int argc, char *argv[]) {
 	    c = 0, ec = 0,
 	    term_x = 0;
 	char **commandv;
-	int (*execute)(char **) = _system;
 	pid_t exec_pid;
 	struct timespec interval;
 
@@ -88,7 +85,7 @@ int main(int argc, char *argv[]) {
 			if (decsep)
 				*decsep = '.';
 			size_t point = 0;
-			point = afterchar(arg, '.');
+			point = (size_t)afterchar(arg, '.');
 			if (point != 0 || arg[0] == '.') {
 				arg[point] = '\0';
 				afterpoint = &arg[point + 1];
@@ -127,7 +124,7 @@ int main(int argc, char *argv[]) {
 			fNo_title = 1;
 			break;
 		case 'x':
-			execute = _execvp;
+			fExec = 1;
 			break;
 		case 'h':
 		default:
@@ -277,9 +274,16 @@ int main(int argc, char *argv[]) {
 			waitpid(exec_pid, &ec, 0);
 		} else {
 			int exec_status = system(commandl);
-			ec = (WIFEXITED(exec_status))
-				? WEXITSTATUS(exec_status)
-				: 1;
+			if (exec_status == -1) {
+				pfmt(stderr, MM_ERROR,
+					"%s: couldn't system(): %s\n",
+					progname, strerror(errno));
+				exit(-1);
+			} else {
+				ec = (WIFEXITED(exec_status))
+					? WEXITSTATUS(exec_status)
+					: 1;
+			}
 		}
 
 		/*
