@@ -15,11 +15,11 @@ char *strjoin(const char *elems[], char *sep) {
  	size_t en = 0,
 	       i = 0,
 	       joinlen = 0;
-	char **elem = NULL,
-	     *joinbuf = NULL,
+	const char **elem = NULL;
+	char *joinbuf = NULL,
 	     *joinbufp = NULL;
 
-	for (elem = (char **)elems; *elem; elem++, en++)
+	for (elem = elems; *elem; elem++, en++)
 		joinlen += strlen(*elem);
 	joinlen += ((strlen(sep) * (en - 1)) + 1);
 
