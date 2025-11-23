@@ -28,9 +28,11 @@ char *strjoin(const char *elems[], char *sep) {
 	joinbufp = joinbuf;
 
 	for (i = 0; i < en; i++) {
-		strcat(joinbufp, elems[i]);
+		stpcpy((joinbufp + strlen(joinbufp)),
+				elems[i]);
 		if (i < (en - 1))
-			strcat(joinbufp, sep);
+			stpcpy((joinbufp + strlen(joinbufp)),
+					sep);
 	}
 
 	return joinbuf;
