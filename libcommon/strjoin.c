@@ -24,7 +24,7 @@ char *strjoin(const char *elems[], char *sep) {
 	joinlen += ((strlen(sep) * (en - 1)) + 1);
 
 	/* Populate the buffer. */
-	joinbuf = calloc(joinlen, sizeof(char));
+	joinbuf = malloc((joinlen * sizeof(char)));
 	joinbufp = joinbuf;
 
 	for (i = 0; i < en; i++) {
