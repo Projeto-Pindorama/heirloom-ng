@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
 	int fBeep_on_error = 0,
+	    fExec = 0,
 	    fNo_title = 0,
 	    c = 0, ec = 0,
 	    term_x = 0;
@@ -190,6 +191,11 @@ int main(int argc, char *argv[]) {
 		);
 	}
 
+	/* Create command line string for system(3). */
+	char *commandl = NULL;
+	if (!fExec)
+		commandl = strjoin(commandv, " ");
+
 	for (;;) {
 		/* Clear terminal for the next cycle. */
 		clear();
@@ -259,15 +265,22 @@ int main(int argc, char *argv[]) {
 		reset_shell_mode();
 		refresh();
 
-		if ((exec_pid = fork()) == 0) {
-			if ((execute(commandv)) == -1) {
-				pfmt(stderr, MM_ERROR,
-					"%s: couldn't exec(): %s\n",
-					progname, strerror(errno));
-				exit(-1);
+		if (fExec) {
+			if ((exec_pid = fork()) == 0) {
+				if ((execvp(commandv[0], commandv)) == -1) {
+					pfmt(stderr, MM_ERROR,
+						"%s: couldn't exec(): %s\n",
+						progname, strerror(errno));
+					exit(-1);
+				}
 			}
+			waitpid(exec_pid, &ec, 0);
+		} else {
+			int exec_status = system(commandl);
+			ec = (WIFEXITED(exec_status))
+				? WEXITSTATUS(exec_status)
+				: 1;
 		}
-		waitpid(exec_pid, &ec, 0);
 
 		/*
 		 * execvp'd command hasn't exit with success and we have
@@ -279,27 +292,6 @@ int main(int argc, char *argv[]) {
 
 		nanosleep(&interval, NULL);
 	}
-}
-
-/*
- * Boilerplate functions for the
- * (*execute)(char **) function
- * pointer.
- */
-int _execvp(char *cmd[]) { return execvp(cmd[0], cmd); }
-
-int _system(char *cmd[]) {
-	/*
-	 * taks note: It may sound an overkill to
-	 * "recompile" the command string for every
-	 * run of system(), even more considering
-	 * that it's the same input but, since we're
-	 * already having the "overhead" of calling
-	 * /bin/sh, having some manipulations within
-	 * the memory shouldn't be a problem.
-	 */
-	char *command = strjoin(cmd, " ");
-	return system(command);
 }
 
 void usage(void) {
