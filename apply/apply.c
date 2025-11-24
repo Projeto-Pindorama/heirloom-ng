@@ -267,6 +267,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	       m = 0,
 	       n = 0;
 	unsigned int arglen = 0,
+		     cmdbuflen = 0,
 		     c = 0,
 		     d = 0,
 		     l = 0;
@@ -275,22 +276,46 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	     *cmdbufp = NULL;
 
 	/*
-	 * Count the actual size needed
-	 * to make the command string.
+	 * Count the actual size needed to make the command
+	 * string. Now we will do things more efficiently,
+	 * in other words, optmize (a little) the use of
+	 * memory to use precisely just the necessary number
+	 * of characters.
 	 */
-	for (l=0; l < mstep; l++) {
-		n = (carg + l);
-		arglen += strlen(arg[n]);
-		n = 0;
+	cmdbuflen = cmdlen;
+	switch (enamo) {
+		case true:
+			for (l=mstep; l--;) {
+				n = (carg + l);
+				arglen += strlen(arg[n]);
+				n = 0;
+			}
+			break;
+		default:
+			for (l=cmdlen; l--;) {
+				switch (magias[l]) {
+					case -1:
+						break;
+					default:
+						n = (carg + (magias[l] - 1));
+						arglen += strlen(arg[n]);
+						n = 0;
+						/* Removes %# from the count. */
+						cmdbuflen -= 2;
+						l--;
+				}
+			}
+			break;
 	}
+	cmdbuflen += (arglen + 1);
+	cmdbuflen *= sizeof(char);
 
 	/* Allocate the command buffer. */
-	cmdbuf = calloc(((cmdlen + arglen) + 1), sizeof(char));
+	cmdbuf = malloc(cmdbuflen);
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (((cmdlen + arglen) + 1) * sizeof(char *)),
-			strerror(errno));
+			progname, cmdbuflen, strerror(errno));
 		exit(1);
 	}
 	cmdbufp = cmdbuf;
