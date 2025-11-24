@@ -291,16 +291,20 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		arglen += strlen(arg[n]);
 		n = 0;
 		/*
-		 * In case of using magic numbers, 
-		 * 'cmdbuflen -= 2 remsoves %# 
-		 * from the count. Otherside,
+		 * In case of using magic numbers,
+		 * 'cmdbuflen -= 2' removes %#
+		 * from the count. Otherwise,
 		 * subtracting a negative integer
 		 * adds one to the new buffer lenght,
 		 * that is since arguments are separed
 		 * by spaces in this case (see below).
 		 */
-		cmdbuflen -= (enamo ? (-1) : 2);
-		l -= (enamo ? 0 : 1);
+		cmdbuflen -= (enamo ?
+				(-1)
+				: 2);
+		l -= (enamo ?
+			0
+			: 1);
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
