@@ -23,8 +23,8 @@
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
 /* Error codes for crargs(). */
-#define EOUTRANGE      (INT8_MIN >> 1)
-#define ENOTNO         (INT8_MIN >> 2)
+#define EOUTRANGE      -1
+#define ENOTNO         -2
 
 static char *progname;
 static bool enamo = false;

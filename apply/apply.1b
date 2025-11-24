@@ -152,10 +152,10 @@ calls \fBsh(1)\fR per default:
 .eo
 % apply "s=''; [ %1 -ne 1 ] && s='s'; \
 printf '%d bottle%c of beer on the wall, %d bottle%c of beer.\n' \
-%1 \"$s\" %1 \"$s\"; \
+%1 \"\$s\" %1 \"\$s\"; \
 printf 'Take one down and pass around,'; \
-if [ -n $s ]; then \
-printf ' %d bottle%c of beer on the wall.\n' `expr %1 - 1` \"$s\"; \
+if [ ! -z \$s ]; then \
+printf ' %d bottle%c of beer on the wall.\n' \`expr %1 - 1\` \"\$s\"; \
 else \
 printf ' no more bottles of beer on the wall!\n'; \
 fi" `seq 99 -1 1` 

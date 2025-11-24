@@ -46,13 +46,13 @@
 #define	USED
 #endif
 #if defined (SU3)
-static const char sccsid[] USED = "@(#)ls_su3.sl	1.78 (gritter) 4/17/07>";
+static const char sccsid[] USED = "@(#)ls_su3.sl	1.79 (takusuman) 7/26/25>";
 #elif defined (SUS)
-static const char sccsid[] USED = "@(#)ls_sus.sl	1.78 (gritter) 4/17/07>";
+static const char sccsid[] USED = "@(#)ls_sus.sl	1.79 (takusuman) 7/26/25>";
 #elif defined (UCB)
-static const char sccsid[] USED = "@(#)/usr/ucb/ls.sl	1.78 (gritter) 4/17/07>";
+static const char sccsid[] USED = "@(#)/usr/ucb/ls.sl	1.79 (takusuman) 7/26/25>";
 #else
-static const char sccsid[] USED = "@(#)ls.sl	1.78 (gritter) 4/17/07>";
+static const char sccsid[] USED = "@(#)ls.sl	1.79 (takusuman) 7/26/25>";
 #endif
 
 /*
@@ -518,12 +518,12 @@ numeral(int i, char **pp)
 static char *
 extension(const char *fn)
 {
-	const char	*ep = "";
+	const char	*ep = NULL;
 
 	while (*fn++)
 		if (*fn == '.')
 			ep = &fn[1];
-	return (char *)ep;
+	return (ep? (char *)ep : ""); /* Avoid seg. fault at printf(). */
 }
 
 static int (*CMP)(struct file *f1, struct file *f2);
