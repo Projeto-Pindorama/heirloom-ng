@@ -285,7 +285,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	}
 
 	/* Allocate the command buffer. */
-	cmdbuf = calloc(((cmdlen + arglen) + 1), sizeof(char *));
+	cmdbuf = calloc(((cmdlen + arglen) + 1), sizeof(char));
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
