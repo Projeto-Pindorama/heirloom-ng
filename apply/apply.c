@@ -283,29 +283,16 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * of characters.
 	 */
 	cmdbuflen = cmdlen;
-	switch (enamo) {
-		case true:
-			for (l=mstep; l--;) {
-				n = (carg + l);
-				arglen += strlen(arg[n]);
-				n = 0;
-			}
-			break;
-		default:
-			for (l=cmdlen; l--;) {
-				switch (magias[l]) {
-					case -1:
-						break;
-					default:
-						n = (carg + (magias[l] - 1));
-						arglen += strlen(arg[n]);
-						n = 0;
-						/* Removes %# from the count. */
-						cmdbuflen -= 2;
-						l--;
-				}
-			}
-			break;
+	for (l = (enamo ? mstep : cmdlen); l--;) {
+		m = (enamo ? l : (magias[l] - 1));
+		n = (carg + m);
+		if (!enamo && magias[l] == -1)
+			continue;
+		arglen += strlen(arg[n]);
+		n = 0;
+		/* Removes %# from the count. */
+		cmdbuflen -= (enamo ? 0 : 2);
+		l -= (enamo ? 0 : 1);
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
