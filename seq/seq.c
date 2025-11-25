@@ -138,11 +138,10 @@ char *buildfmt(void) {
 	char *picture = NULL,
 	     *fmtbuf = NULL;
 
-	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
-		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
-			"array of %d elements, each one "
-			"being %lu bytes large.\n",
-			progname, 32, (sizeof(char *)));
+	if ((fmtbuf = calloc(32, sizeof(char))) == NULL) {
+		pfmt(stderr, MM_ERROR,
+			"%s: could not allocate an array of %d bytes.",
+			progname, (32 * sizeof(char)));
 		exit(1);
 	}
 
@@ -192,9 +191,10 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			snprintf(strnum, sizeof(strnum), "%.0f", ((start < stop || 0 < start)
-									? stop
-									: start));
+			snprintf(strnum, sizeof(strnum),
+					"%.0f", ((start < stop || 0 < start)
+								? stop
+								: start));
 		} else {
 			snprintf(strnum, sizeof(strnum), "%.0f", picture);
 		}
@@ -240,11 +240,10 @@ char *getlgstr(void) {
 	double fstn = 0.0F,
 	       stepn = 0.0F;
 
-	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
-		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
-			"array of %d elements, each one "
-			"being %lu bytes large.\n",
-			progname, sizeof(strflt), (sizeof(char *)));
+	if ((lgstnum = calloc(sizeof(strflt), sizeof(char))) == NULL) {
+		pfmt(stderr, MM_ERROR,
+			"%s: could not allocate an array of %d bytes.",
+			progname, (sizeof(strflt) * sizeof(char)));
 		exit(1);
 	}
 
