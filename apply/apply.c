@@ -167,9 +167,9 @@ void main(int argc, char *argv[]) {
 	maxmstep = magiac(cmd);
 	/* If nothing defined a magic
 	 * number, set it as one. */
-	mstep = (maxmstep == 0)
-		? (mstep == 0 && !fMagia)
-			? 1
+	mstep = (maxmstep == 0)?
+		(mstep == 0 && !fMagia)?
+			1
 			: mstep
 		: maxmstep;
 	/*
@@ -283,8 +283,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * of characters.
 	 */
 	cmdbuflen = cmdlen;
-	for (l = (enamo ? mstep : cmdlen); l--;) {
-		m = (enamo ? l : (magias[l] - 1));
+	for (l = (enamo? mstep : cmdlen); l--;) {
+		m = (enamo?
+			l
+			: (magias[l] - 1));
 		n = (carg + m);
 		if (!enamo && magias[l] == -1)
 			continue;
@@ -299,12 +301,12 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		 * that is since arguments are separed
 		 * by spaces in this case (see below).
 		 */
-		cmdbuflen -= (enamo ?
+		cmdbuflen -= (enamo?
 				(-1)
 				: 2);
-		l -= (enamo ?
-			0
-			: 1);
+		l -= (!enamo?
+			1
+			: 0);
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
@@ -369,8 +371,8 @@ int eXec(const char command[]) {
 	     *name = NULL;
 	pid_t pid = 0;
 
-	shell = (getenv("SHELL") != NULL)
-		? getenv("SHELL")
+	shell = (getenv("SHELL") != NULL)?
+		getenv("SHELL")
 		: SHELL;
 	shpath = strdup(shell);
 	name = basename(shpath);
