@@ -197,9 +197,11 @@ void main(int argc, char *argv[]) {
 		/* Set command to be run. */
 		cmdl = buildcmd(cmd, arg, i);
 		if (fDry || fVerbose) puts(cmdl);
-		if (!fDry)
-			if (fExitOnErr && ((estatus = eXec(cmdl)) != 0))
-				i = cmdc; /* No more iterations. */
+		if (!fDry) {
+			estatus = eXec(cmdl);
+			/* No more iterations. */
+			if (fExitOnErr && estatus != 0) i = cmdc;
+		}
 		free(cmdl);
 	}
 	free(cmd);
