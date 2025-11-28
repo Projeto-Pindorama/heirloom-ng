@@ -194,9 +194,9 @@ void main(int argc, char *argv[]) {
 		cmdl = buildcmd(cmd, arg, i);
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry) estatus = eXec(cmdl);
+		free(cmdl);
 	}
 	free(cmd);
-	free(cmdl);
 	free(magias);
 
 	exit(estatus);
