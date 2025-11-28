@@ -56,6 +56,7 @@ void main(int argc, char *argv[]) {
 	     *cmdl = NULL;
 	bool fVerbose = false,
 	     fDry = false,
+	     fExitOnErr = false,
 	     fMagia = false;
 
 	/*
@@ -83,6 +84,9 @@ void main(int argc, char *argv[]) {
 						break;
 					case 'v':
 						fVerbose = true;
+						break;
+					case 'e':
+						fExitOnErr = true;
 						break;
 					case 'a':
 						argv[opt]++;
@@ -193,7 +197,9 @@ void main(int argc, char *argv[]) {
 		/* Set command to be run. */
 		cmdl = buildcmd(cmd, arg, i);
 		if (fDry || fVerbose) puts(cmdl);
-		if (!fDry) estatus = eXec(cmdl);
+		if (!fDry)
+			if (fExitOnErr && ((estatus = eXec(cmdl)) != 0))
+				i = cmdc; /* No more iterations. */
 		free(cmdl);
 	}
 	free(cmd);
