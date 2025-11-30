@@ -311,9 +311,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		cmdbuflen -= (enamo?
 				(-1)
 				: 2);
-		l -= (!enamo?
-			1
-			: 0);
+		l -= !enamo;
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
