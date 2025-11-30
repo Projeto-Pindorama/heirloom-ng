@@ -291,9 +291,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 */
 	cmdbuflen = cmdlen;
 	for (l = (enamo? mstep : cmdlen); l--;) {
-		m = (enamo?
-			l
-			: (magias[l] - 1));
+		m = (enamo? l : (magias[l] - 1));
 		n = (carg + m);
 		if (!enamo && magias[l] == -1)
 			continue;
@@ -301,16 +299,15 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		n = 0;
 		/*
 		 * In case of using magic numbers,
-		 * 'cmdbuflen -= 2' removes %#
-		 * from the count. Otherwise,
-		 * subtracting a negative integer
-		 * adds one to the new buffer lenght,
-		 * that is since arguments are separed
-		 * by spaces in this case (see below).
+		 * remove %# from the count. Otherwise,
+		 * add one to the new buffer lenght since
+		 * arguments are separed by spaces in this
+		 * case (see below).
 		 */
-		cmdbuflen -= (enamo?
-				(-1)
-				: 2);
+		if (enamo)
+			cmdbuflen++;
+		else
+			cmdbuflen -= 2;
 		l -= !enamo;
 	}
 	cmdbuflen += (arglen + 1);
