@@ -17,8 +17,6 @@
 #include <strmenta.h>
 #include <unistd.h>
 
-/* That's is for custom format at printf(3) via -p and -w. */
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
 /* main() exit()s, does not return(). */
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
@@ -114,7 +112,7 @@ void main(int argc, char *const argv[]) {
 			? "\n"
 			: separator;
 
-	for (count = start; ((0 < step) ? count <= stop : count >= stop);
+	for (count = start; ((0 < step) ? (count <= stop) : (count >= stop));
 							count += step) {
 		/*
 		 * If the count has come to the end or if the next sum
@@ -125,7 +123,9 @@ void main(int argc, char *const argv[]) {
 		 */
 		separator = (fabs(count + step) > fabs(stop))
 				? "\n" : separator;
-		printf(format, count, separator);
+
+		pfmt(stdout, MM_NOSTD,
+			format, count, separator);
 	}
 	free(format);
 
