@@ -194,7 +194,8 @@ char *buildfmt(void) {
 								? stop
 								: start));
 		} else {
-			snprintf(strnum, sizeof(strnum), "%.0f", picture);
+			snprintf(strnum, sizeof(strnum),
+					"%.0f", atof(picture));
 		}
 		natural = strlen(strnum);
 
