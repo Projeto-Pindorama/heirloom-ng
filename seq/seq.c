@@ -19,8 +19,6 @@
 
 /* That's is for custom format at printf(3) via -p and -w. */
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
-/* False positive for char *argv[]. */
-#pragma clang diagnostic ignored "-Wunsafe-buffer-usage"
 /* main() exit()s, does not return(). */
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
@@ -36,13 +34,13 @@ static double start = 0,
 	     stop = 0,
 	     step = 0;
 
-void main(int argc, char *argv[]);
+void main(int argc, char *const argv[]);
 char *buildfmt(void);
 char *getlgstr(void);
 int afterdecsep(char s[]);
 void usage(void);
 
-void main(int argc, char *argv[]) {
+void main(int argc, char *const argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
