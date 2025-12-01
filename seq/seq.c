@@ -124,8 +124,8 @@ void main(int argc, char *const argv[]) {
 		separator = (fabs(count + step) > fabs(stop))
 				? "\n" : separator;
 
-		pfmt(stdout, MM_NOSTD,
-			format, count, separator);
+		pfmt(stdout, (MM_NOSTD & MM_NOGET),
+				format, count, separator);
 	}
 	free(format);
 
