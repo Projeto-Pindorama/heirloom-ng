@@ -199,7 +199,7 @@ void main(int argc, char *argv[]) {
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry)
 			estatus = eXec(cmdl);
-		if ((!fDry && fExitOnErr) && estatus != 0)
+		if (fExitOnErr && estatus != 0)
 			i = cmdc;
 		free(cmdl);
 	}
