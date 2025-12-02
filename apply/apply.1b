@@ -8,7 +8,7 @@
 .\" Copyright (c) 1989, 1990 AT&T Bell Laboratories --- All Rights Reserved.
 .\" Copyright (c) 1990 Saunders College Publishing --- All Rights Reserved.
 .\"
-.TH APPLY 1B "11/28/25" "Heirloom Toolchest" "BSD System Compatibility"
+.TH APPLY 1B "12/1/25" "Heirloom Toolchest" "BSD System Compatibility"
 .SH NAME
 apply, pick \- repeatedly apply a command to a group of arguments; select arguments
 .SH SYNOPSIS
@@ -81,8 +81,8 @@ extension.
 .PP
 .I Pick
 writes each argument to the
-standard error output and reads a
-reply. If the reply is "y",
+standard error output and reads
+a reply. If the reply is "y",
 .I pick
 will echo it to the standard
 output; if the reply is "q",
@@ -94,7 +94,7 @@ just skips the current argument.
 If there are no arguments, lines
 of the standard input are taken
 instead, which can be particularly
-useful for using in pipes. The
+useful for pipes. The
 .B \-f
 option can be useful for dealing
 with not-so standard filenames
@@ -123,7 +123,7 @@ Compare pairs of files:
 .BI "% apply -2 cmp a1 a2 b1 b2"
 .LP
 Pick some songs from a folder and
-enqueue on the playlist in
+enqueue on a playlist in the
 Qt-based Multimedia Player:
 .IP \& 2
 .BI "% find \[dq]/usr/home/luiz/Music/Cauby Peixoto\[dq] -type f -print | pick -f | xargs qmmp -e"
@@ -132,11 +132,11 @@ Move commits from one branch to
 another, from the oldest to the
 newest, on the git(1) RCS
 utilizing the git-cherry-pick(1)
-utility.
+utility:
 .IP \& 2
 .BI "% git log --oneline | pick | cut -d' ' -f1 > /tmp/to-cherrypick.txt"
 .br
-.BI "% git checkout mala # Another branch"
+.BI "% git checkout outro-galho # Another branch"
 .br
 .BI "% apply 'git cherry-pick' `tail -r /tmp/to-cherrypick.txt`"
 .LP
@@ -189,9 +189,7 @@ string and then executing it via a
 slightly slower than something
 that could be crudely made as a
 .B sh(1)
-native function, but one shall not
-be bothered since the difference
-is pretty much negligible.
+native function.
 .PP
 .I Pick
 is implemented, albeit it has a
@@ -199,14 +197,15 @@ is implemented, albeit it has a
 with not-so portable file names,
 intensively following its historical
 description at the AT&T Research
-Unix v10 manual page, which is the
-reason to it being extremely simple.
+Unix 10th ed. manual page, which is
+the very reason for it being
+extremely simple.
 Since nothing about it besides the
 description at the manual could be
 found, this implementation is just
 a reconstruction of the original
-concept and maybe differ in some
-small aspects.
+concept and may differ in some
+aspects.
 .SH BUGS
 Use special shell metacharacters
 at the
@@ -229,15 +228,16 @@ command first appeared in 4.2BSD.
 Then, via 4.2BSD, it got into
 Bell Labs' CSRC for the 8th
 edition of Research Unix and
-stayed there until the 10th
-edition, when it became
-accompanied by a
+stayed there until the 10th one,
+when it became accompanied by a
 .I pick
-command, which is very shady since
-an 10th edition of the Research
-Unix never existed uniformly and,
-just as other utilities, it's
-mentioned in the manual but
+command, which has a very hazy
+origin since a 10th edition of
+the Research Unix never existed
+officially nor uniformly as an
+archive of some sort and, just as
+many other utilities, it's
+mentioned in its manual but
 neither its source nor binaries
 are present.
 .br

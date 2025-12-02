@@ -300,7 +300,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		/*
 		 * In case of using magic numbers,
 		 * remove %# from the count. Otherwise,
-		 * add one to the new buffer lenght since
+		 * add one to the new buffer length since
 		 * arguments are separed by spaces in this
 		 * case (see below).
 		 */
