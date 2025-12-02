@@ -367,7 +367,8 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 
 /* What the name says: it executes a command. */
 int eXec(const char command[]) {
-	int st = 0;
+	int st = 0,
+	    ec = 0;
 	char *shell = NULL,
 	     *shpath = NULL,
 	     *name = NULL;
@@ -396,10 +397,13 @@ int eXec(const char command[]) {
 			exit(-1);
 		default:
 			while (waitpid(pid, &st, 0) == -1) continue;
+			ec = (WIFEXITED(st))?
+				WEXITSTATUS(st)
+				: (-1);
 			break;
 	}
 
-	return st;
+	return ec;
 }
 
 void usage(void) {
