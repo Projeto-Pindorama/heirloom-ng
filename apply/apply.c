@@ -162,7 +162,7 @@ void main(int argc, char *argv[]) {
 	if (magias == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (cmdlen * sizeof(int)), strerror(errno));
+			progname, cmdlen, strerror(errno));
 		exit(1);
 	}
 	for (size_t i = 0; i < cmdlen; i++)
