@@ -137,7 +137,7 @@ void main(int argc, char *argv[]) {
 	if (arg == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (argc * sizeof(char *)), strerror(errno));
+			progname, (cmdc * sizeof(char *)), strerror(errno));
 		exit(1);
 	}
 
