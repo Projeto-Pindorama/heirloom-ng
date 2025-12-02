@@ -177,14 +177,12 @@ int main(int argc, char *argv[]) {
 	char left[256];
 	left[0] = '\0';
 	if (!fNo_title) {
-		/*
-		 * FIXME: When one uses "-n 0.1", it actually prints
-		 * "0.100000000" instead of 0.1 or even 0.10.
-		 */
+		char interval_as_string[256];
+		snprintf(interval_as_string, 256, "%d.%d",
+				(int)interval.tv_sec, (int)interval.tv_nsec);
 		left_len = snprintf(
-			left, 256, "Every %d.%d second(s): %s",
-			(int)interval.tv_sec, (int)interval.tv_nsec,
-			argv[0]
+			left, 256, "Every %.2f second(s): %s",
+			atof(interval_as_string), argv[0]
 		);
 	}
 
