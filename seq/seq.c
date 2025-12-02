@@ -236,8 +236,8 @@ char *buildfmt(void) {
 char *getlgstr(void) {
 	char strflt[32] = "",
 	     *lgstnum = NULL;
-	double fstn = 0.0F,
-	       stepn = 0.0F;
+	double fstn = 0.0,
+	       stepn = 0.0;
 
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char))) == NULL) {
 		pfmt(stderr, MM_ERROR,
@@ -271,7 +271,7 @@ char *getlgstr(void) {
 }
 
 int afterdecsep(char s[]) {
-	unsigned int c = 0;
+	int c = 0;
 	unsigned long fraclen = 0;
 	char *fracpart = NULL;
 
