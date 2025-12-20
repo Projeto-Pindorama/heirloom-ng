@@ -4,7 +4,7 @@ watch: watch.o
 	$(LD) $(LDFLAGS) watch.o $(LCURS) $(LCOMMON) $(LIBS) -o watch
 
 watch.o: watch.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(ICOMMON) -c watch.c
+	$(CC) $(CFLAGSU) $(CPPFLAGS) $(ICOMMON) -c watch.c
 
 install: all
 	$(UCBINST) -c watch $(ROOT)$(DEFBIN)/watch

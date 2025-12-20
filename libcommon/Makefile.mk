@@ -2,10 +2,11 @@ all: libcommon.a
 
 OBJ = asciitype.o ib_alloc.o ib_close.o ib_free.o ib_getlin.o ib_getw.o \
 	ib_open.o ib_popen.o ib_read.o ib_seek.o oblok.o sfile.o strtol.o \
-	afterchar.o basename.o securestr.o getdir.o regexpr.o gmatch.o utmpx.o \
-  memalign.o pathconf.o sigset.o signal.o sigrelse.o sighold.o sigignore.o \
+	afterchar.o basename.o securestr.o strjoin.o getdir.o regexpr.o gmatch.o \
+  utmpx.o memalign.o pathconf.o sigset.o signal.o sigrelse.o sighold.o sigignore.o \
   sigpause.o getopt.o pfmt.o vpfmt.o prerror.o setlabel.o setuxlabel.o \
   pfmt_label.o sysv3.o
+
 libcommon.a: headers $(OBJ)
 	$(AR) -rv $@ $(OBJ)
 	$(RANLIB) $@
@@ -41,6 +42,9 @@ basename.o: basename.c
 
 securestr.o: securestr.c
 	$(CC) -std=c99 $(CFLAGS2) $(CPPFLAGS) -I. -c securestr.c
+
+strjoin.o: strjoin.c
+	$(CC) -std=c99 $(CFLAGSU) $(CPPFLAGS) -I. -c strjoin.c
 
 getdir.o: getdir.c
 	$(CC) $(CFLAGSS) $(CPPFLAGS) $(LARGEF) $(IWCHAR) -I. -c getdir.c
@@ -153,6 +157,7 @@ sfile.o: sfile.h
 afterchar.o: strmenta.h
 basename.o: strmenta.h
 securestr.o: strmenta.h
+strjoin.o: strmenta.h
 getdir.o: getdir.h
 regexpr.o: regexpr.h regexp.h
 pfmt.o: pfmt.h
