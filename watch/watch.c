@@ -80,12 +80,13 @@ int main(int argc, char *argv[]) {
 			strncpy(arg, optarg, 128);
 			arg[127] = '\0';
 
-			/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
 			decsep = strchr(arg, ',');
 			if (decsep)
 				*decsep = '.';
 			size_t point = 0;
-			point = (size_t)afterchar(arg, '.');
+
+			// TODO: check for errors
+			point = strchr(arg, '.') - arg;
 			if (point != 0 || arg[0] == '.') {
 				arg[point] = '\0';
 				afterpoint = &arg[point + 1];
