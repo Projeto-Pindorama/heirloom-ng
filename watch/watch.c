@@ -178,12 +178,9 @@ int main(int argc, char *argv[]) {
 	char left[256];
 	left[0] = '\0';
 	if (!fNo_title) {
-		char interval_as_string[256];
-		snprintf(interval_as_string, 256, "%d.%d",
-				(int)interval.tv_sec, (int)interval.tv_nsec);
 		left_len = snprintf(
-			left, 256, "Every %.2f second(s): %s",
-			atof(interval_as_string), argv[0]
+			left, 256, "Every %lu.%02lu second(s): %s",
+			interval.tv_sec, interval.tv_nsec / 10000000, argv[0]
 		);
 	}
 
