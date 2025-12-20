@@ -8,7 +8,7 @@
 .\" Copyright (c) 1989, 1990 AT&T Bell Laboratories --- All Rights Reserved.
 .\" Copyright (c) 1990 Saunders College Publishing --- All Rights Reserved.
 .\"
-.TH APPLY 1B "12/1/25" "Heirloom Toolchest" "BSD System Compatibility"
+.TH APPLY 1B "12/20/25" "Heirloom Toolchest" "BSD System Compatibility"
 .SH NAME
 apply, pick \- repeatedly apply a command to a group of arguments; select arguments
 .SH SYNOPSIS
@@ -213,6 +213,11 @@ at the
 string with care, enclosing it in
 single quotes when needed; if not,
 one can get some bizarre results.
+.PP
+There is no way to pass a literal
+\'%2\' if \'%\' is the argument
+expansion character (a.k.a.
+magic).
 .PP
 This could be seen more like a
 technical limitation of the way
