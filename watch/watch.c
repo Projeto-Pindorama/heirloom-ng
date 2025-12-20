@@ -31,8 +31,15 @@
 #include <unistd.h>
 
 static char *progname;
-int main(int argc, char *argv[]);
-void usage(void);
+
+void usage(void) {
+	pfmt(
+		stderr, MM_NOSTD,
+		"usage: %s [-n seconds] [-btx] command [args...]\n",
+		progname
+	);
+	exit(1);
+}
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
@@ -74,29 +81,23 @@ int main(int argc, char *argv[]) {
 			if (!optarg) {
 			       	break;
 			}
-			char arg[128] = "",
-			     *afterpoint = NULL,
-			     *decsep = NULL;
+			char arg[128];
 			strncpy(arg, optarg, 128);
 			arg[127] = '\0';
 
-			decsep = strchr(arg, ',');
-			if (decsep)
-				*decsep = '.';
-			size_t point = 0;
+			char *afterpoint = strchr(arg, ',');
+			if (!afterpoint)
+				afterpoint = strchr(arg, '.');
 
-			// TODO: check for errors
-			point = strchr(arg, '.') - arg;
-			if (point != 0 || arg[0] == '.') {
-				arg[point] = '\0';
-				afterpoint = &arg[point + 1];
+			if (afterpoint) {
+				*afterpoint = '\0';
+				afterpoint++;
 			}
 
-			if (strlen(arg) == 0) {
+			if (strlen(arg) == 0)
 			       	interval.tv_sec = 0;
-			} else {
+			else
 			       	interval.tv_sec = atoi(arg);
-			}
 
 			size_t afterpointlen = afterpoint ? strlen(afterpoint) : 0;
 			if (afterpointlen > 0) {
@@ -113,9 +114,8 @@ int main(int argc, char *argv[]) {
 				interval.tv_nsec = integer;
 			}
 
-			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000) {
+			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000)
 				interval.tv_nsec = 100000000;
-			}
 
 			break;
 		case 'b':
@@ -294,11 +294,3 @@ int main(int argc, char *argv[]) {
 	}
 }
 
-void usage(void) {
-	pfmt(
-		stderr, MM_NOSTD,
-		"usage: %s [-n seconds] [-btx] command [args...]\n",
-		progname
-	);
-	exit(1);
-}
