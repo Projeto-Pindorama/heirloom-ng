@@ -20,7 +20,9 @@
 #include <unistd.h>
 
 /* main() exit()s, does not return(). */
-#pragma clang diagnostic ignored "-Wmain-return-type"
+#ifdef _GNUC_
+#pragma GCC diagnostic ignored "-Wmain"
+#endif
 
 /* Error codes for crargs(). */
 #define EOUTRANGE      -1
@@ -29,8 +31,7 @@
 static char *progname;
 static bool enamo = false;
 static size_t cmdlen = 0;
-static int8_t mstep = 0,
-	      *magias = NULL;
+static int8_t mstep = 0;
 static char magia = '%';
 
 void main(int argc, char *argv[]);
@@ -152,25 +153,11 @@ void main(int argc, char *argv[]) {
 	shift(arg, cmdc);
 	cmdlen = strlen(cmd);
 
-	/*
-	 * Initialize the magias[] array
-	 * with invalid magic numbers, so
-	 * we will avoid false-positives
-	 * such as c=0.
-	 */
-	magias = malloc(cmdlen);
-	if (magias == NULL) {
-		fprintf(stderr,
-			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, cmdlen, strerror(errno));
-		exit(1);
-	}
-	for (size_t i = 0; i < cmdlen; i++)
-		magias[i] = -1;
-
 	maxmstep = magiac(cmd);
-	/* If nothing defined a magic
-	 * number, set it as one. */
+	/*
+	 * If nothing defined a magic
+	 * number, set it as one.
+	 */
 	mstep = (maxmstep == 0)?
 		(mstep == 0 && !fMagia)?
 			1
@@ -183,9 +170,7 @@ void main(int argc, char *argv[]) {
 	 * checking if maxmstep is
 	 * different from zero.
 	 */
-	enamo = (maxmstep != 0)
-		? false
-		: true;
+	enamo = (maxmstep == 0);
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
@@ -204,7 +189,6 @@ void main(int argc, char *argv[]) {
 		free(cmdl);
 	}
 	free(cmd);
-	free(magias);
 
 	exit(estatus);
 }
@@ -243,7 +227,7 @@ uint8_t magiac(char cmd[]) {
 	 */
 	uint8_t m = 0,
 	 	maxms = 0;
-	unsigned int c = 0;
+	size_t c = 0;
 	char ch = '\0';
 
 	for (c = 0; cmd[c] != '\0'; c++) {
@@ -255,7 +239,7 @@ uint8_t magiac(char cmd[]) {
 
 					/* Store magic character location. */
 					if (m == 0 || m > 9) break;
-					magias[c] = m;
+					cmd[c] = -1;
 
 					/* Set largest argument. */
 					if (m > maxms) maxms = m;
@@ -273,11 +257,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	uint8_t i = 0,
 	       m = 0,
 	       n = 0;
-	unsigned int arglen = 0,
-		     cmdbuflen = 0,
-		     c = 0,
-		     d = 0,
-		     l = 0;
+	size_t arglen = 0,
+	       cmdbuflen = 0,
+	       c = 0,
+	       d = 0,
+	       l = 0;
 	char ch = '\0',
 	     *cmdbuf = NULL,
 	     *cmdbufp = NULL;
@@ -290,11 +274,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * of characters.
 	 */
 	cmdbuflen = cmdlen;
-	for (l = (enamo? mstep : cmdlen); l--;) {
-		m = (enamo? l : (magias[l] - 1));
+	for (l = mstep; l--;) {
+		m = l;
 		n = (carg + m);
-		if (!enamo && magias[l] == -1)
-			continue;
+
 		arglen += strlen(arg[n]);
 		n = 0;
 		/*
@@ -308,7 +291,6 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			cmdbuflen++;
 		else
 			cmdbuflen -= 2;
-		l -= !enamo;
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
@@ -332,7 +314,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			 * the string verbatim and then
 			 * amend arguments as per 'mstep'.
 			 */
-			cmdbufp = stpncpy(cmdbufp, cmd, (size_t)cmdlen);
+			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
 			for (i = 0; i < mstep; i++) {
 				n = (carg + i);
 				sputchar(cmdbufp, ' ');
@@ -343,17 +325,17 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		default:
 			for (c = 0; cmd[c] != '\0'; c++) {
 				ch = cmd[c];
-				switch (magias[c]) {
-					case -1:
-						sputchar(cmdbufp, ch);
-						break;
-					default: /* Magic! */
+				switch (ch) {
+					case -1: /* Magic! */
 						m = (cmd[(c + 1)] - '0');
 						n = (carg + (m - 1));
 						c++;
 						for (d = 0; arg[n][d]; d++)
 							sputchar(cmdbufp, arg[n][d]);
 						continue;
+					default:
+						sputchar(cmdbufp, ch);
+						break;
 				}
 			}
 			break;
