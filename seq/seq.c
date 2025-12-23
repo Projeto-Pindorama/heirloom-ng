@@ -18,7 +18,9 @@
 #include <unistd.h>
 
 /* main() exit()s, does not return(). */
-#pragma clang diagnostic ignored "-Wmain-return-type"
+#ifdef _GNUC_
+#pragma GCC diagnostic ignored "-Wmain"
+#endif
 
 static char *progname;
 /*
