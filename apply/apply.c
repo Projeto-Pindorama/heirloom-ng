@@ -271,31 +271,33 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * string. Now we will do things more efficiently,
 	 * in other words, optmize (a little) the use of
 	 * memory to use precisely just the necessary number
-	 * of characters.
+	 * of characters. In case of using magic numbers,
+	 * remove %# from the count. Otherwise, add one to
+	 * the new buffer length since arguments are
+	 * separated by spaces.
 	 */
 	cmdbuflen = cmdlen;
-	for (l = (enamo? mstep : cmdlen); l--;) {
+	l = enamo? mstep
+		: cmdlen;
+	for (; l--;) {
 		if (!enamo && cmd[l] != -1)
 			continue;
-		m = enamo? l
-			: (cmd[(l + 1)] - '0');
-		m -= (!enamo);
+		if (enamo) {
+			m = l;
+		} else {
+			m = (cmd[(l + 1)] - '0');
+			m -= 1;
+		}
 		n = (carg + m);
-
 		arglen += strlen(arg[n]);
 		n = 0;
-		/*
-		 * In case of using magic numbers,
-		 * remove %# from the count. Otherwise,
-		 * add one to the new buffer length since
-		 * arguments are separed by spaces in this
-		 * case (see below).
-		 */
-		if (enamo)
+
+		if (enamo) {
 			cmdbuflen++;
-		else
+		} else {
 			cmdbuflen -= 2;
-		l -= (!enamo);
+			l -= 1;
+		}
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
