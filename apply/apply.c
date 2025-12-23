@@ -282,13 +282,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	for (; l--;) {
 		if (!enamo && cmd[l] != -1)
 			continue;
-		if (enamo) {
-			number = l;
-		} else {
+		if (enamo)
+			number = (l + 1);
+		else
 			number = (cmd[(l + 1)] - '0');
-			number -= 1;
-		}
-		index = (carg + number);
+		index = (carg + (number - 1));
 		arglen += strlen(arg[index]);
 		index = 0;
 
