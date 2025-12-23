@@ -278,7 +278,8 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		if (!enamo && cmd[l] != -1)
 			continue;
 		m = enamo? l
-			: ((cmd[(l + 1)] - '0') - 1);
+			: (cmd[(l + 1)] - '0');
+		m -= (!enamo);
 		n = (carg + m);
 
 		arglen += strlen(arg[n]);
