@@ -5,6 +5,7 @@
  */
 /*
  * Copyright (c) 2003 Gunnar Ritter
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -16,7 +17,7 @@
 #else
 #define	USED
 #endif
-static const char sccsid[] USED = "@(#)xargs.sl	1.15 (gritter) 6/21/05";
+static const char sccsid[] USED = "@(#)xargs.sl	1.16 (takusuman) 11/20/25";
 
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -60,6 +61,7 @@ static const char	*iflag;
 static size_t		iflen;
 static long		lflag;
 static long		nflag;
+static int		Nflag;
 static int		pflag;
 static const char	*sflag;
 static int		tflag;
@@ -213,6 +215,9 @@ flags(int ac, char **av)
 
 	for (i = 1; i < ac && av[i][0] == '-'; i++) {
 	nxt:	switch (av[i][1]) {
+		case '0':
+			Nflag = 1; /* Separate arguments with \0. */
+			continue;
 		case 'e':
 			eflag = validate(&av[i][2], 'e');
 			continue;
@@ -537,8 +542,12 @@ nextarg(struct iblok *ip, long *linecnt)
 	static int	eof;
 	wint_t	c, quote = WEOF, lastc = WEOF;
 	char	*cp;
-	char	b;
+	char	b, delimiter;
 	int	content = 0, i = 0, n;
+
+	delimiter = (!Nflag)
+		? '\n' /* Default. */
+		: '\0';
 
 	if (eof)
 		return NULL;
@@ -561,12 +570,12 @@ nextarg(struct iblok *ip, long *linecnt)
 					content = 1;
 					continue;
 				}
-				if (c == '\n' || quote == WEOF &&
-						blankc(c) &&
+				if (c == delimiter || quote == WEOF &&
+						(!Nflag && blankc(c)) &&
 						(iflag == NULL ||
 						 content == 0)) {
 					if (content) {
-						if (c == '\n' && !blankc(lastc))
+						if (c == delimiter && !blankc(lastc))
 							(*linecnt)++;
 						break;
 					} else

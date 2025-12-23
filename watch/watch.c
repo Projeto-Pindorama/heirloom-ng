@@ -3,6 +3,7 @@
  *
  */
 /*
+ * Copyright (C) 2025: Luiz Antônio Rangel (takusuman)
  * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
  * 			     Arthur Bacci	 (arthurbacci)
  *
@@ -30,13 +31,21 @@
 #include <unistd.h>
 
 static char *progname;
-int main(int argc, char *argv[]);
-void usage(void);
+
+void usage(void) {
+	pfmt(
+		stderr, MM_NOSTD,
+		"usage: %s [-n seconds] [-btx] command [args...]\n",
+		progname
+	);
+	exit(1);
+}
 
 int main(int argc, char *argv[]) {
 	progname = argv[0];
 	int option = 0;
 	int fBeep_on_error = 0,
+	    fExec = 0,
 	    fNo_title = 0,
 	    c = 0, ec = 0,
 	    term_x = 0;
@@ -66,34 +75,29 @@ int main(int argc, char *argv[]) {
 		exit(-1);
 	}
 
-	while ((option = getopt(argc, argv, "n:bth")) != -1) {
+	while ((option = getopt(argc, argv, "n:bthx")) != -1) {
 		switch (option) {
 		case 'n':
 			if (!optarg) {
 			       	break;
 			}
-			char arg[128] = "",
-			     *afterpoint = NULL,
-			     *decsep = NULL;
+			char arg[128];
 			strncpy(arg, optarg, 128);
 			arg[127] = '\0';
 
-			/* In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧 */
-			decsep = strchr(arg, ',');
-			if (decsep)
-				*decsep = '.';
-			size_t point = 0;
-			point = afterchar(arg, '.');
-			if (point != 0 || arg[0] == '.') {
-				arg[point] = '\0';
-				afterpoint = &arg[point + 1];
+			char *afterpoint = strchr(arg, ',');
+			if (!afterpoint)
+				afterpoint = strchr(arg, '.');
+
+			if (afterpoint) {
+				*afterpoint = '\0';
+				afterpoint++;
 			}
 
-			if (strlen(arg) == 0) {
+			if (strlen(arg) == 0)
 			       	interval.tv_sec = 0;
-			} else {
+			else
 			       	interval.tv_sec = atoi(arg);
-			}
 
 			size_t afterpointlen = afterpoint ? strlen(afterpoint) : 0;
 			if (afterpointlen > 0) {
@@ -110,9 +114,8 @@ int main(int argc, char *argv[]) {
 				interval.tv_nsec = integer;
 			}
 
-			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000) {
+			if (interval.tv_sec == 0 && interval.tv_nsec < 100000000)
 				interval.tv_nsec = 100000000;
-			}
 
 			break;
 		case 'b':
@@ -120,6 +123,9 @@ int main(int argc, char *argv[]) {
 			break;
 		case 't':
 			fNo_title = 1;
+			break;
+		case 'x':
+			fExec = 1;
 			break;
 		case 'h':
 		default:
@@ -172,16 +178,16 @@ int main(int argc, char *argv[]) {
 	char left[256];
 	left[0] = '\0';
 	if (!fNo_title) {
-		/*
-		 * FIXME: When one uses "-n 0.1", it actually prints
-		 * "0.100000000" instead of 0.1 or even 0.10.
-		 */
 		left_len = snprintf(
-			left, 256, "Every %d.%d second(s): %s",
-			(int)interval.tv_sec, (int)interval.tv_nsec,
-			argv[0]
+			left, 256, "Every %lu.%02lu second(s): %s",
+			interval.tv_sec, interval.tv_nsec / 10000000, argv[0]
 		);
 	}
+
+	/* Create command line string for system(3). */
+	char *commandl = NULL;
+	if (!fExec)
+		commandl = strjoin(commandv, " ");
 
 	for (;;) {
 		/* Clear terminal for the next cycle. */
@@ -252,15 +258,29 @@ int main(int argc, char *argv[]) {
 		reset_shell_mode();
 		refresh();
 
-		if ((exec_pid = fork()) == 0) {
-			if ((execvp(commandv[0], commandv)) == -1) {
+		if (fExec) {
+			if ((exec_pid = fork()) == 0) {
+				if ((execvp(commandv[0], commandv)) == -1) {
+					pfmt(stderr, MM_ERROR,
+						"%s: couldn't exec(): %s\n",
+						progname, strerror(errno));
+					exit(-1);
+				}
+			}
+			waitpid(exec_pid, &ec, 0);
+		} else {
+			int exec_status = system(commandl);
+			if (exec_status == -1) {
 				pfmt(stderr, MM_ERROR,
-					"%s: couldn't exec(): %s\n",
+					"%s: couldn't system(): %s\n",
 					progname, strerror(errno));
 				exit(-1);
+			} else {
+				ec = (WIFEXITED(exec_status))
+					? WEXITSTATUS(exec_status)
+					: 1;
 			}
 		}
-		waitpid(exec_pid, &ec, 0);
 
 		/*
 		 * execvp'd command hasn't exit with success and we have
@@ -274,11 +294,3 @@ int main(int argc, char *argv[]) {
 	}
 }
 
-void usage(void) {
-	pfmt(
-		stderr, MM_NOSTD,
-		"usage: %s [-n seconds] [-bt] command [args...]\n",
-		progname
-	);
-	exit(1);
-}
