@@ -274,8 +274,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * of characters.
 	 */
 	cmdbuflen = cmdlen;
-	for (l = mstep; l--;) {
-		m = l;
+	for (l = (enamo? mstep : cmdlen); l--;) {
+		if (!enamo && cmd[l] != -1)
+			continue;
+		m = enamo? l
+			: ((cmd[(l + 1)] - '0') - 1);
 		n = (carg + m);
 
 		arglen += strlen(arg[n]);
@@ -291,6 +294,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			cmdbuflen++;
 		else
 			cmdbuflen -= 2;
+		l -= (!enamo);
 	}
 	cmdbuflen += (arglen + 1);
 	cmdbuflen *= sizeof(char);
