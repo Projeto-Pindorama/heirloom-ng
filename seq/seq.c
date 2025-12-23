@@ -37,7 +37,7 @@ static double start = 0,
 void main(int argc, char *const argv[]);
 char *buildfmt(void);
 char *getlgstr(void);
-int afterdecsep(char s[]);
+ssize_t afterdecsep(char s[]);
 void usage(void);
 
 void main(int argc, char *const argv[]) {
@@ -152,8 +152,8 @@ char *buildfmt(void) {
 	}
 
 	if (fPicture || fWadding) {
-		long int precision = 0;
-		unsigned long int natural = 0;
+		ssize_t precision = 0;
+		size_t natural = 0;
 
 		char strnum[32] = "",
 			/*
@@ -220,7 +220,7 @@ char *buildfmt(void) {
 		 * printed.
 		 */
 		if (precision > 0) {
-			natural += (unsigned long int)precision;
+			natural += precision;
 			natural += 1;
 		}
 
@@ -272,9 +272,9 @@ char *getlgstr(void) {
 	return lgstnum;
 }
 
-int afterdecsep(char s[]) {
+ssize_t afterdecsep(char s[]) {
 	int c = 0;
-	unsigned long fraclen = 0;
+	size_t fraclen = 0;
 	char *fracpart = NULL;
 
 	if (isalpha(s[0])) {
@@ -294,7 +294,7 @@ int afterdecsep(char s[]) {
 		fraclen = strlen(fracpart);
 	}
 
-	return (int)fraclen;
+	return fraclen;
 }
 
 void usage(void) {
