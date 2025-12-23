@@ -80,13 +80,16 @@ void main(int argc, char *argv[]) {
 	}
 
 	/*
-	 * If argc equals 1, stop will be defined as the first command line argument
-	 * and start and step will be defaulted to 1.
-	 * If argc is 2, stop will be defined as the second command line argument and
-	 * start as the first. If the stop is smaller than the start, the step will
-	 * be decreasing, not increasing.
-	 * If argc is 3, stop will be defined as the third, start as the first and
-	 * step as the second.
+	 * If argc equals 1, stop will be defined as the
+	 * first command line argument and start and step
+	 * will be defaulted to 1.
+	 * If argc is 2, stop will be defined as the
+	 * second command line argument and start as the
+	 * first. If the stop is smaller than the start,
+	 * the step will be decreasing, not increasing.
+	 * If argc is 3, stop will be defined as the
+	 * third, start as the first and step as the
+	 * second.
 	 */
 	stop = (argc == 1)
 		? atof(argv[0])
