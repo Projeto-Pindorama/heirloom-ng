@@ -1,3 +1,11 @@
+Release ...
+* watch: Use system(3) per default, with the previous exec(3) being moved to
+  the "-x" option, also fix interval display at the information header;
+* xargs: The new "-0" option now permits that a null character, '\0', is
+  used as a delimiter instead of a new line;
+* seq: Fix the step assumption so that if the stop is larger than the start,
+  it will decrease one.
+
 Release 250220
 * seq, write: Fix memory fault due to illegal pointer access.
 * cpio, pax: Fix manual page formatting.
