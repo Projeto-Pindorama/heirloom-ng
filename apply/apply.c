@@ -255,8 +255,8 @@ uint8_t magiac(char cmd[]) {
 
 char *buildcmd(char cmd[], char *arg[], int carg) {
 	uint8_t i = 0,
-	       m = 0,
-	       n = 0;
+	       argn = 0,
+	       argpos = 0;
 	size_t arglen = 0,
 	       cmdbuflen = 0,
 	       c = 0,
@@ -283,14 +283,14 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		if (!enamo && cmd[l] != -1)
 			continue;
 		if (enamo) {
-			m = l;
+			argn = l;
 		} else {
-			m = (cmd[(l + 1)] - '0');
-			m -= 1;
+			argn = (cmd[(l + 1)] - '0');
+			argn -= 1;
 		}
-		n = (carg + m);
-		arglen += strlen(arg[n]);
-		n = 0;
+		argpos = (carg + argn);
+		arglen += strlen(arg[argpos]);
+		argpos = 0;
 
 		if (enamo) {
 			cmdbuflen++;
@@ -323,10 +323,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			 */
 			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
 			for (i = 0; i < mstep; i++) {
-				n = (carg + i);
+				argpos = (carg + i);
 				sputchar(cmdbufp, ' ');
-				for (d = 0; arg[n][d]; d++)
-					sputchar(cmdbufp, arg[n][d]);
+				for (d = 0; arg[argpos][d]; d++)
+					sputchar(cmdbufp, arg[argpos][d]);
 			}
 			break;
 		default:
@@ -334,11 +334,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 				ch = cmd[c];
 				switch (ch) {
 					case -1: /* Magic! */
-						m = (cmd[(c + 1)] - '0');
-						n = (carg + (m - 1));
+						argn = (cmd[(c + 1)] - '0');
+						argpos = (carg + (argn - 1));
 						c++;
-						for (d = 0; arg[n][d]; d++)
-							sputchar(cmdbufp, arg[n][d]);
+						for (d = 0; arg[argpos][d]; d++)
+							sputchar(cmdbufp, arg[argpos][d]);
 						continue;
 					default:
 						sputchar(cmdbufp, ch);
