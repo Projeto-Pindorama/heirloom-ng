@@ -286,7 +286,6 @@ int afterdecsep(char s[]) {
 	 * be not complaining about it.
 	 */
 	if ((fracpart = strchr(s, '.')) || s[0] == '.') {
-		*fracpart = '\0';
 		fracpart++;
 		fraclen = strlen(fracpart);
 	}
