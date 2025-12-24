@@ -2,8 +2,8 @@
  * timeout.c - execute a command with a time limit
  */
 /*
- * Copyright (C) 2023, 2024: Luiz Antônio Rangel (takusuman)
- *                           Arthur Bacci (arthurbacci)(atr)
+ * Copyright (C) 2023-2025: Luiz Antônio Rangel (takusuman)
+ * 			    Arthur Bacci (arthurbacci)(atr)
  *
  * SPDX-Licence-Identifier: Zlib
  *
@@ -30,7 +30,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strmenta.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
@@ -510,14 +509,12 @@ int parse_interval(const char *ss, struct TClock *interval) {
 		}
 	}
 
-	i = afterchar(s, '.');
-	if (afterpoint == NULL) {
+	if ((afterpoint = strchr(s, '.')) != NULL) {
+		i = (afterpoint - s);
 		if (i != 0 && s[0] != '.') {
-			afterpoint = &s[i + 1];
 			s[i] = '\0';
+			afterpoint++;
 		}
-	} else {
-		return -1;
 	}
 
 	interval->sec = strlen(s)
@@ -577,4 +574,3 @@ void usage(void) {
 	                       "time command [args ...]\n", progname);
 	exit(1);
 }
-
