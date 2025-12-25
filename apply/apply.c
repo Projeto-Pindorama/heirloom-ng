@@ -3,6 +3,7 @@
  */
 /*
  * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
+ *                          Arthur Bacci (arthurbacci)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -19,9 +20,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-/* main() exit()s, does not return(). */
-#pragma clang diagnostic ignored "-Wmain-return-type"
-
 /* Error codes for crargs(). */
 #define EOUTRANGE      -1
 #define ENOTNO         -2
@@ -29,18 +27,16 @@
 static char *progname;
 static bool enamo = false;
 static size_t cmdlen = 0;
-static int8_t mstep = 0,
-	      *magias = NULL;
+static int8_t mstep = 0;
 static char magia = '%';
 
-void main(int argc, char *argv[]);
 int8_t crargs(char *s);
 uint8_t magiac(char cmd[]);
-char *buildcmd(char cmd[], char *arg[], int carg);
+char *buildcmd(char cmd[], char *arg[], int carg, bool enamo);
 int eXec(const char command[]);
 void usage(void);
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
@@ -56,6 +52,7 @@ void main(int argc, char *argv[]) {
 	     *cmdl = NULL;
 	bool fVerbose = false,
 	     fDry = false,
+	     fExitOnErr = false,
 	     fMagia = false;
 
 	/*
@@ -83,6 +80,9 @@ void main(int argc, char *argv[]) {
 						break;
 					case 'v':
 						fVerbose = true;
+						break;
+					case 'e':
+						fExitOnErr = true;
 						break;
 					case 'a':
 						argv[opt]++;
@@ -133,8 +133,8 @@ void main(int argc, char *argv[]) {
 	if (arg == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (argc * sizeof(char *)), strerror(errno));
-		exit(1);
+			progname, (cmdc * sizeof(char *)), strerror(errno));
+		return 1;
 	}
 
 	for (c = 0; c < cmdc; c++) {
@@ -148,51 +148,44 @@ void main(int argc, char *argv[]) {
 	shift(arg, cmdc);
 	cmdlen = strlen(cmd);
 
-	/*
-	 * Initialize the magias[] array
-	 * with invalid magic numbers, so
-	 * we will avoid false-positives
-	 * for c=0.
-	 */
-	magias = malloc(cmdlen);
-	for (size_t i = 0; i < cmdlen; i++)
-		magias[i] = -1;
-
 	maxmstep = magiac(cmd);
-	/* If nothing defined a magic
-	 * number, set it as one. */
-	mstep = (maxmstep == 0)
-		? (mstep == 0 && !fMagia)
-			? 1
-			: mstep
-		: maxmstep;
 	/*
-	 * Case in which there's not a
-	 * magical character on the string.
-	 * Just a clearer expression than
-	 * checking if maxmstep is
-	 * different from zero.
+	 * If nothing defined a magic
+	 * number, set it as one.
 	 */
-	enamo = (maxmstep != 0)
-		? false
-		: true;
+	if (!maxmstep) {
+		if (mstep == 0 && !fMagia)
+			mstep = 1;
+	} else {
+		mstep = maxmstep;
+	}
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
 			fprintf(stderr, "%s: expecting %d argument(s) after `%s'\n",
 					progname, (mstep - (cmdc - i)), arg[cmdc - 1]);
-			exit(1);
+			return 1;
 		}
 
-		/* Set command to be run. */
-		cmdl = buildcmd(cmd, arg, i);
+		/*
+		 * !maxmstep (enamo):
+		 * Case in which there's not a
+		 * magical character on the string.
+		 * Just a clearer expression than
+		 * checking if maxmstep is
+		 * different from zero.
+		 */
+		cmdl = buildcmd(cmd, arg, i, !maxmstep);
 		if (fDry || fVerbose) puts(cmdl);
-		if (!fDry) estatus = eXec(cmdl);
+		if (!fDry)
+			estatus = eXec(cmdl);
+		if (fExitOnErr && estatus != 0)
+			i = cmdc;
+		free(cmdl);
 	}
-	free(magias);
-	free(cmdl);
+	free(cmd);
 
-	exit(estatus);
+	return estatus;
 }
 
 /* Parses -# into #, with # being an integer. */
@@ -229,7 +222,7 @@ uint8_t magiac(char cmd[]) {
 	 */
 	uint8_t m = 0,
 	 	maxms = 0;
-	unsigned int c = 0;
+	size_t c = 0;
 	char ch = '\0';
 
 	for (c = 0; cmd[c] != '\0'; c++) {
@@ -241,7 +234,7 @@ uint8_t magiac(char cmd[]) {
 
 					/* Store magic character location. */
 					if (m == 0 || m > 9) break;
-					magias[c] = m;
+					cmd[c] = -1;
 
 					/* Set largest argument. */
 					if (m > maxms) maxms = m;
@@ -255,31 +248,61 @@ uint8_t magiac(char cmd[]) {
 	return maxms;
 }
 
-char *buildcmd(char cmd[], char *arg[], int carg) {
+char *buildcmd(char cmd[], char *arg[], int carg, bool enamo) {
 	uint8_t i = 0,
-	       m = 0,
-	       n = 0;
-	unsigned int arglen = 0,
-		     c = 0,
-		     d = 0,
-		     l = 0;
+	       number = 0,
+	       index = 0;
+	size_t arglen = 0,
+	       cmdbuflen = 0,
+	       c = 0,
+	       d = 0,
+	       l = 0;
 	char ch = '\0',
 	     *cmdbuf = NULL,
 	     *cmdbufp = NULL;
 
 	/*
-	 * Count the actual size needed
-	 * to make the command string.
+	 * Count the actual size needed to make the command
+	 * string. Now we will do things more efficiently,
+	 * in other words, optmize (a little) the use of
+	 * memory to use precisely just the necessary number
+	 * of characters. In case of using magic numbers,
+	 * remove %# from the count. Otherwise, add one to
+	 * the new buffer length since arguments are
+	 * separated by spaces.
 	 */
-	for (l=0; l < mstep; l++) {
-		n = (carg + l);
-		arglen += strlen(arg[n]);
-		n = 0;
+	cmdbuflen = cmdlen;
+	l = enamo? mstep
+		: cmdlen;
+	for (; l--;) {
+		if (!enamo && cmd[l] != -1)
+			continue;
+		if (enamo)
+			number = (l + 1);
+		else
+			number = (cmd[(l + 1)] - '0');
+		index = (carg + (number - 1));
+		arglen += strlen(arg[index]);
+		index = 0;
+
+		if (enamo) {
+			cmdbuflen++;
+		} else {
+			cmdbuflen -= 2;
+			l -= 1;
+		}
 	}
+	cmdbuflen += (arglen + 1);
+	cmdbuflen *= sizeof(char);
 
 	/* Allocate the command buffer. */
-	cmdbuf = calloc((size_t)((cmdlen + arglen) + 1),
-			sizeof(char *));
+	cmdbuf = malloc(cmdbuflen);
+	if (cmdbuf == NULL) {
+		fprintf(stderr,
+			"%s: failed to allocate %lu bytes on memory: %s\n",
+			progname, cmdbuflen, strerror(errno));
+		exit(1);
+	}
 	cmdbufp = cmdbuf;
 	switch (enamo) {
 		case true:
@@ -291,28 +314,28 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			 * the string verbatim and then
 			 * amend arguments as per 'mstep'.
 			 */
-			cmdbufp = stpncpy(cmdbufp, cmd, (size_t)cmdlen);
+			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
 			for (i = 0; i < mstep; i++) {
-				n = (carg + i);
+				index = (carg + i);
 				sputchar(cmdbufp, ' ');
-				for (d = 0; arg[n][d]; d++)
-					sputchar(cmdbufp, arg[n][d]);
+				for (d = 0; arg[index][d]; d++)
+					sputchar(cmdbufp, arg[index][d]);
 			}
 			break;
 		default:
 			for (c = 0; cmd[c] != '\0'; c++) {
 				ch = cmd[c];
-				switch (magias[c]) {
-					case -1:
+				switch (ch) {
+					case -1: /* Magic! */
+						number = (cmd[(c + 1)] - '0');
+						index = (carg + (number - 1));
+						c++;
+						for (d = 0; arg[index][d]; d++)
+							sputchar(cmdbufp, arg[index][d]);
+						continue;
+					default:
 						sputchar(cmdbufp, ch);
 						break;
-					default: /* Magic! */
-						m = (cmd[(c + 1)] - '0');
-						n = (carg + (m - 1));
-						c++;
-						for (d = 0; arg[n][d]; d++)
-							sputchar(cmdbufp, arg[n][d]);
-						continue;
 				}
 			}
 			break;
@@ -326,17 +349,19 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 
 /* What the name says: it executes a command. */
 int eXec(const char command[]) {
-	int st = 0;
+	int st = 0,
+	    ec = 0;
 	char *shell = NULL,
 	     *shpath = NULL,
 	     *name = NULL;
 	pid_t pid = 0;
 
-	shell = (getenv("SHELL") != NULL)
-		? getenv("SHELL")
+	shell = (getenv("SHELL") != NULL)?
+		getenv("SHELL")
 		: SHELL;
 	shpath = strdup(shell);
 	name = basename(shpath);
+	free(shpath); /* free() before this function can fail. */
 
 	pid = fork();
 	switch (pid) {
@@ -354,10 +379,13 @@ int eXec(const char command[]) {
 			exit(-1);
 		default:
 			while (waitpid(pid, &st, 0) == -1) continue;
+			ec = (WIFEXITED(st))?
+				WEXITSTATUS(st)
+				: (-1);
 			break;
 	}
 
-	return st;
+	return ec;
 }
 
 void usage(void) {

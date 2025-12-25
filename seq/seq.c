@@ -17,12 +17,10 @@
 #include <strmenta.h>
 #include <unistd.h>
 
-/* That's is for custom format at printf(3) via -p and -w. */
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
-/* False positive for char *argv[]. */
-#pragma clang diagnostic ignored "-Wunsafe-buffer-usage"
 /* main() exit()s, does not return(). */
-#pragma clang diagnostic ignored "-Wmain-return-type"
+#ifdef _GNUC_
+#pragma GCC diagnostic ignored "-Wmain"
+#endif
 
 static char *progname;
 /*
@@ -36,13 +34,13 @@ static double start = 0,
 	     stop = 0,
 	     step = 0;
 
-void main(int argc, char *argv[]);
+void main(int argc, char *const argv[]);
 char *buildfmt(void);
 char *getlgstr(void);
-int afterdecsep(char s[]);
+ssize_t afterdecsep(char s[]);
 void usage(void);
 
-void main(int argc, char *argv[]) {
+void main(int argc, char *const argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
@@ -119,7 +117,7 @@ void main(int argc, char *argv[]) {
 			? "\n"
 			: separator;
 
-	for (count = start; ((0 < step) ? count <= stop : count >= stop);
+	for (count = start; ((0 < step) ? (count <= stop) : (count >= stop));
 							count += step) {
 		/*
 		 * If the count has come to the end or if the next sum
@@ -130,7 +128,9 @@ void main(int argc, char *argv[]) {
 		 */
 		separator = (fabs(count + step) > fabs(stop))
 				? "\n" : separator;
-		printf(format, count, separator);
+
+		pfmt(stdout, (MM_NOSTD ^ MM_NOGET),
+				format, count, separator);
 	}
 	free(format);
 
@@ -141,11 +141,10 @@ char *buildfmt(void) {
 	char *picture = NULL,
 	     *fmtbuf = NULL;
 
-	if ((fmtbuf = calloc(32, sizeof(char *))) == NULL) {
-		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
-			"array of %d elements, each one "
-			"being %lu bytes large.\n",
-			progname, 32, (sizeof(char *)));
+	if ((fmtbuf = calloc(32, sizeof(char))) == NULL) {
+		pfmt(stderr, MM_ERROR,
+			"%s: could not allocate an array of %d bytes.",
+			progname, (32 * sizeof(char)));
 		exit(1);
 	}
 
@@ -156,8 +155,8 @@ char *buildfmt(void) {
 	}
 
 	if (fPicture || fWadding) {
-		long int precision = 0;
-		unsigned long int natural = 0;
+		ssize_t precision = 0;
+		size_t natural = 0;
 
 		char strnum[32] = "",
 			/*
@@ -195,11 +194,13 @@ char *buildfmt(void) {
 		 * but as a one-liner.
 		 */
 		if (fWadding) {
-			snprintf(strnum, sizeof(strnum), "%.0f", ((start < stop || 0 < start)
-									? stop
-									: start));
+			snprintf(strnum, sizeof(strnum),
+					"%.0f", ((start < stop || 0 < start)
+								? stop
+								: start));
 		} else {
-			snprintf(strnum, sizeof(strnum), "%.0f", picture);
+			snprintf(strnum, sizeof(strnum),
+					"%.0f", atof(picture));
 		}
 		natural = strlen(strnum);
 
@@ -222,7 +223,7 @@ char *buildfmt(void) {
 		 * printed.
 		 */
 		if (precision > 0) {
-			natural += (unsigned long int)precision;
+			natural += precision;
 			natural += 1;
 		}
 
@@ -240,14 +241,13 @@ char *buildfmt(void) {
 char *getlgstr(void) {
 	char strflt[32] = "",
 	     *lgstnum = NULL;
-	double fstn = 0.0F,
-	       stepn = 0.0F;
+	double fstn = 0.0,
+	       stepn = 0.0;
 
-	if ((lgstnum = calloc(sizeof(strflt), sizeof(char *))) == NULL) {
-		pfmt(stderr, MM_ERROR, "%s: could not allocate an "
-			"array of %d elements, each one "
-			"being %lu bytes large.\n",
-			progname, sizeof(strflt), (sizeof(char *)));
+	if ((lgstnum = calloc(sizeof(strflt), sizeof(char))) == NULL) {
+		pfmt(stderr, MM_ERROR,
+			"%s: could not allocate an array of %d bytes.",
+			progname, (sizeof(strflt) * sizeof(char)));
 		exit(1);
 	}
 
@@ -275,9 +275,9 @@ char *getlgstr(void) {
 	return lgstnum;
 }
 
-int afterdecsep(char s[]) {
-	unsigned int c = 0;
-	unsigned long fraclen = 0;
+ssize_t afterdecsep(char s[]) {
+	int c = 0;
+	size_t fraclen = 0;
 	char *fracpart = NULL;
 
 	if (isalpha(s[0])) {
@@ -297,7 +297,7 @@ int afterdecsep(char s[]) {
 		fraclen = strlen(fracpart);
 	}
 
-	return (int)fraclen;
+	return fraclen;
 }
 
 void usage(void) {
