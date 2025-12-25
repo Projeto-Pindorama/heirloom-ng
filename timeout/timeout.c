@@ -511,7 +511,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
 
 	if ((afterpoint = strchr(s, '.')) != NULL) {
 		i = (afterpoint - s);
-		if (i != 0 && s[0] != '.') {
+		if (i != 0) {
 			s[i] = '\0';
 			afterpoint++;
 		}

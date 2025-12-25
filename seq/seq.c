@@ -285,7 +285,7 @@ int afterdecsep(char s[]) {
 	 * it's an invalid picture, but seq(1) will
 	 * be not complaining about it.
 	 */
-	if ((fracpart = strchr(s, '.')) || s[0] == '.') {
+	if ((fracpart = strchr(s, '.')) != NULL) {
 		fracpart++;
 		fraclen = strlen(fracpart);
 	}
