@@ -3,6 +3,7 @@
  */
 /*
  * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
+ *                          Arthur Bacci (arthurbacci)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -19,11 +20,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-/* main() exit()s, does not return(). */
-#ifdef _GNUC_
-#pragma GCC diagnostic ignored "-Wmain"
-#endif
-
 /* Error codes for crargs(). */
 #define EOUTRANGE      -1
 #define ENOTNO         -2
@@ -34,14 +30,13 @@ static size_t cmdlen = 0;
 static int8_t mstep = 0;
 static char magia = '%';
 
-void main(int argc, char *argv[]);
 int8_t crargs(char *s);
 uint8_t magiac(char cmd[]);
-char *buildcmd(char cmd[], char *arg[], int carg);
+char *buildcmd(char cmd[], char *arg[], int carg, bool enamo);
 int eXec(const char command[]);
 void usage(void);
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
@@ -139,7 +134,7 @@ void main(int argc, char *argv[]) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
 			progname, (cmdc * sizeof(char *)), strerror(errno));
-		exit(1);
+		return 1;
 	}
 
 	for (c = 0; c < cmdc; c++) {
@@ -158,29 +153,29 @@ void main(int argc, char *argv[]) {
 	 * If nothing defined a magic
 	 * number, set it as one.
 	 */
-	mstep = (maxmstep == 0)?
-		(mstep == 0 && !fMagia)?
-			1
-			: mstep
-		: maxmstep;
-	/*
-	 * Case in which there's not a
-	 * magical character on the string.
-	 * Just a clearer expression than
-	 * checking if maxmstep is
-	 * different from zero.
-	 */
-	enamo = (maxmstep == 0);
+	if (!maxmstep) {
+		if (mstep == 0 && !fMagia)
+			mstep = 1;
+	} else {
+		mstep = maxmstep;
+	}
 
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
 			fprintf(stderr, "%s: expecting %d argument(s) after `%s'\n",
 					progname, (mstep - (cmdc - i)), arg[cmdc - 1]);
-			exit(1);
+			return 1;
 		}
 
-		/* Set command to be run. */
-		cmdl = buildcmd(cmd, arg, i);
+		/*
+		 * !maxmstep (enamo):
+		 * Case in which there's not a
+		 * magical character on the string.
+		 * Just a clearer expression than
+		 * checking if maxmstep is
+		 * different from zero.
+		 */
+		cmdl = buildcmd(cmd, arg, i, !maxmstep);
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry)
 			estatus = eXec(cmdl);
@@ -190,7 +185,7 @@ void main(int argc, char *argv[]) {
 	}
 	free(cmd);
 
-	exit(estatus);
+	return estatus;
 }
 
 /* Parses -# into #, with # being an integer. */
@@ -253,7 +248,7 @@ uint8_t magiac(char cmd[]) {
 	return maxms;
 }
 
-char *buildcmd(char cmd[], char *arg[], int carg) {
+char *buildcmd(char cmd[], char *arg[], int carg, bool enamo) {
 	uint8_t i = 0,
 	       number = 0,
 	       index = 0;
