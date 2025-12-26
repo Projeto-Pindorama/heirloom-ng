@@ -40,11 +40,15 @@ char *basename(const char s[]) {
 	unsigned int drvltrpos = 0;
 	char *dirsep = "\\";
 
-	/* Remove "<Drive letter>:" before the path. */
-	drvltrpos = strchr(s, ':')?
-		(strchr(s, ':') - s)
-		: -1; /* For the '+ 1' below. */
-	ss = strdup(&s[(drvltrpos + 1)]);
+	/*
+	 * Remove "<Drive letter>:" before the path.
+	 */
+	if (strchr(s, ':') != NULL) {
+		drvltrpos = (strchr(s, ':') - s);
+		ss = strdup(&s[(drvltrpos + 1)]);
+	} else {
+		ss = strdup(s);
+	}
 #endif
 	for (token = strtok(ss, dirsep), name = token;
 		token = strtok(NULL, dirsep);) {
