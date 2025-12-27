@@ -2,7 +2,7 @@
  * basename.c - a basename(3) implementation in case of
  * the target system not being POSIX.1-2001 compliant.
  *
- * Copyright (c) 2024 Luiz Antônio Rangel (takusuman)
+ * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
  *
  * SPDX-Licence-Identifier: Zlib
  */
@@ -16,7 +16,6 @@
 
 #if _POSIX_VERSION < 200112L
 #include <string.h>
-#include "strmenta.h"
 /*
  * A basename() function first appeared in
  * POSIX.1-2001, before that it had to be
@@ -41,9 +40,15 @@ char *basename(const char s[]) {
 	unsigned int drvltrpos = 0;
 	char *dirsep = "\\";
 
-	/* Remove "<Drive letter>:" before the path. */
-	drvltrpos = afterchar(s, ':');
-	ss = strdup(&s[drvltrpos + 1]);
+	/*
+	 * Remove "<Drive letter>:" before the path.
+	 */
+	if (strchr(s, ':') != NULL) {
+		drvltrpos = (strchr(s, ':') - s);
+		ss = strdup(&s[(drvltrpos + 1)]);
+	} else {
+		ss = strdup(s);
+	}
 #endif
 	for (token = strtok(ss, dirsep), name = token;
 		token = strtok(NULL, dirsep);) {
