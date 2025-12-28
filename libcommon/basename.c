@@ -3,6 +3,7 @@
  * the target system not being POSIX.1-2001 compliant.
  *
  * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
+ * 			Arthur Bacci (arthurbacci)
  *
  * SPDX-Licence-Identifier: Zlib
  */
