@@ -37,18 +37,16 @@ char *basename(const char s[]) {
 	ss = strdup(s);
 #elif defined(_WIN16) || defined(_WIN32) \
 	|| defined(__DOS__) || defined(__OS2__)
-	unsigned int drvltrpos = 0;
 	char *dirsep = "\\";
+	char *drvltrptr = NULL;
 
 	/*
 	 * Remove "<Drive letter>:" before the path.
 	 */
-	if (strchr(s, ':') != NULL) {
-		drvltrpos = (strchr(s, ':') - s);
-		ss = strdup(&s[(drvltrpos + 1)]);
-	} else {
+	if (drvltrptr = strchr(s, ':'))
+		ss = strdup(drvltrptr + 1);
+	else
 		ss = strdup(s);
-	}
 #endif
 	for (token = strtok(ss, dirsep), name = token;
 		token = strtok(NULL, dirsep);) {
