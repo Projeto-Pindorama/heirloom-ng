@@ -461,14 +461,8 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	size_t i = 0,
 	       afterpoint_len = 0;
 
-	/*
-	 * Support both Anglo and European decimal separators.
-	 * taks note: In varietate concordia. 🇧🇷🇪🇺🤝🇺🇸🇬🇧
-	 */
-	decsep = strchr(ss, ',');
-	if (decsep) {
+	if (decsep = strchr(ss, ','))
 		*decsep = '.';
-	}
 
 	ftime = strtod(ss, &tunit);
 	switch (tunit[0]) {
@@ -494,26 +488,12 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	/* Copy the time value to 's'. */
 	snprintf(s, 32, "%g", ftime);
 
-	for (i = 0; s[i]; i++) {
-		switch (isdigit(s[i])) {
-			case 0:
-				switch (s[i]) {
-					case '.':
-						continue;
-					default:
-						break;
-				}
-				return -1;
-			default:
-				continue;
-		}
-	}
+	for (i = 0; s[i]; i++)
+		if (!isdigit(s[i]) && s[i] != '.')
+			return -1;
 
-	if ((afterpoint = strchr(s, '.')) != NULL) {
-		i = (afterpoint - s);
-		if (i != 0) {
-			s[i] = '\0';
-		}
+	if (afterpoint = strchr(s, '.')) {
+		*afterpoint = '\0';
 		afterpoint++;
 	}
 
@@ -524,9 +504,8 @@ int parse_interval(const char *ss, struct TClock *interval) {
 			? atoi(afterpoint)
 			: 0;
 
-	if (afterpoint == NULL) {
+	if (!afterpoint)
 	       	return 0;
-	}
 
 	afterpoint_len = strlen(afterpoint);
 	if (afterpoint_len > 9) {
