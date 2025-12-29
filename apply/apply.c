@@ -25,11 +25,10 @@
 #define ENOTNO         -2
 
 static char *progname;
-static bool enamo = false;
-static size_t cmdlen = 0;
+size_t cmdlen = 0;
 uint8_t maxmstep = 0;
-static int8_t mstep = 0;
-static char magia = '%';
+int8_t mstep = 0;
+char magia = '%';
 
 int8_t crargs(char *s);
 uint8_t magiac(char cmd[]);
@@ -221,18 +220,18 @@ uint8_t magiac(char cmd[]) {
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
-			switch (isalpha(cmd[(c + 1)])) {
-				case 0: /* Integer */
-					m = (cmd[(c + 1)] - '0');
+			if (!isalpha(cmd[(c + 1)])) {
+				/* Integer */
+				m = (cmd[(c + 1)] - '0');
 
-					/* Store magic character location. */
-					if (m == 0 || m > 9) break;
-					cmd[c] = -1;
+				/* Store magic character location. */
+				if (m == 0 || m > 9)
+					continue;
+				cmd[c] = -1;
 
-					/* Set largest argument. */
-					if (m > maxms) maxms = m;
-				default:
-					break;
+				/* Set largest argument. */
+				if (m > maxms)
+					maxms = m;
 			}
 			c++;
 		}
@@ -308,41 +307,35 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		exit(1);
 	}
 	cmdbufp = cmdbuf;
-	switch (enamo) {
-		case true:
-			/*
-			 * Enamoured: payload for cases
-			 * where a magic character in the
-			 * string is not present.
-			 * In this case, it will just copy
-			 * the string verbatim and then
-			 * amend arguments as per 'mstep'.
-			 */
-			cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
-			for (i = 0; i < mstep; i++) {
-				index = (carg + i);
-				sputchar(cmdbufp, ' ');
+	if (enamo) {
+		/*
+		 * Enamoured: payload for cases
+		 * where a magic character in the
+		 * string is not present.
+		 * In this case, it will just copy
+		 * the string verbatim and then
+		 * amend arguments as per 'mstep'.
+		 */
+		cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
+		for (i = 0; i < mstep; i++) {
+			index = (carg + i);
+			sputchar(cmdbufp, ' ');
+			for (d = 0; arg[index][d]; d++)
+				sputchar(cmdbufp, arg[index][d]);
+		}
+	} else {
+		for (c = 0; cmd[c] != '\0'; c++) {
+			ch = cmd[c];
+			if (ch != -1) {
+				sputchar(cmdbufp, ch);
+			} else { /* Magic! */
+				number = (cmd[(c + 1)] - '0');
+				index = (carg + (number - 1));
+				c++;
 				for (d = 0; arg[index][d]; d++)
 					sputchar(cmdbufp, arg[index][d]);
 			}
-			break;
-		default:
-			for (c = 0; cmd[c] != '\0'; c++) {
-				ch = cmd[c];
-				switch (ch) {
-					case -1: /* Magic! */
-						number = (cmd[(c + 1)] - '0');
-						index = (carg + (number - 1));
-						c++;
-						for (d = 0; arg[index][d]; d++)
-							sputchar(cmdbufp, arg[index][d]);
-						continue;
-					default:
-						sputchar(cmdbufp, ch);
-						break;
-				}
-			}
-			break;
+		}
 	}
 
 	/* Close the string. */
