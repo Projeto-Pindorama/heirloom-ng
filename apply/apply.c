@@ -27,12 +27,13 @@
 static char *progname;
 static bool enamo = false;
 static size_t cmdlen = 0;
+uint8_t maxmstep = 0;
 static int8_t mstep = 0;
 static char magia = '%';
 
 int8_t crargs(char *s);
 uint8_t magiac(char cmd[]);
-char *buildcmd(char cmd[], char *arg[], int carg, bool enamo);
+char *buildcmd(char cmd[], char *arg[], int carg);
 int eXec(const char command[]);
 void usage(void);
 
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]) {
 	progname = argv[0];
 	shift(argv, argc);
 
-	uint8_t maxmstep = 0;
 	unsigned int opt = 0,
 		     c = 0,
 		     i = 0;
@@ -167,15 +167,8 @@ int main(int argc, char *argv[]) {
 			return 1;
 		}
 
-		/*
-		 * !maxmstep (enamo):
-		 * Case in which there's not a
-		 * magical character on the string.
-		 * Just a clearer expression than
-		 * checking if maxmstep is
-		 * different from zero.
-		 */
-		cmdl = buildcmd(cmd, arg, i, !maxmstep);
+
+		cmdl = buildcmd(cmd, arg, i);
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry)
 			estatus = eXec(cmdl);
@@ -248,7 +241,8 @@ uint8_t magiac(char cmd[]) {
 	return maxms;
 }
 
-char *buildcmd(char cmd[], char *arg[], int carg, bool enamo) {
+char *buildcmd(char cmd[], char *arg[], int carg) {
+	bool enamo = false;
 	uint8_t i = 0,
 	       number = 0,
 	       index = 0;
@@ -260,6 +254,16 @@ char *buildcmd(char cmd[], char *arg[], int carg, bool enamo) {
 	char ch = '\0',
 	     *cmdbuf = NULL,
 	     *cmdbufp = NULL;
+
+	/*
+	 * !maxmstep (enamo):
+	 * Case in which there's not a
+	 * magical character on the string.
+	 * Just a clearer expression than
+	 * checking if maxmstep is
+	 * different from zero.
+	 */
+	enamo = (maxmstep == 0);
 
 	/*
 	 * Count the actual size needed to make the command
