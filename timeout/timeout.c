@@ -461,7 +461,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
 	size_t i = 0,
 	       afterpoint_len = 0;
 
-	if (decsep = strchr(ss, ','))
+	if ((decsep = strchr(ss, ',')))
 		*decsep = '.';
 
 	ftime = strtod(ss, &tunit);
@@ -492,7 +492,7 @@ int parse_interval(const char *ss, struct TClock *interval) {
 		if (!isdigit(s[i]) && s[i] != '.')
 			return -1;
 
-	if (afterpoint = strchr(s, '.')) {
+	if ((afterpoint = strchr(s, '.'))) {
 		*afterpoint = '\0';
 		afterpoint++;
 	}
