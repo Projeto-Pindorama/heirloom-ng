@@ -25,10 +25,10 @@
 #define ENOTNO         -2
 
 static char *progname;
-size_t cmdlen = 0;
-uint8_t maxmstep = 0;
-int8_t mstep = 0;
-char magia = '%';
+static size_t cmdlen = 0;
+static uint8_t maxmstep = 0;
+static int8_t mstep = 0;
+static char magia = '%';
 
 int8_t crargs(char *s);
 uint8_t magiac(char cmd[]);
@@ -89,7 +89,6 @@ int main(int argc, char *argv[]) {
 						switch (magia) {
 							case '\0':
 								usage();
-							default:
 								break;
 						}
 						break;
@@ -104,6 +103,7 @@ int main(int argc, char *argv[]) {
 									 : "%s: illegal option -- %s\n"),
 								       progname, (argv[opt] + 1));
 								usage();
+								break;
 							default:
 								/* So you've set
 								 * a number? */
@@ -166,8 +166,11 @@ int main(int argc, char *argv[]) {
 			return 1;
 		}
 
-
 		cmdl = buildcmd(cmd, arg, i);
+
+		/* In case of failuring build the command string. */
+		if (!cmdl) return 255;
+
 		if (fDry || fVerbose) puts(cmdl);
 		if (!fDry)
 			estatus = eXec(cmdl);
@@ -275,7 +278,8 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	 * separated by spaces.
 	 */
 	cmdbuflen = cmdlen;
-	l = enamo? mstep
+	l = enamo?
+		(size_t)mstep
 		: cmdlen;
 	for (; l--;) {
 		if (!enamo && cmd[l] != -1)
@@ -304,7 +308,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
 			progname, cmdbuflen, strerror(errno));
-		exit(1);
+		return NULL;
 	}
 	cmdbufp = cmdbuf;
 	if (enamo) {

@@ -17,30 +17,24 @@
 #include <strmenta.h>
 #include <unistd.h>
 
-/* main() exit()s, does not return(). */
-#ifdef _GNUC_
-#pragma GCC diagnostic ignored "-Wmain"
-#endif
-
 static char *progname;
 /*
  * Make flags public since it will
  * be used by buildfmt().
  */
-static bool fPicture = false,
-	    fWadding = false;
-static char *picstr = NULL;
-static double start = 0,
-	     stop = 0,
-	     step = 0;
+bool fPicture = false,
+     fWadding = false;
+char *picstr = NULL;
+double start = 0,
+       stop = 0,
+       step = 0;
 
-void main(int argc, char *const argv[]);
 char *buildfmt(void);
 char *getlgstr(void);
 ssize_t afterdecsep(char s[]);
 void usage(void);
 
-void main(int argc, char *const argv[]) {
+int main(int argc, char *const argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
@@ -73,9 +67,8 @@ void main(int argc, char *const argv[]) {
 	argc -= optind;
 	argv += optind;
 
-	if ( argc < 1 ) {
+	if (argc < 1)
 		usage();
-	}
 
 	/*
 	 * If argc equals 1, stop will be defined as the first command line argument
@@ -131,7 +124,7 @@ void main(int argc, char *const argv[]) {
 	}
 	free(format);
 
-	exit(0);
+	return 0;
 }
 
 char *buildfmt(void) {
@@ -142,7 +135,7 @@ char *buildfmt(void) {
 		pfmt(stderr, MM_ERROR,
 			"%s: could not allocate an array of %d bytes.",
 			progname, (32 * sizeof(char)));
-		exit(1);
+		return 1;
 	}
 
 	/* Default. */
@@ -182,7 +175,7 @@ char *buildfmt(void) {
 			pfmt(stderr, MM_ERROR,
 				"%s: picture '%s' is not a number.\n",
 				progname, picture);
-			exit(1);
+			return NULL;
 		}
 
 		/*
@@ -245,7 +238,7 @@ char *getlgstr(void) {
 		pfmt(stderr, MM_ERROR,
 			"%s: could not allocate an array of %d bytes.",
 			progname, (sizeof(strflt) * sizeof(char)));
-		exit(1);
+		return NULL;
 	}
 
 	/*
