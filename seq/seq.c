@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strmenta.h>
 #include <unistd.h>
 
 static char *progname;
@@ -71,13 +70,16 @@ int main(int argc, char *const argv[]) {
 		usage();
 
 	/*
-	 * If argc equals 1, stop will be defined as the first command line argument
-	 * and start and step will be defaulted to 1.
-	 * If argc is 2, stop will be defined as the second command line argument and
-	 * start as the first. If the stop is smaller than the start, the step will
-	 * be decreasing, not increasing.
-	 * If argc is 3, stop will be defined as the third, start as the first and
-	 * step as the second.
+	 * If argc equals 1, stop will be defined as the
+	 * first command line argument and start and step
+	 * will be defaulted to 1.
+	 * If argc is 2, stop will be defined as the
+	 * second command line argument and start as the
+	 * first. If the stop is smaller than the start,
+	 * the step will be decreasing, not increasing.
+	 * If argc is 3, stop will be defined as the
+	 * third, start as the first and step as the
+	 * second.
 	 */
 	stop = (argc == 1)
 		? atof(argv[0])
@@ -118,7 +120,6 @@ int main(int argc, char *const argv[]) {
 		 */
 		separator = (fabs(count + step) > fabs(stop))
 				? "\n" : separator;
-
 		pfmt(stdout, (MM_NOSTD ^ MM_NOGET),
 				format, count, separator);
 	}
@@ -266,7 +267,6 @@ char *getlgstr(void) {
 }
 
 ssize_t afterdecsep(char s[]) {
-	int c = 0;
 	size_t fraclen = 0;
 	char *fracpart = NULL;
 
@@ -280,10 +280,8 @@ ssize_t afterdecsep(char s[]) {
 	 * it's an invalid picture, but seq(1) will
 	 * be not complaining about it.
 	 */
-	if ((c = afterchar(s, '.')) != 0 || s[0] == '.') {
-		c = afterchar(s, '.');
-		fracpart = &s[(c + 1)];
-		s[c] = '\0';
+	if ((fracpart = strchr(s, '.')) != NULL) {
+		fracpart++;
 		fraclen = strlen(fracpart);
 	}
 
