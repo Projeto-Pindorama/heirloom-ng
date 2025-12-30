@@ -22,12 +22,12 @@ static char *progname;
  * Make flags public since it will
  * be used by buildfmt().
  */
-bool fPicture = false,
-     fWadding = false;
-char *picstr = NULL;
-double start = 0,
-       stop = 0,
-       step = 0;
+static bool fPicture = false,
+	    fWadding = false;
+static char *picstr = NULL;
+static double start = 0.0,
+	      stop = 0.0,
+	      step = 0.0;
 
 char *buildfmt(void);
 char *getlgstr(void);
