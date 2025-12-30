@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strmenta.h>
 #include <unistd.h>
 
 /* That's is for custom format at printf(3) via -p and -w. */
@@ -276,7 +275,6 @@ char *getlgstr(void) {
 }
 
 int afterdecsep(char s[]) {
-	unsigned int c = 0;
 	unsigned long fraclen = 0;
 	char *fracpart = NULL;
 
@@ -290,10 +288,8 @@ int afterdecsep(char s[]) {
 	 * it's an invalid picture, but seq(1) will
 	 * be not complaining about it.
 	 */
-	if ((c = afterchar(s, '.')) != 0 || s[0] == '.') {
-		c = afterchar(s, '.');
-		fracpart = &s[(c + 1)];
-		s[c] = '\0';
+	if ((fracpart = strchr(s, '.')) != NULL) {
+		fracpart++;
 		fraclen = strlen(fracpart);
 	}
 

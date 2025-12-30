@@ -11,7 +11,6 @@
 /* Boilerplate for 'pointer++; pointerc--;' */
 #define shift(p, d)	p++; d--
 
-extern int afterchar(const char s[], int c);
 extern char *basename(const char path[]);
 extern char *ssafe(const char *s);
 extern char *strjoin(char *elems[], char *sep);
