@@ -135,7 +135,7 @@ char *buildfmt(void) {
 		pfmt(stderr, MM_ERROR,
 			"%s: could not allocate an array of %d bytes.",
 			progname, (32 * sizeof(char)));
-		return 1;
+		return NULL;
 	}
 
 	/* Default. */
