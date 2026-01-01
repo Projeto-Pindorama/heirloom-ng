@@ -223,9 +223,9 @@ uint8_t magiac(char cmd[]) {
 	for (c = 0; cmd[c] != '\0'; c++) {
 		ch = cmd[c];
 		if (ch == magia) {
-			if (!isalpha(cmd[(c + 1)])) {
+			if (!isalpha(cmd[c + 1])) {
 				/* Integer */
-				m = (cmd[(c + 1)] - '0');
+				m = (cmd[c + 1] - '0');
 
 				/* Store magic character location. */
 				if (m == 0 || m > 9)
@@ -287,7 +287,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		if (enamo)
 			number = (l + 1);
 		else
-			number = (cmd[(l + 1)] - '0');
+			number = (cmd[l + 1] - '0');
 		index = (carg + (number - 1));
 		arglen += strlen(arg[index]);
 		index = 0;
@@ -333,7 +333,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			if (ch != -1) {
 				sputchar(cmdbufp, ch);
 			} else { /* Magic! */
-				number = (cmd[(c + 1)] - '0');
+				number = (cmd[c + 1] - '0');
 				index = (carg + (number - 1));
 				c++;
 				for (d = 0; arg[index][d]; d++)
