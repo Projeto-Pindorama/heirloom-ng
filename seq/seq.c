@@ -33,7 +33,7 @@ char *getlgstr(void);
 ssize_t afterdecsep(char s[]);
 void usage(void);
 
-int main(int argc, char *const argv[]) {
+int main(int argc, char *argv[]) {
 	progname = argv[0];
 	extern int optind;
 	int option = 0;
@@ -99,7 +99,7 @@ int main(int argc, char *const argv[]) {
 		pfmt(stderr, MM_ERROR,
 			"%s: increment can not be zero.\n",
 			progname);
-		exit(1);
+		return 1;
 	}
 
 	format = buildfmt();
