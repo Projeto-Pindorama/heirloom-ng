@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
 		break;
 	}
 
-	cmdc = (argc - eoargs);
+	cmdc = argc - eoargs;
 	if (cmdc < 2) {
 		usage();
 	}
@@ -225,7 +225,7 @@ uint8_t magiac(char cmd[]) {
 		if (ch == magia) {
 			if (!isalpha(cmd[c + 1])) {
 				/* Integer */
-				m = (cmd[c + 1] - '0');
+				m = cmd[c + 1] - '0';
 
 				/* Store magic character location. */
 				if (m == 0 || m > 9)
@@ -285,10 +285,10 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		if (!enamo && cmd[l] != -1)
 			continue;
 		if (enamo)
-			number = (l + 1);
+			number = l + 1;
 		else
-			number = (cmd[l + 1] - '0');
-		index = (carg + (number - 1));
+			number = cmd[l + 1] - '0';
+		index = carg + (number - 1);
 		arglen += strlen(arg[index]);
 		index = 0;
 
@@ -299,7 +299,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			l -= 1;
 		}
 	}
-	cmdbuflen += (arglen + 1);
+	cmdbuflen += arglen + 1;
 	cmdbuflen *= sizeof(char);
 
 	/* Allocate the command buffer. */
@@ -322,7 +322,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		 */
 		cmdbufp = stpncpy(cmdbufp, cmd, cmdlen);
 		for (i = 0; i < mstep; i++) {
-			index = (carg + i);
+			index = carg + i;
 			sputchar(cmdbufp, ' ');
 			for (d = 0; arg[index][d]; d++)
 				sputchar(cmdbufp, arg[index][d]);
@@ -334,7 +334,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 				sputchar(cmdbufp, ch);
 			} else { /* Magic! */
 				number = (cmd[c + 1] - '0');
-				index = (carg + (number - 1));
+				index = carg + (number - 1);
 				c++;
 				for (d = 0; arg[index][d]; d++)
 					sputchar(cmdbufp, arg[index][d]);
@@ -382,7 +382,7 @@ int eXec(const char command[]) {
 			while (waitpid(pid, &st, 0) == -1) continue;
 			ec = (WIFEXITED(st))?
 				WEXITSTATUS(st)
-				: (-1);
+				: -1;
 			break;
 	}
 
