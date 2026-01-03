@@ -2,7 +2,7 @@
  * apply.c - apply a command to a group of arguments
  */
 /*
- * Copyright (C) 2024-2025: Luiz Antônio Rangel (takusuman)
+ * Copyright (C) 2024-2026: Luiz Antônio Rangel (takusuman)
  *                          Arthur Bacci (arthurbacci)
  *
  * SPDX-Licence-Identifier: Zlib
@@ -300,10 +300,9 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		}
 	}
 	cmdbuflen += arglen + 1;
-	cmdbuflen *= sizeof(char);
 
 	/* Allocate the command buffer. */
-	cmdbuf = malloc(cmdbuflen);
+	cmdbuf = malloc(cmdbuflen * sizeof(char));
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
@@ -333,7 +332,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			if (ch != -1) {
 				sputchar(cmdbufp, ch);
 			} else { /* Magic! */
-				number = (cmd[c + 1] - '0');
+				number = cmd[c + 1] - '0';
 				index = carg + (number - 1);
 				c++;
 				for (d = 0; arg[index][d]; d++)
@@ -357,9 +356,8 @@ int eXec(const char command[]) {
 	     *name = NULL;
 	pid_t pid = 0;
 
-	shell = (getenv("SHELL") != NULL)?
-		getenv("SHELL")
-		: SHELL;
+	if ((shell = getenv("SHELL")) == NULL)
+	    shell = SHELL;
 	shpath = strdup(shell);
 	name = basename(shpath);
 	free(shpath); /* free() before this function can fail. */
