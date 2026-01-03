@@ -218,11 +218,9 @@ uint8_t magiac(char cmd[]) {
 	uint8_t m = 0,
 	 	maxms = 0;
 	size_t c = 0;
-	char ch = '\0';
 
 	for (c = 0; cmd[c] != '\0'; c++) {
-		ch = cmd[c];
-		if (ch == magia) {
+		if (cmd[c] == magia) {
 			if (!isalpha(cmd[c + 1])) {
 				/* Integer */
 				m = cmd[c + 1] - '0';
@@ -302,7 +300,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	cmdbuflen += arglen + 1;
 
 	/* Allocate the command buffer. */
-	cmdbuf = malloc(cmdbuflen * sizeof(char));
+	cmdbuf = malloc((cmdbuflen * sizeof(char)));
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
