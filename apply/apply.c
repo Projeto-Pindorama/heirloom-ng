@@ -306,7 +306,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, cmdbuflen, strerror(errno));
+			progname, (cmdbuflen * sizeof(char)), strerror(errno));
 		return NULL;
 	}
 	cmdbufp = cmdbuf;
