@@ -251,8 +251,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	       c = 0,
 	       d = 0,
 	       l = 0;
-	char ch = '\0',
-	     *cmdbuf = NULL,
+	char *cmdbuf = NULL,
 	     *cmdbufp = NULL;
 
 	/*
@@ -286,7 +285,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 			number = l + 1;
 		else
 			number = cmd[l + 1] - '0';
-		index = carg + (number - 1);
+		index = carg + number - 1;
 		arglen += strlen(arg[index]);
 		index = 0;
 
@@ -326,12 +325,11 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 		}
 	} else {
 		for (c = 0; cmd[c] != '\0'; c++) {
-			ch = cmd[c];
-			if (ch != -1) {
-				sputchar(cmdbufp, ch);
+			if (cmd[c] != -1) {
+				sputchar(cmdbufp, cmd[c]);
 			} else { /* Magic! */
 				number = cmd[c + 1] - '0';
-				index = carg + (number - 1);
+				index = carg + number - 1;
 				c++;
 				for (d = 0; arg[index][d]; d++)
 					sputchar(cmdbufp, arg[index][d]);
