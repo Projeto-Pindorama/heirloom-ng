@@ -3,7 +3,7 @@
  *
  * Mildly inspired by Go standard library's strings.Join function.
  *
- * Copyright (c) 2025 Luiz Antônio Rangel (takusuman)
+ * Copyright (c) 2026 Luiz Antônio Rangel (takusuman)
  *
  * Kudos for Arthur Bacci for some notes on (not using)
  * 'strcat' and 'calloc', and for making the function
@@ -23,9 +23,11 @@ char *strjoin(const char *elems[], char *sep) {
 	char *joinbuf = NULL,
 	     *joinbufp = NULL;
 
+	if (!elems[0])
+		return NULL;
 	for (elem = elems; *elem; elem++, en++)
 		joinlen += strlen(*elem);
-	joinlen += ((strlen(sep) * (en - 1)) + 1);
+	joinlen += (en - 1) * strlen(sep) + 1;
 
 	/*
 	 * Populate the buffer.
@@ -34,14 +36,17 @@ char *strjoin(const char *elems[], char *sep) {
 	 * the new string perfectly, ergo an unnecessary
 	 * operation is saved.
 	 */
-	joinbuf = malloc((joinlen * sizeof(char)));
+	joinbuf = malloc(joinlen * sizeof(char));
 	joinbufp = joinbuf;
+	if (!joinbuf)
+		return NULL;
 
 	for (i = 0; i < en; i++) {
 		joinbufp = stpcpy(joinbufp, elems[i]);
 		if (i < (en - 1))
 			joinbufp = stpcpy(joinbufp, sep);
 	}
+	*joinbufp = '\0';
 
 	return joinbuf;
 }
