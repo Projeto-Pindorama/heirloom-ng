@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 									(mstep == EOUTRANGE
 									 ? "%s: number out of range: %s\n"
 									 : "%s: illegal option -- %s\n"),
-								       progname, (argv[opt] + 1));
+								       progname, argv[opt] + 1);
 								usage();
 								break;
 							default:
@@ -132,14 +132,14 @@ int main(int argc, char *argv[]) {
 	if (arg == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (cmdc * sizeof(char *)), strerror(errno));
+			progname, cmdc * sizeof(char *), strerror(errno));
 		return 1;
 	}
 
 	for (c = 0; c < cmdc; c++) {
 		/* Shift element from the end
 		 * of command arguments. */
-		arg[c] = argv[(eoargs + c)];
+		arg[c] = argv[eoargs + c];
 	}
 
 	/* Declare the command string. */
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
 	for (i=0; i < cmdc; i += ((mstep == 0) ? 1 : mstep)) {
 		if ((cmdc - i) < mstep) {
 			fprintf(stderr, "%s: expecting %d argument(s) after `%s'\n",
-					progname, (mstep - (cmdc - i)), arg[cmdc - 1]);
+					progname, mstep - (cmdc - i), arg[cmdc - 1]);
 			return 1;
 		}
 
@@ -303,7 +303,7 @@ char *buildcmd(char cmd[], char *arg[], int carg) {
 	if (cmdbuf == NULL) {
 		fprintf(stderr,
 			"%s: failed to allocate %lu bytes on memory: %s\n",
-			progname, (cmdbuflen * sizeof(char)), strerror(errno));
+			progname, cmdbuflen * sizeof(char), strerror(errno));
 		return NULL;
 	}
 	cmdbufp = cmdbuf;
@@ -374,7 +374,7 @@ int eXec(const char command[]) {
 			exit(-1);
 		default:
 			while (waitpid(pid, &st, 0) == -1) continue;
-			ec = (WIFEXITED(st))?
+			ec = WIFEXITED(st)?
 				WEXITSTATUS(st)
 				: -1;
 			break;
