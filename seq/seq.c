@@ -135,7 +135,7 @@ char *buildfmt(void) {
 	if ((fmtbuf = calloc(32, sizeof(char))) == NULL) {
 		pfmt(stderr, MM_ERROR,
 			"%s: could not allocate an array of %d bytes.",
-			progname, (32 * sizeof(char)));
+			progname, 32 * sizeof(char));
 		return NULL;
 	}
 
@@ -238,7 +238,7 @@ char *getlgstr(void) {
 	if ((lgstnum = calloc(sizeof(strflt), sizeof(char))) == NULL) {
 		pfmt(stderr, MM_ERROR,
 			"%s: could not allocate an array of %d bytes.",
-			progname, (sizeof(strflt) * sizeof(char)));
+			progname, sizeof(strflt) * sizeof(char));
 		return NULL;
 	}
 
