@@ -1,14 +1,14 @@
 .\"
-.\" Copyright (c) 2024 Luiz Antônio Rangel
+.\" Copyright (c) 2025 Luiz Antônio Rangel
 .\"
 .\" SPDX-Licence-Identifier: Zlib
 .\"
 .\" Some snippets borrowed from UNIX v10's manual page
 .\" for apply and pick:
 .\" Copyright (c) 1989, 1990 AT&T Bell Laboratories --- All Rights Reserved.
-.\" Copyright (c) 1990 Saunders College Publishing --- All Rights Reserved. 
+.\" Copyright (c) 1990 Saunders College Publishing --- All Rights Reserved.
 .\"
-.TH APPLY 1B "07/20/24" "Heirloom Toolchest" "BSD System Compatibility"
+.TH APPLY 1B "12/20/25" "Heirloom Toolchest" "BSD System Compatibility"
 .SH NAME
 apply, pick \- repeatedly apply a command to a group of arguments; select arguments
 .SH SYNOPSIS
@@ -17,6 +17,8 @@ apply, pick \- repeatedly apply a command to a group of arguments; select argume
 .B \-v
 |
 .B \-d
+|
+.B \-e
 ]
 [
 .B \-a
@@ -36,8 +38,8 @@ apply, pick \- repeatedly apply a command to a group of arguments; select argume
 ]
 .SH DESCRIPTION
 .I Apply
-applies a 
-.I command 
+applies a
+.I command
 on specified \fIargs\fR, each one
 at a turn. Normally, arguments are
 permutated per one, but one can
@@ -55,9 +57,9 @@ of times as there are \fIargs\fR.
 Character sequences of the form
 "%#" in \fIcommand\fR, where # is
 also a number, this time limited
-betwixt 1 and 9, are replaced per
-its correspondent argument. If
-such sequences occur, the number
+amid 1 and 9, are replaced per its
+correspondent argument. If such
+sequences occur, the number
 indicated per the
 .B \-#
 option shall be ignored and the
@@ -68,12 +70,19 @@ will be the largest value of "%#".
 The magic character "%" can be
 changed per the
 .B \-a
-option.
+option. If one wants
+.I apply
+to stop in case of
+.I command
+erroring, the
+.B \-e
+option is available as an
+extension.
 .PP
 .I Pick
 writes each argument to the
-standard error output and reads a
-reply. If the reply is "y",
+standard error output and reads
+a reply. If the reply is "y",
 .I pick
 will echo it to the standard
 output; if the reply is "q",
@@ -83,9 +92,9 @@ arguments; there is no error
 output for other replies, it
 just skips the current argument.
 If there are no arguments, lines
-of the standard input are taken 
+of the standard input are taken
 instead, which can be particularly
-useful for using in pipes. The
+useful for pipes. The
 .B \-f
 option can be useful for dealing
 with not-so standard filenames
@@ -113,8 +122,8 @@ Compare pairs of files:
 .IP \& 2
 .BI "% apply -2 cmp a1 a2 b1 b2"
 .LP
-Pick some songs from a folder and 
-enqueue on the playlist in
+Pick some songs from a folder and
+enqueue on a playlist in the
 Qt-based Multimedia Player:
 .IP \& 2
 .BI "% find \[dq]/usr/home/luiz/Music/Cauby Peixoto\[dq] -type f -print | pick -f | xargs qmmp -e"
@@ -123,16 +132,16 @@ Move commits from one branch to
 another, from the oldest to the
 newest, on the git(1) RCS
 utilizing the git-cherry-pick(1)
-utility.
+utility:
 .IP \& 2
 .BI "% git log --oneline | pick | cut -d' ' -f1 > /tmp/to-cherrypick.txt"
 .br
-.BI "% git checkout mala # Another branch"
+.BI "% git checkout outro-galho # Another branch"
 .br
 .BI "% apply 'git cherry-pick' `tail -r /tmp/to-cherrypick.txt`"
 .LP
 Pick '.c' and '.h' files and count
-the lines from each: 
+the lines from each:
 .IP \& 2
 .BI "% wc -l `pick *.[ch]`"
 .LP
@@ -158,7 +167,7 @@ if [ ! -z \$s ]; then \
 printf ' %d bottle%c of beer on the wall.\n' \`expr %1 - 1\` \"\$s\"; \
 else \
 printf ' no more bottles of beer on the wall!\n'; \
-fi" `seq 99 -1 1` 
+fi" `seq 99 -1 1`
 .ec
 .fi
 .RE
@@ -171,7 +180,7 @@ program to be used.
 sh(1), xargs(1)
 .SH NOTES
 Because of the algorithm for applying
-every argument from 
+every argument from
 .I args
 into the
 .I command
@@ -180,24 +189,23 @@ string and then executing it via a
 slightly slower than something
 that could be crudely made as a
 .B sh(1)
-native function, but one shall not
-be bothered since the difference
-is pretty much negligible.
+native function.
 .PP
 .I Pick
-is implemented, albeit it has a 
+is implemented, albeit it has a
 \-f option as an extension to deal
 with not-so portable file names,
 intensively following its historical
 description at the AT&T Research
-Unix v10 manual page, which is the
-reason to it being extremely simple.
+Unix 10th ed. manual page, which is
+the very reason for it being
+extremely simple.
 Since nothing about it besides the
 description at the manual could be
 found, this implementation is just
 a reconstruction of the original
-concept and maybe differ in some
-small aspects.
+concept and may differ in some
+aspects.
 .SH BUGS
 Use special shell metacharacters
 at the
@@ -205,6 +213,11 @@ at the
 string with care, enclosing it in
 single quotes when needed; if not,
 one can get some bizarre results.
+.PP
+There is no way to pass a literal
+\'%2\' if \'%\' is the argument
+expansion character (a.k.a.
+magic).
 .PP
 This could be seen more like a
 technical limitation of the way
@@ -220,15 +233,16 @@ command first appeared in 4.2BSD.
 Then, via 4.2BSD, it got into
 Bell Labs' CSRC for the 8th
 edition of Research Unix and
-stayed there until the 10th
-edition, when it became
-accompanied by a
+stayed there until the 10th one,
+when it became accompanied by a
 .I pick
-command, which is very shady since
-an 10th edition of the Research
-Unix never existed uniformly and,
-just as other utilities, it's
-mentioned in the manual but
+command, which has a very hazy
+origin since a 10th edition of
+the Research Unix never existed
+officially nor uniformly as an
+archive of some sort and, just as
+many other utilities, it's
+mentioned in its manual but
 neither its source nor binaries
 are present.
 .br
