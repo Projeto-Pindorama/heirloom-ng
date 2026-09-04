@@ -1,10 +1,27 @@
-Release ...
+Release 260903
+* libcommon: Fix the 'strjoin()' function.
+* libcommon, basename, timeout: Throw 'afterchar()' in the garbage.
+* apply, seq: Several improvements at the code, use correct types for size
+  (size_t, ssize_t) instead of unsigned/signed long int, make the code fully
+  C99-compatible.
 * watch: Use system(3) per default, with the previous exec(3) being moved to
-  the "-x" option, also fix interval display at the information header;
-* xargs: The new "-0" option now permits that a null character, '\0', is
-  used as a delimiter instead of a new line;
+  the "-x" option, also fix interval display at the information header.
+* xargs: The new "-0" option now permits that a null character, '\0', may be 
+  used as a delimiter instead of a new line.
+* seq: Fix the "unsafe buffer usage" warning per making *argv[] a const, also
+  use pfmt(3) instead of printf(3) since it treats the non-literal format
+  string correctly, avoiding a compiler safety warning, and fix type
+  mismatching.
+* apply: Fix the "99 Bottles of Beer" example at the manual page, allocate
+  memory for the 'buildcmd()' buffer more correctly and intelligently,
+  refactor significant sections of the code, fixed another possible memory leak
+  at 'buildcmd()', added a '-e' flag for exit on error, improved code
+  legibility.
 * seq: Fix the step assumption so that if the stop is larger than the start,
   it will decrease one.
+* Restore heirloom.spec, so now it can be built and properly packaged in
+  RPM-based distributions.
+* apply: Fix possible memory leak.
 
 Release 250220
 * seq, write: Fix memory fault due to illegal pointer access.

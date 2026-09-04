@@ -3,7 +3,7 @@
 #
 Summary: Heirloom Toolchest (New Generation): A collection of standard Unix utilities
 Name: heirloom
-Version: fae42a1
+Version: 260903
 Release: 1
 License: Other
 Source: %{name}-%{version}.tar.bz2
